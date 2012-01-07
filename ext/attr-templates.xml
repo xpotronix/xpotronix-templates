@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<attr-templates>
+
+	<!-- record -->
+
+	<record><!--{{{-->
+		<name/>
+		<type>string</type>
+	</record><!--}}}-->
+
+	<record type="xpint"><!--{{{-->
+		<type>int</type>
+	</record><!--}}}-->
+
+	<record type="xpboolean"><!--{{{-->
+		<type>boolean</type>
+		<renderer>formatBoolean(value,p,record)</renderer>
+	</record><!--}}}-->
+
+	<record type="eh_label"><!--{{{-->
+		<mapping/>
+	</record><!--}}}-->
+
+	<record type="xpdecimal"><!--{{{-->
+		<type>float</type>
+	</record><!--}}}-->
+
+	<record type="xpdate"><!--{{{-->
+		<type>date</type>
+		<dateFormat/>
+	</record><!--}}}-->
+
+	<record type="xpdatetime"><!--{{{-->
+		<type>date</type>
+		<dateFormat/>
+	</record><!--}}}-->
+
+	<!-- column -->
+
+	<column><!--{{{-->
+		<name/>
+		<header/>
+		<dataIndex/>
+		<hidden/>
+		<editable/>
+		<align>left</align>
+		<filter>{showFilterIcon:false}</filter>
+		<editor/>
+	</column><!--}}}-->
+
+	<column type="xptext"><!--{{{-->
+	</column><!--}}}-->
+
+	<column type="xpint"><!--{{{-->
+		<align>right</align>
+		<renderer/>
+	</column><!--}}}-->
+
+	<column type="xpboolean"><!--{{{-->
+		<renderer>formatBoolean(value,p,record)</renderer>
+	</column><!--}}}-->
+
+	<column type="xpdecimal"><!--{{{-->
+		<align>right</align>
+	</column><!--}}}-->
+
+	<column type="xpdate"><!--{{{-->
+		<align>right</align>
+		<renderer/>
+	</column><!--}}}-->
+
+	<column type="xpdatetime"><!--{{{-->
+		<align>right</align>
+		<renderer/>		
+		<editor>
+			<timePosition>below</timePosition>
+		</editor>
+	</column><!--}}}-->
+
+	<column type="xpenum"><!--{{{-->
+		<renderer/>
+	</column><!--}}}-->
+
+	<column type="xpentry_help"><!--{{{-->
+		<renderer/>
+		<filter>{showFilterIcon:false,nameSuffix:'_label'}</filter>
+	</column><!--}}}-->
+
+	<!-- field -->
+
+       	<field><!--{{{-->
+		<name/>
+		<xtype>textfield</xtype>
+		<allowBlank/>
+		<fieldLabel/>
+		<inputType/>
+	</field><!--}}}-->
+
+	<field type="xptext"><!--{{{-->
+		<xtype>textarea</xtype>
+		<grow>true</grow>
+		<allowBlank/>
+	</field><!--}}}-->
+
+	<field type="xpint"><!--{{{-->
+		<xtype>numberfield</xtype>
+		<style>text-align:right;</style>
+	</field><!--}}}-->
+
+	<field type="xpboolean"><!--{{{-->
+		<xtype>checkbox</xtype>
+		<renderer>formatBoolean(value,p,record)</renderer>
+	</field><!--}}}-->
+
+	<field type="xpdecimal"><!--{{{-->
+		<xtype>numberfield</xtype>
+		<allowDecimals>true</allowDecimals>
+		<decimalPrecision>2</decimalPrecision>
+		<renderer>usMoney</renderer>
+		<style>text-align:right;</style>
+	</field><!--}}}-->
+
+	<field type="xpdate"><!--{{{-->
+		<xtype>datefield</xtype>
+		<format/>
+	</field><!--}}}-->
+
+	<field type="xpdatetime"><!--{{{-->
+		<xtype>xdatetime</xtype>
+		<timeConfig>
+			<minValue>7:00 AM</minValue>
+			<maxValue>6:00 PM</maxValue>
+			<increment>1</increment>
+		</timeConfig>
+		<otherToNow>false</otherToNow>
+		<timePosition>right</timePosition>
+		<dateFormat/>
+		<timeFormat/>
+	</field><!--}}}-->
+
+	<field type="xpenum"><!--{{{-->
+		<xtype>combo</xtype>
+		<mode>local</mode>
+		<store/>
+		<displayField/>
+		<valueField/>
+		<typeAhead>true</typeAhead>
+		<lazyRender>true</lazyRender>
+		<hideTrigger>false</hideTrigger>
+		<triggerAction>all</triggerAction>
+		<forceSelection>true</forceSelection>
+		<allowBlank/>
+		<minChars>1</minChars>
+		<renderer/>
+	</field><!--}}}-->
+
+	<field type="xpentry_help"><!--{{{-->
+		<xtype>combo</xtype>
+		<valueField>id</valueField>
+		<hiddenName/>
+		<displayField>_label</displayField>
+		<store/>
+		<pageSize>10</pageSize>
+		<loadingText>Aguarde ...</loadingText>
+		<typeAhead>true</typeAhead>
+		<lazyRender>true</lazyRender>
+		<hideTrigger>false</hideTrigger>
+		<triggerAction>all</triggerAction>
+		<forceSelection>true</forceSelection>
+		<allowBlank/>
+		<minChars>4</minChars>
+	</field><!--}}}-->
+
+</attr-templates>
