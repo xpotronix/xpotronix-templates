@@ -58,6 +58,22 @@
 
 	<column type="xpboolean"><!--{{{-->
 		<renderer>formatBoolean(value,p,record)</renderer>
+		<filter>{showFilterIcon:false,
+			field: {
+				xtype: "combo",
+				mode: 'local',
+				store: new Ext.data.ArrayStore({
+					id: 0,
+					fields: ['value','label'],
+					data: [[null,''], ['1','si'], ['0','no']]
+				}),
+				valueField: 'value',
+				displayField: 'label',
+				triggerAction: 'all',
+				value:null
+			},
+			fieldEvents: ['select','change']
+			}</filter>
 	</column><!--}}}-->
 
 	<column type="xpdecimal"><!--{{{-->
