@@ -26,6 +26,7 @@
 
 	<xsl:include href="feat.xsl"/>
 	<xsl:include href="includes.xsl"/>
+	<xsl:include href="html.xsl"/>
 	
 	<xsl:template match="/"><html>
 <head>

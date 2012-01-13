@@ -24,7 +24,7 @@
 	<xsl:include href="includes.xsl"/>
 	<xsl:include href="feat.xsl"/>
 	<xsl:include href="log.xsl"/>
-	<xsl:include href="html"/>
+	<xsl:include href="html.xsl"/>
 
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
