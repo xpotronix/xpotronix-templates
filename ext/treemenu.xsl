@@ -24,6 +24,7 @@
 	<xsl:include href="includes.xsl"/>
 	<xsl:include href="feat.xsl"/>
 	<xsl:include href="log.xsl"/>
+	<xsl:include href="html"/>
 
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
@@ -36,7 +37,11 @@
 
 	<xsl:template match="*:document"><html>
 <head> 
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta> 
+
+	<xsl:apply-templates select="." mode="meta"/>
+	<xsl:apply-templates select="." mode="title"/>
+	<xsl:apply-templates select="." mode="favicon"/>
+
 	<link rel="stylesheet" type="text/css" href="/ext/resources/css/ext-all.css"></link>
 	<link rel="stylesheet" type="text/css" href="css/icons.css"></link>
 	<link rel="stylesheet" type="text/css" href="css/app.css"></link>
