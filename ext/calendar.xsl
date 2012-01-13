@@ -31,13 +31,9 @@
 <head>
 	<title id="page-title"><xsl:value-of select="//*:session/feat/page_title"/></title>
 
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta http-equiv="Cache-Control" content="no-store"/>
-	<meta http-equiv="Cache-Control" content="no-cache"/>
-	<meta http-equiv="Expires" content="0"/>
-	<meta http-equiv="Pragma" content="no-cache, must-revalidate, no-store"/>
-
-	<meta name="revisit-after" content="10 days"/>
+	<xsl:apply-templates select="." mode="meta"/>
+	<xsl:apply-templates select="." mode="title"/>
+	<xsl:apply-templates select="." mode="favicon"/>
 
 	<link rel="stylesheet" type="text/css" href="/ext/resources/css/ext-all.css"/>
 	<link rel="stylesheet" type="text/css" href="/ux/calendar/css/calendar_core.css" />
