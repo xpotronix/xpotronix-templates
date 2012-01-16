@@ -184,7 +184,7 @@
 		<triggerAction>all</triggerAction>
 		<forceSelection>true</forceSelection>
 		<allowBlank/>
-		<minChars>4</minChars>
+		<minChars>3</minChars>
 	</field><!--}}}-->
 
 </attr-templates>
