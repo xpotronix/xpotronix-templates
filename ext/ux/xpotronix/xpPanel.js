@@ -80,7 +80,7 @@ Ext.extend( Ext.ux.xpotronix.xpPanel, Ext.Panel, {
 
 	loadRecord: function() {/*{{{*/
 
-		if ( this.items.getCount() )
+		if ( this.items && this.items.getCount() )
 			return;
 
 		var s = this.store;
