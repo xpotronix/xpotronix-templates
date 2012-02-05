@@ -72,7 +72,9 @@
 
 	<xsl:template match="process"><!--{{{-->
 		{ text:'<xsl:apply-templates select="." mode="translate"/>', value:'<xsl:value-of select="@name"/>', param:{<xsl:apply-templates select="." mode="param"/>}
-		<xsl:if test="dialog/*">, fn:function(selections, command) { var win = <xsl:apply-templates select="dialog/*"/>; win.show(); }<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if></xsl:if>}<xsl:if test="position()!=last()">, </xsl:if>
+		<xsl:if test="dialog/*">, fn:function(selections, command) { 
+			var win = <xsl:apply-templates select="dialog/*"/>; 
+			win.show(); }<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if></xsl:if>}<xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="process" mode="param"><!--{{{-->
