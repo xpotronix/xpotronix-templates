@@ -43,13 +43,14 @@
 
 </head>
 <body>
+	alert('hola');
 	<xsl:variable name="obj" select="//xpotronix:metadata/obj[1]"/>
 	<xsl:variable name="login_window" select="xp:get_feat($obj,'login_window')"/>
 	<xsl:message>login_window: <xsl:value-of select="$login_window"/></xsl:message>
 	<xsl:message><xsl:value-of select="//xpotronix:session/sessions/user_id"/>:<xsl:value-of select="//xpotronix:session/sessions/session_id"/></xsl:message>
 	<xsl:if test="//xpotronix:session/feat/theme">
 	<script type="text/javascript">
-		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>");
+		/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>"); */
 	</script>
 	</xsl:if>
 	<xsl:choose>
