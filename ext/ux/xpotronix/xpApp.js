@@ -101,6 +101,23 @@ Ext.ux.xpotronix.xpApp = function( config ) {
 	      return Math.abs(this.version.split('.')[2]);
 	};/*}}}*/
 
+	this.changes_store = new Ext.data.Store({
+	
+   		proxy: this.messages_proxy,
+   		reader: new Ext.data.XmlReader(
+			
+			{record: 'changes/*'}, 
+				[
+              			{name: 'type', mapping: '@action'}
+               			,{name: 'obj', mapping: '@obj'}
+               			,{name: 'uiid', mapping: '@uiid'}
+                                ,{name: 'ID', mapping: '@ID'}
+               			// ,{name: '', mapping: ''}
+			])
+
+		});
+
+
 	this.status_store = new Ext.data.Store({//{{{
 
    		proxy: this.messages_proxy,
@@ -111,24 +128,6 @@ Ext.ux.xpotronix.xpApp = function( config ) {
                			{name: 'value', mapping: '@value'}
 			])
 		});//}}}
-
-	this.changes_store = new Ext.data.Store({
-	
-   		proxy: this.messages_proxy,
-   		reader: new Ext.data.XmlReader(
-			
-			{record: 'changes/action'}, 
-				[
-              			{name: 'type', mapping: '@type'}
-               			,{name: 'attr', mapping: '@attr'}
-               			,{name: 'obj', mapping: '@obj'}
-               			,{name: 'uiid', mapping: '@uiid'}
-                                ,{name: 'ID', mapping: '@ID'}
-                                ,{name: 'prev_ID', mapping: '@prev_ID'}
-               			,{name: '', mapping: ''}
-			])
-
-			});
 
 	this.messages_grid = new Ext.grid.GridPanel({//{{{
 
@@ -391,7 +390,20 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
 	}, /*}}}*/
 
-	update_model: function() {/*{{{*/
+
+	update_model_test: function( param ) {
+
+		Ext.each( Ext.DomQuery.select( 'changes/*', param.responseXML ), function( a ) { 
+
+			var s = this.store.item( a.nodeName );
+			s.update_ds.loadData( a, false );
+
+			debug = 1;
+
+		}, this );
+	},
+
+	update_model: function( param ) {/*{{{*/
 
 		var cs = this.changes_store;
 
@@ -427,7 +439,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 	on_complete: function(sender, param) { // Callback called on response/*{{{*/
 
 		this.hidePleaseWait();
-		this.parse_response( param ) && this.update_model();
+		this.parse_response( param ) && this.update_model( param );
 		Ext.each( this.fake_dirty_records, function( r ) { r.commit(); } );
 
 	},/*}}}*/
