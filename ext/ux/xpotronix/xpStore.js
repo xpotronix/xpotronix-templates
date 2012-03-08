@@ -26,30 +26,19 @@ Ext.ux.xpotronix.xpStore = function( config ) {
     	this.childs = new Ext.util.MixedCollection(false);
     	this.childs.getKey = function(o){ return o.storeId; };
 
-    	this.update_keys = new Ext.util.MixedCollection(false);
-    	this.update_keys.getKey = function(o){ return o.key; };
-
 	Ext.apply( this, config ); 
 	Ext.apply( this.params, config.extra_param || {} );
 
 	this.store_url  = '?v=xml&a='+ App.get_feat( 'query_action', this ) +'&r=' + this.class_name + '&m=' + this.module;
-	this.update_url = '?v=xml&a=data&r='  + this.class_name + '&m=' + this.module;
 	this.blank_url  = '?v=xml&a=blank&r=' + this.class_name + '&m=' + this.module;
 
 	this.ns = '>' + this.class_name;
+	this.ns_update = 'changes/' + this.class_name;
+
 	this.rs = this.rs || {};
 	
 	this.proxy =  new Ext.data.HttpProxy({ url: this.store_url, useAjax: true });
-	this.reader = new Ext.data.XmlReader({ record: this.ns, totalProperty: '@total_records', messageProperty: '@msg' }, this.rs );
-
-	this.update_ds = new Ext.data.Store({
-
-		proxy: new Ext.data.HttpProxy({ url: this.update_url, useAjax: true }),
-		reader: new Ext.data.XmlReader({ record: this.ns, totalProperty: '@total_records' }, this.rs )
-
-	});
-
-	this.update_ds.data_store = this;
+	this.reader = new Ext.data.XmlReader({ record: this.ns, id: '@uiid', totalProperty: '@total_records', messageProperty: '@msg' }, this.rs );
 
 	this.blank_ds = new Ext.data.Store({
 
@@ -68,7 +57,7 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 
 	this.parent_store && this.parent_store.on({ 
 		changerowindex:  { buffer: 100, fn: this.on_changerowindex, scope: this }
-		});
+	});
 
 
 	this.on( 'update', function( s, r, o ) {/*{{{*/
@@ -202,83 +191,6 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 				return false;
 		}
   	});//}}}
-
-	this.update_ds.on( 'load', function( us ) {/*{{{*/
-
-		var ur, dr, uk, i;
-
-		this.update_keys.each( function(uk) {
-
-			// por cada update key busca el resgistro en el update_ds
-			// machea o por clave primaria o por uiid
-
-			if ( 
-				( ur = us.getAt( us.find( '__ID__', uk.ID ) ) ) 
-				|| ( ur = us.getAt( us.find( 'uiid', uk.uiid ) ) ) 
-				) {
-
-				// hace lo mismo ahora pero con los datos del store:
-				// busca por el ID o por el uiid
-
-				if ( 
-					( dr = this.getById( uk.uiid ) ) 
-					|| ( dr = this.getAt( this.find( '__ID__', ur.get( '__ID__' ) ) ) ) 
-					) {
-
-					dr.beginEdit();
-
-					// lo encuentra: asigna los valores campo por campo 
-
-					for ( var field in ur.data ) {
-
-						if ( dr.get(field) != ur.get(field) ) {
-
-							dr.set(field, ur.get(field));
-						}
-
-						if ( field === undefined )
-							continue;
-					}
-
-					dr.endEdit();
-					dr.commit();
-
-				} else {
-
-					var nr = ur.copy();
-					Ext.data.Record.id( nr );
-					this.add( nr ); // no lo encuentra, agrega el registro al store
-				}	
-
-				us.remove( ur );
-
-			} else {
-
-				// probablemente una diferencia entre el main_sql y el check del objeto
-				( typeof console != 'undefined' ) && console.error( 'No encuentro el registro modificado/agregado. Consulte con el administrador de la aplicacion con estos datos: objeto: ' + this.class_name + ', ID: ' + uk.ID );
-			}
-
-
-		}, this );
-
-		// estos los mando el servidor sin solicitarlos, por alguna operacion en el backend, los agrego
-
-		us.each( function(ur){
-
-			this.add( ur );
-
-		}, this ); 
-
-		// limpiando lo que quede
-
-		us.removeAll();
-
-		this.update_keys.clear();
-
-		// this.fireEvent('datachanged', this); // DEBUG: seguro que esto va aca?
-		
-
-	}, this );/*}}}*/
 
 	this.childs.each( function( ch ) {//{{{
 
@@ -470,74 +382,6 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 		}
 
 	},/*}}}*/
-
-	update_deferred: function() {//{{{
-
-		var keys = [];
-
-		if ( !this.update_keys.getCount() ) 
-			return;
-
-		this.update_keys.each( function(u) { 
-
-			var r = this.getById( u.uiid );
-
-			switch ( u.type ) {
-
-				case 'd':
-					if ( r ) {
-
-						this.remove( r );
-						if ( this.getCount() )
-							this.go_to( this.rowIndex, false );
-						else this.load(); // DEBUG: no deberia irse a la primera pagina
-					} 
-					this.update_keys.remove(u); 
-
-				break;
-
-				case 'u':
-				case 'i':
-					// if ( r ) 
-						keys.push( u.ID );
-				break;
-
-				case 'p':
-
-					// no tiene permisos
-					App.login(true);
-					this.update_keys.remove(u);
-
-				break;
-					
-				case 'v':
-				case 'e':
-				case 'f':
-					// error de validacion
-					this.update_keys.remove(u); 
-					
-				break;
-
-				default:
-					( typeof console != 'undefined' ) && console.error( 'respuesta vacia del servidor');
-					this.update_keys.remove(u); 
-			}
-
-		}, this );
-
-		if ( ! this.getCount() ) 
-			if ( App.get_feat( 'query_action', this ) == 'datab' )
-				this.add_blank();
-
-		if ( keys.length ) {
-
-			var params = {};
-			params['s[' + this.class_name + '][_ID]'] = keys.join('|'); // or
-			this.update_ds.load( { params: params } ); 
-
-		}
-
-	},//}}}
 
 	add_child: function( store ) {//{{{
 

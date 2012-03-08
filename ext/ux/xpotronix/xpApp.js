@@ -56,11 +56,7 @@ Ext.ux.xpotronix.xpApp = function( config ) {
 	this.obj = new Ext.util.MixedCollection(false);
         this.obj.getKey = function(o){ return o.class_name; }
 
-	this.store = new Ext.util.MixedCollection(false);
-        this.store.getKey = function(o){ return o.storeId; }
-
-	this.changed_stores = new Ext.util.MixedCollection(false);
-        this.changed_stores.getKey = function(o){ return o.storeId; }
+	this.store = Ext.StoreMgr;
 
 	this.addEvents( 'configready' );
 
@@ -100,23 +96,6 @@ Ext.ux.xpotronix.xpApp = function( config ) {
 	Ext.getRevision = function(){/*{{{*/
 	      return Math.abs(this.version.split('.')[2]);
 	};/*}}}*/
-
-	this.changes_store = new Ext.data.Store({
-	
-   		proxy: this.messages_proxy,
-   		reader: new Ext.data.XmlReader(
-			
-			{record: 'changes/*'}, 
-				[
-              			{name: 'type', mapping: '@action'}
-               			,{name: 'obj', mapping: '@obj'}
-               			,{name: 'uiid', mapping: '@uiid'}
-                                ,{name: 'ID', mapping: '@ID'}
-               			// ,{name: '', mapping: ''}
-			])
-
-		});
-
 
 	this.status_store = new Ext.data.Store({//{{{
 
@@ -384,57 +363,29 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
 		this.handle_messages( param );
 		this.status_store.loadData( param.responseXML, false );
-		this.changes_store.loadData( param.responseXML, false );
 
 		return true;
 
 	}, /*}}}*/
 
 
-	update_model_test: function( param ) {
+	update_model: function( param ) {
 
 		Ext.each( Ext.DomQuery.select( 'changes/*', param.responseXML ), function( a ) { 
 
-			var s = this.store.item( a.nodeName );
-			s.update_ds.loadData( a, false );
+			var s;
+
+			if ( s = this.store.item( a.nodeName ) ) {
+
+				s.reader.meta.record = s.ns_update;
+				s.loadData( param.responseXML, true );
+				s.reader.meta.record = s.ns;
+			}
 
 			debug = 1;
 
 		}, this );
 	},
-
-	update_model: function( param ) {/*{{{*/
-
-		var cs = this.changes_store;
-
-		this.changes_store.each( function( rsr ) {
-
-			// por cada store
-			var s = this.store.item(rsr.get('obj'));
-
-			if ( s ) {
-
-				s.update_keys.add( { uiid: rsr.get('uiid'), ID: rsr.get('ID'), type: rsr.get('type')} );
-
-				if ( ! this.changed_stores.item( s.storeID ) )
-					this.changed_stores.add( s );
-			}
-
-
-		}, this );
-
-		this.changed_stores.each( function(s) 
-			{ 
-
-				s.update_deferred();	
-				// s.commitChanges();
-				// s.reload();
-			}
-		);
-
-		this.changed_stores.clear();
-
-              },/*}}}*/
 
 	on_complete: function(sender, param) { // Callback called on response/*{{{*/
 
