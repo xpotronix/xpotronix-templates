@@ -52,6 +52,7 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 	Ext.ux.xpotronix.xpStore.superclass.constructor.call( this );
 
 	this.addEvents( 'changerowindex' );
+	this.addEvents( 'rowcountchange' );
 
 	// eventos
 

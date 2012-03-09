@@ -372,6 +372,8 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 				} else if ( a == 'd' ) {
 
 					s.remove( s.getById( uiid ) );
+					s.totalLength--;
+					s.fireEvent('rowcountchange', s);
 					s.go_to( s.rowIndex, false );
 
 				} else {
