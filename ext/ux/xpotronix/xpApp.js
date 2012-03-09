@@ -69,33 +69,11 @@ Ext.ux.xpotronix.xpApp = function( config ) {
 
 	this.on('configready', this.start );
 
-	/*
-	Ext.EventManager.on( window, "beforeunload", function( e ){ 
-		alert('chau? :('); 
-		}, 
-	this );
-	*/
-
-	
-	var confirmExit = function() {
+	window.onbeforeunload = function() {
 
 		if ( App.getModifiedStores && App.getModifiedStores().length ) 
     			return 'Hay cambios que no han sido guardados todavía. Si presiona [Aceptar], perderá los cambios. Si presiona [Cancelar], presione el botón de [Guardar] y luego cierre la página';
   	};
-
-	window.onbeforeunload = confirmExit;
-
-	Ext.getMajorVersion = function(){/*{{{*/
-	      return Math.abs(this.version.split('.')[0]);
-	};/*}}}*/
-
-	Ext.getMinorVersion = function(){/*{{{*/
-	      return Math.abs(this.version.split('.')[1]);
-	};/*}}}*/
-
-	Ext.getRevision = function(){/*{{{*/
-	      return Math.abs(this.version.split('.')[2]);
-	};/*}}}*/
 
 	this.status_store = new Ext.data.Store({//{{{
 
@@ -368,24 +346,42 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
 	}, /*}}}*/
 
+	update_model: function( param ) {/*{{{*/
 
-	update_model: function( param ) {
+		var q = Ext.DomQuery;
 
-		Ext.each( Ext.DomQuery.select( 'changes/*', param.responseXML ), function( a ) { 
+		Ext.each( q.select( 'changes/*', param.responseXML ), function( e ) { 
 
 			var s;
 
-			if ( s = this.store.item( a.nodeName ) ) {
+			if ( s = this.store.item( e.nodeName ) ) {
 
-				s.reader.meta.record = s.ns_update;
-				s.loadData( param.responseXML, true );
-				s.reader.meta.record = s.ns;
+				var a = e.getAttribute( 'action' );
+				var uiid = e.getAttribute( 'uiid' );
+
+				if ( a == 'i' || a == 'u' ) {
+
+					s.reader.meta.record = s.ns_update;
+					s.loadData( e, true );
+					s.reader.meta.record = s.ns;
+					s.getById( uiid ).commit();
+
+				} else if ( a == 'd' ) {
+
+					s.remove( s.getById( uiid ) );
+					s.go_to( s.rowIndex, false );
+
+				} else {
+
+					// error de validacion, no hace nada
+
+				}
 			}
 
 			debug = 1;
 
 		}, this );
-	},
+	},/*}}}*/
 
 	on_complete: function(sender, param) { // Callback called on response/*{{{*/
 
