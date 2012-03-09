@@ -351,11 +351,9 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
 			prependButtons: true
 		});
 
-		// DEBUG: no anda. La idea seria refrescar la cantidad de registros inclusive cuando se hacen operaciones locales
-
-		// panel.store.on('remove', function() { panel.updateInfo(); } , panel.tbar );
-		// panel.store.on('add', function() { panel.updateInfo(); } , panel.tbar );
-		// panel.store.on('datachanged', function() { panel.updateInfo(); } , panel.tbar );
+		panel.store.on('rowcountchange', function( s ) {
+			this.bindStore( s, true );
+		}, panel.tbar );
 
 	},/*}}}*/
 
