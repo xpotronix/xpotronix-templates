@@ -12,6 +12,11 @@ Ext.ns( 'Ext.ux.xpotronix' );
 
 Ext.ux.xpotronix.xpApp = function( config ) {
 
+	var version = '3.4.0';
+
+	if ( Ext.version != version )
+		( typeof console != 'undefined' ) && console.error( 'Atención: la versión requerida de la librería ExtJs es la ' + version + ': la versión provista es la ' + Ext.version );
+
 	Ext.apply( this, config ); 
 
 	Ext.ux.xpotronix.xpApp.superclass.constructor.call( this );
