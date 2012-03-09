@@ -362,7 +362,10 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 				if ( a == 'i' || a == 'u' ) {
 
 					s.reader.meta.record = s.ns_update;
-					s.loadData( e, true );
+
+					var r = s.reader.readRecords(e);
+					r.totalRecords = s.totalLength;
+					s.loadRecords(r, {add: true}, true);
 					s.reader.meta.record = s.ns;
 					s.getById( uiid ).commit();
 
