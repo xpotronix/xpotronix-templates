@@ -128,7 +128,7 @@ Ext.ux.xpotronix.xpStore = function( config ) {
  
  	this.on( 'beforeload', function( store, options ) {//{{{
 
-		if ( this.dirty() || this.dirty_childs() ) {
+		if ( ! Ext.isEmptyObject( this.dirty() ) || ! Ext.isEmptyObject( this.dirty_childs() ) ) {
 
 			Ext.Msg.alert( 'Atención', 'Hubo modificaciones: guarde o descarte los cambios' );
                         return false;
@@ -264,7 +264,9 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 				// DEBUG: aca fuerza a que vuelva a leer el registro. En realidad lo que cambia es la clave, no el rowIndex
 
 				this.insert( 0, nr ) ;
-				this.go_to( 0, false );
+
+				if ( ! options.silent )
+					this.go_to( 0, false );
 
 				if ( options.callback )
 					options.callback.call(options.scope || this, nr, this );
@@ -407,31 +409,33 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 	},//}}}
 
-	dirty: function( childs ) {/*{{{*/
+	dirty: function( check_childs ) {/*{{{*/
 
-		var mr = this.getModifiedRecords();
+		var mr = this.getModifiedRecords(), ret = {}, c = 0, t;
 
 		for( var i = 0; i < mr.length; i ++ )
-			if ( mr[i].dirty )
-				return true;
+			if ( mr[i].dirty ) 
+				c++;
 
-		if ( childs ) 
-			return this.dirty_childs();
-		else
-			return false;
+		if ( c )
+			ret[this.class_name] = c;
+
+		if ( check_childs ) 
+			if ( t = this.dirty_childs() )
+				Ext.apply( ret, t );
+
+		return ret;
 
 	 },/*}}}*/
 
 	dirty_childs: function() {/*{{{*/
 
-		var ret = false;
+		var ret = {}, t;
 
 		this.childs.each( function( ch ) {
-			if ( ch.dirty( true ) ) {
-				ret = true;
-				return;
-			}
-		} );
+			if ( t = ch.dirty( true ) ) 
+				Ext.apply( ret, t );
+		});
 	
 		return ret;
 
@@ -591,14 +595,17 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 		var c = this.getCount();
 
-		if ( stay && ri == this.rowIndex && ri < c && ri >= 0 ) 
-			return;
+		if ( stay ) { 
 
-                if ( this.dirty_childs() ) {
+			if ( ri == this.rowIndex && ri < c && ri >= 0 ) 
+				return;
+
+		} else if ( ! Ext.isEmptyObject( this.dirty_childs() ) ) {
 
 			Ext.Msg.alert( 'Atención', 'Hubo modificaciones: guarde o descarte los cambios' );
 			return;
 		}
+
 
 		if ( ri >= c ) 
 			this.rowIndex = c -1;
@@ -669,7 +676,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 		this.childs.each( function( ch ){
 
-			if ( ch.dirty() )
+			if ( ! Ext.isEmptyObject( ch.dirty() ) )
 				nodeList += ch.serialize();
 
 		}, this );

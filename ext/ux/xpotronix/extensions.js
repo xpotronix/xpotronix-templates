@@ -1,3 +1,11 @@
+Ext.isEmptyObject = function( o ) {
+
+                for(var p in o)
+                        if(o.hasOwnProperty(p))
+                                return false;
+                return true;
+        };
+
 Ext.util.Format.escapeXml = function(str) {
 	function replaceChars(character) {
 		switch (character) {
