@@ -72,7 +72,7 @@ Ext.extend( Ext.ux.xpotronix.xpGrid, Ext.grid.EditorGridPanel, {
 
 		this.selModel.on( 'beforerowselect', function() {
 
-			if ( this.dirty_childs() ) {
+			if ( ! Ext.isEmptyObject( this.dirty_childs() ) ) {
 
 				Ext.Msg.alert( 'Atención', 'Hubo modificaciones: guarde o descarte los cambios' );
 				return false;

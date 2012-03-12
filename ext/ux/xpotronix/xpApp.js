@@ -163,7 +163,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
 		this.store.each( function( s, a, b ) {
 
-			if ( s.dirty && s.dirty() ) 
+			if ( s.dirty && ! Ext.isEmptyObject( s.dirty() ) )
 
 				list.push( { store: s, records: null } );
 		}, this );
@@ -366,13 +366,29 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
 				if ( a == 'i' || a == 'u' ) {
 
-					s.reader.meta.record = s.ns_update;
+					s.reader.meta.record = "";
 
 					var r = s.reader.readRecords(e);
+
 					r.totalRecords = s.totalLength;
+
+					s.suspendEvents();
 					s.loadRecords(r, {add: true}, true);
+					s.resumeEvents();
+
 					s.reader.meta.record = s.ns;
-					s.getById( uiid ).commit();
+
+					var rr = s.getById( uiid );
+
+					rr && rr.commit();
+
+					for( var i = 0; s.modified.length; i++ ){ 
+						if ( s.modified[i].id == uiid ) {
+							s.modified.splice(i);
+							return;
+						}
+					}
+
 
 				} else if ( a == 'd' ) {
 
