@@ -98,12 +98,13 @@ con musica de Schubert por Claudio Arrau
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 	<xsl:variable name="menu_bar" select="xp:get_feat($root_obj,'menu_bar')"/>
 
+
+	<xsl:variable name="code">
+
 	<xsl:if test="//xpotronix:session/var/EVENTS_MONITOR=1">
 		<xsl:call-template name="events_monitor"/>
 	</xsl:if>
 
-	<xsl:variable name="code">
-	
 	/* shortcuts */
 
         var fm = Ext.form, Ed = Ext.grid.GridEditor;
