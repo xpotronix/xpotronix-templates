@@ -51,7 +51,7 @@
 
 	<xsl:if test="//*:model//obj[@name=$obj_name]/panel">
 	/* panels para <xsl:value-of select="@name"/> */
-	App.obj.item('<xsl:value-of select="@name"/>').panels.add(<xsl:apply-templates select="//*:model//obj[@name=$obj_name]/panel"/>);
+	App.obj.item('<xsl:value-of select="@name"/>').panels.addAll([<xsl:apply-templates select="//*:model//obj[@name=$obj_name]/panel"/>]);
 	</xsl:if>
 
 	</xsl:template><!--}}}-->
