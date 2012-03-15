@@ -20,6 +20,27 @@ Ext.util.Format.escapeXml = function(str) {
 	return String(str).replace(/[<>&"']/g, replaceChars);
 };
 
+
+/* para mantener la seleccion entre paginas
+no anda
+
+Ext.override(Ext.grid.RowSelectionModel, {
+	onRefresh : function(){
+		var ds = this.grid.store, index;
+		var s = this.getSelections();
+		if (!this.keepSelections) this.clearSelections(true);
+		for (var i = 0, len = s.length; i < len; i++) {
+			var r = s[i];
+			if ((index = ds.indexOfId(r.id)) != -1) {
+				this.selectRow(index, true);
+				if(this.keepSelections) this.grid.getView().onRowSelect(index);
+			}
+		}
+	},
+	keepSelections: true
+});
+*/
+
 Ext.ux.Image = Ext.extend(Ext.BoxComponent, {
   url: Ext.BLANK_IMAGE_URL,
   resizable: false,
