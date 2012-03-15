@@ -67,7 +67,7 @@
 
 		<xsl:choose>
 			<xsl:when test="//*:session/var/EXT_DEBUG=1">
-				<script type="text/javascript" src="/ext/adapter/ext/ext-base-debug-w-comments.js"></script>
+				<script type="text/javascript" src="/ext/adapter/ext/ext-base-debug.js"></script>
     				<script type="text/javascript" src="/ext/ext-all-debug-w-comments.js"></script>
 			</xsl:when>
 			<xsl:otherwise>
