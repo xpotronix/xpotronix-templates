@@ -59,23 +59,6 @@
 		</xsl:choose>}
 		/* ui_override: end */
 
-		<!-- {<xsl:if test="config"><xsl:value-of select="config"/>,</xsl:if>
-			cm:new Ext.grid.ColumnModel({
-	    		defaults:{sortable:true,menuDisabled:false,width:100}
-			,columns:[<xsl:choose>
-				<xsl:when test="items/*">
-					<xsl:apply-templates select="items/*" mode="column">
-						<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/>
-					</xsl:apply-templates>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="column">
-						<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/>
-					</xsl:apply-templates>
-				</xsl:otherwise>
-			</xsl:choose> ]})
-		} -->
-
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="panel[@type='xpForm' or @type='Form']" mode="ui_override"><!--{{{-->
@@ -101,7 +84,7 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="panel[@type='xpPanel' or @type='Tab' or @type='xpThumbs' or @type='xpUploadPanel']" mode="ui_override"><!--{{{-->
+	<xsl:template match="panel[@type='xpPanel' or @type='Viewport' or @tyep='Window' or @type='Tab' or @type='xpThumbs' or @type='xpUploadPanel']" mode="ui_override"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
 
@@ -250,6 +233,40 @@
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{layoutOnTabChange:true,activeTab:0,defaults:{hideMode:'offsets'}}))
 	</xsl:template><!--}}}-->
+
+	<xsl:template match="panel[@type='Viewport']"><!--{{{-->
+
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+
+		<xsl:message>en Viewport, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message>
+		<xsl:if test="position()-1">,</xsl:if>new Ext.Viewport(Ext.apply(
+		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,{stateful:true,layout:'border'}))
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="panel[@type='Window']"><!--{{{-->
+
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+
+		<xsl:message>en Window, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message>
+		<xsl:if test="position()-1">,</xsl:if>new Ext.Window(Ext.apply(
+		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,{
+			width: 300
+			,height:200
+			,constrain: true
+			,closable: true
+			,closeAction : 'hide'
+			,maximizable: true
+			,layout: 'border'
+			plain:true
+			,bodyStyle:'padding:5px;'
+			,title:'confirmar'}
+		))
+	</xsl:template><!--}}}-->
+
 
 	<xsl:template match="panel[@type='xpUploadPanel']"><!--{{{-->
 
