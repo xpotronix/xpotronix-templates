@@ -17,8 +17,8 @@ Ext.ux.xpotronix.xpThumbs = function(config) {
 		'<tpl for=".">',
 		'<div class="thumb-wrap" id="{ID}">',
 		'<div class="thumb"><img src="{image_url}" title="{full_path}"></div>',
-		//'<span class="x-editable">{fotografo_foto}</span></div>',
-		'<span>{fotografo_foto}</span></div>',
+		//'<span class="x-editable">{thumb_image}</span></div>',
+		'<span>{thumb_image}</span></div>',
 		'</tpl>',
 		'<div class="x-clear"></div>'
 
@@ -41,12 +41,13 @@ Ext.ux.xpotronix.xpThumbs = function(config) {
 
 		prepareData: function(data){
 
-			data.image_url = App.feat.uri_fotos + 
+			data.image_url = App.feat.uri_thumb + 
 				data.dirname + '/' +
 				data.basename +
 				'&wp=100&hl=100&ar=x';
-				data.full_path = data.dirname + '/' + data.basename;
-				data.fotografo_foto = data.fotografo_alias + '/' + data.basename;
+				data.full_path = data.imagen || data.dirname + '/' + data.basename;
+				// data.thumb_image = data.dirname + '/' + data.basename;
+				data.thumb_image = data.basename;
 
 			return data;
 		}
