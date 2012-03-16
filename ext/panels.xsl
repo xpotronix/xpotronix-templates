@@ -84,7 +84,7 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="panel[@type='xpPanel' or @type='Viewport' or @tyep='Window' or @type='Tab' or @type='xpThumbs' or @type='xpUploadPanel']" mode="ui_override"><!--{{{-->
+	<xsl:template match="panel[@type='xpPanel' or @type='Viewport' or @type='Window' or @type='Tab' or @type='xpThumbs' or @type='xpUploadPanel']" mode="ui_override"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
 
@@ -261,7 +261,7 @@
 			,closeAction : 'hide'
 			,maximizable: true
 			,layout: 'border'
-			plain:true
+			,plain:true
 			,bodyStyle:'padding:5px;'
 			,title:'confirmar'}
 		))
