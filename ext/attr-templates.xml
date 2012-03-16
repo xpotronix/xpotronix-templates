@@ -53,6 +53,7 @@
 
 	<column type="xpint"><!--{{{-->
 		<align>right</align>
+		<filter>{showFilterIcon:false,field:{style:'text-align:right;'}}</filter>
 		<renderer/>
 	</column><!--}}}-->
 
@@ -78,15 +79,18 @@
 
 	<column type="xpdecimal"><!--{{{-->
 		<align>right</align>
+		<filter>{showFilterIcon:false,field:{style:'text-align:right;'}}</filter>
 	</column><!--}}}-->
 
 	<column type="xpdate"><!--{{{-->
 		<align>right</align>
+		<filter>{showFilterIcon:false,field:{style:'text-align:right;'}}</filter>
 		<renderer/>
 	</column><!--}}}-->
 
 	<column type="xpdatetime"><!--{{{-->
 		<align>right</align>
+		<filter>{showFilterIcon:false,field:{style:'text-align:right;'}}</filter>
 		<renderer/>		
 		<editor>
 			<timePosition>below</timePosition>
