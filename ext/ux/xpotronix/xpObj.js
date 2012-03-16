@@ -157,7 +157,7 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
 	                icon: '/ux/images/cross.png',
 	                cls: 'x-btn-text-icon',
 			text: 'Descartar',
-	                tooltip: '<b>Descargar Cambios</b><br/>ignorar las modificaciones realizadas',
+	                tooltip: '<b>Descartar Cambios</b><br/>ignorar las modificaciones realizadas',
 			disabled: true,
 	                listeners: { click: { scope:panel, fn:function() {
 
@@ -179,7 +179,8 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
 		});
 
 		this.store.on( 'update', function( s, r, o ) { 
-			( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
+			if ( this.el && this.el.dom ) 
+				( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
 		}, tb );
 
 		return tb;
@@ -214,7 +215,8 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
 		});
 
 		this.store.on( 'update', function( s, r, o ) { 
-			( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
+			if ( this.el && this.el.dom ) 
+				( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
 		}, tb );
 
 		return tb;
