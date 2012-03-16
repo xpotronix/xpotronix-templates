@@ -156,7 +156,7 @@
 
 	</xsl:variable>
 
-	<!-- <xsl:if test="@type='xpentry_help' and @name='IDAREAAN'">
+	<!-- <xsl:if @name='ID'">
 		<xsl:message>
 			<xsl:element name="attr" namespace="">
 				<xsl:sequence select="@*"/>
@@ -175,7 +175,7 @@
 		</xsl:element>
 	</xsl:variable>
 
-	<!-- <xsl:if test="@type='xpentry_help' and @name='IDAREAAN'">
+	<!-- <xsl:if test="@name='ID'">
 		<xsl:message><xsl:sequence select="$attr"/></xsl:message>
 	</xsl:if> -->
 
