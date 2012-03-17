@@ -37,7 +37,9 @@
 		,store:App.store.item('<xsl:value-of select="@name"/>')
 		,feat:<xsl:apply-templates select="." mode="feats"/>
 		<xsl:if test="count(processes/process[(not(@display) or @display!='hide') and acl/@action='permit' and acl/@role=$role])">
-		,processes_menu:<xsl:apply-templates select="processes"/>
+		,processes_menu:<xsl:apply-templates select="processes">
+				<xsl:with-param name="obj" select="." tunnel="yes"/>
+				</xsl:apply-templates>
 		</xsl:if>
 	}));
 
@@ -72,9 +74,20 @@
 
 	<xsl:template match="process"><!--{{{-->
 		{ text:'<xsl:apply-templates select="." mode="translate"/>', value:'<xsl:value-of select="@name"/>', param:{<xsl:apply-templates select="." mode="param"/>}
-		<xsl:if test="dialog/*">, fn:function(selections, command) { 
-			var win = <xsl:apply-templates select="dialog/*"/>; 
-			win.show(); }<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if></xsl:if>}<xsl:if test="position()!=last()">, </xsl:if>
+		<xsl:if test="dialog/*">, fn:function(selections, command) {
+
+			var obj = App.obj.item('<xsl:value-of select="../@name"/>');
+			var panel_id = '<xsl:apply-templates select="dialog/*[1]" mode="get_panel_id"/>';
+
+			var panel = obj.panels.item( panel_id );
+
+			if ( ! panel ) {
+
+				obj.panels.addAll([<xsl:apply-templates select="dialog/*"/>]);
+				panel = obj.panels.item( panel_id );
+			}
+
+			panel.show(); }<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if></xsl:if>}<xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="process" mode="param"><!--{{{-->
