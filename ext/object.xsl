@@ -88,6 +88,14 @@
 			}
 
 			panel.show(); }<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if></xsl:if>}<xsl:if test="position()!=last()">, </xsl:if>
+
+		<xsl:if test="script">, fn:function(selections, command) {
+
+			<xsl:value-of select="script"/>
+
+		}<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if></xsl:if>}<xsl:if test="position()!=last()">, </xsl:if>
+
+
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="process" mode="param"><!--{{{-->
