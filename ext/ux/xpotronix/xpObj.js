@@ -51,15 +51,14 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
 
         process_selections: function( panel, item, obj ){/*{{{*/
 
-		if ( App.getModifiedStores().length ) {
-
-                	Ext.MessageBox.alert('Error', 'Hay datos sin guardar: salve la información antes de procesar');
-			return;
-		}
+		if ( item.params == undefined ) 
+			item.params = {};
 
 		var selections = panel.get_selections();
 
-		var command = function(){
+		var command = function( params ){
+
+			params = params | {};
 
 	                App.process_request( Ext.apply({
 
@@ -71,10 +70,24 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
                 	}, item.params ));
 		}; 
 
-		if ( item.fn ) 
-			item.fn.call( item.scope || this, selections, command );
-		else
+		var ret = true;
+
+		if ( item.dialog ) 	
+			item.dialog.fn.call( item.dialog.scope || this, selections, command, item );
+
+		if ( item.script ) 	
+			ret = item.script.fn.call( item.script.scope || this, selections, command, item );
+
+		if ( ret ) { 
+
+			if ( App.getModifiedStores().length ) {
+
+		        	Ext.MessageBox.alert('Error', 'Hay datos sin guardar: salve la información antes de procesar');
+				return;
+			}
+
 			command.call( this );
+		}
 
         },/*}}}*/
 
