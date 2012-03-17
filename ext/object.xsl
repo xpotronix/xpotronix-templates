@@ -73,30 +73,48 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="process"><!--{{{-->
-		{ text:'<xsl:apply-templates select="." mode="translate"/>', value:'<xsl:value-of select="@name"/>', param:{<xsl:apply-templates select="." mode="param"/>}
-		<xsl:if test="dialog/*">, fn:function(selections, command) {
+		{ text:'<xsl:apply-templates select="." mode="translate"/>', 
+			value:'<xsl:value-of select="@name"/>' 
+			<xsl:if test="param">
+			,param:{<xsl:apply-templates select="." mode="param"/>}
+			</xsl:if>
 
-			var obj = App.obj.item('<xsl:value-of select="../@name"/>');
-			var panel_id = '<xsl:apply-templates select="dialog/*[1]" mode="get_panel_id"/>';
+		<xsl:if test="dialog/*"><xsl:apply-templates select="dialog"/></xsl:if>
+
+		<xsl:if test="script"><xsl:apply-templates select="script"/></xsl:if>
+
+		}<xsl:if test="position()!=last()">, </xsl:if>
+
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="script">
+			,script:{ fn:function( selections, command, item ) {
+			<xsl:value-of select="."/>
+		}<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if> }
+
+	</xsl:template>
+	
+	<xsl:template match="dialog">
+		,dialog: { fn: function( selections, command, item ) {
+
+			var obj = App.obj.item('<xsl:value-of select="../../@name"/>');
+			var panel_id = '<xsl:apply-templates select="*[1]" mode="get_panel_id"/>';
 
 			var panel = obj.panels.item( panel_id );
 
 			if ( ! panel ) {
 
-				obj.panels.addAll([<xsl:apply-templates select="dialog/*"/>]);
+				obj.panels.addAll([<xsl:apply-templates select="*"/>]);
 				panel = obj.panels.item( panel_id );
 			}
 
-			panel.show(); }<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if></xsl:if>}<xsl:if test="position()!=last()">, </xsl:if>
+			panel.show(); 
 
-		<xsl:if test="script">, fn:function(selections, command) {
+		}<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if> }
 
-			<xsl:value-of select="script"/>
+	</xsl:template>
 
-		}<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if></xsl:if>}<xsl:if test="position()!=last()">, </xsl:if>
-
-
-	</xsl:template><!--}}}-->
 
 	<xsl:template match="process" mode="param"><!--{{{-->
 		<xsl:for-each select="param/*">
