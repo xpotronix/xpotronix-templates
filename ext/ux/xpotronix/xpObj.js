@@ -67,7 +67,7 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
 				p: item.value,
 	                        x: obj.serialize_selections( selections )
 
-                	}, item.params ));
+                	}, item.params ), item.params.callback );
 		}; 
 
 		var ret = true;
