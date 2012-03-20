@@ -279,7 +279,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 		App.process_request({ m: App.feat.module, a: 'process', p: 'store',  x: App.serialize() });
 	},/*}}}*/
 
- 	process_request: function( p ) {/*{{{*/
+ 	process_request: function( p, callback ) {/*{{{*/
 
 		this.showPleaseWait( 'Ejecutando la acción ... Aguarde','Procesando ...' );
 
@@ -292,7 +292,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 			delete( p.p );
 		}
 
-            	this.conn_process.request({ method: 'POST', url: '?' + Ext.urlEncode( url ), params: p });
+            	this.conn_process.request({ method: 'POST', url: '?' + Ext.urlEncode( url ), params: p, success: callback });
 
 	}, /*}}}*/
 
