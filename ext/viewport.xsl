@@ -151,39 +151,52 @@ con musica de Schubert por Claudio Arrau
 
 	<xsl:apply-templates select="*:metadata/obj" mode="panels"/>
 
-	var events_js = false;
-	<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='events']">	
-	Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>], 
-		function() {
-			App.fireEvent( 'configready' );
-		});
-		var events_js = true;
-	</xsl:if>
-
-	App.on( 'configready', function() {
 	<xsl:choose>
 		<xsl:when test="//*:model/obj/layout">
-			<!-- <xsl:value-of select="*:model/obj/layout"/>-->
+
 			<xsl:apply-templates select="//*:model/obj/layout">
 				<xsl:with-param name="obj" select="//*:metadata/obj[1]" tunnel="yes"/>
 			</xsl:apply-templates>
+
+			<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='events']">	
+			Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>]);
+			</xsl:if>
+
+			App.layout.show();
+
+			App.fireEvent('configready');
+
 		</xsl:when>
 		<xsl:otherwise>
+
+		var events_js = false;
+
+			<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='events']">	
+			Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>], 
+				function() {
+					App.fireEvent( 'configready' );
+				});
+			var events_js = true;
+			</xsl:if>
+
+		App.on( 'configready', function() {
 			<xsl:apply-templates select="*:model" mode="viewport"/>
+		});
+
+
+		events_js || App.fireEvent( 'configready' );
+
+
 		</xsl:otherwise>
 	</xsl:choose>
-	});
-
-	wait.hide();
 
 	<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='post_render']">	
 	Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>]);
 	</xsl:if>
 
-	events_js || App.fireEvent( 'configready' );
+	wait.hide();
 
-	});
-
+		});
 	</xsl:variable>
 	<!-- output final del codigo -->
 
