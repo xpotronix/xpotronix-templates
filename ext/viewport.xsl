@@ -164,7 +164,9 @@ con musica de Schubert por Claudio Arrau
 	<xsl:choose>
 		<xsl:when test="//*:model/obj/layout">
 			<!-- <xsl:value-of select="*:model/obj/layout"/>-->
-			<xsl:apply-templates select="//*:model/obj/layout"/>
+			<xsl:apply-templates select="//*:model/obj/layout">
+				<xsl:with-param name="obj" select="//*:metadata/obj[1]" tunnel="yes"/>
+			</xsl:apply-templates>
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:apply-templates select="*:model" mode="viewport"/>
