@@ -242,7 +242,7 @@
 		<xsl:if test="position()-1">,</xsl:if>new Ext.Viewport(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,{stateful:true,layout:'border'}))
+		,{stateful:true,layout:'border',stateful: true,layout: 'border',deferredRender: true}))
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="panel[@type='Window']"><!--{{{-->

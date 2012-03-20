@@ -305,14 +305,9 @@ var cardWizard = {
 
 	<xsl:template match="layout"><!--{{{-->
 		<xsl:variable name="obj_name" select="../@name"/>
-		<xsl:variable name="var_name">
-			<xsl:choose>
-				<xsl:when test="@var_name"><xsl:value-of select="@var_name"/></xsl:when>
-				<xsl:otherwise>App.layout</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$var_name"/> = <xsl:apply-templates select="*"><xsl:with-param name="obj_name" select="$obj_name"/></xsl:apply-templates>;
-		<xsl:value-of select="$var_name"/>.show();
+		App.layout = <xsl:apply-templates select="*">
+			<xsl:with-param name="obj_name" select="$obj_name"/>
+		</xsl:apply-templates>;
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="panel" mode="panel_list"><!--{{{-->
