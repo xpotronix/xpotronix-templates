@@ -354,7 +354,7 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
 
 	toolbar: function( panel ) {/*{{{*/
 
-                if ( ! App.get_feat( 'paging_toolbar', this ) ) 
+                if ( ! App.get_feat( 'paging_toolbar', this ) || panel.paging_toolbar == false ) 
 			return;
 
                 panel.tbar = new Ext.PagingToolbar({

@@ -74,6 +74,7 @@ Ext.extend( Ext.ux.xpotronix.xpThumbs, Ext.Panel, {
 	dv: null,
 	items: null,
 	feat: null,
+	loadingText: 'Cargando ...',
 
 	initComponent:function() {//{{{
 
