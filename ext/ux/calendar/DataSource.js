@@ -1,11 +1,17 @@
 /**
- * FeyaSoft Online Calendar
- * Copyright(c) 2006-2009, FeyaSoft Inc. All right reserved.
- * fzhuang@feyasoft.com
- * http://www.feyasoft.com/myCalendar
+ * FeyaSoft MyCalendar
+ * Copyright(c) 2006-2010, FeyaSoft Inc. All right reserved.
+ * info@feyasoft.com
+ * http://www.feyasoft.com
+ *
+ * Please read license first before your use myCalendar, For more detail
+ * information, please can visit our link: http://www.feyasoft.com.
  *
  * You need buy one of the Feyasoft's License if you want to use MyCalendar in
- * your commercial product.
+ * your product. You must not remove, obscure or interfere with any FeyaSoft
+ * copyright, acknowledgment, attribution, trademark, warning or disclaimer
+ * statement affixed to, incorporated in or otherwise applied in connection
+ * with the Software and User Interface.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
  * KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
@@ -15,12 +21,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * @class Ext.ux.calendar.DataSource
- * @extends Ext.util.Observable
- * This class represents the primary interface of Server request.
- * You may need use your own backend, so you need rewrite this file, here we only define the input/output,
- * once your backend can work with these input/output, it will be fine
  */
 Ext.ns("Ext.ux.calendar");
 
@@ -309,7 +309,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
                  *              "subject":"lunch", //string; the subject of this event
                  *              "description":"in hilton hotel", //string; the description of this event
                  *              "day":"2009-8-11", //string; the date of this event, need be 'Y-m-d' format
-                 *              "alertFlag":true, //boolean; true means there will alert a window when this event is activing, false means no alert                 
+                 *              "alertFlag":[], //array; contain the alert information, in old version, it's just a boolean
                  *              "locked":false //boolean; true means this event is a locked event, nobody can change it, not use yet, in this version it should always be false
                  *       }]
                  * }
@@ -330,12 +330,15 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
                         var data = rs[i];
                         var startRow = getRowFromHM(data.startTime, this.intervalSlot);
                         var endRow = getRowFromHM(data.endTime, this.intervalSlot);
+                        if(endRow == startRow){
+                            endRow++;
+                        }
                         if(!this.hideInactiveRow 
                             || (this.activeStartRow <= startRow && endRow <= this.activeEndRow)
                                 || (0 == startRow && this.rowCount == endRow)){
                             var day = data.ymd;
                             var eday = data.eymd;
-                            eventSet[day] = eventSet[day] || [];
+                            eventSet[day] = eventSet[day] || [];                            
                             var e = {
                                 eventId:data.id,
                                 calendarId:data.calendarId,
@@ -346,7 +349,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
                                 content:data.description,
                                 day:day,
                                 eday:eday,
-                                alertFlag:data.alertFlag,                                
+                                alertFlag:Ext.decode(data.alertFlag),                                
                                 locked:data.locked,
                                 repeatType:data.repeatType
                             };
@@ -391,6 +394,9 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
                         var data = rs[i];
                         var startRow = getRowFromHM(data.startTime, this.intervalSlot);
                         var endRow = getRowFromHM(data.endTime, this.intervalSlot);
+                        if(startRow == endRow){
+                            endRow++;
+                        }                        
                         var e = {
                             eventId:data.id,
                             calendarId:data.calendarId,
@@ -400,7 +406,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
                             subject:data.subject,
                             content:data.description,
                             repeatType:Ext.decode(data.repeatType),                            
-                            alertFlag:data.alertFlag,                                                        
+                            alertFlag:Ext.decode(data.alertFlag),
                             locked:data.locked
                         };                        
                         eventSet[e.eventId] = e;
@@ -422,7 +428,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
      */
 	createEvent:function(event, sucessFn, scope){
         var day = event.day || new Date().format('Y-m-d');
-        var eday = event.eday || day;
+        var eday = event.eday || day;        
         Ext.Ajax.request({
             url:Ext.ux.calendar.CONST.createEventURL,
             /*
@@ -445,7 +451,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
                 'startHMTime':Ext.ux.calendar.Mask.getIntervalFromRow(this.intervalSlot, event.startRow),
                 'endHMTime':Ext.ux.calendar.Mask.getIntervalFromRow(this.intervalSlot, event.endRow),
                 'repeatType':event.repeatType,
-                'alertFlag':event.alertFlag,
+                'alertFlag':Ext.encode(event.alertFlag),
                 'locked':event.locked,
                 'subject':event.subject,
                 'description':event.content,
@@ -482,7 +488,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
      */
     updateEvent:function(event, sucessFn, scope){
         var day = event.day || new Date().format('Y-m-d');
-        var eday = event.eday || day;
+        var eday = event.eday || day;        
         Ext.Ajax.request({
             url:Ext.ux.calendar.CONST.updateEventURL,
             /*
@@ -494,7 +500,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
              * endHMTime: string, 'H:i' format, the end time of this event
              * repeatType: boolean, not use yet, always false in this version
              * allDay: boolean, if true means this event is a whole event
-             * flag: boolean, if true mean this event need alert a window when it's activing
+             * alertFlag:[], //array; contain the alert information, in old version, it's just a boolean
              * locked: boolean, if true mean this event is locked, can not be changed
              * subject: string, the subject of this event
              * description: string, the description of this event
@@ -507,7 +513,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
                 'startHMTime':Ext.ux.calendar.Mask.getIntervalFromRow(this.intervalSlot, event.startRow),
                 'endHMTime':Ext.ux.calendar.Mask.getIntervalFromRow(this.intervalSlot, event.endRow),
                 'repeatType':event.repeatType,                
-                'alertFlag':event.alertFlag,
+                'alertFlag':Ext.encode(event.alertFlag),
                 'locked':event.locked,                
                 'subject':event.subject,
                 'description':event.content
@@ -762,7 +768,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
 
     createUpdateRepeatEvent:function(event, oevent, sucessFn, scope){
         var stime = Ext.ux.calendar.Mask.getIntervalFromRow(this.intervalSlot, event.startRow);
-        var etime = Ext.ux.calendar.Mask.getIntervalFromRow(this.intervalSlot, event.endRow);
+        var etime = Ext.ux.calendar.Mask.getIntervalFromRow(this.intervalSlot, event.endRow);        
         var params = {
             'calendarId':event.calendarId,
             'startDay':event.day,
@@ -770,7 +776,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
             'startHMTime':stime,
             'endHMTime':etime,
             'repeatType': ('string' == Ext.type(event.repeatType))?event.repeatType:Ext.encode(event.repeatType),                  
-            'alertFlag':event.alertFlag,
+            'alertFlag':Ext.encode(event.alertFlag),
             'locked':event.locked,
             'subject':event.subject,
             'description':event.content,
@@ -864,6 +870,9 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
                         var data = re[i];
                         var startRow = getRowFromHM(data.startTime, this.intervalSlot);
                         var endRow = getRowFromHM(data.endTime, this.intervalSlot);
+                        if(startRow == endRow){
+                            endRow++;
+                        }                        
                         var e = {
                             eventId:data.id,
                             calendarId:data.calendarId,
@@ -873,7 +882,7 @@ Ext.extend(Ext.ux.calendar.DataSource, Ext.util.Observable, {
                             subject:data.subject,
                             content:data.description,
                             repeatType:Ext.decode(data.repeatType),
-                            alertFlag:data.alertFlag,
+                            alertFlag:Ext.decode(data.alertFlag),
                             locked:data.locked
                         };
                         eventSet[e.eventId] = e;
