@@ -25,7 +25,7 @@
 
 	/* <xsl:value-of select="@name"/> xpObj */
 
-	var obj = App.obj.add( new Ext.ux.xpotronix.xpObj({
+	App.obj.add( new Ext.ux.xpotronix.xpObj({
 
 		class_name:'<xsl:value-of select="@name"/>'
 		/* ,el:'contentEl_<xsl:value-of select="@name"/>' */
