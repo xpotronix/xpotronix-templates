@@ -24,7 +24,13 @@ Ext.extend( Ext.ux.xpotronix.xpPanel, Ext.Panel, {
 	buttonAlign: 'left',
 	feat: null,
 
+
 	initComponent:function() {/*{{{*/
+
+        	if(this.loadMask){
+	            this.loadMask = new Ext.LoadMask(this.bwrap,
+        	            Ext.apply({store:this.store}, this.loadMask));
+	        }
 
 		if ( this.obj.feat.paging_toolbar && ( this.acl.edit || this.acl.add ) ) {
 

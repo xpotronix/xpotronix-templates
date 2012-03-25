@@ -60,6 +60,12 @@ Ext.ux.xpotronix.xpThumbs = function(config) {
 	this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
 	Ext.ux.xpotronix.xpThumbs.superclass.constructor.apply(this, arguments);
+
+	if(this.loadMask){
+		this.loadMask = new Ext.LoadMask(this.bwrap,Ext.apply({store:this.store}, this.loadMask));
+       	}
+
+
 };
 
 Ext.extend( Ext.ux.xpotronix.xpThumbs, Ext.Panel, {
@@ -76,7 +82,9 @@ Ext.extend( Ext.ux.xpotronix.xpThumbs, Ext.Panel, {
 	feat: null,
 	loadingText: 'Cargando ...',
 
+
 	initComponent:function() {//{{{
+
 
 		this.obj.toolbar( this );
 

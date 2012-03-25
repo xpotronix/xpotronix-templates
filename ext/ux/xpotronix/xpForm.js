@@ -39,6 +39,17 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 	buttonAlign: 'left',
 	feat: null,
 
+
+    initEvents : function(){
+        Ext.form.FormPanel.superclass.initEvents.call(this);
+
+        if(this.loadMask){
+            this.loadMask = new Ext.LoadMask(this.bwrap,
+                    Ext.apply({store:this.store}, this.loadMask));
+        }
+    },
+
+
 	initComponent:function() {/*{{{*/
 
 		if ( this.acl.edit || this.acl.add ) {
