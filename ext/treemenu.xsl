@@ -61,9 +61,10 @@
 	<h1>Cargando <xsl:value-of select="//xpotronix:session/feat/page_title"/>  aguarde ... </h1>
 	<!-- <xsl:message><xsl:value-of select="name()"/></xsl:message> -->
 
-	<xsl:apply-templates select="." mode="include-login-js"/>
+	<!-- <xsl:apply-templates select="." mode="include-login-js"/> -->
+	<xsl:apply-templates select="." mode="include-all-js"/>
 
-  	<script type="text/javascript" src="/ux/misc/miframe.js"></script>
+  	<!-- <script type="text/javascript" src="/ux/misc/miframe.js"></script> -->
  	<script type="text/javascript" src="/ux/misc/RowLayout.js"></script>
 
   	<script type="text/javascript">
@@ -77,6 +78,9 @@
 	<xsl:if test="//xpotronix:session/feat/theme">
 		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>");
 	</xsl:if>
+
+	
+	var fm = Ext.form, Ed = Ext.grid.GridEditor;
 
 	Ext.namespace( 'App' );
 
@@ -99,6 +103,9 @@
 	<xsl:if test="//*:metadata/obj/files/file[@type='js' and @mode='events']">
 	Ext.Loader.load([<xsl:apply-templates select="//*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>]);
 	</xsl:if>
+
+	if ( App.user.user_username == 'anon' || ! App.user.user_username )
+		App.login();
 
 	wait.hide();
 	});

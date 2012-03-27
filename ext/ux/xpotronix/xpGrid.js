@@ -48,6 +48,15 @@ Ext.extend( Ext.ux.xpotronix.xpGrid, Ext.grid.EditorGridPanel, {
 
 		// events
 
+		this.on('beforedestroy', function(){
+
+			var dz = this.dz;
+
+			this.dz && this.dz.destroy();
+			delete this.dz;
+
+		}, this);
+
 	 	this.on('validateedit', function(e, a, b){/*{{{*/
 
 	    		var cm = e.grid.colModel.config;

@@ -131,6 +131,11 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 	prevent_reload:		false, // on windows login
 	debug:			false,
 
+	reconfigure: function( config ) {/*{{{*/
+
+		config && Ext.apply( this, config );
+	},/*}}}*/
+
 	start: function() {/*{{{*/
 
 		if ( App.store ) {
@@ -140,6 +145,27 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 			if ( main_store && ( main_store.feat.auto_load || this.feat.auto_load ) )
 				main_store.load(); 
 		}
+	
+	},/*}}}*/ 
+
+	close_stores: function() {/*{{{*/
+
+		this.store.each( function(s) { 
+			s.blank_ds.destroy();	
+			s.destroy(); 
+			delete s;
+		} );
+
+	
+	},/*}}}*/ 
+
+	close_objs: function() {/*{{{*/
+
+		this.obj.each( function(o) { 
+			o.destroy();
+			this.obj.remove(o);
+			delete o;
+		}, this );
 	
 	},/*}}}*/ 
 

@@ -22,9 +22,18 @@ Ext.ux.xpotronix.xpObj = function( config ) {
 
 	Ext.ux.xpotronix.xpObj.superclass.constructor.call( this );
 
+	this.on( 'beforedestroy', function(){
+
+		this.panels.each( function(p){ 
+			p.destroy();
+			this.panels.remove(p);
+			delete p;
+		}, this );
+	});
+
 }
 
-Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
+Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 	config: 	null,
 
@@ -47,7 +56,6 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
 	buttons: 	null,
 	feat:		{},
 	export_w: 	null,
-
 
         process_selections: function( panel, item, obj ){/*{{{*/
 
@@ -278,6 +286,8 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.util.Observable, {
 				buttons: [{ text: 'Cerrar', handler:function(){ iw.hide();}} ],
 				items: [ i_panel ]
 			});
+
+			this.panels.add(iw);
 		}
 
 		iw.show();

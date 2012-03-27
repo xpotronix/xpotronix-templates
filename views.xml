@@ -16,4 +16,5 @@
 <view name="xform" type="application/xhtml+xml"/>
 <view name="csv" type="text/csv"/>
 <view name="ext/menu-js" type="application/javascript"/>
+<view name="ext/loader" type="application/javascript"/>
 </views>
