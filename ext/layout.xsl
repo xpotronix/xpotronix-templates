@@ -69,7 +69,8 @@
 		},{
 			 region:'center'
 			,id:'iframe'
-			,xtype:'iframepanel'
+			,xtype:'panel'
+			,layout:'fit'
 			,defaultSrc:'<xsl:value-of select="//*:session/feat/defaultSrc"/>'
 			/*,border:true*/
 			/*,title:'&#160;'*/
@@ -126,12 +127,11 @@
 		</xsl:choose>
 	</xsl:variable>
 
-	App.layout = new Ext.Viewport({
+	var layout = new Ext.Panel({
             id: 'xpApp_layout',
 	    stateful: true,
             layout: 'border',
 	    deferredRender: true,
-	
             items:[
 
 		<xsl:if test="$menu_bar='true'">
@@ -184,7 +184,6 @@
                 }</xsl:if>
 		]
         });
-
 
 	</xsl:template><!--}}}-->
 
@@ -305,7 +304,7 @@ var cardWizard = {
 
 	<xsl:template match="layout"><!--{{{-->
 		<xsl:variable name="obj_name" select="../@name"/>
-		App.layout = <xsl:apply-templates select="*">
+		<xsl:apply-templates select="*">
 			<xsl:with-param name="obj_name" select="$obj_name"/>
 		</xsl:apply-templates>;
 	</xsl:template><!--}}}-->
