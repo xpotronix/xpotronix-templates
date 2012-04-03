@@ -180,7 +180,9 @@ con musica de Schubert por Claudio Arrau
 			</xsl:if>
 
 		App.on( 'configready', function() {
-			<xsl:apply-templates select="*:model" mode="viewport"/>
+			<xsl:apply-templates select="*:model" mode="viewport">
+				<xsl:with-param name="standalone" select="true()"/>
+			</xsl:apply-templates>
 		});
 
 
