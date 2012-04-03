@@ -82,6 +82,7 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:model" mode="viewport"><!--{{{-->
+		<xsl:param name="standalone" select="false()"/>
 
 	<xsl:variable name="panels">
 		<xsl:for-each select="//obj/panel[not(@display)]">
@@ -120,6 +121,13 @@
 		<xsl:sequence select="$panels/panel[(@obj_name!=$obj_name and @region='') or (@obj_name!=$obj_name and @region='center')]"/>
 	</xsl:variable>
 
+	<xsl:variable name="ui_class">
+		<xsl:choose>
+			<xsl:when test="$standalone">Viewport</xsl:when>
+			<xsl:otherwise>Panel</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+
 	<xsl:variable name="region">
 		<xsl:choose>
 			<xsl:when test="count($center_panels/*)">north</xsl:when>
@@ -127,7 +135,7 @@
 		</xsl:choose>
 	</xsl:variable>
 
-	var layout = new Ext.Panel({
+	var layout = new Ext.<xsl:value-of select="$ui_class"/>({
             id: 'xpApp_layout',
 	    stateful: true,
             layout: 'border',
