@@ -35,6 +35,7 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 	obj: null,
 	acl: null,
 	border: false,
+	buttons: true,
 	loadMask: true,
 	buttonAlign: 'left',
 	feat: null,
@@ -52,7 +53,7 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 	initComponent:function() {/*{{{*/
 
-		if ( this.acl.edit || this.acl.add ) {
+		if ( this.buttons && ( this.acl.edit || this.acl.add ) ) {
 
 			var buttons = [new Ext.Spacer({ width: 145 })];
 			buttons.push( this.obj.save_button( this ) );
