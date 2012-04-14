@@ -10,14 +10,6 @@
 	@license http://www.gnu.org/licenses/gpl-3.0.txt
 -->
 
-<!-- viewport.xsl
-
-plantilla de interfaz usuario
-eduardo spotorno, julio 2007
-
-con musica de Schubert por Claudio Arrau
-
--->
 <!DOCTYPE stylesheet [
 <!ENTITY raquo  "&#187;" >
 <!ENTITY laquo  "&#186;" >
@@ -113,8 +105,6 @@ con musica de Schubert por Claudio Arrau
 		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>");
 	</xsl:if>
 
-
-	Ext.Ajax.timeout = 60000;	
 
 	Ext.namespace('App');
 
@@ -245,11 +235,6 @@ Ext.onReady(function(){
 		</xsl:element>
 
 	</xsl:template><!--}}}-->
-
-	<xsl:template name="prueba">
-		<h1>esto es una prueba</h1>
-	</xsl:template>
-
 </xsl:stylesheet>
 
 <!-- vim: foldmethod=marker sw=3 ts=8 ai: 
