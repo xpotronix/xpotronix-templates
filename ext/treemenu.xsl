@@ -18,22 +18,37 @@
 
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/">
+	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/" 
+	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
+	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
-	<xsl:include href="layout.xsl"/>
+	<xsl:include href="html.xsl"/>
 	<xsl:include href="includes.xsl"/>
+	<xsl:include href="attr.xsl"/>
+	<xsl:include href="store.xsl"/>
+	<xsl:include href="layout.xsl"/>
+	<xsl:include href="panels.xsl"/>
+	<xsl:include href="object.xsl"/>
 	<xsl:include href="feat.xsl"/>
 	<xsl:include href="log.xsl"/>
-	<xsl:include href="html.xsl"/>
+	<xsl:include href="layout.xsl"/>
 
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
 
 	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
 
-	<xsl:template match="/">
+	<xsl:param name="root_obj" select="//*:metadata/obj[1]"/>
+	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
+	<xsl:param name="current_user" select="//*:session/users/user_username"/>
+
+	<xsl:variable name="session" select="//*:session"/>
+
+	<xsl:template match="/"><!--{{{-->
+		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
+		<!-- <xsl:message terminate="yes"><xsl:value-of select="//*:metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
 		<xsl:apply-templates/>
-	</xsl:template>
+	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document"><html>
 <head> 
@@ -78,10 +93,6 @@
 	<xsl:if test="//xpotronix:session/feat/theme">
 		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>");
 	</xsl:if>
-
-	
-	var fm = Ext.form, Ed = Ext.grid.GridEditor;
-
 	Ext.namespace( 'App' );
 
 	var App = new Ext.ux.xpotronix.xpApp( {state_manager:'http', feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> });
