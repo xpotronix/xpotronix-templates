@@ -408,7 +408,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
 					rr && rr.commit();
 
-					for( var i = 0; s.modified.length; i++ ){ 
+					for( var i = 0; i < s.modified.length; i++ ){ 
 						if ( s.modified[i].id == uiid ) {
 							s.modified.splice(i);
 							return;
