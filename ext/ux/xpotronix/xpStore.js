@@ -655,9 +655,12 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 			Ext.each( fields, function( field_name ) {
 
-	    			nodeList += '<' + field_name + '>'
-	    			+ escapex ( record.get( field_name ) ) 
-				+ '</' + field_name + '>';
+				if ( field_name != '__new__' || field_name != '__ID__' ) {
+
+		    			nodeList += '<' + field_name + '>'
+		    			+ escapex ( record.get( field_name ) ) 
+					+ '</' + field_name + '>';
+				}
 
 			}, this );
 

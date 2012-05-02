@@ -78,13 +78,15 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
                 	}, item.params ), item.params.callback );
 		}; 
 
-		var ret = true;
+		var ret = false;
 
 		if ( item.dialog ) 	
 			item.dialog.fn.call( item.dialog.scope || this, selections, command, item );
 
-		if ( item.script ) 	
+		else if ( item.script ) 	
 			ret = item.script.fn.call( item.script.scope || this, selections, command, item );
+
+		else ret = true;
 
 		if ( ret ) { 
 
