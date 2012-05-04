@@ -55,7 +55,7 @@ Ext.extend( Ext.ux.xpotronix.xpPanel, Ext.Panel, {
 			changerowindex: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
 
 			clear: { fn:function() {
-				this.getForm() && this.getForm().reset();
+				this.getForm && this.getForm() && this.getForm().reset();
 			}, buffer: 200, scope:this }	
 		});
 
