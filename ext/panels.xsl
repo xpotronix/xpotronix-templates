@@ -351,6 +351,7 @@
 
  	<xsl:template match="panel" mode="get_panel_id"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
+		<!-- <xsl:message><xsl:value-of select="$obj/@name"/></xsl:message> -->
 		<xsl:variable name="panel_id">
 			<xsl:choose>
 				<xsl:when test="@id"><xsl:value-of select="@id"/></xsl:when>
