@@ -36,28 +36,36 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 	this.ns_update = 'changes/' + this.class_name;
 
 	this.rs = this.rs || {};
+
 	
-	this.proxy =  new Ext.data.HttpProxy({ url: this.store_url, useAjax: true });
+	this.store_proxy = new Ext.data.HttpProxy({ url: this.store_url, useAjax: true });
+	this.blank_proxy = new Ext.data.HttpProxy({ url: this.blank_url, useAjax: true });
+
+	this.proxy = this.store_proxy;
+
 	this.reader = new Ext.data.XmlReader({ record: this.ns, id: '@uiid', totalProperty: '@total_records', messageProperty: '@msg' }, this.rs );
-
-	this.blank_ds = new Ext.data.Store({
-
-		proxy: new Ext.data.HttpProxy({ url: this.blank_url, useAjax: true }),
-		reader: new Ext.data.XmlReader({ record: this.ns, totalProperty: '@total_records' }, this.rs )
-
-	});
-
-	this.blank_ds.data_store = this;
 
 	Ext.ux.xpotronix.xpStore.superclass.constructor.call( this );
 
 	this.addEvents( 'changerowindex' );
 	this.addEvents( 'rowcountchange' );
+	this.addEvents( 'loadblank' );
 
 	// eventos
 
 	this.parent_store && this.parent_store.on({ 
 		changerowindex:  { buffer: 100, fn: this.on_changerowindex, scope: this }
+	});
+
+	/* carga un registro en blanco cuando la relacion es de parent */
+
+	this.parent_store && 
+	this.foreign_key_type == 'parent' && 
+	( ! this.passive ) &&
+	this.parent_store.on({ 
+		loadblank:  { 
+			buffer: 100, fn: this.add_blank, scope: this
+		}
 	});
 
 
@@ -126,9 +134,93 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 
 	});//}}}
  
- 	this.on( 'beforeload', function( store, options ) {//{{{
+ 	this.on( 'beforeload', this.before_load ); 
 
-		if ( ! Ext.isEmptyObject( this.dirty() ) || ! Ext.isEmptyObject( this.dirty_childs() ) ) {
+	this.childs.each( function( ch ) {//{{{
+
+		if ( ! ch.passive ) ch.init();
+
+	});//}}}
+
+}
+
+Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
+
+	class_name: 	null,
+	module: 	null,
+	parent_store: 	null,
+	rowIndex: 	null,
+	rowKey: 	null,
+	pageSize:	20,
+	filter:		null,
+
+	primary_key: 	this.primary_key || [],
+	foreign_key: 	this.foreign_key || [],
+	foreign_key_type: 	this.foreign_key_type,
+	foreign_key_values: null,
+	remoteSort: 	this.remoteSort || true,
+	feat:		{},
+	acl:		{},
+	pruneModifiedRecords: true,
+
+
+    loadRecords : function(o, options, success){/*{{{*/
+        var i, len;
+        
+        if (this.isDestroyed === true) {
+            return;
+        }
+        if(!o || success === false){
+            if(success !== false){
+                this.fireEvent('load', this, [], options);
+            }
+            if(options.callback){
+                options.callback.call(options.scope || this, [], options, false, o);
+            }
+            return;
+        }
+        var r = o.records, t = o.totalRecords || r.length;
+        if(!options || options.add !== true){
+            if(this.pruneModifiedRecords){
+                this.modified = [];
+            }
+            for(i = 0, len = r.length; i < len; i++){
+                r[i].join(this);
+            }
+            if(this.snapshot){
+                this.data = this.snapshot;
+                delete this.snapshot;
+            }
+            this.clearData();
+            this.data.addAll(r);
+            this.totalLength = t;
+            this.applySort();
+            this.fireEvent('datachanged', this);
+        }else{
+            var toAdd = [],
+                rec,
+                cnt = 0;
+            for(i = 0, len = r.length; i < len; ++i){
+                rec = r[i];
+                if(this.indexOfId(rec.id) > -1){
+                    this.doUpdate(rec);
+                }else{
+                    toAdd.push(rec);
+                    ++cnt;
+                }
+            }
+            this.totalLength = Math.max(t, this.data.length + cnt);
+            this.insert(0, toAdd);
+        }
+        this.fireEvent('load', this, r, options);
+        if(options.callback){
+            options.callback.call(options.scope || this, r, options, true);
+        }
+    },/*}}}*/
+
+	before_load: function( store, options ) {/*{{{*/
+
+		if ( ( ! options.add ) && this.dirty && ( ! Ext.isEmptyObject( this.dirty() ) || ! Ext.isEmptyObject( this.dirty_childs() ) ) ) {
 
 			Ext.Msg.alert( 'Atención', 'Hubo modificaciones: guarde o descarte los cambios' );
                         return false;
@@ -191,40 +283,17 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 			else
 				return false;
 		}
-  	});//}}}
 
-	this.childs.each( function( ch ) {//{{{
 
-		if ( ! ch.passive ) ch.init();
-
-	});//}}}
-
-}
-
-Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
-
-	class_name: 	null,
-	module: 	null,
-	parent_store: 	null,
-	rowIndex: 	null,
-	rowKey: 	null,
-	pageSize:	20,
-	filter:		null,
-
-	primary_key: 	this.primary_key || [],
-	foreign_key: 	this.foreign_key || [],
-	foreign_key_type: 	this.foreign_key_type,
-	foreign_key_values: null,
-	remoteSort: 	this.remoteSort || true,
-	feat:		{},
-	acl:		{},
-	pruneModifiedRecords: true,
+	},/*}}}*/
 
 	add_blank: function( options ) {/*{{{*/
 
-	        options = Ext.apply({}, options);
+	        options = Ext.apply( {}, options );
 
-		this.blank_ds.load({scope: this, callback: function( abr ){
+		this.proxy = this.blank_proxy;
+
+		this.load({ add: true, scope: this, callback: function( abr ){
 
 			Ext.each( abr, function( br ){
 
@@ -233,9 +302,12 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 				// var nr = br.copy(br.get('__ID__'));
 
+				/*
 				var nr = br.copy();
 				Ext.data.Record.id( nr );
+				*/
 
+				var nr = br;
 
 				for ( var f in br.data ) {
 
@@ -246,7 +318,6 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 	                	        	if ( typeof nr.modified[f] == 'undefined')
         	                	        	nr.modified[f] = br.data[f];
-
 	        	        	}
 	        		}
 
@@ -263,7 +334,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 				// DEBUG: falta parametrizar en que lugar lo pone
 				// DEBUG: aca fuerza a que vuelva a leer el registro. En realidad lo que cambia es la clave, no el rowIndex
 
-				this.insert( 0, nr ) ;
+				// this.insert( 0, nr ) ;
 
 				if ( ! options.silent )
 					this.go_to( 0, false );
@@ -271,9 +342,15 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 				if ( options.callback )
 					options.callback.call(options.scope || this, nr, this );
 
+				this.fireEvent('loadblank', this, nr, options)
+
 			}, this );
 
+
+			this.proxy = this.store_proxy;
+
 		}});
+
 	},/*}}}*/
 
 	on_changerowindex: function( s, ri ) {/*{{{*/
@@ -316,6 +393,13 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 		var ps = this.parent_store;
 
 		if ( ! ps ) return null;
+
+		/* via referencia directa en la UI */
+
+		if ( ps.cr() ) 
+			return ps.cr();
+
+		/* via match de claves */
 
 		var cfk = this.getRecordCurrentForeignKey( r );
 
