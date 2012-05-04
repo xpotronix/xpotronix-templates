@@ -151,7 +151,6 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 	close_stores: function() {/*{{{*/
 
 		this.store.each( function(s) { 
-			s.blank_ds.destroy();	
 			s.destroy(); 
 			delete s;
 		} );
