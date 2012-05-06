@@ -72,21 +72,21 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 	this.on( 'update', function( s, r, o ) {/*{{{*/
 
 		if ( s.foreign_key_type == 'parent' && o == Ext.data.Record.EDIT ) 
-			s.update_parent_fk();
+			s.set_parent_fk();
 
 	});/*}}}*/
 	
 	this.on( 'load', function( s, a, b ) {//{{{
 
-		if ( this.parent_store ) 
+		this.foreign_key_values = null;
+
+		if ( this.parent_store && this.foreign_key_type != 'parent' )
 
 			this.foreign_key_values = this.get_foreign_key();
-
 
 		if ( this.getCount() ) {
 
 			this.go_to_rowKey();
-
 
 			var r = this.getAt(0);
 
@@ -107,9 +107,14 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 	        	        	}
 	        		}
 
-				this.suspendEvents();
-				this.set_foreign_key( r, this.get_foreign_key() );
-				this.resumeEvents();
+
+				if ( this.foreign_key_values ) {
+
+					this.suspendEvents();
+					this.foreign_key_values && this.bind( r, this.foreign_key_values );
+					this.resumeEvents();
+				}
+
 				r.dirty = false;
 
 				this.rowIndex = null;
@@ -321,14 +326,16 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 	        	        	}
 	        		}
 
+				this.suspendEvents();
 
-				if ( this.foreign_key_type != 'parent' ) {
+				if ( this.foreign_key_type != 'parent' )
 
-					this.suspendEvents();
-					this.set_foreign_key( nr, this.get_foreign_key() );
-					this.resumeEvents();
-				}
+					this.bind( nr, this.get_foreign_key() );
 
+				else
+					this.set_parent_fk();
+
+				this.resumeEvents();
 				nr.dirty = false;
 
 				// DEBUG: falta parametrizar en que lugar lo pone
@@ -346,9 +353,9 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 			}, this );
 
-
+			/* volver los parametros atras para hacer los load normales */
+			delete this.lastOptions.add;
 			this.proxy = this.store_proxy;
-
 		}});
 
 	},/*}}}*/
@@ -442,7 +449,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 	},/*}}}*/
 
-	update_parent_fk: function() {/*{{{*/
+	set_parent_fk: function() {/*{{{*/
 
 		var ps_cr = this.parent_store.cr();
 
@@ -633,7 +640,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 		return search_fields;
 	},/*}}}*/
 
-	set_foreign_key: function( record, fk ) {/*{{{*/
+	bind: function( record, fk ) {/*{{{*/
 
 		for ( var field in fk ) 
 			record.set( field, fk[field] );
