@@ -140,6 +140,7 @@
 	    stateful: true,
             layout: 'border',
 	    deferredRender: true,
+	    bodyStyle: {border:0},
             items:[
 
 		<xsl:if test="$menu_bar='true'">
