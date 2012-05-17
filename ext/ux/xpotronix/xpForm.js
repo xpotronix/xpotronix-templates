@@ -193,7 +193,10 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 	get_selections: function() {/*{{{*/
 
-		return [this.store.cr()];
+		var cr = this.store.cr();
+
+		return ( cr == undefined ) ? [] : [cr];
+
 
 	}/*}}}*/
 
