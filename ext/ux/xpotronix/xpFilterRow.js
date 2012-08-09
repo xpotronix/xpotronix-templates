@@ -11,6 +11,8 @@
 Ext.ux.xpotronix.xpFilterRow = Ext.extend(Ext.ux.grid.FilterRow, {
 
   init: function(grid) {
+
+
     this.grid = grid;
     var cm = grid.getColumnModel();
     var view = grid.getView();
@@ -83,7 +85,7 @@ Ext.ux.xpotronix.xpFilterRow = Ext.extend(Ext.ux.grid.FilterRow, {
       if (!(col.filter instanceof Filter)) {
         col.filter = new Filter(col.filter);
       }
-      col.filter.on("change", this.onFieldChange, this);
+      // col.filter.on("change", this.onFieldChange, this);
     });
     
     this.applyTemplate();

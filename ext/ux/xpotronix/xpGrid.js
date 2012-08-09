@@ -46,13 +46,18 @@ Ext.extend( Ext.ux.xpotronix.xpGrid, Ext.grid.EditorGridPanel, {
 
 		this.obj.toolbar( this );
 
-		// events
+		/* eventos */
+
+
+		/* solo lectura
 
 		this.on('beforerender', function() {
 
 			this.addListener( 'beforeedit', function() { return this.obj.acl.edit; } );
 
 		}, this);
+
+		*/
 
 		this.on('beforedestroy', function(){
 
