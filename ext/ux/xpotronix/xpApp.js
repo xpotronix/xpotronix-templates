@@ -494,10 +494,20 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 			});
 
 
-			if ( window.parent ) 
-				window.parent.location.reload(); 
+			var target = ( window.parent ) ? window.parent.location : window.location;
+
+			if ( App.feat.login_location )
+				if ( window.parent ) 
+					window.parent.location = App.feat.login_location;
+				else 
+					window.location = App.feat.login_location;
 			else
-				window.location.reload();
+				if ( window.parent )	
+					window.parent.location.reload();
+				else
+					window.location.reload();
+				
+			
 		}
 
 		} else if ( ! obj.success ) {
@@ -532,7 +542,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 		var login = new Ext.FormPanel({ 
 		
 			labelWidth:80,
-			url:'?m=users&amp;a=login', 
+			url: App.feat.base_url + '?m=users&amp;a=login', 
 			frame:true, 
 			title:'Ingreso a '+ this.feat.page_title, 
 			defaultType:'textfield',
