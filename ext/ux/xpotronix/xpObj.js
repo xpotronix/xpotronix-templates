@@ -483,6 +483,8 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 	addRecord:function() {//{{{
 
+		if ( ! this.acl.add ) return;
+
         	if ( this.store.parent_store && this.store.foreign_key.length && this.store.parent_store.rowIndex === null ) {
 
                 	Ext.Msg.alert( 'Error', 'No se ha seleccionado ningun registro en el panel principal. Por favor, seleccione uno' );
