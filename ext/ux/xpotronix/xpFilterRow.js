@@ -27,12 +27,14 @@ Ext.ux.xpotronix.xpFilterRow = Ext.extend(Ext.ux.grid.FilterRow, {
 		if ( !tb ) return;
 
                 // add menu
-                this.menu = new Ext.Toolbar.Button({
+                this.menu = new Ext.Toolbar.SplitButton({
                         icon: '/ux/images/filter.png'
                         ,cls: 'x-btn-text-icon'
                         ,text: 'Filtrar'
 			,toogle: true
 			,tooltip: '<b>Filtrar Datos</b><br/>Permite ingresar criterios de búsqueda por cada columna y obtener resultados'
+
+			,menu: [{ text:'Limpiar Búsqueda', handler: this.resetFilterData, scope:this }]
                         //,iconCls:this.iconCls
                 });
 
@@ -203,6 +205,12 @@ Ext.ux.xpotronix.xpFilterRow = Ext.extend(Ext.ux.grid.FilterRow, {
       data[name] = col.filter.getFieldValue();
     });
     return data;
+  },
+
+  resetFilterData: function() {
+    this.eachFilterColumn(function(col) {
+      col.filter.field.setValue( null );
+    });
   },
 
   getFilterDataXp: function() {

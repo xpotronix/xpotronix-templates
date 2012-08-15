@@ -360,7 +360,7 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 			menu_params.menu.items[i] = item;
                 }
 
-		return ( Ext.getMajorVersion < 3 ) ? new Ext.Toolbar.MenuButton( menu_params ) : new Ext.Toolbar.SplitButton( menu_params );
+		return new Ext.Toolbar.Button( menu_params );
 
         },/*}}}*/
 

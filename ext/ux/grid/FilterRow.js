@@ -148,6 +148,7 @@ Ext.ux.grid.FilterRow = Ext.extend(Ext.util.Observable, {
         col.filter = new Filter(col.filter);
       }
       col.filter.on("change", this.onFieldChange, this);
+
     });
     
     this.applyTemplate();
