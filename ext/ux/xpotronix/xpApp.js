@@ -386,21 +386,41 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
 			if ( s = this.store.item( e.nodeName ) ) {
 
+				/* toma los parametros del elemento XML */
+
 				var a = e.getAttribute( 'action' );
 				var uiid = e.getAttribute( 'uiid' );
+				var ID = e.getAttribute( 'ID' );
+				var r = null;
+
+				if ( uiid == undefined ) {
+
+					/* si no vino con uiid, trata de buscarlo en el store */
+
+					var ri = s.find('__ID__', ID );
+
+					if ( ri > -1 ) 
+
+						uiid = s.getAt( ri ).id;
+				}
 
 				if ( a == 'i' || a == 'u' ) {
 
+					/* cambia la raiz del registro para leer el elemento actual */
 					s.reader.meta.record = "";
 
-					var r = s.reader.readRecords(e);
+					/* incorpora al reader el elemento como registro */
+					r = s.reader.readRecords(e);
 
+					/* ajusta el totalRecords al totalLength anterior */
 					r.totalRecords = s.totalLength;
 
+					/* incorpora ese unico registro al store */
 					s.suspendEvents();
 					s.loadRecords(r, {add: true}, true);
 					s.resumeEvents();
 
+					/* reestablece el espacio de nombres para el reader */
 					s.reader.meta.record = s.ns;
 
 					var rr = s.getById( uiid );
@@ -539,10 +559,12 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 			}); 
 		};
 
+		var base_url = (App.feat.base_url == undefined) ? '' : App.feat.base_url;
+
 		var login = new Ext.FormPanel({ 
 		
 			labelWidth:80,
-			url: App.feat.base_url + '?m=users&amp;a=login', 
+			url: base_url + '?m=users&amp;a=login', 
 			frame:true, 
 			title:'Ingreso a '+ this.feat.page_title, 
 			defaultType:'textfield',

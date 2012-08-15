@@ -59,6 +59,28 @@ Ext.extend( Ext.ux.xpotronix.xpGrid, Ext.grid.EditorGridPanel, {
 
 		*/
 
+		this.on( 'render', function() {
+
+			this.km = new Ext.KeyMap( this.getId(), [
+				{
+			            key: Ext.EventObject.DELETE,
+				    scope: this,
+			            shift: false,
+			            ctrl: false,
+			            fn: function() {
+					this.obj.delete_confirm( this );
+		            }
+		        },
+			        {
+			            key: Ext.EventObject.INSERT,
+				    scope: this,
+			            shift: false,
+			            ctrl: false,
+			            fn: this.obj.addRecord
+		        	}
+		    	]);	
+		});
+
 		this.on('beforedestroy', function(){
 
 			var dz = this.dz;
