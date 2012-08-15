@@ -85,7 +85,20 @@ Ext.ux.xpotronix.xpFilterRow = Ext.extend(Ext.ux.grid.FilterRow, {
       if (!(col.filter instanceof Filter)) {
         col.filter = new Filter(col.filter);
       }
-      // col.filter.on("change", this.onFieldChange, this);
+      /* col.filter.on("change", this.onFieldChange, this); */
+
+      col.filter.field.on('render', function(){
+
+      col.filter.field.km = new Ext.KeyMap(col.filter.field.getId(),
+            [{
+                key: Ext.EventObject.ENTER,
+                fn: this.onFieldChange,
+                scope: this
+            }]
+
+        )
+
+	}, this );
     });
     
     this.applyTemplate();

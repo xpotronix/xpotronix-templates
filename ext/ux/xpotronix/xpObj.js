@@ -453,21 +453,31 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 		// DEBUG: esto estaba en xpGrid, hay que ver si aplica para todos
 
+		var saved = 0;
+
 		Ext.each( panel.get_selections(), function( r ) {
 
 			if ( r.get('__new__') ) 
 				this.remove( r );
+			else
+				saved++;
 
 		}, panel.store );
 
-                App.process_request({
+		if ( saved ) App.process_request({
 
                         m: this.class_name,
                         a: 'process',
                         p: 'delete',
                         x: this.serialize_selections( panel.get_selections() ),
                         process_name: 'Borrar la Selección'
-                });
+                }, function() { 
+
+			panel.getView &&
+			panel.getView().focusRow(panel.store.rowIndex);
+		});
+
+		else panel.store.go_to( panel.store.rowIndex, false );
 
    	},  /*}}}*/
 
