@@ -108,10 +108,10 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 	        		}
 
 
-				if ( this.foreign_key_values ) {
+				if ( Ext.isEmptyObject( this.foreign_key_values ) ) {
 
 					this.suspendEvents();
-					this.foreign_key_values && this.bind( r, this.foreign_key_values );
+					this.bind( r, this.foreign_key_values );
 					this.resumeEvents();
 				}
 
@@ -272,6 +272,8 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 		if ( this.parent_store ) {
 
 			var fk = this.get_foreign_key();
+
+			if ( Ext.isEmptyObject( fk ) ) return;
 
 			if ( this.parent_store.getCount() ) {
 
