@@ -416,9 +416,12 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 					r.totalRecords = s.totalLength;
 
 					/* incorpora ese unico registro al store */
-					s.suspendEvents();
+					// s.suspendEvents();
+					if ( uiid ) 
+					s.loadRecords(r, {}, true);
+					else
 					s.loadRecords(r, {add: true}, true);
-					s.resumeEvents();
+					// s.resumeEvents();
 
 					/* reestablece el espacio de nombres para el reader */
 					s.reader.meta.record = s.ns;
