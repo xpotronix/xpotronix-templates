@@ -384,75 +384,8 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
 			var s;
 
-			if ( s = this.store.item( e.nodeName ) ) {
-
-				/* toma los parametros del elemento XML */
-
-				var a = e.getAttribute( 'action' );
-				var uiid = e.getAttribute( 'uiid' );
-				var ID = e.getAttribute( 'ID' );
-				var r = null;
-
-				if ( uiid == undefined ) {
-
-					/* si no vino con uiid, trata de buscarlo en el store */
-
-					var ri = s.find('__ID__', ID );
-
-					if ( ri > -1 ) 
-
-						uiid = s.getAt( ri ).id;
-				}
-
-				if ( a == 'i' || a == 'u' ) {
-
-					/* cambia la raiz del registro para leer el elemento actual */
-					s.reader.meta.record = "";
-
-					/* incorpora al reader el elemento como registro */
-					r = s.reader.readRecords(e);
-
-					/* ajusta el totalRecords al totalLength anterior */
-					r.totalRecords = s.totalLength;
-
-					/* incorpora ese unico registro al store */
-					// s.suspendEvents();
-					if ( uiid ) 
-					s.loadRecords(r, {}, true);
-					else
-					s.loadRecords(r, {add: true}, true);
-					// s.resumeEvents();
-
-					/* reestablece el espacio de nombres para el reader */
-					s.reader.meta.record = s.ns;
-
-					var rr = s.getById( uiid );
-
-					rr && rr.commit();
-
-					for( var i = 0; i < s.modified.length; i++ ){ 
-						if ( s.modified[i].id == uiid ) {
-							s.modified.splice(i);
-							return;
-						}
-					}
-
-
-				} else if ( a == 'd' ) {
-
-					s.remove( s.getById( uiid ) );
-					s.totalLength--;
-					s.fireEvent('rowcountchange', s);
-					s.go_to( s.rowIndex, false );
-
-				} else {
-
-					// error de validacion, no hace nada
-
-				}
-			}
-
-			debug = 1;
+			if ( s = this.store.item( e.nodeName ) ) 
+				s.update_model( e );
 
 		}, this );
 	},/*}}}*/

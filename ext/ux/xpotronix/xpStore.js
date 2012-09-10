@@ -169,61 +169,80 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 	pruneModifiedRecords: true,
 
 
-    loadRecords : function(o, options, success){/*{{{*/
-        var i, len;
-        
-        if (this.isDestroyed === true) {
-            return;
-        }
-        if(!o || success === false){
-            if(success !== false){
-                this.fireEvent('load', this, [], options);
-            }
-            if(options.callback){
-                options.callback.call(options.scope || this, [], options, false, o);
-            }
-            return;
-        }
-        var r = o.records, t = o.totalRecords || r.length;
-        if(!options || options.add !== true){
-            if(this.pruneModifiedRecords){
-                this.modified = [];
-            }
-            for(i = 0, len = r.length; i < len; i++){
-                r[i].join(this);
-            }
-            if(this.snapshot){
-                this.data = this.snapshot;
-                delete this.snapshot;
-            }
-            this.clearData();
-            this.data.addAll(r);
-            this.totalLength = t;
-            this.applySort();
-            this.fireEvent('datachanged', this);
-        }else{
-            var toAdd = [],
-                rec,
-                cnt = 0;
-            for(i = 0, len = r.length; i < len; ++i){
-                rec = r[i];
-                if(this.indexOfId(rec.id) > -1){
-                    this.doUpdate(rec);
-                }else{
-                    toAdd.push(rec);
-                    ++cnt;
-                }
-            }
-            this.totalLength = Math.max(t, this.data.length + cnt);
-            this.insert(0, toAdd);
-        }
-        this.fireEvent('load', this, r, options);
-        if(options.callback){
-            options.callback.call(options.scope || this, r, options, true);
-        }
-    },/*}}}*/
+	update_model: function( e ) {
 
-	before_load: function( store, options ) {/*{{{*/
+		/* toma los parametros del elemento XML */
+
+		var a = e.getAttribute( 'action' );
+		var uiid = e.getAttribute( 'uiid' );
+		var ID = e.getAttribute( 'ID' );
+		var rs = null;
+
+		if ( uiid == undefined ) {
+
+			/* si no vino con uiid, trata de buscarlo en el store */
+
+			var ri = this.find('__ID__', ID );
+
+			if ( ri > -1 ) 
+
+				uiid = this.getAt( ri ).id;
+		}
+
+		if ( a == 'i' || a == 'u' ) {
+
+			/* cambia la raiz del registro para leer el elemento actual */
+			this.reader.meta.record = "";
+
+			/* devuelve un array de records */
+			rs = this.reader.readRecords(e);
+
+			/* ajusta el totalRecords al totalLength anterior */
+			rs.totalRecords = this.totalLength;
+
+			if ( uiid ) 
+				rs.records[0].id = uiid; /* queda como el caracu. hacerlo mas eficiente */
+
+			/* incorpora ese unico registro al store */
+			// this.suspendEvents();
+			// if ( uiid ) 
+			// this.loadRecords(r, {}, true);
+			// else
+			this.loadRecords(rs, {add: true}, true);
+			// this.resumeEvents();
+
+			/* reestablece el espacio de nombres para el reader */
+			this.reader.meta.record = this.ns;
+
+			var rr = this.getById( uiid );
+
+			rr && rr.commit();
+
+			for( var i = 0; i < this.modified.length; i++ ){ 
+				if ( this.modified[i].id == uiid ) {
+					this.modified.splice(i);
+					return;
+				}
+			}
+
+
+		} else if ( a == 'd' ) {
+
+			this.remove( this.getById( uiid ) );
+			this.totalLength--;
+			this.fireEvent('rowcountchange', this);
+			this.go_to( this.rowIndex, false );
+
+		} else {
+
+			// error de validacion, no hace nada
+
+		}
+
+	},
+
+
+	before_load:  function( store, options ) {/*{{{*/
 
 		if ( ( ! options.add ) && this.dirty && ( ! Ext.isEmptyObject( this.dirty() ) || ! Ext.isEmptyObject( this.dirty_childs() ) ) ) {
 
