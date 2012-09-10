@@ -214,7 +214,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
                 }
             }
             this.totalLength = Math.max(t, this.data.length + cnt);
-            this.insert(0,toAdd);
+            toAdd.length && this.insert(0,toAdd);
         }
         this.fireEvent('load', this, r, options);
         if(options.callback){
