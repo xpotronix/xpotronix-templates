@@ -256,13 +256,12 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 			if ( uiid ) 
 				rs.records[0].id = uiid; /* queda como el caracu. hacerlo mas eficiente */
 
-			/* incorpora ese unico registro al store */
-			// this.suspendEvents();
-			// if ( uiid ) 
-			// this.loadRecords(r, {}, true);
-			// else
+			/* incorpora ese unico registro al store 
+			   suspende los eventos para que no se propagen los load */
+
+			this.suspendEvents();
 			this.loadRecords(rs, {add: true}, true);
-			// this.resumeEvents();
+			this.resumeEvents();
 
 			/* reestablece el espacio de nombres para el reader */
 			this.reader.meta.record = this.ns;
