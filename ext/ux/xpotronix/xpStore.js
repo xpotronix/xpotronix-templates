@@ -273,7 +273,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 			for( var i = 0; i < this.modified.length; i++ ){ 
 				if ( this.modified[i].id == uiid ) {
 					this.modified.splice(i);
-					return;
+					break;
 				}
 			}
 
@@ -291,6 +291,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 		}
 
+		return a;
 	},
 
 
