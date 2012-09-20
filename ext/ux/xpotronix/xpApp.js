@@ -379,15 +379,30 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 	update_model: function( param ) {/*{{{*/
 
 		var q = Ext.DomQuery;
+		var ms = [];
 
 		Ext.each( q.select( 'changes/*', param.responseXML ), function( e ) { 
 
 			var s;
 
 			if ( s = this.store.item( e.nodeName ) ) 
-				s.update_model( e );
+				ms[s.class_name] = { store: s, response: s.update_model( e ) };
 
 		}, this );
+
+		/* todos los stores modificados, se fija si tiene un child 'parent' y lo recarga */
+
+		for ( var sn in ms ) {
+			var ss = ms[sn];
+
+			Ext.isObject( ss ) &&
+			( ss.response == 'u' || ss.response == 'i' ) &&
+			ss.store.childs.each( function( ch ) {
+				if ( ch.foreign_key_type == 'parent' )
+					ch.load();
+			});
+		}
+
 	},/*}}}*/
 
 	on_complete: function(sender, param) { // Callback called on response/*{{{*/

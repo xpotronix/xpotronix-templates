@@ -254,7 +254,7 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 			// disabled: true,
                 	tooltip: '<b>Asignar</b><br/>Asocia el registro actual al panel principal',
 			listeners:{ click:{ scope: this, fn:function( btn ) {
-				this.store.update_parent_fk();
+				this.store.set_parent_fk();
 			}, buffer:200 }}
 		});
 
