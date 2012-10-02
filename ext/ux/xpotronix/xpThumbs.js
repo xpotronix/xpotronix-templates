@@ -32,7 +32,7 @@ Ext.ux.xpotronix.xpThumbs = function(config) {
 		multiSelect: true,
 		overClass:'x-view-over',
 		itemSelector:'div.thumb-wrap',
-		emptyText: '<h1>Por favor: seleccioná un dia y un fotografo</h1>',
+		/* emptyText: '<h1>Por favor: seleccioná un dia y un fotografo</h1>', */
 
 		plugins: [
 			new Ext.DataView.DragSelector()
