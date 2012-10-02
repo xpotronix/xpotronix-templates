@@ -409,15 +409,15 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 		        if ( panel.acl.edit || panel.acl.add ) 
 				tbar.insert( pos, panel.obj.discard_changes( panel ) );
 
-		        if ( panel.processes_menu ) 
-				tbar.insert( pos, panel.obj.add_process_menu( panel ) );
-
 		        tbar.insert( pos, panel.obj.export_button( panel ) ) ;
 
 			if ( panel.store.foreign_key_type == 'parent' )
 	        		tbar.insert( pos, panel.obj.assign_button( panel ) ) ;
 
 	        	tbar.insert( pos, panel.obj.invert_button( panel ) ) ;
+
+		        if ( panel.processes_menu ) 
+				tbar.insert( pos, panel.obj.add_process_menu( panel ) );
 
 		        if ( panel.acl.edit || panel.acl.add ) 
 				tbar.insert( pos, panel.obj.save_button( panel ) );
