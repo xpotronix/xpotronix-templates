@@ -17,7 +17,7 @@
 
 <!-- layouts --> 
 
-	<xsl:template match="xpotronix:model" mode="treeport"><!--{{{-->
+	<xsl:template match="*:model" mode="treeport"><!--{{{-->
 
 	App.layout = new Ext.Viewport({
 		 layout:'border'

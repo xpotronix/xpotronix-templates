@@ -41,6 +41,7 @@
 	<xsl:param name="root_obj" select="//*:metadata/obj[1]"/>
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
 	<xsl:param name="current_user" select="//*:session/users/user_username"/>
+	<xsl:param name="anon_user" select="//*:session/users/_anon"/>
 
 	<xsl:variable name="session" select="//*:session"/>
 
@@ -66,8 +67,9 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document" mode="main_content"><!--{{{-->
+		<xsl:message>current user: <xsl:value-of select="$current_user"/></xsl:message>
 		<xsl:choose>
-			<xsl:when test="($login_window='true') and ($current_user='anon' or $current_user='')">
+			<xsl:when test="($login_window='true') and ($anon_user='1' or $current_user='')">
 				<xsl:apply-templates select="." mode="include-login-js"/>
 				<xsl:apply-templates select="." mode="body_login"/>
 			</xsl:when>
