@@ -115,7 +115,7 @@
 	Ext.Loader.load([<xsl:apply-templates select="//*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>]);
 	</xsl:if>
 
-	if ( App.user.user_username == 'anon' || ! App.user.user_username )
+	if ( App.user._anon || ! App.user.user_username )
 		App.login();
 
 	wait.hide();
