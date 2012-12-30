@@ -52,25 +52,7 @@
 
 	<xsl:template match="*:document"><html>
 <head> 
-
-	<xsl:apply-templates select="." mode="meta"/>
-	<xsl:apply-templates select="." mode="title"/>
-	<xsl:apply-templates select="." mode="favicon"/>
-
-	<link rel="stylesheet" type="text/css" href="/ext/resources/css/ext-all.css"></link>
-	<link rel="stylesheet" type="text/css" href="css/icons.css"></link>
-	<link rel="stylesheet" type="text/css" href="css/app.css"></link>
-	<link rel="stylesheet" type="text/css" href="css/tree.css"></link>
- 
-	<!--
-  	<link id="theme" rel="stylesheet" type="text/css" href="css/empty.css">
-  	<link rel="stylesheet" type="text/css" href="./css/webpage.css">
-  	<link rel="stylesheet" type="text/css" href="./css/examples.css">--> 
-  
-  	<!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'></link>  -->
-
-  	<link rel="shortcut icon" href="./img/extjs.png"></link>
-  	<title id="page-title"><xsl:value-of select="*:session/feat/page_title"/></title> 
+	<xsl:apply-templates select="." mode="head"/>
 </head> 
 <body> 
 	<h1>Cargando <xsl:value-of select="//xpotronix:session/feat/page_title"/>  aguarde ... </h1>
