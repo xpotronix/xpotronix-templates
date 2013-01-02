@@ -145,7 +145,7 @@
 	<xsl:apply-templates select="*:metadata/obj" mode="panels"/>
 
 		var App_layout = function() {
-			<xsl:choose>
+			var layout = <xsl:choose>
 				<xsl:when test="//*:model/obj/layout">
 					<xsl:apply-templates select="//*:model/obj/layout">
 						<xsl:with-param name="obj" select="//*:metadata/obj[1]" tunnel="yes"/>
@@ -159,6 +159,10 @@
 				</xsl:otherwise>
 
 			</xsl:choose>
+
+	                var iframe = Ext.getCmp('iframe');
+        	        iframe.add( layout );
+                	iframe.doLayout();
 		};
 
 

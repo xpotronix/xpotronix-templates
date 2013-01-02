@@ -167,6 +167,7 @@
 				<xsl:when test="//*:model/obj/layout">
 					<xsl:apply-templates select="//*:model/obj/layout">
 						<xsl:with-param name="obj" select="//*:metadata/obj[1]" tunnel="yes"/>
+						<xsl:with-param name="standalone" select="true()"/>
 					</xsl:apply-templates>
 				</xsl:when>
 
