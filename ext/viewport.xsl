@@ -83,15 +83,12 @@
 	<xsl:template match="*:document" mode="application_context"><!--{{{-->
 	
 		<xsl:apply-templates select="*:metadata/obj" mode="divs"/>
-
-
 		<xsl:apply-templates select="." mode="application"/>
 
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 	<xsl:variable name="menu_bar" select="xp:get_feat($root_obj,'menu_bar')"/>
-
 
 	<xsl:variable name="code">
 
@@ -108,9 +105,20 @@
 	</xsl:if>
 
 
-	Ext.namespace('App');
+	Ext.Ajax.timeout = 60000;	
 
-	var App = new Ext.ux.xpotronix.xpApp({state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>});
+	var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
+
+	if ( App ) {
+
+		App.reconfigure( config_App );
+
+	} else {
+
+		Ext.namespace('App');
+		var App = new Ext.ux.xpotronix.xpApp( config_App );
+	}
+
 
 	Ext.onReady(function() {
 
@@ -175,13 +183,14 @@
 		events_js || App.fireEvent( 'configready' );
 
 
-	<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='post_render']">	
-	Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>]);
-	</xsl:if>
+		var post_render_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>];
 
-	wait.hide();
+		if ( post_render_js.length ) 
+			Ext.Loader.load( post_render_js );
 
-		});
+		wait.hide();
+
+	});
 	</xsl:variable>
 	<!-- output final del codigo -->
 
