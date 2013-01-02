@@ -135,7 +135,7 @@
 		</xsl:choose>
 	</xsl:variable>
 
-	var layout = new Ext.<xsl:value-of select="$ui_class"/>({
+	new Ext.<xsl:value-of select="$ui_class"/>({
             id: 'xpApp_layout',
 	    stateful: true,
             layout: 'border',
@@ -193,12 +193,6 @@
                 }</xsl:if>
 		]
         });
-
-	<xsl:if test="$standalone=false()">
-		var iframe = Ext.getCmp('iframe');
-		iframe.add( layout );
-		iframe.doLayout();
-	</xsl:if>
 
 	</xsl:template><!--}}}-->
 

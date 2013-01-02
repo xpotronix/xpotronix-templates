@@ -325,14 +325,25 @@
 
 	<xsl:template match="cmp"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:param name="standalone" tunnel="yes"/>
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj/@name"/></xsl:message> -->
 		<xsl:if test="position()-1">,</xsl:if><xsl:apply-templates select="." mode="sub"></xsl:apply-templates>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="cmp[not(@ref)]" mode="sub"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:param name="standalone" tunnel="yes" select="false()"/>
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj/@name"/>, type: <xsl:value-of select="@type"/></xsl:message> -->
-		new Ext.<xsl:if test="not(@type)">Panel</xsl:if><xsl:value-of select="@type"/>({
+
+		<xsl:variable name="panel_type">
+			<xsl:choose>
+				<xsl:when test="$standalone and (@type='Panel' or not(@type))">Viewport</xsl:when>
+				<xsl:when test="$standalone=false() and not(@type)">Panel</xsl:when>
+				<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		new Ext.<xsl:value-of select="$panel_type"/>({
 			<xsl:if test="@id">id:'<xsl:value-of select="@id"/>'<xsl:if test="config or items">,</xsl:if></xsl:if>
 			<xsl:if test="config"><xsl:value-of select="config"/><xsl:if test="items/*">,</xsl:if></xsl:if>
 			<xsl:if test="items/*">items:[<xsl:apply-templates select="items/*"></xsl:apply-templates>]</xsl:if>
@@ -341,6 +352,7 @@
 
 	<xsl:template match="cmp[@ref]" mode="sub"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:param name="standalone" tunnel="yes" select="false()"/>
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj"/>, type: <xsl:value-of select="@type"/></xsl:message> -->
 		Ext.apply(Ext.getCmp('<xsl:value-of select="@ref"/>'),{
 			<xsl:if test="@id">id:'<xsl:value-of select="@id"/>'<xsl:if test="config or items">,</xsl:if></xsl:if>
