@@ -144,18 +144,7 @@
 
 	<xsl:apply-templates select="*:metadata/obj" mode="panels"/>
 
-		var events_js = false;
-
-			<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='events']">	
-			Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>], 
-				function() {
-					App.fireEvent( 'configready' );
-				});
-			var events_js = true;
-			</xsl:if>
-
-		App.on( 'configready', function() {
-
+		var App_layout = function() {
 			<xsl:choose>
 				<xsl:when test="//*:model/obj/layout">
 					<xsl:apply-templates select="//*:model/obj/layout">
@@ -170,13 +159,23 @@
 				</xsl:otherwise>
 
 			</xsl:choose>
-		});
+		};
 
 
-		events_js || App.fireEvent( 'configready' );
-
-
+		var events_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>];
 		var post_render_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>];
+
+		if ( events_js.length ) 
+			Ext.Loader.load( events_js, 
+				function() {
+					App_layout();
+					App.fireEvent( 'configready' );
+				});
+		else {
+			App_layout();
+			App.fireEvent( 'configready' );
+		}
+
 
 		if ( post_render_js.length ) 
 			Ext.Loader.load( post_render_js );
