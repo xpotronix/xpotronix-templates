@@ -53,16 +53,6 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 	initComponent:function() {/*{{{*/
 
-		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
-
-			var buttons = [new Ext.Spacer({ width: 145 })];
-			buttons.push( this.obj.save_button( this ) );
-
-			this.acl.add && buttons.push( this.obj.add_button( this ) );
-
-			this.buttons = buttons;
-		}
-
 		this.store && this.store.on({
 
 			load: { fn:function(){this.loadRecord();}, buffer: 200, scope:this },
@@ -87,6 +77,16 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 		// call parent
 		Ext.ux.xpotronix.xpForm.superclass.onRender.apply(this, arguments);
+
+		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
+
+			var buttons = [new Ext.Spacer({ width: 145 })];
+			buttons.push( this.obj.save_button( this ) );
+
+			this.acl.add && buttons.push( this.obj.add_button( this ) );
+
+			this.buttons = buttons;
+		}
 
 		this.obj && this.obj.set_toolbar( this );
 

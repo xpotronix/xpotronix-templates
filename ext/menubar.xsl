@@ -16,8 +16,6 @@
 	<!-- para que no cuente los elementos en blanco http://www.dpawson.co.uk/xsl/sect2/N6099.html#d9389e73-->
 	<xsl:strip-space elements="menu item"/>
 
-	<xsl:output method="html" version="4.0" encoding="UTF-8"/>
-
 	<xsl:template match="menu"><!--{{{-->
 	[{ leaf: true, text: '<b><xsl:value-of select="@n"/></b>' <xsl:apply-templates select="." mode="status"/> },
 	<xsl:apply-templates select="*[not(@access) or (@access and @access!='')]" mode="top"/>,
