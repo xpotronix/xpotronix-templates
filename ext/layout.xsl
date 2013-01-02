@@ -197,7 +197,7 @@
 	<xsl:if test="$standalone=false()">
 		var iframe = Ext.getCmp('iframe');
 		iframe.add( layout );
-		iframe.show();
+		iframe.doLayout();
 	</xsl:if>
 
 	</xsl:template><!--}}}-->
