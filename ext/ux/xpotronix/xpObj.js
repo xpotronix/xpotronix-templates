@@ -438,11 +438,17 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 		var m = panel.get_selections();
 
-        	if ( m.length )
-                	Ext.MessageBox.confirm('Message', 
-				'Realmente deseas eliminar ' + m.length + ' elementos?', 
-				function( b ) { ( b == 'yes' ) && this.delete_selections( panel ); }, 
-				this );
+        	if ( m.length ) {
+                		Ext.MessageBox.confirm('Message', 
+					'Realmente deseas eliminar ' + m.length + ' elementos?', 
+					function( b ) { 
+						( b == 'yes' ) && this.delete_selections( panel ); 
+					}, 
+					this );
+				/* DEBUG: no puedo setear el boton por default para que no borre !!
+				Ext.MessageBox.getDialog().buttons[0].focus();
+				*/
+			}
 		else
                 	Ext.MessageBox.alert('Error', 
 				'Para borrar, debes seleccionar algun(os) elemento(s)');

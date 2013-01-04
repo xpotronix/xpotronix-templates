@@ -67,9 +67,13 @@ Ext.extend( Ext.ux.xpotronix.xpGrid, Ext.grid.EditorGridPanel, {
 				    scope: this,
 			            shift: false,
 			            ctrl: false,
-			            fn: function() {
+			            fn: function( k, e ) {
 					if ( this.acl.del ) 
-						this.obj.delete_confirm( this );
+
+						if ( e.getTarget().nodeName == 'INPUT' )
+							return true;
+						else
+							this.obj.delete_confirm( this );
 		            }
 		        },
 			        {
