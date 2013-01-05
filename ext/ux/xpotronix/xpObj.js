@@ -614,12 +614,21 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 		if ( this.store.lastOptions )
 			Ext.apply( q_params, this.store.lastOptions.params );
 
+		var display_only_fields = [];
+
+		Ext.each( this.getColumnModel().config, function( f ) {
+
+			f.hidden || display_only_fields.push( f.name );
+		});
+
 		Ext.apply( q_params, { m: this.class_name, 
 			v: 'csv', 
 			'f[ignore_null_fields]': 0, 
 			'f[include_dataset]': 2, // DS_NORMALIZED
 			'g[start]': 0,
-			'g[limit]': form.items.get( panel.name + '_export_dialog_max_records').getValue() } );
+			'g[limit]': form.items.get( panel.name + '_export_dialog_max_records').getValue(),
+			'f[display_only]': display_only_fields.join(',')
+		});
 
 		// alert( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
 
