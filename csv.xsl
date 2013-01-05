@@ -22,7 +22,7 @@
 
 	<xsl:template match="class">
 		<xsl:variable name="name" select="@name"/>
-		<xsl:variable name="metadata" select="//xpotronix:metadata/obj[@name=$name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']"/>
+		<xsl:variable name="metadata" select="//xpotronix:metadata/obj[@name=$name]/attr[not(@display) or @display='' or @display='disabled']"/>
 		<xsl:apply-templates select="." mode="title">
 			<xsl:with-param name="metadata" select="$metadata"/>
 		</xsl:apply-templates>
