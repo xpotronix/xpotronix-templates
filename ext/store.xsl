@@ -35,10 +35,16 @@
 			</xsl:if>
 			,feat: <xsl:apply-templates select="." mode="feats"/>
 			,acl: {<xsl:apply-templates select="//*:metadata/obj[@name=$obj_name]/acl"/>}
+
 			<xsl:if test="foreign_key">
 			,foreign_key: [<xsl:apply-templates select="foreign_key/ref"/>]
 			<xsl:if test="foreign_key/@type">
-			,foreign_key_type: '<xsl:value-of select="foreign_key/@type"/>'</xsl:if></xsl:if>  
+			,foreign_key_type: '<xsl:value-of select="foreign_key/@type"/>'</xsl:if>
+			<xsl:if test="foreign_key/@passive">
+			,passive: <xsl:value-of select="foreign_key/@passive"/></xsl:if>
+			</xsl:if>  
+
+
 			,pageSize: <xsl:value-of select="xp:get_feat(.,'page_rows')"/>
 			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>
 		 	,rs:  Ext.data.Record.create([
