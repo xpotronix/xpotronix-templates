@@ -139,6 +139,7 @@
             id: 'xpApp_layout',
 	    stateful: true,
             layout: 'border',
+	    hideMode:'offsets',
 	    deferredRender: true,
 	    bodyStyle: {border:0},
             items:[
