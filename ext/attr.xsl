@@ -242,6 +242,9 @@
 	<xsl:param name="nodes"/>
 	<xsl:for-each-group select="$nodes/*" group-by="name()">
 		<xsl:choose>
+			<xsl:when test="current-grouping-key()='event'">
+				<xsl:sequence select="current-group()"/>
+			</xsl:when>
 			<xsl:when test="not(current-group()/*)">
 				<xsl:sequence select="current-group()[last()]"/>
 			</xsl:when>
