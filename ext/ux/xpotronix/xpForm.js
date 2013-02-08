@@ -28,6 +28,8 @@ Ext.ux.xpotronix.xpForm = function(config) {
 	this.acl = this.acl || this.obj.acl;
 	this.processes_menu = this.processes_menu || this.obj.processes_menu;
 	Ext.ux.xpotronix.xpForm.superclass.constructor.apply(this, arguments);
+	this.addEvents( 'loadrecord' );
+
 };
 
 Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
@@ -187,6 +189,8 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 			f.reset();
 			this.disableForm();
 		}
+
+		this.fireEvent( 'loadrecord', this, this.store, r );
 
 	},/*}}}*/
 
