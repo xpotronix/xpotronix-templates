@@ -396,7 +396,8 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 			var ss = ms[sn];
 
 			Ext.isObject( ss ) &&
-			( ss.response == 'u' || ss.response == 'i' ) &&
+			( ss.response == 'u' || ss.response == 'i' ) && 
+			( ss.store.fireEvent( 'serverstoreupdate', ss.store ) ) &&
 			ss.store.childs.each( function( ch ) {
 				if ( ch.foreign_key_type == 'parent' )
 					ch.load();

@@ -18,13 +18,14 @@
 <!-- stores --> 
 
 	<xsl:template match="xpotronix:model" mode="stores"><!--{{{-->
+		var tmp;
 		<xsl:apply-templates select=".//obj" mode="store"/>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="obj" mode="store"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>
 
-		App.store.add( new Ext.ux.xpotronix.xpStore( 
+		App.store.add( tmp = new Ext.ux.xpotronix.xpStore( Ext.apply( 
 			{ 
 			storeId: '<xsl:value-of select="@name"/>'
 			,class_name: '<xsl:value-of select="@name"/>'
@@ -54,10 +55,11 @@
 				<xsl:apply-templates select="//xpotronix:metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
 					<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
-			])}
+			])},{<xsl:value-of select="config"/>})
 		));
+
 		<xsl:if test="../name()='obj'">
-		App.store.item( '<xsl:value-of select="../@name"/>' ).add_child( App.store.item( '<xsl:value-of select="@name"/>' ) );
+		App.store.item( '<xsl:value-of select="../@name"/>' ).add_child( tmp );
 		</xsl:if>
 		/* Entry Helpers */
 		<xsl:apply-templates select="queries/query/query" mode="Store"/>
