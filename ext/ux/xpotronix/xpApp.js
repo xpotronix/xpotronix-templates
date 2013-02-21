@@ -393,15 +393,18 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 		/* todos los stores modificados, se fija si tiene un child 'parent' y lo recarga */
 
 		for ( var sn in ms ) {
+
 			var ss = ms[sn];
 
-			Ext.isObject( ss ) &&
-			( ss.response == 'u' || ss.response == 'i' ) && 
-			( ss.store.fireEvent( 'serverstoreupdate', ss.store ) ) &&
-			ss.store.childs.each( function( ch ) {
-				if ( ch.foreign_key_type == 'parent' )
-					ch.load();
-			});
+			if ( Ext.isObject( ss ) && ( ss.response == 'u' || ss.response == 'i' || ss.response == 'd' ) ) {
+
+				ss.store.fireEvent( 'serverstoreupdate', ss.store );
+				ss.store.childs.each( function( ch ) {
+					if ( ch.foreign_key_type == 'parent' )
+						ch.load();
+				});			
+
+			}
 		}
 
 	},/*}}}*/
