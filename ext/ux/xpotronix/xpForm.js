@@ -132,7 +132,9 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 		recurse_items( this.getForm(), function( it ) {
 
-			it.setReadOnly( ! ( ! it.initialConfig.disabled ) )
+			it.initialConfig.disabled || it.enable();
+
+			// it.setReadOnly( ! ( ! it.initialConfig.disabled ) )
 
 		}, this );
 
@@ -142,7 +144,8 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 		recurse_items( this.getForm(), function( it ) {
 
-			it.setReadOnly( true );
+			// it.setReadOnly( true );
+			it.disable();
 
 		}, this );
 
