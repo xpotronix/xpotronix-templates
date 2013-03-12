@@ -458,7 +458,7 @@
 <xsl:if test="position()-1">,</xsl:if>style:'<xsl:value-of select="."/>'</xsl:template><!--}}}-->
 
 <xsl:template match="*:width"><!--{{{-->
-<xsl:if test="position()-1">,</xsl:if>width:<xsl:value-of select="."/></xsl:template><!--}}}-->
+<xsl:if test="position()-1">,</xsl:if>width:'<xsl:value-of select="."/>'</xsl:template><!--}}}-->
 
 <xsl:template match="*:flex"><!--{{{-->
 <xsl:if test="position()-1">,</xsl:if>flex:<xsl:value-of select="."/></xsl:template><!--}}}-->
