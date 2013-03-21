@@ -341,6 +341,8 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 		}
 
+
+		/* resuelve el foreign key */
 		
 		if ( this.parent_store ) {
 
@@ -350,11 +352,15 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 			if ( this.parent_store.getCount() ) {
 
+				/* DEBUG: esto estaba para limitar que cuando hay una clave vacia no cargue todos los registros
+				   pero ahora lo resuelve bien xpdataobject
+
 				if ( this.is_foreign_key_empty() ) {
 					if ( this.foreign_key_type != 'parent' ) 
 						return false;
 				}
-				else
+				else 
+				*/
 					Ext.apply( options.params, this.get_foreign_key() );
 
 			} 
