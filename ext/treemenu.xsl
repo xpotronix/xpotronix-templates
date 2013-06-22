@@ -36,7 +36,7 @@
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
 
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
+	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="yes"/>
 
 	<xsl:param name="root_obj" select="//*:metadata/obj[1]"/>
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
@@ -50,10 +50,9 @@
 		<xsl:apply-templates/>
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="*:document"><html>
-<head> 
+	<xsl:template match="*:document"><xsl:value-of select="$doctype_decl_strict" disable-output-escaping="yes"/><xsl:text>
+</xsl:text><html>
 	<xsl:apply-templates select="." mode="head"/>
-</head> 
 <body> 
 	<h1>Cargando <xsl:value-of select="//xpotronix:session/feat/page_title"/>  aguarde ... </h1>
 	<!-- <xsl:message><xsl:value-of select="name()"/></xsl:message> -->

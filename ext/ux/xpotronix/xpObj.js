@@ -343,10 +343,10 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 		var menu_params = {
 			icon: '/ux/images/list-items.gif',
 			// cls: 'x-btn-text-icon',
+			// minWidth: 105,
 			text: 'Acciones',
 			tooltip: 'Ejecute una acción para procesar los items seleccionados',
-			menu: { items: []},
-			// minWidth: 105
+			menu: { items: []}
 		};
 
 		var item, pm = panel.processes_menu;
