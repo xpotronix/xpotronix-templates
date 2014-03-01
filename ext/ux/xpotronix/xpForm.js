@@ -41,6 +41,7 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 	loadMask: true,
 	buttonAlign: 'left',
 	feat: null,
+	export_w: null,
 
 
     initEvents : function(){
