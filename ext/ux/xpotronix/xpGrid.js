@@ -28,6 +28,7 @@ Ext.extend( Ext.ux.xpotronix.xpGrid, Ext.grid.EditorGridPanel, {
 	inspect_w: null,
 	feat: null,
 	loadMask: true,
+	export_w: null,
 
 	initComponent:function() {/*{{{*/
 

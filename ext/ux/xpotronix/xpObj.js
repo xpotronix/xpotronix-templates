@@ -145,7 +145,8 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 	export_button: function( panel ) {/*{{{*/
 
-		return new Ext.Toolbar.Button( {
+		return new Ext.Toolbar.Button({
+
 	                icon: '/ux/images/grid.png',
 	                cls: 'x-btn-text-icon',
 			text: 'Exportar',
@@ -153,14 +154,141 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 			listeners: { click: { scope:this, fn: function(){
 
-	                        this.export_w || ( this.export_w = this.export_dialog( panel ) );
-				this.export_w.show();
+	                        Ext.isObject( this.export_w ) || 
+
+					( panel.export_w = this.export_dialog( panel ) );
+
+				panel.export_w.show();
 
         	        }, buffer:200 } } 
 
-			} )
+		});
 
 	},/*}}}*/
+
+    export_dialog: function( panel ) { /*{{{*/
+
+	var total_count = panel.store.getTotalCount();
+
+
+    var form = new Ext.form.FormPanel({
+        baseCls: 'x-plain',
+        labelWidth: 100,
+        defaultType: 'textfield',
+
+        items: [{
+	    xtype: 'combo',
+	    name: 'max_recs',
+            fieldLabel: 'Cantidad M&acoute;xima',
+	    store: new Ext.data.SimpleStore({
+    			fields: ['id', 'label'],
+    			data : [ [1000,'1000'], [10000,'10000']]}),
+	    anchor:'100%',
+	    displayField: 'label',
+	    valueField: 'id',
+            typeAhead: true,
+            mode: 'local',
+            triggerAction: 'all',
+            emptyText: ( total_count > 10000 ) ? 'Redefina la busqueda, demasiados registros (' + total_count + ')' : 'Seleccionar la cantidad de registros a exportar',
+            selectOnFocus:true,
+		value: ( total_count > 10000 ) ? null : total_count
+
+        }]
+    });
+
+    var win = new Ext.Window({
+
+        title: 'Exportar ' + this.class_name,
+        width: 500,
+        height:200,
+	constrain: true,
+        minWidth: 300,
+        minHeight: 300,
+        layout: 'fit',
+        plain:true,
+        bodyStyle:'padding:5px;',
+        buttonAlign:'center',
+        items: form,
+
+        buttons: [{
+
+            text: 'Exportar',
+	    listeners: { click: { scope: panel, fn: function() {  
+
+		/* scope: panel */
+
+		var store = this.store;
+		var q_params = {};
+		var display_only_fields = [];
+
+		/* foregn key */
+		Ext.apply( q_params, store.get_foreign_key() );
+
+		/* Buscar (en todos los registros)  */
+		if ( store.baseParams.query && store.baseParams.fields ) {
+
+			var vars = eval(store.baseParams.fields).join(App.feat.key_delimiter);
+
+                        var params = {};
+                        params['s[' + store.class_name +']['+ vars +']'] = store.baseParams.query;
+
+			Ext.apply( q_params, params );
+
+		}
+
+		/* Filtros */	
+		if ( store.filter ) {
+			Ext.apply( q_params, store.filter.getFilterDataXp() );
+		}
+
+
+		/* lastOptions */
+		if ( this.store.lastOptions )
+			Ext.apply( q_params, this.store.lastOptions.params );
+
+		/* display_only */
+		if ( this.getXType() == 'xpGrid' ) {
+
+			Ext.each( this.getColumnModel().config, function( f ) {
+
+				f.hidden || display_only_fields.push( f.name );
+
+			});
+
+			Ext.apply( q_params, { 'f[display_only]': display_only_fields.join(',') } );
+
+			var sort_field = this.store.getSortState().field;
+			var sort_dir = this.store.getSortState().direction;  
+
+                        var params = {};
+                        params['o[' + store.class_name +']['+ sort_field +']'] = sort_dir;
+
+			Ext.apply( q_params, params );
+
+		}
+
+		/* URL */
+		Ext.apply( q_params, { 
+			m: this.class_name, 
+			a: 'csv', 
+			'f[row_count]': form.ownerCt.find('name','max_recs')[0].getValue()
+		});
+
+		// alert( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
+
+		window.open ("?" + Ext.urlEncode( q_params ), "mywindow" ); 
+		win.hide(); 
+
+		}, buffer: 200 }}
+        },{
+            text: 'Cancelar',
+	    handler: function() { win.hide(); }
+        }]
+    });
+
+    return win;	
+
+},//}}}
 
 	invert_button: function( panel ) {/*{{{*/
 
@@ -537,114 +665,6 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 		return '<' + element + ' name=\"' + this.class_name + '\"' + ( nodeList ? '>\n' + nodeList + '</' + element + '>\n' : ' />\n' );
 
 	},/*}}}*/
-
-    export_dialog: function( panel ) {//{{{
-
-    var form = new Ext.form.FormPanel({
-        baseCls: 'x-plain',
-        labelWidth: 55,
-        url:'save-form.php',
-        defaultType: 'textfield',
-
-        items: [{
-	    xtype: 'combo',
-	    id: panel.name + '_export_dialog_max_records',
-            fieldLabel: 'Cantidad Máxima',
-	    store: new Ext.data.SimpleStore({
-    			fields: ['id', 'label'],
-    			data : [ [1000,'1000'], [10000,'10000']]}),
-	    name: 'max_records',
-	    anchor:'100%',
-	    displayField: 'label',
-	    valueField: 'id',
-            typeAhead: true,
-            mode: 'local',
-            triggerAction: 'all',
-            emptyText:'Seleccionar la cantidad de registros a exportar',
-            selectOnFocus:true
-
-        }]
-    });
-
-    var win = new Ext.Window({
-        title: 'Exportar Objetos',
-        width: 500,
-        // height:300,
-	constrain: true,
-        minWidth: 300,
-        minHeight: 300,
-        layout: 'fit',
-        plain:true,
-        bodyStyle:'padding:5px;',
-        buttonAlign:'center',
-        items: form,
-
-        buttons: [{
-            text: 'Exportar',
-	    listeners: { click: { scope: panel, fn: function() {  
-
-		var store = this.store;
-		var q_params = {};
-
-		Ext.apply( q_params, store.get_foreign_key() );
-
-
-		// de xpStore.js	
-
-		// Search (global search)
-		if ( store.baseParams.query && store.baseParams.fields ) {
-
-			var vars = eval(store.baseParams.fields).join(App.feat.key_delimiter);
-
-                        var params = {};
-                        params['s[' + store.class_name +']['+ vars +']'] = store.baseParams.query;
-
-			Ext.apply( q_params, params );
-
-		}
-
-		// FilterRow
-		if ( store.filter ) {
-
-			Ext.apply( q_params, store.filter.getFilterDataXp() );
-
-		}
-
-
-		if ( this.store.lastOptions )
-			Ext.apply( q_params, this.store.lastOptions.params );
-
-		var display_only_fields = [];
-
-		Ext.each( this.getColumnModel().config, function( f ) {
-
-			f.hidden || display_only_fields.push( f.name );
-		});
-
-		Ext.apply( q_params, { m: this.class_name, 
-			v: 'csv', 
-			'f[ignore_null_fields]': 0, 
-			'f[include_dataset]': 2, // DS_NORMALIZED
-			'g[start]': 0,
-			'g[limit]': form.items.get( panel.name + '_export_dialog_max_records').getValue(),
-			'f[display_only]': display_only_fields.join(',')
-		});
-
-		// alert( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
-
-		window.open ("?" + Ext.urlEncode( q_params ), "mywindow" ); 
-		win.hide(); 
-
-		}, buffer: 200 }}
-        },{
-            text: 'Cancelar',
-	    handler: function() { win.hide(); }
-        }]
-    });
-
-    return win;	
-
-}//}}}
 
 }); // extend
 
