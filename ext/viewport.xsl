@@ -238,6 +238,7 @@ Ext.onReady(function(){
 		</xsl:element>
 
 	</xsl:template><!--}}}-->
+
 </xsl:stylesheet>
 
 <!-- vim: foldmethod=marker sw=3 ts=8 ai: 

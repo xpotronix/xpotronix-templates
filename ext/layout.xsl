@@ -39,7 +39,7 @@
 			,collapseMode:'mini'
 			,split:true
 			,items:[{
-				 id:'tree'
+				 id:'mainTreePanel'
 				,rowHeight:1
 				,layout:'fit'
 				,autoScroll:true

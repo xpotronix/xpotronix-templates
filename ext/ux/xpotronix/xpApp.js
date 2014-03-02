@@ -519,7 +519,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 		var login = new Ext.FormPanel({ 
 		
 			labelWidth:80,
-			url: base_url + '?m=users&amp;a=login', 
+			url: base_url + '?m=users&amp;a=login&amp;v=json', 
 			frame:true, 
 			title:'Ingreso a '+ this.feat.page_title, 
 			defaultType:'textfield',
@@ -595,7 +595,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
     var login = new Ext.FormPanel({ 
 
         labelWidth:80,
-        url:'?m=users&a=change_password', 
+        url:'?m=users&amp;a=change_password&amp;v=json', 
         frame:true, 
         title:'Cambiar Contraseña', 
         defaultType:'textfield',
@@ -699,7 +699,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
 		this );
 
-            conn.request({ method: 'POST', url: '?' + Ext.urlEncode( { a: 'logout' } ) });
+            conn.request({ method: 'POST', url: '?' + Ext.urlEncode( { a: 'logout', v: 'json' } ) });
 
 	},/*}}}*/
 
