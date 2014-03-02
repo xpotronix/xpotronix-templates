@@ -17,4 +17,6 @@
 <view name="csv" type="text/csv"/>
 <view name="ext/menu-js" type="application/javascript"/>
 <view name="ext/loader" type="application/javascript"/>
+<view name="json/xml2json" type="application/json"/>
+<view name="json/select2" type="text/javascript"/>
 </views>
