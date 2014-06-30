@@ -257,14 +257,18 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 			Ext.apply( q_params, { 'f[display_only]': display_only_fields.join(',') } );
 
-			var sort_field = this.store.getSortState().field;
-			var sort_dir = this.store.getSortState().direction;  
+			var sort_state = this.store.getSortState();
 
-                        var params = {};
-                        params['o[' + store.class_name +']['+ sort_field +']'] = sort_dir;
+			if ( sort_state !== undefined ) {
 
-			Ext.apply( q_params, params );
+				var sort_field = this.store.getSortState().field;
+				var sort_dir = this.store.getSortState().direction;  
 
+                     	   	var params = {};
+                        	params['o[' + store.class_name +']['+ sort_field +']'] = sort_dir;
+
+				Ext.apply( q_params, params );
+			}
 		}
 
 		/* URL */
