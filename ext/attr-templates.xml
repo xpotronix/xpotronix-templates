@@ -136,7 +136,8 @@
 		<xtype>numberfield</xtype>
 		<allowDecimals>true</allowDecimals>
 		<decimalPrecision>2</decimalPrecision>
-		<renderer>usMoney</renderer>
+		<decimalSeparator>,</decimalSeparator>
+		<!-- <renderer>usMoney</renderer> -->
 		<style>text-align:right;</style>
 	</field><!--}}}-->
 
