@@ -437,6 +437,9 @@
 <xsl:template match="decimalPrecision"><!--{{{-->
 <xsl:if test="position()-1">,</xsl:if>decimalPrecision:<xsl:value-of select="."/></xsl:template><!--}}}-->
 
+<xsl:template match="decimalSeparator"><!--{{{-->
+<xsl:if test="position()-1">,</xsl:if>decimalSeparator:'<xsl:value-of select="."/>'</xsl:template><!--}}}-->
+
 <xsl:template match="fieldLabel|header"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
 <xsl:if test="position()-1">,</xsl:if><xsl:value-of select="name()"/>:'<xsl:apply-templates select="$attr" mode="translate"/>'</xsl:template><!--}}}-->

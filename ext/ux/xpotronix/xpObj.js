@@ -64,6 +64,8 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 		var selections = panel.get_selections();
 
+		/* queda la funcion en una variable para ser llamada luego */
+
 		var command = function( params ){
 
 			params = params | {};
@@ -80,8 +82,12 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 		var ret = false;
 
+		/* si hay un dialog lo muestra */
+
 		if ( item.dialog ) 	
 			item.dialog.fn.call( item.dialog.scope || this, selections, command, item );
+
+		/* o si hay un comando lo ejecuta */
 
 		else if ( item.script ) 	
 			ret = item.script.fn.call( item.script.scope || this, selections, command, item );
