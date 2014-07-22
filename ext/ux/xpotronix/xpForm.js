@@ -135,7 +135,7 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 			it.initialConfig.disabled || it.enable();
 
-			// it.setReadOnly( ! ( ! it.initialConfig.disabled ) )
+			// it.setReadOnly( it.initialConfig.disabled )
 
 		}, this );
 
