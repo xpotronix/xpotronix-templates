@@ -187,7 +187,8 @@
 		<lazyRender>true</lazyRender>
 		<hideTrigger>false</hideTrigger>
 		<triggerAction>all</triggerAction>
-		<forceSelection>true</forceSelection>
+		<forceSelection>false</forceSelection>
+		<hideMode>offsets</hideMode>
 		<allowBlank/>
 		<minChars>3</minChars>
 	</field><!--}}}-->

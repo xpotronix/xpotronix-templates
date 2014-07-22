@@ -407,6 +407,9 @@
 <xsl:template match="mode"><!--{{{-->
 <xsl:if test="position()-1">,</xsl:if>mode:'<xsl:value-of select="."/>'</xsl:template><!--}}}-->
 
+<xsl:template match="hideMode"><!--{{{-->
+<xsl:if test="position()-1">,</xsl:if>hideMode:'<xsl:value-of select="."/>'</xsl:template><!--}}}-->
+
 <xsl:template match="displayField[ancestor::*/@type='xpenum']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
 <xsl:if test="position()-1">,</xsl:if>displayField:'<xsl:value-of select="$attr/@name"/>'</xsl:template><!--}}}-->

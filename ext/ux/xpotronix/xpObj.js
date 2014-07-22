@@ -485,6 +485,7 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 			text: 'Acciones',
 			tooltip: 'Ejecute una acción para procesar los items seleccionados',
 			menu: { items: []}
+			// ,minWidth: 105
 		};
 
 		var item, pm = panel.processes_menu;
