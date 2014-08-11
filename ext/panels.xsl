@@ -227,7 +227,7 @@
 
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
 
-		<xsl:message>en Tab, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message>
+		<!-- <xsl:message>en Tab, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message> -->
 		<xsl:if test="position()-1">,</xsl:if>new Ext.TabPanel(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>

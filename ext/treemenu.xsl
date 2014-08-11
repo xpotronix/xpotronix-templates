@@ -31,7 +31,6 @@
 	<xsl:include href="object.xsl"/>
 	<xsl:include href="feat.xsl"/>
 	<xsl:include href="log.xsl"/>
-	<xsl:include href="layout.xsl"/>
 
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
