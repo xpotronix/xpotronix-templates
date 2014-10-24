@@ -103,9 +103,36 @@
 				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="$type='int' or $type='integer'"><xsl:value-of select="."/></xsl:when>
-			<xsl:otherwise>'<xsl:value-of select="."/>'</xsl:otherwise>
+			<xsl:otherwise>'<xsl:call-template name="escapeQuotes"><xsl:with-param name="txt" select="."/></xsl:call-template>'</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template><!--}}}-->
+
+    <xsl:template name="escapeQuotes">
+        <xsl:param name="txt"/>
+        <!-- Escape with slash -->
+        <xsl:variable name="backSlashQuote">&#92;&#39;</xsl:variable>
+        <!-- MsSql escape -->
+        <!-- <xsl:variable name="backSlashQuote">&#39;&#39;</xsl:variable> -->
+        <xsl:variable name="singleQuote">&#39;</xsl:variable>
+
+        <xsl:choose>
+            <xsl:when test="string-length($txt) = 0">
+                <!-- ... -->
+            </xsl:when>
+
+            <xsl:when test="contains($txt, $singleQuote)">
+                <xsl:value-of disable-output-escaping="yes" select="concat(substring-before($txt, $singleQuote), $backSlashQuote)"/>
+
+                <xsl:call-template name="escapeQuotes">
+                    <xsl:with-param name="txt" select="substring-after($txt, $singleQuote)"/>
+                </xsl:call-template>
+            </xsl:when>
+
+            <xsl:otherwise>
+                <xsl:value-of disable-output-escaping="yes" select="$txt"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
 
 </xsl:stylesheet>
 
