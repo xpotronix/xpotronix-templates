@@ -96,9 +96,14 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 		recurse_items( this.getForm(), function(i){
 
-			var event_name = (i.xtype == 'checkbox') ? 'check' : 'change';
+			switch( i.xtype ) {
 
-			i.on( event_name, function(e) {
+				case 'checkbox': en = 'check';  break;
+				case 'combo':    en = 'select'; break;
+				default:	 en = 'change';
+			}
+
+			i.on( en, function(e) {
 
 				var record = this.store.cr();
 
@@ -112,7 +117,7 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 					if ( e.xtype == 'combo' && e.mode == 'remote' )
 						
-						record.set(e.name+'_label', e.getRawValue())
+						record.set(e.name+'_label', e.getRawValue());
 
 					// this.resumeEvents();
 
