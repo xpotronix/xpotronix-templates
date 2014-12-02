@@ -94,13 +94,31 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 		if ( !this.store ) return;
 
-		recurse_items( this.getForm(), function(i){
+		recurse_items( this.getForm(), function(i) {
 
 			switch( i.xtype ) {
 
 				case 'checkbox': en = 'check';  break;
-				case 'combo':    en = 'select'; break;
-				default:	 en = 'change';
+
+				case 'combo': 
+
+					en = 'select'; 
+					i.on( 'blur', function( e ) { 
+
+        					if( e.getRawValue() == "" ) {
+
+            						e.clearValue(); 
+							var record = this.store.cr();
+							record.set(e.name, '');
+							record.set(e.name+'_label', '');
+
+						}
+    					}, this );
+
+				break;
+
+				default:	 
+					en = 'change';
 			}
 
 			i.on( en, function(e) {
