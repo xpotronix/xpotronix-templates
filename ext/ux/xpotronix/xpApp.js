@@ -175,7 +175,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 		Ext.each( arr, function( a ) { 
 
 			// DEBUG: poner accesos en acl en juscaba2
-			( a.acl.access || this.feat.application == 'juscaba2' ) && 
+			( a.acl.access || this.config.application == 'juscaba2' ) && 
 				ret.push( a ); 
 		}, this );
 
