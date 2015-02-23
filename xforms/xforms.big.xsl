@@ -69,7 +69,7 @@ eduardo spotorno, julio 2007
 </xsl:element>
 
 <xsl:element name="title">
-<xsl:value-of select="//feat/application"/> :: <xsl:value-of select="//feat/version"/><xsl:if test="//feat/title_message">| <xsl:value-of select="//feat/title_message"/>
+<xsl:value-of select="//config/application"/> :: <xsl:value-of select="//feat/version"/><xsl:if test="//feat/title_message">| <xsl:value-of select="//feat/title_message"/>
 </xsl:if>
 </xsl:element>
 
