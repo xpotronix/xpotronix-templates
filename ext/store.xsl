@@ -75,7 +75,18 @@
         <xsl:template match="query" mode="Store"><!--{{{-->
 
 	<xsl:variable name="parent_obj_name" select="../../../@name"/>
-	<xsl:variable name="obj_name" select="from"/>
+
+	<xsl:variable name="obj_name">
+		<xsl:choose>
+			<xsl:when test="contains(from,'.')">
+				<xsl:value-of select="substring-after(from,'.')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="from"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+
 	<xsl:variable name="eh_name" select="@name"/>
 	App.store.add( new Ext.ux.xpotronix.xpStore({
 		storeId: '<xsl:value-of select="concat(../from,'_',@name)"/>'
