@@ -302,12 +302,22 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 
 			Ext.Msg.alert( 'Atención', 'Hubo modificaciones: guarde o descarte los cambios' );
                         return false;
-
 		}
+
+		// @parms:
+		var p = {};
+		var url = Ext.urlDecode( App.get_source() );
+
+		for ( var f in url )
+			if ( f.substr(0,1) === '@' )
+				p[f] = url[f];	  
+
+		Ext.apply( options.params, p ); 
 
 		// entry_helper
 		if ( this.passive )
 			return;
+
 
 		// Search (global search)
 		if ( this.baseParams.query && this.baseParams.fields ) {
@@ -364,6 +374,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 					Ext.apply( options.params, this.get_foreign_key() );
 
 			} 
+
 			else if ( this.foreign_key_type == 'parent' )
 				return;
 			else

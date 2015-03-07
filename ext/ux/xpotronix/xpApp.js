@@ -10,7 +10,7 @@
 
 Ext.ns( 'Ext.ux.xpotronix' );
 
-Ext.ux.xpotronix.xpApp = function( config ) {
+Ext.ux.xpotronix.xpApp = function( config ) {/*{{{*/
 
 	var version = '3.4.0';
 
@@ -119,7 +119,7 @@ Ext.ux.xpotronix.xpApp = function( config ) {
         			]
     		});//}}}
 
-}
+}/*}}}*/
 
 Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 
@@ -127,11 +127,31 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 	changes_buffer: 	null,
 	login_w: 		null,
 	change_password_w: 	null,
+	source: 		null,
 	fake_dirty_records:	[],
 	prevent_reload:		false, // on windows login
 	debug:			false,
 
-	reconfigure: function( config ) {/*{{{*/
+	set_source: function( src ) {/*{{{*/
+
+		if ( src === '?' )
+			src.substr(1);
+	
+		var div = document.createElement('div');
+		div.innerHTML = src;
+		this.source = div.firstChild.nodeValue;
+	}/*}}}*/
+
+	, get_source: function() {/*{{{*/
+
+		if ( ! this.source )
+			this.source = window.location.search.substring(1);
+
+		return this.source;
+
+	}/*}}}*/
+
+	, reconfigure: function( config ) {/*{{{*/
 
 		config && Ext.apply( this, config );
 	},/*}}}*/
