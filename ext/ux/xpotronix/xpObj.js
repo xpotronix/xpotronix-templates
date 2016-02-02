@@ -284,6 +284,19 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 			'f[row_count]': form.ownerCt.find('name','max_recs')[0].getValue()
 		});
 
+                // @parms: hot fix codigo copiado de xpStore, se necesitan variables globales
+
+                var p = {};
+                var url = Ext.urlDecode( App.get_source() );
+
+                for ( var f in url )
+                        if ( f.substr(0,1) === '@' )
+                                p[f] = url[f];
+
+                Ext.apply( q_params, p );
+
+
+
 		// alert( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
 
 		window.open ("?" + Ext.urlEncode( q_params ), "mywindow" ); 
