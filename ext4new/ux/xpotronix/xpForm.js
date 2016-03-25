@@ -22,7 +22,7 @@ var recurse_items = function( cmp, fn, scope ) {
 };
 
 
-Ext.define( 'Ext.ux.xpotronix.xpForm', { 
+Ext.define( 'Ux.xpotronix.xpForm', { 
 
 	extend: 'Ext.form.FormPanel', 
 	alias: 'xpForm',
@@ -40,7 +40,7 @@ Ext.define( 'Ext.ux.xpotronix.xpForm', {
 		Ext.apply(this, config);
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
-		Ext.ux.xpotronix.xpForm.superclass.constructor.apply(this, arguments);
+		Ux.xpotronix.xpForm.superclass.constructor.apply(this, arguments);
 		/* this.addEvents( 'loadrecord' ); */
 
 	},
@@ -77,7 +77,7 @@ Ext.define( 'Ext.ux.xpotronix.xpForm', {
 			this.acl.add && this.buttons.push( this.obj.add_button( this ) );
 		}
 
-		Ext.ux.xpotronix.xpForm.superclass.initComponent.apply(this, arguments);
+		Ux.xpotronix.xpForm.superclass.initComponent.apply(this, arguments);
 
 		this.on({ 
 
@@ -89,8 +89,8 @@ Ext.define( 'Ext.ux.xpotronix.xpForm', {
 	onRender: function() { /*{{{*/
 
 		// call parent
-		Ext.ux.xpotronix.xpForm.superclass.onRender.apply(this, arguments);
 
+		this.callParent();
 
 		this.obj && this.obj.set_toolbar( this );
 

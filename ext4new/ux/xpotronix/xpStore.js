@@ -8,9 +8,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-Ext.ns( 'Ext.ux.xpotronix' );
+Ext.ns( 'Ux.xpotronix' );
 
-Ext.define( 'Ext.ux.xpotronix.xpStore', {
+Ext.define( 'Ux.xpotronix.xpStore', {
 
 	extend: 	'Ext.data.Store',
 	alias: 		'xpStore',
@@ -34,7 +34,7 @@ Ext.define( 'Ext.ux.xpotronix.xpStore', {
 	autoLoad: true,
 
 
-	config: function( config ) {
+	constructor: function( config ) {
 
 
 	this.paramNames = {
@@ -68,7 +68,7 @@ Ext.define( 'Ext.ux.xpotronix.xpStore', {
 
 	this.reader = new Ext.data.XmlReader({ record: this.ns, id: '@uiid', totalProperty: '@total_records', messageProperty: '@msg' }, this.rs );
 
-	Ext.ux.xpotronix.xpStore.superclass.constructor.call( this );
+	Ux.xpotronix.xpStore.superclass.constructor.call( this );
 
 	/* this.addEvents( 'serverstoreupdate' ); 
 	this.addEvents( 'changerowindex' );
@@ -314,6 +314,8 @@ Ext.define( 'Ext.ux.xpotronix.xpStore', {
 		if ( this.passive )
 			return;
 
+		/* DEBUG: baseParams no va en extjs4
+
 		// Search (global search)
 		if ( this.baseParams.query && this.baseParams.fields ) {
 
@@ -338,6 +340,8 @@ Ext.define( 'Ext.ux.xpotronix.xpStore', {
 			Ext.apply( options.params, params );
 
 		}
+
+		*/
 
 		// FilterRow
 		if ( this.filter && this.filter.shown ) {

@@ -25,7 +25,7 @@
 
 	/* <xsl:value-of select="@name"/> xpObj */
 
-	App.obj.add( new Ext.ux.xpotronix.xpObj({
+	App.obj.add( Ext.create( 'Ux.xpotronix.xpObj', {
 
 		class_name:'<xsl:value-of select="@name"/>'
 		/* ,el:'contentEl_<xsl:value-of select="@name"/>' */
@@ -53,7 +53,11 @@
 
 	<xsl:if test="//*:model//obj[@name=$obj_name]/panel">
 	/* panels para <xsl:value-of select="@name"/> */
-	App.obj.get('<xsl:value-of select="@name"/>').panels.addAll([<xsl:apply-templates select="//*:model//obj[@name=$obj_name]/panel"/>]);
+
+	var panels = [<xsl:apply-templates select="//*:model//obj[@name=$obj_name]/panel"/>];
+
+	App.obj.get('<xsl:value-of select="@name"/>').panels.addAll( panels );
+
 	</xsl:if>
 
 	</xsl:template><!--}}}-->

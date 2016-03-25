@@ -8,49 +8,40 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-Ext.define( 'Ext.ux.xpotronix.xpGrid',  {
+Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	extend: 'Ext.grid.Panel',
 	alias: 'xpGrid',
-
-	constructor: function(config) {
-
-		Ext.apply( this, config );
-		this.acl = this.acl || this.obj.acl;
-		this.processes_menu = this.processes_menu || this.obj.processes_menu;
-		this.callParent( config );
-
-	},
-
 	obj: null,
 	acl: null,
 	layout:'fit',
 	border:false,
-	trackMouseOver:true,
 	selModel: null,
+	trackMouseOver:true,
 	inspect_w: null,
 	feat: null,
 	loadMask: true,
 
 	initComponent:function() {/*{{{*/
 
-		/* FALTA
+
+		this.acl = this.acl || this.obj.acl;
+		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+
 		Ext.apply( this, { 
 
-				selModel: new Ext.grid.RowSelectionModel({
-				singleSelect:false, 
-				moveEditorOnEnter: false,
+			dockedItems: [{
+				xtype: 'xppagingtoolbar',
+				store: this.store,
+				dock: 'top',
+				displayInfo: true
+			}],
 
-				onEditorKey: function(field, e) {
-						// this place should be to add new editors key
-        					this.constructor.prototype.onEditorKey.apply(this, arguments);
-					}	
-				})
-			});
-
-		*/
-
-		this.obj.toolbar( this );
+			onEditorKey: function(field, e) {
+				// this place should be to add new editors key
+				this.constructor.prototype.onEditorKey.apply(this, arguments);
+			}
+		});
 
 		/* eventos */
 
@@ -115,9 +106,11 @@ Ext.define( 'Ext.ux.xpotronix.xpGrid',  {
 
 	 	});/*}}}*/
 
+		/* selModel events */
 
-		/* FALTA
-		this.selModel.on('rowselect', function(sm, rowIndex) {/
+		this.selModel = this.getSelectionModel();
+
+		this.selModel.on('rowselect', function(sm, rowIndex) {
 		
 			if ( sm.getCount() == 1 ) 
 				this.store.go_to( rowIndex );
@@ -136,10 +129,6 @@ Ext.define( 'Ext.ux.xpotronix.xpGrid',  {
 
 		}, this.store );
 
-		*/
-
-		
-
 
 		this.on( 'viewready', function() {/*{{{*/
 
@@ -147,6 +136,8 @@ Ext.define( 'Ext.ux.xpotronix.xpGrid',  {
 				this.selModel.selectRow( this.store.rowIndex );
 
 		} );/*}}}*/
+
+		/* store events */
 
 		this.store.on( 'add', function() {
 
@@ -171,17 +162,16 @@ Ext.define( 'Ext.ux.xpotronix.xpGrid',  {
                 }, this );/*}}}*/
                
 		// call parent
-		Ext.ux.xpotronix.xpGrid.superclass.initComponent.apply(this, arguments);
+		this.callParent();
 
 	}, // eo function initComponent/*}}}*/
 
 	onRender:function() {//{{{
-		// call parent
-		Ext.ux.xpotronix.xpGrid.superclass.onRender.apply(this, arguments);
 
-		this.obj.set_toolbar( this );
+		/* DEBUG MIGRACION FALTA */
+		// this.dz = Ext.create( 'Ux.xpotronix.GridDropZone', {grid: this, ddGroup:this.ddGroup || 'GridDD'});	
 
-		this.dz = new Ext.ux.xpotronix.GridDropZone(this, {ddGroup:this.ddGroup || 'GridDD'});	
+		this.callParent();
 
 	}, // eo function onRender//}}}
 

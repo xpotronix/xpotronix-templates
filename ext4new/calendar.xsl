@@ -62,8 +62,7 @@
 	<script type="text/javascript" src="/ux/xpotronix/xpApp.js"></script>
 	<script type="text/javascript">
 		Ext.onReady(function(){
-	       	 	Ext.namespace( 'App' );
-	        	var App = new Ext.ux.xpotronix.xpApp( {feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> } );
+	        	var App = Ext.create( 'Ux.xpotronix.xpApp', {feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> } );
 	        	App.login();
 		});
 	</script>

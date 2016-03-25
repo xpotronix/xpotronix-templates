@@ -100,5 +100,5 @@ Ext.ux.Image = Ext.extend(Ext.Component, {
   }
 });
 
-Ext.define( 'image', 'Ext.ux.Image' );
+// Ext.define( 'image', 'Ext.ux.Image' );
 

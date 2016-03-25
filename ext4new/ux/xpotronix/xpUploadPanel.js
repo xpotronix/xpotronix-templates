@@ -8,12 +8,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-Ext.ux.xpotronix.xpUploadPanel = Ext.extend(Ext.ux.UploadPanel, {
+Ux.xpotronix.xpUploadPanel = Ext.extend(Ext.ux.UploadPanel, {
 
 	initComponent:function() {
 
 		// call parent
-		Ext.ux.xpotronix.xpUploadPanel.superclass.initComponent.apply(this, arguments);
+		Ux.xpotronix.xpUploadPanel.superclass.initComponent.apply(this, arguments);
 
 		this.uploader.on('beforeallstart', function() {
 
@@ -26,6 +26,6 @@ Ext.ux.xpotronix.xpUploadPanel = Ext.extend(Ext.ux.UploadPanel, {
 }); // eo extend
 
 // register xtype
-Ext.define( 'xpUploadPanel', 'Ext.ux.xpotronix.xpUploadPanel' );
+Ext.define( 'xpUploadPanel', 'Ux.xpotronix.xpUploadPanel' );
 
 // eof

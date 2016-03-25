@@ -8,7 +8,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-Ext.define( 'Ext.ux.xpotronix.xpPanel', {
+Ext.define( 'Ux.xpotronix.xpPanel', {
 
 	extend: 'Ext.Panel',
 	alias: 'xpPanel', 
@@ -22,7 +22,7 @@ Ext.define( 'Ext.ux.xpotronix.xpPanel', {
 		Ext.apply(this, config);
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
-		Ext.ux.xpotronix.xpPanel.superclass.constructor.apply(this, arguments);
+		Ux.xpotronix.xpPanel.superclass.constructor.apply(this, arguments);
 
 	},
 
@@ -70,17 +70,13 @@ Ext.define( 'Ext.ux.xpotronix.xpPanel', {
          	}, this );
 		*/
 
-		Ext.ux.xpotronix.xpPanel.superclass.initComponent.apply(this, arguments);
+		Ux.xpotronix.xpPanel.superclass.initComponent.apply(this, arguments);
 
 	}, // eo function initComponent///*}}}*/
 
 	onRender: function() {//{{{
 
-		// call parent
-		Ext.ux.xpotronix.xpPanel.superclass.onRender.apply(this, arguments);
-
-		this.obj.set_toolbar( this );
-
+		this.callParent();
 	},//}}}
 
 	on_render: function() {/*{{{*/
