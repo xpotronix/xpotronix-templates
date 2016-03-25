@@ -3,6 +3,8 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	extend: 'Ext.toolbar.Paging',
 	alias: 'widget.xppagingtoolbar',
 
+	panel: null,
+
 	alternateClassName: [
 		'xppagingtoolbar'
 	],
@@ -58,6 +60,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	},
 
 	initComponent: function() {
+
 		var me = this;
 
 		Ext.applyIf(me, {
@@ -71,6 +74,8 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		});
 
 		me.callParent();
+
+		
 
 		// saveParamsOnLoad just fixates the params in the extraParams, before the load
 		if (me.saveParamsOnLoad) {
@@ -96,55 +101,55 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		}
 	},
 
-	set_toolbar: function(panel) { /*{{{*/
 
-		var tbar = panel.getTopToolbar();
+	onRender: function() {
 
-		if (tbar) {
+		var panel = this.panel;
 
-			// botones
+		// botones
 
-			if (panel.getXType() == 'xpForm' || panel.getXType() == 'xpPanel') {
+		if (panel.getXType() == 'xpForm' || panel.getXType() == 'xpPanel') {
 
-				tbar.insert(tbar.items.length - 2, panel.obj.form_left_button(panel));
+			this.insert(this.items.length - 2, panel.obj.form_left_button(panel));
 
-				tbar.insert(tbar.items.length - 2, panel.obj.form_right_button(panel));
-			}
-
-			var b, pos = tbar.items.length - 2;
-
-			if (panel.acl.del)
-				tbar.insert(pos, panel.obj.del_button(panel));
-
-			tbar.insert(pos, '->');
-
-			if (panel.acl.edit || panel.acl.add)
-				tbar.insert(pos, panel.obj.discard_changes(panel));
-
-			tbar.insert(pos, panel.obj.export_button(panel));
-
-			if (panel.store.foreign_key_type == 'parent')
-				tbar.insert(pos, panel.obj.assign_button(panel));
-
-			tbar.insert(pos, panel.obj.invert_button(panel));
-
-			if (panel.processes_menu)
-				tbar.insert(pos, panel.obj.add_process_menu(panel));
-
-			if (panel.acl.edit || panel.acl.add)
-				tbar.insert(pos, panel.obj.save_button(panel));
-
-			if (panel.acl.add)
-				tbar.insert(pos, panel.obj.add_button(panel));
-
-
-			if (panel.obj.get_inspect_panel())
-				b = tbar.insert(pos, panel.obj.inspect_button(panel));
-
+			this.insert(this.items.length - 2, panel.obj.form_right_button(panel));
 		}
 
+		var b, pos = this.items.length - 2;
 
-	},
+		if (panel.acl.del)
+			this.insert(pos, panel.obj.del_button(panel));
+
+		this.insert(pos, '->');
+
+		if (panel.acl.edit || panel.acl.add)
+			this.insert(pos, panel.obj.discard_changes(panel));
+
+		this.insert(pos, panel.obj.export_button(panel));
+
+		if (panel.store.foreign_key_type == 'parent')
+			this.insert(pos, panel.obj.assign_button(panel));
+
+		this.insert(pos, panel.obj.invert_button(panel));
+
+		if (panel.processes_menu)
+			this.insert(pos, panel.obj.add_process_menu(panel));
+
+		if (panel.acl.edit || panel.acl.add)
+			this.insert(pos, panel.obj.save_button(panel));
+
+		if (panel.acl.add)
+			this.insert(pos, panel.obj.add_button(panel));
+
+
+		if (panel.obj.get_inspect_panel())
+			b = this.insert(pos, panel.obj.inspect_button(panel));
+
+
+		this.callParent();
+
+	}
+
 	/*}}}*/
 
 });
