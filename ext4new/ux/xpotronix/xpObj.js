@@ -119,14 +119,14 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	form_left_button: function( panel ) {/*{{{*/
 
-		var tb = new Ext.Toolbar.Button( {
-				// id: 'leftButton',
-				text: 'Atras',
-	                	menuAlign: 'tr?',
-				disabled: true,
-	                	tooltip: 'Ir hacia el elemento previo',
-				listeners:{click:{scope:this.store, fn:function() { this.prev() },buffer:200 }}
-				});
+		var tb = new Ext.Button( {
+			// id: 'leftButton',
+			text: 'Atras',
+	               	menuAlign: 'tr?',
+			disabled: true,
+	               	tooltip: 'Ir hacia el elemento previo',
+			listeners:{click:{scope:this.store, fn:function() { this.prev() },buffer:200 }}
+		});
 
 
 
@@ -142,7 +142,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	form_right_button: function( panel ) {/*{{{*/
 
-		var tb = new Ext.Toolbar.Button( {
+		var tb = new Ext.Button( {
 			// id: 'rightButton',
 			text: 'Adelante',
 	               	menuAlign: 'tr?',
@@ -163,7 +163,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	export_button: function( panel ) {/*{{{*/
 
-		return new Ext.Toolbar.Button( {
+		return new Ext.Button( {
 	                icon: '/ux/images/grid.png',
 	                cls: 'x-btn-text-icon',
 			text: 'Exportar',
@@ -182,7 +182,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	invert_button: function( panel ) {/*{{{*/
 
-		return new Ext.Toolbar.Button( {
+		return new Ext.Button( {
 	                icon: '/ext/resources/images/default/layout/stuck.gif',
 	                cls: 'x-btn-text-icon',
 			text: 'Inv. Sel.',
@@ -193,7 +193,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	discard_changes: function( panel ) {/*{{{*/
 
-		var tb = new Ext.Toolbar.Button( {
+		var tb = new Ext.Button( {
 	                // icon: '/ext/resources/images/default/layout/stuck.gif',
 	                icon: '/ux/images/cross.png',
 	                cls: 'x-btn-text-icon',
@@ -230,7 +230,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	del_button: function( panel ) {/*{{{*/
 
-		return new Ext.Toolbar.Button({
+		return new Ext.Button({
 	        	        icon: '/ext/resources/images/default/dd/drop-no.gif',
         	        	cls: 'x-btn-text-icon',
 				text: 'Borrar',
@@ -244,7 +244,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	save_button: function( panel ) {/*{{{*/
 
-        	var tb = new Ext.Toolbar.Button({
+        	var tb = new Ext.Button({
        	        	icon: '/ext/resources/images/default/dd/drop-yes.gif',
 			text: 'Guardar',
                 	cls: 'x-btn-text-icon',
@@ -265,7 +265,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 	},/*}}}*/
 
 	assign_button: function( panel ) {/*{{{*/
-        	return new Ext.Toolbar.Button({
+        	return new Ext.Button({
        	        	icon: '/ux/images/arrow_up.png',
 			text: 'Asignar',
                 	cls: 'x-btn-text-icon',
@@ -316,7 +316,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	inspect_button: function( panel ) {/*{{{*/
 
-		return new Ext.Toolbar.Button({
+		return new Ext.Button({
 	                icon: '/ux/images/application_form_magnify.png',
 			cls: 'x-btn-text-icon',
 			text: 'Ver',
@@ -344,7 +344,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	add_button: function( panel ) {/*{{{*/
 
-		return new Ext.Toolbar.Button({
+		return new Ext.Button({
 			icon: '/ext/resources/images/default/dd/drop-add.gif',
 			cls: 'x-btn-text-icon',
 			text: 'Agregar',
@@ -378,7 +378,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 			menu_params.menu.items[i] = item;
                 }
 
-		return new Ext.Toolbar.Button( menu_params );
+		return new Ext.Button( menu_params );
 
         },/*}}}*/
 

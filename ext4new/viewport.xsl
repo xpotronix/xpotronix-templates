@@ -107,7 +107,7 @@
 
 
 	<xsl:if test="//xpotronix:session/feat/theme">
-	Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>");
+	/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>"); */
 	</xsl:if>
 
 	Ext.Ajax.timeout = 60000;

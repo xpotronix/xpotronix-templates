@@ -32,6 +32,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 			dockedItems: [{
 				xtype: 'xppagingtoolbar',
+				panel: this,
 				store: this.store,
 				dock: 'top',
 				displayInfo: true
