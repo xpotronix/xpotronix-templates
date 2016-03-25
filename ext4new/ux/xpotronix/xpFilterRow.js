@@ -8,7 +8,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-Ext.ux.xpotronix.xpFilterRow = Ext.extend(Ext.ux.grid.FilterRow, {
+Ux.xpotronix.xpFilterRow = Ext.extend(Ext.ux.grid.FilterRow, {
 
   init: function(grid) {
 

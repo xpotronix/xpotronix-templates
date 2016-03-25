@@ -102,14 +102,13 @@
 
 	var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
 
-	if ( App ) {
+	if ( App == undefined ) {
 
-		App.reconfigure( config_App );
+		var App = Ext.create( 'Ux.xpotronix.xpApp',  config_App );
 
 	} else {
 
-		Ext.namespace('App');
-		var App = new Ext.ux.xpotronix.xpApp( config_App );
+		App.reconfigure( config_App );
 	}
 
 

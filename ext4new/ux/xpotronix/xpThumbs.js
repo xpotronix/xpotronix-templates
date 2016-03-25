@@ -8,7 +8,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-Ext.define( 'Ext.ux.xpotronix.xpThumbs', {
+Ext.define( 'Ux.xpotronix.xpThumbs', {
 
 	extend: 'Ext.Panel',
 	alias: 'xpThumbs', 
@@ -77,7 +77,7 @@ Ext.define( 'Ext.ux.xpotronix.xpThumbs', {
 	this.acl = this.acl || this.obj.acl;
 	this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
-	Ext.ux.xpotronix.xpThumbs.superclass.constructor.apply(this, arguments);
+	Ux.xpotronix.xpThumbs.superclass.constructor.apply(this, arguments);
 
 	if(this.loadMask){
 		this.loadMask = new Ext.LoadMask(this.bwrap,Ext.apply({store:this.store}, this.loadMask));
@@ -91,7 +91,7 @@ Ext.define( 'Ext.ux.xpotronix.xpThumbs', {
 
 		this.obj.toolbar( this );
 
-		Ext.ux.xpotronix.xpThumbs.superclass.initComponent.apply(this, arguments);
+		Ux.xpotronix.xpThumbs.superclass.initComponent.apply(this, arguments);
 
 		this.dv.on('click', function(dv, rowIndex) {/*{{{*/
 	
@@ -119,10 +119,8 @@ Ext.define( 'Ext.ux.xpotronix.xpThumbs', {
 	}, // eo function initComponent//}}}
 
 	onRender:function() {//{{{
-		// call parent
-		Ext.ux.xpotronix.xpThumbs.superclass.onRender.apply(this, arguments);
 
-		this.obj.set_toolbar( this );
+		this.callParent();
 
 	}, // eo function onRender//}}}
 

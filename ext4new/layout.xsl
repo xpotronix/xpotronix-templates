@@ -140,62 +140,66 @@
 		</xsl:choose>
 	</xsl:variable>
 
-	new Ext.<xsl:value-of select="$ui_class"/>({
-            id: 'xpApp_layout',
-	    stateful: true,
-            layout: 'border',
-	    hideMode:'offsets',
-	    deferredRender: true,
-	    bodyStyle: {border:0},
-            items:[
+	Ext.create( 'Ext.<xsl:value-of select="$ui_class"/>', {
+
+		id: 'xpApp_layout',
+		stateful: true,
+		layout: 'border',
+		hideMode:'offsets',
+		renderTo: Ext.getBody(),
+		bodyStyle: {border:0},
+		items:[
 
 		<xsl:if test="$menu_bar='true'">
-		new Ext.Panel({  
-				id: 'xpApp_menu',
-				layout: 'fit', 
-				width: '100%', 
-				region: '<xsl:value-of select="$region"/>', 
-				tbar: App.menu }),
+		{  
+			id: 'xpApp_menu',
+			xtype: 'panel',
+			layout: 'fit', 
+			width: '100%', 
+			region: '<xsl:value-of select="$region"/>', 
+			tbar: App.menu },
+
 		</xsl:if>
 
-		new Ext.TabPanel({ 
-				id: 'viewport_north_tabs',
-				stateful: true,
-				titleCollapse: false, 
-				height: 200, 
-				margins: '<xsl:value-of select="$top_margin"/> 0 0 0', 
-				split: true, 
-				region:'<xsl:value-of select="$region"/>', 
-				deferredRender: true, 
-				layoutOnTabChange: true, 
-				/* collapsible: true, 
-				collapseMode:'mini',*/
-				activeTab:0,
-                  		items: App.accessible( [ <xsl:apply-templates select="$panels//*[@obj_name=$obj_name and @region='']|$panels//*[@region=$region]" mode="panel_list"/> ] )
-                })
+		{ 
+			id: 'viewport_north_tabs',
+			xtype: 'tabpanel',
+			stateful: true,
+			titleCollapse: false, 
+			height: 200, 
+			margins: '<xsl:value-of select="$top_margin"/> 0 0 0', 
+			split: true, 
+			region:'<xsl:value-of select="$region"/>', 
+			layoutOnTabChange: true, 
+			/* collapsible: true, 
+			collapseMode:'mini',*/
+			activeTab:0,
+                  	items: [ <xsl:apply-templates select="$panels//*[@obj_name=$obj_name and @region='']|$panels//*[@region=$region]" mode="panel_list"/> ]
+                }
 
 		<xsl:if test="count($panels//*[@obj_name!=$obj_name])">
-                , new Ext.TabPanel({ region:'center', 
-				id: 'viewport_center_tabs',
-				stateful: true,
-				deferredRender: true, 
-				layoutOnTabChange: true, 
-				collapsible: false, 
-				activeTab:0,
-                  		items: App.accessible( [<xsl:apply-templates select="$panels//*[@obj_name!=$obj_name and @region='']|$panels//*[@region='center']" mode="panel_list"/>] )
-                })</xsl:if>
+                ,{ region:'center', 
+			id: 'viewport_center_tabs',
+			xtype: 'tabpanel',
+			stateful: true,
+			layoutOnTabChange: true, 
+			collapsible: false, 
+			activeTab:0,
+                  	items: [<xsl:apply-templates select="$panels//*[@obj_name!=$obj_name and @region='']|$panels//*[@region='center']" mode="panel_list"/>] 
+                }</xsl:if>
 		<xsl:if test="$messages_panel='true'">
 		,{
-	  	    id: '__messagesPanel',
-		    stateful: true,
-                    region:'south',
-		    layout: 'fit',
-                    split:true,
-                    height: 100,
-                    collapsible: true,
-		    collapsed: true,
-                    title:'Mensajes',
-                    margins:'0 0 0 0'
+			id: '__messagesPanel',
+			stateful: true,
+			region:'south',
+			layout: 'fit',
+			split:true,
+			height: 100,
+			collapsible: true,
+			collapsed: true,
+			title:'Mensajes',
+			margins:'0 0 0 0'
+
                 }</xsl:if>
 		]
         });
@@ -287,7 +291,6 @@ var cardWizard = {
 
             App.layout = new Ext.Viewport({
                 layout:'border',
-		deferredRender: true,
                 items:[
 			new Ext.Panel({  layout: 'fit', width: '100%', region: 'north', collapsible: false, tbar: App.menu }),
 			contentPanel]

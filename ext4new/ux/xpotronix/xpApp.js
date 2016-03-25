@@ -8,12 +8,14 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-Ext.ns( 'Ext.ux.xpotronix' );
+Ext.ns( 'Ux.xpotronix' );
 
+Ext.define( 'Ux.xpotronix.xpApp', {
 
-Ext.define( 'Ext.ux.xpotronix.xpApp', {
+	mixins: {
+        	observable: 'Ext.util.Observable'
+    	},
 
-	extend: 		'Ext.util.Observable',
 	alias: 			'xpApp',
 	menu:			null,
 	changes_buffer: 	null,
@@ -34,14 +36,16 @@ Ext.define( 'Ext.ux.xpotronix.xpApp', {
 	*/
 
 
-	Ext.apply( this, config ); 
+	Ext.apply( this, config );
 
-	/* this.addEvents( 'configready' ); */
+	this.mixins.observable.constructor.call(this, config);
+
+	this.addEvents( 'configready' );
 
 	Ext.SSL_SECURE_URL = '/ext/resources/images/vista/s.gif';
 	Ext.BLANK_IMAGE_URL = '/ext/resources/images/vista/s.gif';
 
-	Ext.QuickTips.init();
+	Ext.tip.QuickTipManager.init();
 
 	if ( this.state_manager == 'http' ) {
 
@@ -81,8 +85,7 @@ Ext.define( 'Ext.ux.xpotronix.xpApp', {
 	this.store = Ext.StoreMgr;
 
 	this.messages_proxy = new Ext.data.MemoryProxy();
-
-	this.conn_process = new Ext.data.Connection();
+	this.conn_process   = new Ext.data.Connection();
 
         this.conn_process.on( 'requestcomplete', this.on_complete, this );
 	this.conn_process.on( 'requestexception', this.on_complete_exception , this );
@@ -97,9 +100,7 @@ Ext.define( 'Ext.ux.xpotronix.xpApp', {
 
 	Ext.define( 'AppStats', {
 		extend: 'Ext.data.Model',
-		fields: [
-               			{name: 'value', mapping: '@value'}
-			] });
+		fields: [{name: 'value', mapping: '@value'}]});
 
 	this.status_store = new Ext.data.Store({//{{{
 
@@ -168,7 +169,6 @@ Ext.define( 'Ext.ux.xpotronix.xpApp', {
 
 	start: function() {/*{{{*/
 
-	
 	},/*}}}*/ 
 
 	close_stores: function() {/*{{{*/
@@ -176,7 +176,7 @@ Ext.define( 'Ext.ux.xpotronix.xpApp', {
 		this.store.each( function(s) { 
 			s.destroy(); 
 			delete s;
-		} );
+		});
 
 	
 	},/*}}}*/ 

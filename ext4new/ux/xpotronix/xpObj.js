@@ -9,9 +9,9 @@
  */
 
 
-Ext.ns( 'Ext.ux.xpotronix' );
+Ext.ns( 'Ux.xpotronix' );
 
-Ext.define( 'Ext.ux.xpotronix.xpObj', { 
+Ext.define( 'Ux.xpotronix.xpObj', { 
 
 	extend: 'Ext.Component',
 	alias: 'xpObj',
@@ -25,7 +25,7 @@ Ext.define( 'Ext.ux.xpotronix.xpObj', {
 
 	Ext.apply( this, config ); 
 
-	Ext.ux.xpotronix.xpObj.superclass.constructor.call( this );
+	Ux.xpotronix.xpObj.superclass.constructor.call( this );
 
 	this.on( 'beforedestroy', function(){
 
@@ -62,10 +62,14 @@ Ext.define( 'Ext.ux.xpotronix.xpObj', {
 
         process_selections: function( panel, item, obj ){/*{{{*/
 
+		/* procesa la selección */
+
 		if ( item.params == undefined ) 
 			item.params = {};
 
 		var selections = panel.get_selections();
+
+		/* prepara la funcion enviada por parametro desde xpotronix */
 
 		var command = function( params ){
 
@@ -83,13 +87,19 @@ Ext.define( 'Ext.ux.xpotronix.xpObj', {
 
 		var ret = false;
 
+		/* si tiene definido un dialogo, lo muestra */
+
 		if ( item.dialog ) 	
 			item.dialog.fn.call( item.dialog.scope || this, selections, command, item );
+
+		/* si tiene un script lo ejecuta */
 
 		else if ( item.script ) 	
 			ret = item.script.fn.call( item.script.scope || this, selections, command, item );
 
 		else ret = true;
+
+		/* verifica si hay registros para guardar */
 
 		if ( ret ) { 
 
@@ -104,6 +114,9 @@ Ext.define( 'Ext.ux.xpotronix.xpObj', {
 
         },/*}}}*/
 
+	/* botones formulario 
+	enable/disable de los botones de la barra izquierda y derecha */
+
 	form_left_button: function( panel ) {/*{{{*/
 
 		var tb = new Ext.Toolbar.Button( {
@@ -114,6 +127,8 @@ Ext.define( 'Ext.ux.xpotronix.xpObj', {
 	                	tooltip: 'Ir hacia el elemento previo',
 				listeners:{click:{scope:this.store, fn:function() { this.prev() },buffer:200 }}
 				});
+
+
 
 		tb.setDisabled( !this.store.rowIndex );
 
@@ -367,77 +382,7 @@ Ext.define( 'Ext.ux.xpotronix.xpObj', {
 
         },/*}}}*/
 
-	toolbar: function( panel ) {/*{{{*/
-
-                if ( ! App.get_feat( 'paging_toolbar', this ) || panel.paging_toolbar == false ) 
-			return;
-
-                panel.tbar = new Ext.PagingToolbar({
-			store: panel.store,
-			pageSize: panel.store.pageSize,
-			displayInfo: true,
-			displayMsg: '{0} a {1} de {2}',
-			emptyMsg: "",
-			prependButtons: true
-		});
-
-		panel.store.on('rowcountchange', function( s ) {
-			this.bindStore( s, true );
-		}, panel.tbar );
-
-	},/*}}}*/
-
-	set_toolbar: function( panel ) {/*{{{*/
-
-		var tbar =  panel.getTopToolbar();
-
-		if ( tbar ) {
-
-			// botones
-
-			if ( panel.getXType() == 'xpForm' || panel.getXType() == 'xpPanel' ) {
-
-				tbar.insert( tbar.items.length - 2, panel.obj.form_left_button( panel ) ) ;
-
-				tbar.insert( tbar.items.length - 2, panel.obj.form_right_button( panel ) ) ;
-			}
-
-			var b, pos = tbar.items.length - 2;
-
-		        if ( panel.acl.del ) 
-				tbar.insert( pos, panel.obj.del_button( panel ) );
-
-			tbar.insert( pos, '->' );
-
-		        if ( panel.acl.edit || panel.acl.add ) 
-				tbar.insert( pos, panel.obj.discard_changes( panel ) );
-
-		        tbar.insert( pos, panel.obj.export_button( panel ) ) ;
-
-			if ( panel.store.foreign_key_type == 'parent' )
-	        		tbar.insert( pos, panel.obj.assign_button( panel ) ) ;
-
-	        	tbar.insert( pos, panel.obj.invert_button( panel ) ) ;
-
-		        if ( panel.processes_menu ) 
-				tbar.insert( pos, panel.obj.add_process_menu( panel ) );
-
-		        if ( panel.acl.edit || panel.acl.add ) 
-				tbar.insert( pos, panel.obj.save_button( panel ) );
-
-	        	if ( panel.acl.add ) 
-				tbar.insert( pos, panel.obj.add_button( panel ) ) ;
-
-
-			if ( panel.obj.get_inspect_panel() )
-	        		b = tbar.insert( pos, panel.obj.inspect_button( panel ) ) ;
-
-		}
-
-
-	},/*}}}*/
-
-    	delete_confirm: function ( panel ) {//{{{
+	    	delete_confirm: function ( panel ) {//{{{
 
 		var m = panel.get_selections();
 
