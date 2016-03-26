@@ -32,8 +32,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 	foreign_key_values: null,
 
 	remoteSort: this.remoteSort || true,
+	remoteFilter: this.remoteSort || true,
 	pruneModifiedRecords: true,
-	autoLoad: true,
+	autoLoad: false,
 
 	constructor: function(config) {
 
@@ -58,33 +59,38 @@ Ext.define('Ux.xpotronix.xpStore', {
 		Ext.apply(this, config);
 		Ext.apply(this.params, config.extra_param || {});
 
+		/* URL */
 		this.store_url = '?v=xml&a=' + App.get_feat('query_action', this) + '&r=' + this.class_name + '&m=' + this.module;
 		this.blank_url = '?v=xml&a=blank&r=' + this.class_name + '&m=' + this.module;
 
+		/* xpath para las respuestas */
 		this.ns = '>' + this.class_name;
 		this.ns_update = 'changes/' + this.class_name;
 
 		this.rs = this.rs || {};
 
-		this.store_proxy = new Ext.data.HttpProxy({
-			url: this.store_url,
-			useAjax: true
-		});
-		this.blank_proxy = new Ext.data.HttpProxy({
-			url: this.blank_url,
-			useAjax: true
-		});
-
-		this.proxy = this.store_proxy;
-
-		this.reader = new Ext.data.XmlReader({
+		var reader = new Ext.data.XmlReader({
 			record: this.ns,
 			id: '@uiid',
 			totalProperty: '@total_records',
 			messageProperty: '@msg'
 		}, this.rs);
 
-		this.callParent();
+		this.store_proxy = new Ext.data.HttpProxy({
+			url: this.store_url,
+			useAjax: true,
+			reader: reader
+		});
+
+		this.blank_proxy = new Ext.data.HttpProxy({
+			url: this.blank_url,
+			useAjax: true,
+			reader: reader
+		});
+
+		this.proxy = this.store_proxy;
+
+		this.callParent(arguments);
 
 		/* eventos */
 
@@ -198,6 +204,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	},
 
+
+/*
 	loadRecords: function(o, options, success) {
 		var i, len;
 
@@ -253,6 +261,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 		}
 	},
 
+	*/
 	update_model: function(e) {
 
 		/* toma los parametros del elemento XML */
