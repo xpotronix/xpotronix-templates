@@ -50,8 +50,6 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 	panels:		null,
 	store:		null,
 
-	filters:	[],
-
 	columns: 	[],
 	fields: 	[],
 	editors:  	{},
@@ -550,14 +548,6 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 			Ext.apply( q_params, params );
 
 		}
-
-		// FilterRow
-		if ( store.filter ) {
-
-			Ext.apply( q_params, store.filter.getFilterDataXp() );
-
-		}
-
 
 		if ( this.store.lastOptions )
 			Ext.apply( q_params, this.store.lastOptions.params );

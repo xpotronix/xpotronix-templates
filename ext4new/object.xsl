@@ -144,17 +144,5 @@
 		</xsl:for-each>
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="obj" mode="GridFilters"><!--{{{-->
-
-	/* <xsl:value-of select="@name"/> Plugis / Filters */
-
-	obj.filters = new Ext.ux.grid.xpGridFilters({
-		menuFilterText:'Buscar',
-		paramPrefix:'s[<xsl:value-of select="@name"/>]',
-		filters:[<xsl:apply-templates select="attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="Filter"/>]
-	});
-
-	</xsl:template><!--}}}-->
-
 </xsl:stylesheet>
 

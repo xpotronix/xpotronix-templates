@@ -408,7 +408,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 			var s;
 
-			if ( s = this.store.item( e.nodeName ) ) 
+			if ( s = this.store.lookup( e.nodeName ) ) 
 				ms[s.class_name] = { store: s, response: s.update_model( e ) };
 
 		}, this );

@@ -21,14 +21,24 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	inspect_w: null,
 	feat: null,
 	loadMask: true,
+	rowEditing: null,
+	
 
 	initComponent:function() {/*{{{*/
+
+		
+    		this.rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+        		clicksToMoveEditor: 1,
+        		autoCancel: false
+    		});
 
 
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
 		Ext.apply( this, { 
+
+			plugins: [this.rowEditing],
 
 			dockedItems: [{
 				xtype: 'xppagingtoolbar',
@@ -134,7 +144,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		this.on( 'viewready', function() {/*{{{*/
 
 			if ( this.store.getCount() ) 
-				this.selModel.selectRow( this.store.rowIndex );
+				this.selModel.select( this.store.rowIndex );
 
 		} );/*}}}*/
 
@@ -151,14 +161,14 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
                 this.store.on( 'load', function() {/*{{{*/
 
 			if ( this.rendered && this.store.getCount() ) 
-				this.selModel.selectRow( this.store.rowIndex );
+				this.selModel.select( this.store.rowIndex );
 
 		}, this);/*}}}*/
 
                 this.store.on('changerowindex', function(s, rowIndex) {/*{{{*/
 
 			if ( this.rendered && this.store.getCount() ) 
-				this.selModel.selectRow( s.rowIndex );
+				this.selModel.select( s.rowIndex );
 
                 }, this );/*}}}*/
                
@@ -178,31 +188,31 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	invertSelection:function() {/*{{{*/
 
-		var sl = this.selModel.getSelections();
+		var sl = this.selModel.getSelection();
 
 		for( var i = 0; i < this.store.getCount(); i ++ ) {
 
 			if ( this.selModel.isSelected(i))
-				this.selModel.deselectRow(i);
+				this.selModel.deselect(i);
 			else
-				this.selModel.selectRow(i, true);
+				this.selModel.select(i, true);
 		}
 	},/*}}}*/
 
 	startEditingBlank: function() {/*{{{*/
 
-		this.startEditing( 0, this.findFirstEditor() );
+		this.rowEditing.startEdit(0,this.findFirstEditor());
 
 	},/*}}}*/
 
 	get_selections: function() {/*{{{*/
 
-		return this.selModel.getSelections();
+		return this.selModel.getSelection();
 
 	},/*}}}*/
 
     findFirstEditor: function(){/*{{{*/
-        var cols = this.getColumnModel().config;
+        var cols = this.columns;
         for (var i=0; i < cols.length; i++)
             if (!cols[i].hidden && cols[i].editor){
                 return i;
@@ -212,7 +222,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
     //find index of last column in grid that has a visible editor
 
     findLastEditor: function(){/*{{{*/
-        var cols = this.getColumnModel().config;
+        var cols = this.columns;
         for (var i=cols.length-1; i >= 0; i--)
             if (!cols[i].hidden && cols[i].editor){
                 return i;

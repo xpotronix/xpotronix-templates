@@ -40,6 +40,7 @@
 		<xsl:choose>
 			<xsl:when test="//*:session/var/EXT_DEBUG=1">
     				<script type="text/javascript" src="/ext4/ext-all-debug-w-comments.js"></script>
+    				<!-- <script type="text/javascript" src="/ext4/ext-debug.js"></script> -->
 			</xsl:when>
 			<xsl:otherwise>
     				<script type="text/javascript" src="/ext4/ext-all.js"></script>
@@ -105,7 +106,6 @@
 		<script type="text/javascript" src="/ux4/xpotronix/xpStore.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpGrid.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpGridDropZone.js"/>
-		<!-- <script type="text/javascript" src="/ux4/xpotronix/xpGridFilter.js"/> -->
 		<script type="text/javascript" src="/ux4/xpotronix/xpForm.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpPanel.js"/>
 
@@ -166,11 +166,6 @@
 
 		<link rel="stylesheet" type="text/css" href="/ux4/resources/css/overrides.css" />
 		<link rel="stylesheet" type="text/css" href="/ux4/resources/css/app.css" />
-
-		<!-- GridFilters -->
-
-		<link rel="stylesheet" type="text/css" href="/ext4/examples/ux/gridfilters/css/GridFilters.css"/>
-		<link rel="stylesheet" type="text/css" href="/ext4/examples/ux/gridfilters/css/RangeMenu.css"/>
 
 		<!-- file -->
 	
