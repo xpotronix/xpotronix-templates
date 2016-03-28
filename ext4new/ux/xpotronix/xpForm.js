@@ -11,7 +11,7 @@
  */
 
 
-
+/*
 var recurse_items = function( cmp, fn, scope ) {
 
 	cmp.items.each( function( it ) {
@@ -20,7 +20,7 @@ var recurse_items = function( cmp, fn, scope ) {
 		it.items && it.items.getCount() && recurse_items( it, fn, scope );
 	});
 };
-
+*/
 
 Ext.define( 'Ux.xpotronix.xpForm', { 
 
@@ -35,16 +35,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	buttonAlign: 'left',
 	feat: null,
 
-	config: function(config) {
-
-		Ext.apply(this, config);
-		this.acl = this.acl || this.obj.acl;
-		this.processes_menu = this.processes_menu || this.obj.processes_menu;
-		Ux.xpotronix.xpForm.superclass.constructor.apply(this, arguments);
-		/* this.addEvents( 'loadrecord' ); */
-
-	},
-
+/*
 
     initEvents : function(){
         Ext.form.FormPanel.superclass.initEvents.call(this);
@@ -55,8 +46,24 @@ Ext.define( 'Ux.xpotronix.xpForm', {
         }
     },
 
-
+*/
 	initComponent:function() {/*{{{*/
+
+		this.acl = this.acl || this.obj.acl;
+		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+
+		Ext.apply( this, { 
+
+			dockedItems: [{
+				xtype: 'xppagingtoolbar',
+				panel: this,
+				store: this.store,
+				dock: 'top',
+				displayInfo: true
+			}],
+		});
+
+		this.callParent();
 
 		this.store && this.store.on({
 
@@ -67,22 +74,20 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			clear: {  fn:function() {this.getForm().reset();}, buffer: 200, scope:this }	
 		});
 
-		this.obj && this.obj.toolbar( this );
 
 		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
 
-			this.buttons = [new Ext.Spacer({ width: 145 })];
+			this.buttons = [new Ext.toolbar.Spacer({ width: 145 })];
 			this.buttons.push( this.obj.save_button( this ) );
 
 			this.acl.add && this.buttons.push( this.obj.add_button( this ) );
 		}
 
-		Ux.xpotronix.xpForm.superclass.initComponent.apply(this, arguments);
-
 		this.on({ 
 
 			afterrender: { fn: function() { this.loadRecord() }, scope: this, buffer:200 }
 		});
+
 
 	}, /*}}}*/
 
@@ -92,9 +97,9 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.callParent();
 
-		this.obj && this.obj.set_toolbar( this );
-
 		if ( !this.store ) return;
+
+		/*
 
 		recurse_items( this.getForm(), function(i){
 
@@ -127,11 +132,15 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		}, this );
 
+		*/
+
 		// this.loadRecord();
 
 	},/*}}}*/
 
 	enableForm: function() {/*{{{*/
+
+		/*
 
 		recurse_items( this.getForm(), function( it ) {
 
@@ -141,9 +150,13 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		}, this );
 
+		*/
+
 	},/*}}}*/
 
 	disableForm: function() {/*{{{*/
+
+		/*
 
 		recurse_items( this.getForm(), function( it ) {
 
@@ -152,9 +165,13 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		}, this );
 
+		*/
+
 	},/*}}}*/
 
 	loadRecord: function() { /*{{{*/
+
+		/*
 
 		if ( ( ! this.rendered ) && ( ! this.isVisible() ) ) return;
 
@@ -197,6 +214,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 		}
 
 		this.fireEvent( 'loadrecord', this, this.store, r );
+
+		*/
 
 	},/*}}}*/
 

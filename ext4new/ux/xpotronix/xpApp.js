@@ -274,9 +274,15 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		this.debug && this.debug_show_changed_records( md );
 
-		if ( md.length )
-			return App.store.first().serialize();
+		var s;
 
+		md.length && this.store.each( function( i ) {
+
+			if ( i.class_name != undefined )
+				return s = i;
+		}, this);
+
+		return s.serialize();
 
 	},//}}}
 
@@ -452,6 +458,8 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	handle_login: function( form, action ) {/*{{{*/
 
+		debugger;
+
 		try {
 
 			obj = Ext.decode(action.response.responseText); 
@@ -466,7 +474,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 			if ( action.failureType == 'server' ){ 
 
-				obj = Ext.util.JSON.decode(action.response.responseText); 
+				obj = Ext.decode(action.response.responseText); 
 
 			} else { 
 
@@ -542,7 +550,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		var login = new Ext.FormPanel({ 
 		
 			labelWidth:80,
-			url: base_url + '?m=users&amp;a=login', 
+			url: base_url + '?m=users&amp;a=login&amp;v=json', 
 			frame:true, 
 			title:'Ingreso a '+ this.feat.page_title, 
 			defaultType:'textfield',
@@ -576,11 +584,12 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		login.on('render', function() {
 
-			var map = new Ext.KeyMap( login.bodyCfg.id, [{
+			var map = new Ext.util.KeyMap({
+				target: this,
 				key : [10, 13],
 				scope : this,
 				fn: doLoginForm
-			}]);
+			});
 		});
 		
 		var win = new Ext.Window({
@@ -664,7 +673,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		
                         failure:function(form, action){ 
                             if(action.failureType == 'server'){ 
-                                obj = Ext.util.JSON.decode(action.response.responseText); 
+                                obj = Ext.decode(action.response.responseText); 
                                 Ext.Msg.alert('Fallo la autorizacion', obj.errors.reason); 
                             }else{ 
 				if ( ! ( reason = action.response.responseText)  ) reason = 'Servidor fuera de linea, por favor reingrese en unos minutos ...';

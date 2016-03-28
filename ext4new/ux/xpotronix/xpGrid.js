@@ -41,6 +41,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			plugins: [this.rowEditing],
 
 			dockedItems: [{
+				itemId: 'pagingtoolbar',
 				xtype: 'xppagingtoolbar',
 				panel: this,
 				store: this.store,
@@ -105,7 +106,10 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	 	this.on('validateedit', function(e, a, b){/*{{{*/
 
-	    		var cm = e.grid.colModel.config;
+			/* DEBUG: esta codigo se fija si tiene un label y lo actualiza.
+			Ver si es necesario
+
+	    		var cm = e.grid.columns;
 			var field = cm[e.column];
 
        			if ( field.editor.field.initialConfig.displayField == '_label') { 
@@ -114,6 +118,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	  			e.record.data[label] = field.editor.field.getRawValue() ;	
 
        			}
+			*/
 
 	 	});/*}}}*/
 
@@ -121,7 +126,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.selModel = this.getSelectionModel();
 
-		this.selModel.on('rowselect', function(sm, rowIndex) {
+		this.selModel.on('selectionchange', function(sm, rowIndex) {
 		
 			if ( sm.getCount() == 1 ) 
 				this.store.go_to( rowIndex );
@@ -201,7 +206,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	startEditingBlank: function() {/*{{{*/
 
-		this.rowEditing.startEdit(0,this.findFirstEditor());
+		this.rowEditing.startEdit(0,0);
 
 	},/*}}}*/
 
@@ -211,25 +216,17 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	},/*}}}*/
 
-    findFirstEditor: function(){/*{{{*/
-        var cols = this.columns;
-        for (var i=0; i < cols.length; i++)
-            if (!cols[i].hidden && cols[i].editor){
-                return i;
-            }
-    },/*}}}*/
-    
-    //find index of last column in grid that has a visible editor
+	getTopToolbar:  function() {/*{{{*/
+		var tb = this.getDockedItems('toolbar[dock=top]');
+		return tb.length ? tb[0] : undefined;
+	},/*}}}*/
 
-    findLastEditor: function(){/*{{{*/
-        var cols = this.columns;
-        for (var i=cols.length-1; i >= 0; i--)
-            if (!cols[i].hidden && cols[i].editor){
-                return i;
-            }
-    }/*}}}*/
+	getBottomToolbar:  function() {/*{{{*/
+		var tb = this.getDockedItems('toolbar[dock=bottom]');
+		return tb.length ? tb[0] : undefined;
+	},/*}}}*/
 
-	,onRecordsDrop:Ext.emptyFn
+	onRecordsDrop:Ext.emptyFn
 
 }); // eo extend
 

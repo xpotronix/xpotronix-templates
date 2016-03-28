@@ -38,14 +38,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	constructor: function(config) {
 
-		this.paramNames = {
-			start: 'g[start]',
-			limit: 'g[limit]',
-			sort: 'g[sort]',
-			dir: 'g[dir]'
-		};
-
-
 		this.params = config.params || {
 			start: 0,
 			limit: this.pageSize
@@ -76,16 +68,14 @@ Ext.define('Ux.xpotronix.xpStore', {
 			messageProperty: '@msg'
 		}, this.rs);
 
-		this.store_proxy = new Ext.data.HttpProxy({
+		this.store_proxy = new Ext.data.proxy.Ajax({
 			url: this.store_url,
-			useAjax: true,
 			reader: reader
 		});
 
-		this.blank_proxy = new Ext.data.HttpProxy({
+		this.blank_proxy = new Ext.data.proxy.Ajax({
 			url: this.blank_url,
-			useAjax: true,
-			reader: reader
+			reader: reader,
 		});
 
 		this.proxy = this.store_proxy;
@@ -178,7 +168,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			} else {
 
-				if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', this.reader.xmlData) == 'ACC_DENIED') {
+				if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', this.proxy.reader.xmlData) == 'ACC_DENIED') {
 
 					App.login();
 					return;
@@ -285,10 +275,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 		if (a == 'i' || a == 'u') {
 
 			/* cambia la raiz del registro para leer el elemento actual */
-			this.reader.meta.record = "";
+			this.proxy.reader.record = "";
 
 			/* devuelve un array de records */
-			rs = this.reader.readRecords(e);
+			rs = this.proxy.reader.readRecords(e);
 
 			/* ajusta el totalRecords al totalLength anterior */
 			rs.totalRecords = this.totalLength;
@@ -306,9 +296,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 			this.resumeEvents();
 
 			/* reestablece el espacio de nombres para el reader */
-			this.reader.meta.record = this.ns;
+			this.proxy.reader.record = this.ns;
 
-			var rr = this.getById(uiid);
+			var rr = this.findExact('id', uiid);
 
 			rr && rr.commit();
 
@@ -832,7 +822,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	go_to: function(ri, stay) { /*{{{*/
+	go_to: function(record, stay) { /*{{{*/
+
+		var ri = record.index;
 
 		if (stay === undefined)
 			var stay = true;

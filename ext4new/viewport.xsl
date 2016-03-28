@@ -153,8 +153,6 @@
 	*/
 	</xsl:if>
 
-	<xsl:apply-templates select="*:model" mode="model"/>
-
 	<xsl:apply-templates select="*:model" mode="stores"/>
 
 	<xsl:apply-templates select="*:metadata/obj" mode="config"/>
