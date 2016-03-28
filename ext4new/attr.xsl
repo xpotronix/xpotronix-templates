@@ -341,12 +341,9 @@
 
 <xsl:template match="editor[ancestor::*/@type='xptext']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
-<xsl:if test="position()-1">,</xsl:if>editor:new Ed(new fm.<xsl:choose>
-	<xsl:when test="$attr/@uitype='html'">HtmlEditor</xsl:when>
-	<xsl:otherwise>TextArea</xsl:otherwise>
-</xsl:choose>(<xsl:choose>
+<xsl:if test="position()-1">,</xsl:if>editor:<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
-	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose>))</xsl:template><!--}}}-->
+	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xpint']"><!--{{{-->
 <xsl:if test="position()-1">,</xsl:if>field:<xsl:choose>
@@ -399,7 +396,7 @@
 <xsl:template match="store[ancestor::*/@type='xpentry_help']"><!--{{{-->
 <xsl:param name="obj" tunnel="yes"/>
 <xsl:param name="attr" tunnel="yes"/>
-<xsl:if test="position()-1">,</xsl:if>store:App.store.item('<xsl:value-of select="$obj/@name"/>_<xsl:value-of select="$attr/@eh"/>')
+<xsl:if test="position()-1">,</xsl:if>store:'<xsl:value-of select="$obj/@name"/>_<xsl:value-of select="$attr/@eh"/>'
 </xsl:template><!--}}}-->
 
 <!-- vars -->
