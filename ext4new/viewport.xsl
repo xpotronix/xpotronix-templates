@@ -159,34 +159,41 @@
 
 	<xsl:apply-templates select="*:metadata/obj" mode="panels"/>
 
-		var events_js = false;
+	<xsl:apply-templates select="*:metadata/obj" mode="controller"/>
 
-			<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='events']">	
-			Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>], 
-				function() {
-					App.fireEvent( 'configready' );
-				});
-			var events_js = true;
-			</xsl:if>
 
-		App.on( 'configready', function() {
+		<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='events']">	
+		/* Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>],null);  */
+		</xsl:if>
 
 		/* viewport */
 
-		<xsl:apply-templates select="." mode="viewport"/>
+
+		Ext.application( 'Ux.xpotronix.xpApp', {/*{{{*/
+
+		    requires: ['Ext.container.Viewport'],
+
+		    name: 'AM',
+		    /* appFolder: 'app', */
+
+		    controllers: [
+			'Users'
+		    ],
+
+		    launch: function() {
+			<xsl:apply-templates select="." mode="viewport"/>
+		    }
+		});/*}}}*/
+
 
 		/* viewport ends */
 
 		});
 
-		events_js || App.fireEvent( 'configready' );
 
-		var post_render_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>];
+		/* var post_render_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>]; */
 
-		if ( post_render_js.length ) 
-			Ext.Loader.load( post_render_js );
 
-	});
 	</xsl:variable>
 	<!-- output final del codigo -->
 
@@ -203,6 +210,12 @@
 	</script>
 
 	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:model" mode="controller">
+
+
+	</xsl:template>
+
 
 		<xsl:template match="*:document" mode="viewport"><!--{{{-->
 
