@@ -12,11 +12,11 @@ Ext.ns( 'Ux.xpotronix' );
 
 Ext.define( 'Ux.xpotronix.xpApp', {
 
-	mixins: {
-        	observable: 'Ext.util.Observable'
-    	},
+	extend: 'Ext.app.Application',
 
+	name: 			'xpApp',
 	alias: 			'xpApp',
+
 	menu:			null,
 	changes_buffer: 	null,
 	login_w: 		null,
@@ -39,8 +39,6 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 	Ext.apply( this, config );
 
 	this.mixins.observable.constructor.call(this, config);
-
-	this.addEvents( 'configready' );
 
 	Ext.SSL_SECURE_URL = '/ext/resources/images/vista/s.gif';
 	Ext.BLANK_IMAGE_URL = '/ext/resources/images/vista/s.gif';
@@ -145,22 +143,6 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		});
 
 	},
-
-	init: function() {/*{{{*/
-
-		this.on( 'configready', function() {
-
-			if ( App.store ) {
-
-				var main_store = App.store.first();
-
-				if ( main_store && ( main_store.feat.auto_load || this.feat.auto_load ) )
-					main_store.load(); 
-			}
-
-		});
-
-	},/*}}}*/
 
 	reconfigure: function( config ) {/*{{{*/
 
