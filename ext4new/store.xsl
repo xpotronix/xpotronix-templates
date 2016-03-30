@@ -76,9 +76,9 @@
 
 		var tmp = Ext.create( 'Ux.xpotronix.xpStore', config );
 
-		<xsl:if test="../name()='obj'">
+		<!-- <xsl:if test="../name()='obj'">
 		App.store.lookup( '<xsl:value-of select="../@name"/>' ).add_child( tmp );
-		</xsl:if>
+		</xsl:if> -->
 		/* Entry Helpers */
 		<xsl:apply-templates select="queries/query/query" mode="store_eh"/>
 		/* End Entry Helpers */
