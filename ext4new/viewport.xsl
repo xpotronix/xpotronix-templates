@@ -159,7 +159,7 @@
 
 	<xsl:apply-templates select="*:metadata/obj" mode="panels"/>
 
-	<xsl:apply-templates select="*:metadata/obj" mode="controller"/>
+	<xsl:apply-templates select="*:model" mode="controller"/>
 
 
 		<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='events']">	
@@ -190,7 +190,6 @@
 
 		});
 
-
 		/* var post_render_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>]; */
 
 
@@ -211,10 +210,11 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="*:model" mode="controller">
+	<xsl:template match="*:model" mode="controller"><!--{{{-->
 
+	/* controllers */
 
-	</xsl:template>
+	</xsl:template><!--}}}-->
 
 
 		<xsl:template match="*:document" mode="viewport"><!--{{{-->
