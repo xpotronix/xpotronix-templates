@@ -43,19 +43,15 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	constructor: function(config) {
 
-		var me = this;
-
-		var s = config.store;
-
 		Ext.apply(config, {
-			pageSize: s.pageSize,
+			pageSize: 20,
 			displayInfo: true,
 			displayMsg: '{0} a {1} de {2}',
 			emptyMsg: "",
 			prependButtons: true
 		});
 
-		me.callParent(arguments);
+		this.callParent(arguments);
 
 	},
 

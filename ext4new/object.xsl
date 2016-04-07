@@ -50,13 +50,10 @@
 	<xsl:variable name="obj" select="."/>
 	<xsl:variable name="obj_name" select="@name"/>
 
-
 	<xsl:if test="//*:model//obj[@name=$obj_name]/panel">
 	/* panels para <xsl:value-of select="@name"/> */
 
-	var panels = [<xsl:apply-templates select="//*:model//obj[@name=$obj_name]/panel"/>];
-
-	App.obj.get('<xsl:value-of select="@name"/>').panels.addAll( panels );
+	<xsl:apply-templates select="//*:model//obj[@name=$obj_name]/panel"/>
 
 	</xsl:if>
 

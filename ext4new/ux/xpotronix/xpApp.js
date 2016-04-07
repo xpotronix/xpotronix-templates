@@ -12,7 +12,10 @@ Ext.ns( 'Ux.xpotronix' );
 
 Ext.define( 'Ux.xpotronix.xpApp', {
 
-	extend: 'Ext.app.Application',
+
+	mixins: {
+		observable: 'Ext.util.Observable'
+	},
 
 	name: 			'xpApp',
 	alias: 			'xpApp',

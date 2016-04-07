@@ -44,7 +44,6 @@
 	<xsl:param name="anon_user" select="//*:session/users/_anon"/>
 
 	<xsl:variable name="session" select="//*:session"/>
-	<xsl:variable name="application_name" select="upper-case(//xpotronix:session/feat/application)"/>
 
 	<xsl:template match="/"><!--{{{-->
 		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
@@ -57,20 +56,35 @@
 </xsl:text>
 <html>
 	<xsl:apply-templates select="." mode="head"/>
-	<xsl:message>current user: <xsl:value-of select="$current_user"/></xsl:message>
-	<xsl:choose>
-		<xsl:when test="($login_window='true') and ($anon_user='1' or $current_user='')">
-			<xsl:apply-templates select="." mode="include-login-js"/>
-			<xsl:apply-templates select="." mode="body_login"/>
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:apply-templates select="." mode="include-all-js"/>
-			<body>
-			<xsl:apply-templates select="." mode="application"/>
-			</body>
-		</xsl:otherwise>
-	</xsl:choose>
+	<xsl:apply-templates select="." mode="main_content"/>
 </html>
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="body"><!--{{{-->
+		<body>
+			<xsl:apply-templates select="." mode="application_context"/>
+		</body>
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="main_content"><!--{{{-->
+		<xsl:message>current user: <xsl:value-of select="$current_user"/></xsl:message>
+		<xsl:choose>
+			<xsl:when test="($login_window='true') and ($anon_user='1' or $current_user='')">
+				<xsl:apply-templates select="." mode="include-login-js"/>
+				<xsl:apply-templates select="." mode="body_login"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="." mode="include-all-js"/>
+				<xsl:apply-templates select="." mode="body"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="application_context"><!--{{{-->
+	
+		<xsl:apply-templates select="*:metadata/obj" mode="divs"/>
+		<xsl:apply-templates select="." mode="application"/>
+
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document" mode="application"><!--{{{-->
@@ -147,36 +161,27 @@
 
 	<xsl:apply-templates select="*:model" mode="controller"/>
 
+
+		<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='events']">	
+		/* Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>],null);  */
+		</xsl:if>
+
 		/* viewport */
 
 
-		Ext.application({/*{{{*/
+		Ext.application( 'Ux.xpotronix.xpApp', {/*{{{*/
 
 		    requires: ['Ext.container.Viewport'],
 
-		    name: '<xsl:value-of select="$application_name"/>',
+		    name: 'AM',
 		    /* appFolder: 'app', */
 
-			/*
 		    controllers: [
-			'Juzgados'
+			'Users'
 		    ],
-			*/
 
 		    launch: function() {
-
-
-
-      Ext.create('Ext.container.Viewport', {
-            layout: 'fit',
-            items: [
-                {
-                    xtype: 'Juzgados_xpGrid',
-                }
-            ]
-        });
-
-
+			<xsl:apply-templates select="." mode="viewport"/>
 		    }
 		});/*}}}*/
 
@@ -184,6 +189,8 @@
 		/* viewport ends */
 
 		});
+
+		/* var post_render_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>]; */
 
 
 	</xsl:variable>
@@ -205,70 +212,10 @@
 
 	<xsl:template match="*:model" mode="controller"><!--{{{-->
 
-/* controller */
-
-	
-Ext.define('<xsl:value-of select="concat($application_name,'.controller.',//*:session/feat/module)"/>', {/*{{{*/
-
-    extend: 'Ext.app.Controller',
-
-    views: [<xsl:for-each select="//obj/panel"><xsl:variable name="obj" select=".."/>'<xsl:apply-templates select=".." mode="get_panel_id"><xsl:param name="obj" select="$obj" tunnel="yes"/></xsl:apply-templates>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
-
-    stores: [<xsl:for-each select="//obj">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
-
-    models: [<xsl:for-each select="//obj">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
-
-    init: function() {
-        this.control({
-
-	/*
-            'viewport > panel': {
-                render: this.onPanelRendered
-            },
-
-	    'userlist': {
-                itemdblclick: this.editUser
-            },
-
-	    'useredit button[action=save]': {
-                click: this.updateUser
-            } */
-        });
-    },
-
-	/*
-
-    onPanelRendered: function() {
-        console.log('The panel was rendered');
-    },
-
-    editUser: function(grid, record) {
-
-        console.log('Double clicked on ' + record.get('name'));
-        var view = Ext.widget('useredit');
-        view.down('form').loadRecord(record);
-    },
-
-	updateUser: function(button) {
-	    var win    = button.up('window'),
-		form   = win.down('form'),
-		record = form.getRecord(),
-		values = form.getValues();
-
-	    record.set(values);
-	    win.close();
-	    // synchronize the store after editing the record
-	    this.getUsersStore().sync();
-	}
-
-	*/
-
-});/*}}}*/
-
-
-
+	/* controllers */
 
 	</xsl:template><!--}}}-->
+
 
 		<xsl:template match="*:document" mode="viewport"><!--{{{-->
 

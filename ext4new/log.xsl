@@ -30,7 +30,7 @@
 
 	/* envia los eventos a la consola del firebug. Ojo que pone el programa muuuy lento !! .) */
 
-	Ext.util.Observable.prototype.fireEvent = Ext.util.Observable.prototype.fireEvent.createInterceptor(function() {
+	Ext.util.Observable.prototype.fireEvent = Ext.Function.createInterceptor(Ext.util.Observable.prototype.fireEvent, function() {
 	    console.log(arguments);
 	    return true;
 	});	
