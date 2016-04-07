@@ -155,26 +155,23 @@
 		    requires: ['Ext.container.Viewport'],
 
 		    name: '<xsl:value-of select="$application_name"/>',
-		    /* appFolder: 'app', */
+		    appFolder: 'modules', 
 
-			/*
 		    controllers: [
-			'Juzgados'
+			'<xsl:value-of select="//*:session/feat/module"/>'
 		    ],
-			*/
 
 		    launch: function() {
 
 
-
-      Ext.create('Ext.container.Viewport', {
-            layout: 'fit',
-            items: [
-                {
-                    xtype: 'Juzgados_xpGrid',
-                }
-            ]
-        });
+		      Ext.create('Ext.container.Viewport', {
+			    layout: 'fit',
+			    items: [
+				{
+				    xtype: 'Juzgados_xpGrid',
+				}
+			    ]
+			});
 
 
 		    }
@@ -212,7 +209,7 @@ Ext.define('<xsl:value-of select="concat($application_name,'.controller.',//*:se
 
     extend: 'Ext.app.Controller',
 
-    views: [<xsl:for-each select="//obj/panel"><xsl:variable name="obj" select=".."/>'<xsl:apply-templates select=".." mode="get_panel_id"><xsl:param name="obj" select="$obj" tunnel="yes"/></xsl:apply-templates>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+    views: [<xsl:for-each select="obj/panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
     stores: [<xsl:for-each select="//obj">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
