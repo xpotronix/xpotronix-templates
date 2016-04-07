@@ -117,43 +117,22 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	form_left_button: function( panel ) {/*{{{*/
 
+		alert( 'form_left_button' );
+
 		var tb = new Ext.Button( {
 			// id: 'leftButton',
 			text: 'Atras',
 	               	menuAlign: 'tr?',
 			disabled: true,
-	               	tooltip: 'Ir hacia el elemento previo',
-			listeners:{click:{scope:this.store, fn:function() { this.prev() },buffer:200 }}
+	               	tooltip: 'Ir hacia el elemento previo'
+			//,listeners:{click:{scope:this.store, fn:function() { this.prev() },buffer:200 }}
+
 		});
 
 
 
-		tb.setDisabled( !this.store.rowIndex );
+		// tb.setDisabled( !this.store.rowIndex );
 
-		this.store.on( 'changerowindex', function( s, rowIndex ) { 
-			tb.setDisabled( !rowIndex );
-		}, tb );
-
-		return tb;
-
-	},/*}}}*/
-
-	form_right_button: function( panel ) {/*{{{*/
-
-		var tb = new Ext.Button( {
-			// id: 'rightButton',
-			text: 'Adelante',
-	               	menuAlign: 'tr?',
-			disabled: true,
-	               	tooltip: 'Ir hacia el proximo elemento',
-			listeners:{click:{scope:this.store, fn:function(){ this.next() },buffer:200}}
-			} );
-
-		tb.setDisabled( ! ( this.store.rowIndex < ( this.store.getCount() - 1 ) ) );
-
-		this.store.on( 'changerowindex', function( s, rowIndex ) { 
-			tb.setDisabled( ! ( rowIndex < ( s.getCount() - 1 ) ) );
-		}, tb );
 
 		return tb;
 
@@ -208,7 +187,8 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 					fn: function(btn) { 
 
 						if ( btn == 'yes' ) 
-							this.store.revert_changes();
+							// this.store.revert_changes();
+							alert( 'disabled discard_changes' );
 					},
 					scope: panel
 				});
@@ -216,11 +196,6 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 				}, buffer:200 } 
 			} 
 		});
-
-		this.store.on( 'update', function( s, r, o ) { 
-			if ( this.el && this.el.dom ) 
-				( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
-		}, tb );
 
 		return tb;
 
@@ -253,11 +228,6 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 			}, buffer:200 }}
 		});
 
-		this.store.on( 'update', function( s, r, o ) { 
-			if ( this.el && this.el.dom ) 
-				( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
-		}, tb );
-
 		return tb;
 
 	},/*}}}*/
@@ -270,7 +240,8 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 			// disabled: true,
                 	tooltip: '<b>Asignar</b><br/>Asocia el registro actual al panel principal',
 			listeners:{ click:{ scope: this, fn:function( btn ) {
-				this.store.set_parent_fk();
+				// this.store.set_parent_fk();
+				alert( 'assign_button' );
 			}, buffer:200 }}
 		});
 
@@ -435,6 +406,8 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	addRecord:function() {//{{{
 
+		alert ( 'disabled addRecord' ); return;
+
 		if ( ! this.acl.add ) return;
 
         	if ( this.store.parent_store && this.store.foreign_key.length && this.store.parent_store.rowIndex === null ) {
@@ -528,6 +501,8 @@ Ext.define( 'Ux.xpotronix.xpObj', {
         buttons: [{
             text: 'Exportar',
 	    listeners: { click: { scope: panel, fn: function() {  
+
+		alert( 'disabled listeners' ); return;
 
 		var store = this.store;
 		var q_params = {};

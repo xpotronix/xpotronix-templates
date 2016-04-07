@@ -15,9 +15,9 @@
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/"
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/">
 
-<!-- model_params -->
+<!-- panel_config -->
 
-	<xsl:template match="panel" mode="model_params"><!--{{{-->
+	<xsl:template match="panel" mode="panel_config"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:variable name="panel_id">
 			<xsl:apply-templates select="." mode="get_panel_id"/>
@@ -25,7 +25,8 @@
 		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
 		<xsl:variable name="type_name" select="@type"/>
 	{
-		id:'<xsl:value-of select="$panel_id"/>'
+		alias: 'widget.<xsl:value-of select="$panel_id"/>'
+		,id:'<xsl:value-of select="$panel_id"/>'
 		,class_name:'<xsl:value-of select="$obj/@name"/>'
 		,obj:App.obj.get('<xsl:value-of select="$obj/@name"/>')
 		,acl:App.obj.get('<xsl:value-of select="$obj/@name"/>').acl
@@ -38,7 +39,7 @@
 
 <!-- ui_overides -->
 
-	<xsl:template match="panel[@type='xpGrid']" mode="ui_override"><!--{{{-->
+	<xsl:template match="panel[@type='xpGrid']" mode="panel_config_override"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
 
@@ -46,9 +47,9 @@
 			<xsl:apply-templates select="." mode="get_panel_id"/>
 		</xsl:variable>
 
-		<!-- <xsl:message>ui_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
+		<!-- <xsl:message>panel_config_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
 
-		/* ui_override: start */
+		/* panel_config_override: start */
 		{<xsl:choose>
 			<xsl:when test="config or items">
 				<xsl:apply-templates select="config|items" mode="column"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
@@ -57,11 +58,11 @@
 				<xsl:call-template name="default_column"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>}
-		/* ui_override: end */
+		/* panel_config_override: end */
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="panel[@type='xpForm' or @type='Form']" mode="ui_override"><!--{{{-->
+	<xsl:template match="panel[@type='xpForm' or @type='Form']" mode="panel_config_override"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
 
@@ -69,9 +70,9 @@
 			<xsl:apply-templates select="." mode="get_panel_id"/>
 		</xsl:variable>
 
-		<!-- <xsl:message>ui_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
+		<!-- <xsl:message>panel_config_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
 
-		/* ui_override: start */
+		/* panel_config_override: start */
 		{<xsl:choose>
 			<xsl:when test="config or items">
 				<xsl:apply-templates select="config|items"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
@@ -80,11 +81,11 @@
 				<xsl:call-template name="default_items"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>}
-		/* ui_override: end */
+		/* panel_config_override: end */
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="panel[@type='xpPanel' or @type='Viewport' or @type='Window' or @type='Tab' or @type='xpThumbs' or @type='xpUploadPanel']" mode="ui_override"><!--{{{-->
+	<xsl:template match="panel[@type='xpPanel' or @type='Viewport' or @type='Window' or @type='Tab' or @type='xpThumbs' or @type='xpUploadPanel']" mode="panel_config_override"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
 
@@ -92,13 +93,13 @@
 			<xsl:apply-templates select="." mode="get_panel_id"/>
 		</xsl:variable>
 
-		<!-- <xsl:message>ui_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
+		<!-- <xsl:message>panel_config_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
 
-		/* ui_override: start */
+		/* panel_config_override: start */
 		{<xsl:if test="config or items">
 			<xsl:apply-templates select="config|items" mode="panel"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
 		</xsl:if>}
-		/* ui_override: end */
+		/* panel_config_override: end */
 
 	</xsl:template><!--}}}-->
 
@@ -150,8 +151,8 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
 
 		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ux.xpotronix.xpPanel', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{labelWidth:150,bodyStyle:{'background-color':'white','font-size':'13px',padding:'5px'},width:'100%',autoScroll:true}))
 
 	</xsl:template><!--}}}-->
@@ -162,8 +163,8 @@
 
 		<!-- <xsl:message>en panel/@xpForm, obj/@name:<xsl:value-of select="$obj/obj/@name"/>, panel/@id: <xsl:value-of select="@id"/></xsl:message> -->
 		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ux.xpotronix.xpForm', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{split:true,deferredRender:true,bodyStyle:'padding:5px',width:'100%',labelWidth:150,defaults:{width:400},defaultType:'textfield',autoScroll:true}))
 	</xsl:template><!--}}}-->
 
@@ -172,8 +173,8 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
 
 		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ext.form.FormPanel', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"/>
-		,<xsl:apply-templates select="." mode="ui_override"/>
+		<xsl:apply-templates select="." mode="panel_config"/>
+		,<xsl:apply-templates select="." mode="panel_config_override"/>
 		,{split:true,deferredRender:true,bodyStyle:'padding:5px',width:'100%',labelWidth:70,defaults:{width:400},defaultType:'textfield',autoScroll:true}))
 
 	</xsl:template><!--}}}-->
@@ -181,21 +182,15 @@
 	<xsl:template match="panel[@type='xpGrid']"><!--{{{-->
 
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:variable name="panel_id">
+			<xsl:apply-templates select="obj/obj" mode="get_panel_id"/>
+		</xsl:variable>
 		<!-- <xsl:message>en panel/@xpGrid, obj/@name:<xsl:value-of select="$obj/obj/@name"/>, panel/@id: <xsl:value-of select="@id"/></xsl:message>-->
-
-		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ux.xpotronix.xpGrid', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,{layout:'fit',deferredRender:true,split:true,syncSize:true,autoScroll:true
-		,plugins:[
-
-			<!-- FALTA {
-			ptype: 'filterbar',
-			renderHidden: false,
-			showShowHideButton: true,
-			showClearAllButton: true} -->
-		]
-	}))
+		<xsl:if test="position()-1">,</xsl:if>Ext.define( '<xsl:value-of select="concat($application_name,'.view.',$obj/obj/@name,'.xpGrid')"/>', Ext.apply(
+		{extend:'Ux.xpotronix.xpGrid',layout:'fit',deferredRender:true,split:true,syncSize:true,autoScroll:true}
+		,<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
+		
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="panel[@type='xpData']"><!--{{{-->
@@ -203,8 +198,8 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
 
 		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ux.xpotronix.xpData', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{bodyStyle:'padding:5px 5px 0',defaults:{width:300},width:'100%',autoScroll:true}))
 
 	</xsl:template><!--}}}-->
@@ -214,8 +209,8 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
 
 		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ux.xpotronix.xpThumbs', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{deferredRender:true,layout:'fit',syncSize:true,autoScroll:true}))
 
 	</xsl:template><!--}}}-->
@@ -226,8 +221,8 @@
 
 		<xsl:message>en Tab, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message>
 		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ext.TabPanel', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{layoutOnTabChange:true,activeTab:0,defaults:{hideMode:'offsets'}}))
 	</xsl:template><!--}}}-->
 
@@ -237,8 +232,8 @@
 
 		<xsl:message>en Viewport, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message>
 		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ext.Viewport', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{stateful:true,layout:'border',stateful: true,layout: 'border',deferredRender: true}))
 	</xsl:template><!--}}}-->
 
@@ -248,8 +243,8 @@
 
 		<xsl:message>en Window, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message>
 		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ext.Window', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{
 			width: 300
 			,height:200
@@ -276,7 +271,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:if test="position()-1">,</xsl:if>Ext.create( 'Ux.xpotronix.xpUploadPanel', Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{xtype:'<xsl:value-of select="@type"/>'
 		,buttonsAt:'tbar'
 		,id:'<xsl:value-of select="$panel_id"/>'
