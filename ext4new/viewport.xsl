@@ -42,7 +42,7 @@
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
 	<xsl:param name="current_user" select="//*:session/users/user_username"/>
 	<xsl:param name="anon_user" select="//*:session/users/_anon"/>
-	<xsl:param name="application_path" select="'/var/www/sites/xpotronix/alimentos'"/>
+	<xsl:param name="application_path" select="'/var/www/sites/xpotronix/xpay'"/>
 
 	<xsl:variable name="session" select="//*:session"/>
 	<!-- <xsl:variable name="application_name" select="upper-case(//*:session/feat/application)"/> -->

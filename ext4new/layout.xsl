@@ -126,13 +126,6 @@
 		<xsl:sequence select="$panels/panel[(@obj_name!=$obj_name and @region='') or (@obj_name!=$obj_name and @region='center')]"/>
 	</xsl:variable>
 
-	<xsl:variable name="ui_class">
-		<xsl:choose>
-			<xsl:when test="$standalone">Viewport</xsl:when>
-			<xsl:otherwise>Panel</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-
 	<xsl:variable name="region">
 		<xsl:choose>
 			<xsl:when test="count($center_panels/*)">north</xsl:when>
@@ -140,14 +133,12 @@
 		</xsl:choose>
 	</xsl:variable>
 
-	Ext.create( 'Ext.<xsl:value-of select="$ui_class"/>', {
+	Ext.create( 'Ext.Viewport', {
 
-		id: 'xpApp_layout',
 		stateful: true,
-		layout: 'border',
-		hideMode:'offsets',
-		renderTo: Ext.getBody(),
+		layout: 'fit',
 		bodyStyle: {border:0},
+
 		items:[
 
 		<xsl:if test="$menu_bar='true'">
@@ -336,7 +327,7 @@ var cardWizard = {
                 	       <xsl:otherwise><xsl:value-of select="concat(@obj_name,'_',@type)"/></xsl:otherwise>
 	               </xsl:choose>
 		</xsl:variable>
-		'<xsl:value-of select="$panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if>	
+		{ xtype: '<xsl:value-of select="$panel_id"/>'}<xsl:if test="position()!=last()">,</xsl:if>	
 	</xsl:template><!--}}}-->
 
 </xsl:stylesheet>
