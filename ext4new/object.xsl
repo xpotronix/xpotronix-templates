@@ -45,23 +45,9 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="obj" mode="panels"><!--{{{-->
-
-	<xsl:variable name="obj" select="."/>
-	<xsl:variable name="obj_name" select="@name"/>
-
-	<xsl:if test="//*:model//obj[@name=$obj_name]/panel">
-	/* panels para <xsl:value-of select="@name"/> */
-
-	<xsl:apply-templates select="//*:model//obj[@name=$obj_name]/panel"/>
-
-	</xsl:if>
-
-	</xsl:template><!--}}}-->
-
 	<xsl:template match="obj" mode="extra_param"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>
-		<xsl:for-each select="//xpotronix:session/var/e/*[name()=$obj_name or name()='_']/*">
+		<xsl:for-each select="//*:session/var/e/*[name()=$obj_name or name()='_']/*">
 			'e[<xsl:value-of select="$obj_name"/>][<xsl:value-of select="name()"/>]':'<xsl:value-of select="text()"/>'<xsl:if test="position()!=last()">,</xsl:if>			
 		</xsl:for-each>
 	</xsl:template><!--}}}-->

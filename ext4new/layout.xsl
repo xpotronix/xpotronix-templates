@@ -336,7 +336,7 @@ var cardWizard = {
                 	       <xsl:otherwise><xsl:value-of select="concat(@obj_name,'_',@type)"/></xsl:otherwise>
 	               </xsl:choose>
 		</xsl:variable>
-		Ext.getCmp('<xsl:value-of select="$panel_id"/>')<xsl:if test="position()!=last()">,</xsl:if>	
+		'<xsl:value-of select="$panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if>	
 	</xsl:template><!--}}}-->
 
 </xsl:stylesheet>

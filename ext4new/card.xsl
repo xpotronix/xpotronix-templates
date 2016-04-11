@@ -19,7 +19,7 @@
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
 
 	<xsl:template match="/"><!--{{{--> 
-		<xsl:apply-templates select="//xpotronix:dataset/class/obj"/>
+		<xsl:apply-templates select="//*:dataset/class/obj"/>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="obj">
@@ -34,7 +34,7 @@
 		
 		<div class="x-form-item">
 			<label class="x-form-item-label">
-				<xsl:apply-templates select="//xpotronix:metadata/obj[@name=$obj_name]/attr[@name=$attr_name]" mode="translate"/>
+				<xsl:apply-templates select="//*:metadata/obj[@name=$obj_name]/attr[@name=$attr_name]" mode="translate"/>
 			</label><div class="x-form-element">
 				<xsl:choose>
 					<xsl:when test="@label"><xsl:value-of select="@label"/></xsl:when>
