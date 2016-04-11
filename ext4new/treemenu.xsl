@@ -54,7 +54,7 @@
 </xsl:text><html>
 	<xsl:apply-templates select="." mode="head"/>
 <body> 
-	<h1>Cargando <xsl:value-of select="//xpotronix:session/feat/page_title"/>  aguarde ... </h1>
+	<h1>Cargando <xsl:value-of select="//*:session/feat/page_title"/>  aguarde ... </h1>
 	<!-- <xsl:message><xsl:value-of select="name()"/></xsl:message> -->
 
 	<!-- <xsl:apply-templates select="." mode="include-login-js"/> -->
@@ -65,14 +65,14 @@
 
   	<script type="text/javascript">
 
-	<xsl:if test="//xpotronix:session/var/EVENTS_MONITOR=1">
+	<xsl:if test="//*:session/var/EVENTS_MONITOR=1">
                 <xsl:call-template name="events_monitor"/>
         </xsl:if>
 
 	<xsl:variable name="code">
 
-	<xsl:if test="//xpotronix:session/feat/theme">
-		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>");
+	<xsl:if test="//*:session/feat/theme">
+		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//*:session/feat/theme"/>");
 	</xsl:if>
 
 	var App = Ext.create( 'Ux.xpotronix.xpApp', {state_manager:'http', feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> });
@@ -80,7 +80,7 @@
 	Ext.onReady(function() {
 
 	<xsl:choose>
-		<xsl:when test="//xpotronix:model/obj/layout">
+		<xsl:when test="//*:model/obj/layout">
 			<xsl:value-of select="//*:model/obj/layout"/>
 		</xsl:when>
 		<xsl:otherwise>

@@ -17,7 +17,7 @@
 
 <!-- stores --> 
 
-	<xsl:template match="xpotronix:model" mode="stores"><!--{{{-->
+	<xsl:template match="*:model" mode="stores"><!--{{{-->
 
 		<xsl:apply-templates select=".//obj" mode="store"/>
 
@@ -42,9 +42,8 @@
 
 
 	<xsl:template match="obj" mode="store"><!--{{{-->
-		<xsl:variable name="obj_name" select="@name"/>
 
-		<xsl:apply-templates select="." mode="model"/>
+		<xsl:variable name="obj_name" select="@name"/>
 
 		Ext.define('<xsl:value-of select="concat($application_name,'.store.',$obj_name)"/>', Ext.apply({ 
 
@@ -62,6 +61,7 @@
 		/* Entry Helpers */
 		<xsl:apply-templates select="queries/query/query" mode="store_eh"/>
 		/* End Entry Helpers */
+
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="obj" mode="primary_key">[<xsl:for-each select="primary_key/primary">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>]

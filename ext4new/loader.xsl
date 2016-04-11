@@ -85,7 +85,7 @@
 	<xsl:variable name="menu_bar" select="xp:get_feat($root_obj,'menu_bar')"/>
 	<xsl:variable name="code">
 
-	<xsl:if test="//xpotronix:session/var/EVENTS_MONITOR=1">
+	<xsl:if test="//*:session/var/EVENTS_MONITOR=1">
 		<xsl:call-template name="events_monitor"/>
 	</xsl:if>
 
@@ -93,8 +93,8 @@
 
         var fm = Ext.form, Ed = Ext.grid.GridEditor;
 
-	<xsl:if test="//xpotronix:session/feat/theme">
-		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>");
+	<xsl:if test="//*:session/feat/theme">
+		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//*:session/feat/theme"/>");
 	</xsl:if>
 
 
@@ -117,7 +117,7 @@
 	document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="//feat/page_title[1]"/>';
 
 	<xsl:if test="$menu_bar='true'">
-	App.menu = new Ext.Toolbar( <xsl:apply-templates select="//xpotronix:session/menu"/> );
+	App.menu = new Ext.Toolbar( <xsl:apply-templates select="//*:session/menu"/> );
 	/*
 	Ext.Ajax.request({
 		url: '?a=menu&amp;v=ext4/menubar',
@@ -187,7 +187,7 @@
 		
 	<script type="text/javascript">
 	<xsl:choose>
-		<xsl:when test="//xpotronix:session/var/UNNORMALIZED=1">
+		<xsl:when test="//*:session/var/UNNORMALIZED=1">
 			<xsl:value-of select="$code" disable-output-escaping="yes"/>
 		</xsl:when>
 		<xsl:otherwise>
