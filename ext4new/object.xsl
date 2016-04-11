@@ -34,7 +34,7 @@
 		,acl:{<xsl:apply-templates select="acl"/>}
 		,role:'<xsl:value-of select="$role"/>'
 		,extra_param:{<xsl:apply-templates select="." mode="extra_param"/>}
-		,store:App.store.lookup('<xsl:value-of select="@name"/>')
+		,store:'<xsl:value-of select="@name"/>'
 		,feat:<xsl:apply-templates select="." mode="feats"/>
 		<xsl:if test="count(processes/process[(not(@display) or @display!='hide') and acl/@action='permit' and acl/@role=$role])">
 		,processes_menu:<xsl:apply-templates select="processes">

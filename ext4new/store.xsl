@@ -58,9 +58,7 @@
 			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>}
 			,{<xsl:value-of select="config"/>}));
 
-		/* Entry Helpers */
 		<xsl:apply-templates select="queries/query/query" mode="store_eh"/>
-		/* End Entry Helpers */
 
 	</xsl:template><!--}}}-->
 
@@ -98,7 +96,7 @@
 	<xsl:template match="query" mode="model_eh">
 		<xsl:variable name="obj_name" select="@name"/>
 
-		Ext.define( '<xsl:value-of select="concat(../from,'_',@name)"/>', {
+		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>', {
 			extend: 'Ext.data.Model'
 			,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
 
