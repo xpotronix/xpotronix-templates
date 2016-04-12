@@ -49,7 +49,7 @@
 
 			extend: 'Ux.xpotronix.xpStore'
 			,model: '<xsl:value-of select="concat($application_name,'.model.',$obj_name)"/>'
-			,storeId: '<xsl:value-of select="@name"/>'
+			,alias: '<xsl:value-of select="@name"/>'
 			,class_name: '<xsl:value-of select="@name"/>'
 			,module: '<xsl:value-of select="//*:session/feat/module"/>'
 			,feat: <xsl:apply-templates select="." mode="feats"/>
@@ -78,8 +78,8 @@
 
 	Ext.define('<xsl:value-of select="concat($application_name,'.store.',../from,'_',@name)"/>', {
 		extend: 'Ux.xpotronix.xpStore'
-		,storeId: '<xsl:value-of select="concat(../from,'_',@name)"/>'
-		,model: '<xsl:value-of select="concat(../from,'_',@name)"/>'
+		,alias: '<xsl:value-of select="concat(../from,'_',@name)"/>'
+		,model: '<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>'
 		,class_name: '<xsl:value-of select="$obj_name"/>'
 		,module: '<xsl:value-of select="//*:session/feat/module"/>'
 		,primary_key: ['id'] 

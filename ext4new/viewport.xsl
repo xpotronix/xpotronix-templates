@@ -79,6 +79,8 @@
 
 	<xsl:variable name="menu_bar" select="xp:get_feat($root_obj,'menu_bar')"/>
 
+		<!-- model -->
+
 		<xsl:for-each select="*:model//obj">
 
 			<xsl:result-document method="text"
@@ -89,8 +91,23 @@
 
 			</xsl:result-document>
 
+			<!-- model_eh -->
+
+			<xsl:for-each select="queries/query/query">
+
+				<xsl:result-document method="text"
+				encoding="utf-8"
+				href="{concat($application_path,'/',$application_name,'/model/',../from,'_',@name,'.js')}">
+
+				<xsl:apply-templates select="." mode="model_eh"/>
+
+				</xsl:result-document>
+
+			</xsl:for-each>
+
 		</xsl:for-each>
 
+		<!-- store -->
 
 		<xsl:for-each select="*:model//obj">
 
@@ -102,8 +119,23 @@
 
 			</xsl:result-document>
 
+			<!-- store_eh -->
+
+			<xsl:for-each select="queries/query/query">
+
+				<xsl:result-document method="text"
+				encoding="utf-8"
+				href="{concat($application_path,'/',$application_name,'/store/',../from,'_',@name,'.js')}">
+
+				<xsl:apply-templates select="." mode="store_eh"/>
+
+				</xsl:result-document>
+
+			</xsl:for-each>
+
 		</xsl:for-each>
 
+		<!-- panel -->
 
 		<xsl:for-each select="*:model/obj">
 
@@ -127,6 +159,8 @@
 			</xsl:for-each>
 
 		</xsl:for-each>
+
+		<!-- controller -->
 
 		<xsl:result-document method="text"
 		encoding="utf-8"
@@ -248,6 +282,19 @@
 
 	<xsl:template match="*:model" mode="controller"><!--{{{-->
 
+	<xsl:variable name="items">
+		<xsl:for-each select=".//obj">
+			<xsl:element name="model">
+				<xsl:attribute name="name" select="@name"/>
+			</xsl:element>
+			<xsl:for-each select="queries/query/query">
+				<xsl:element name="model">
+					<xsl:attribute name="name" select="concat(../from,'_',@name)"/>
+				</xsl:element>
+			</xsl:for-each>
+		</xsl:for-each>
+	</xsl:variable>
+
 /* controller */
 
 	
@@ -257,9 +304,9 @@ Ext.define('<xsl:value-of select="concat($application_name,'.controller.',../*:s
 
     views: [<xsl:for-each select="obj/panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
-    stores: [<xsl:for-each select="obj">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
-    models: [<xsl:for-each select="obj">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
     init: function() {
         this.control({
