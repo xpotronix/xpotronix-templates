@@ -67,8 +67,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.callParent();
 
-		/*
-
 		this.store && this.store.on({
 
 			load: { fn:function(){this.loadRecord();}, buffer: 200, scope:this },
@@ -77,8 +75,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			changerowindex: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
 			clear: {  fn:function() {this.getForm().reset();}, buffer: 200, scope:this }	
 		});
-
-		*/
 
 
 		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
