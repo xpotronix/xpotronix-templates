@@ -47,10 +47,12 @@ Ext.define( 'Ux.xpotronix.xpForm', {
     },
 
 */
+
 	initComponent:function() {/*{{{*/
 
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+		this.store = Ext.StoreMgr.lookup( this.store );
 
 		Ext.apply( this, { 
 
@@ -65,6 +67,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.callParent();
 
+		/*
+
 		this.store && this.store.on({
 
 			load: { fn:function(){this.loadRecord();}, buffer: 200, scope:this },
@@ -73,6 +77,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			changerowindex: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
 			clear: {  fn:function() {this.getForm().reset();}, buffer: 200, scope:this }	
 		});
+
+		*/
 
 
 		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {

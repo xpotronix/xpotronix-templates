@@ -59,7 +59,7 @@
 </xsl:text>
 <html>
 	<xsl:apply-templates select="." mode="head"/>
-	<xsl:message>current user: <xsl:value-of select="$current_user"/></xsl:message>
+	<xsl:message>** CURRENT_USER: <xsl:value-of select="$current_user"/></xsl:message>
 	<xsl:choose>
 		<xsl:when test="($login_window='true') and ($anon_user='1' or $current_user='')">
 			<xsl:apply-templates select="." mode="include-login-js"/>
@@ -137,28 +137,31 @@
 
 		<!-- panel -->
 
-		<xsl:for-each select="*:model/obj">
+		<xsl:for-each select="*:model//obj">
 
 			<xsl:variable name="obj_name" select="@name"/>
+			<xsl:variable name="obj_metadata" select="//*:metadata/obj[@name=$obj_name]"/>
 
-			<xsl:for-each select="panel">
+			<xsl:message>**** OBJ_METADATA:<xsl:copy-of select="$obj_metadata/@name"/></xsl:message>
+
+
+		</xsl:for-each>
+
+			<xsl:for-each select="*:model//panel">
 
 				<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+
+				<xsl:message>****** PANEL_ID: <xsl:value-of select="$panel_id"/></xsl:message>
 
 				<xsl:result-document method="text"
 				encoding="utf-8"
 				href="{concat($application_path,'/',$application_name,'/view/',$panel_id,'.js')}">
 
-					<xsl:apply-templates select=".">
-						<xsl:with-param name="obj" select="*:metadata/obj[@name=$obj_name]" tunnel="yes"/>
-						<xsl:with-param name="obj_name" select="$obj_name" tunnel="yes"/>
-					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="define"/>
 
 				</xsl:result-document>
 
 			</xsl:for-each>
-
-		</xsl:for-each>
 
 		<!-- controller -->
 
@@ -254,9 +257,7 @@
 		    ],
 
 		    launch: function() {
-
 			<xsl:apply-templates select="*:model" mode="viewport"/>
-
 		    }
 		});/*}}}*/
 
@@ -302,7 +303,7 @@ Ext.define('<xsl:value-of select="concat($application_name,'.controller.',../*:s
 
     extend: 'Ext.app.Controller',
 
-    views: [<xsl:for-each select="obj/panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+    views: [<xsl:for-each select="obj//panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
     stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
