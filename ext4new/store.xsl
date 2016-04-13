@@ -23,8 +23,8 @@
 
 	</xsl:template><!--}}}-->
 
+	<xsl:template match="obj" mode="model"><!--{{{-->
 
-	<xsl:template match="obj" mode="model">
 		<xsl:variable name="obj_name" select="@name"/>
 
 		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',$obj_name)"/>', {
@@ -38,8 +38,7 @@
 				</xsl:apply-templates>
 			]});
 
-	</xsl:template>
-
+	</xsl:template><!--}}}-->
 
 	<xsl:template match="obj" mode="store"><!--{{{-->
 
@@ -58,12 +57,7 @@
 			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>}
 			,{<xsl:value-of select="config"/>}));
 
-		<xsl:apply-templates select="queries/query/query" mode="store_eh"/>
-
 	</xsl:template><!--}}}-->
-
-	<xsl:template match="obj" mode="primary_key">[<xsl:for-each select="primary_key/primary">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>]
-	</xsl:template>
 
 	<xsl:template match="ref"><!--{{{-->{ local: '<xsl:value-of select="@local"/>', remote: '<xsl:value-of select="@remote"/>', value: null }<xsl:if test="position()!=last()">,</xsl:if>
 	</xsl:template><!--}}}-->
@@ -73,8 +67,6 @@
 	<xsl:variable name="parent_obj_name" select="../../../@name"/>
 	<xsl:variable name="obj_name" select="from"/>
 	<xsl:variable name="eh_name" select="@name"/>
-
-	<xsl:apply-templates select="." mode="model_eh"/>
 
 	Ext.define('<xsl:value-of select="concat($application_name,'.store.',../from,'_',@name)"/>', {
 		extend: 'Ux.xpotronix.xpStore'
@@ -93,13 +85,16 @@
         	});
         </xsl:template><!--}}}-->
 
-	<xsl:template match="query" mode="model_eh">
+	<xsl:template match="query" mode="model_eh"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>
 
 		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>', {
 			extend: 'Ext.data.Model'
 			,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
 
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="obj" mode="primary_key">[<xsl:for-each select="primary_key/primary">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>]
 	</xsl:template>
 
 </xsl:stylesheet>

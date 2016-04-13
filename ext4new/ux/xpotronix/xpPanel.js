@@ -49,6 +49,8 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 			render: { fn:function() {this.on_render();}, buffer: 200, scope: this }
 		});
 
+		/*
+
 		this.store.on({
 
 			// load: { fn:function(){this.loadRecord();}, scope:this },
@@ -61,7 +63,7 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 			}, buffer: 200, scope:this }	
 		});
 
-		this.obj.toolbar( this );
+		*/ 
 
 		/*
 		this.on('keypress', function(e) {
