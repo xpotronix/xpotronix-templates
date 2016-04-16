@@ -1,0 +1,40 @@
+/**
+ * @package xpotronix
+ * @version 2.0 - Areco 
+ * @copyright Copyright &copy; 2003-2011, Eduardo Spotorno
+ * @author Eduardo Spotorno
+ *
+ * Licensed under GPL v3
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ */
+Ext.ns('Ux.xpotronix');
+
+Ext.define('Ux.xpotronix.xpProxy', {
+
+	extend: 'Ext.data.proxy.Ajax',
+	alias: 'proxy.xpproxy',
+
+	class_name: null, module: null, blank_url: null,
+
+	constructor: function( config ) {
+
+		this.url = '?v=xml&a=' + App.get_feat('query_action') + '&r=' + config.class_name + '&m=' + config.module,
+		this.blank_url = '?v=xml&a=blank&r=' + config.class_name + '&m=' + config.module,
+
+		this.reader = {
+
+			type: 'xml',
+			record: '>' + config.class_name,
+			updates_record: 'changes/' + config.class_name,
+			id: '@uiid',
+			totalProperty: '@total_records',
+			messageProperty: '@msg'
+		};
+
+		this.callParent(arguments);
+	},
+
+
+}); // extend
+
+// vim600: fdm=marker sw=3 ts=8 ai:

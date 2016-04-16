@@ -14,17 +14,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 	extend: 'Ext.data.Store',
 	alias: 'xpStore',
 
-	class_name: null,
-	module: null,
-	parent_store: null,
+	requires: ['Ux.xpotronix.xpProxy'],
+
+	class_name: null, module: null, parent_store: null,
 
 	feat: {},
 	acl: {},
 
-	rowIndex: null,
-	rowKey: null,
+	rowIndex: null, rowKey: null, filter: null,
 	pageSize: 20,
-	filter: null,
 
 	primary_key: this.primary_key || [],
 	foreign_key: this.foreign_key || [],
@@ -51,35 +49,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 		Ext.apply(this, config);
 		Ext.apply(this.params, config.extra_param || {});
 
-		/* URL */
-		this.store_url = '?v=xml&a=' + App.get_feat('query_action', this) + '&r=' + this.class_name + '&m=' + this.module;
-		this.blank_url = '?v=xml&a=blank&r=' + this.class_name + '&m=' + this.module;
-
-		/* xpath para las respuestas */
-		this.ns = '>' + this.class_name;
-		this.ns_update = 'changes/' + this.class_name;
-
-		this.rs = this.rs || {};
-
-		var reader = new Ext.data.XmlReader({
-			record: this.ns,
-			id: '@uiid',
-			totalProperty: '@total_records',
-			messageProperty: '@msg'
-		}, this.rs);
-
-		this.store_proxy = new Ext.data.proxy.Ajax({
-			url: this.store_url,
-			reader: reader
-		});
-
-		this.blank_proxy = new Ext.data.proxy.Ajax({
-			url: this.blank_url,
-			reader: reader,
-		});
-
-		this.proxy = this.store_proxy;
-
 		this.callParent(arguments);
 
 		/* eventos */
@@ -89,27 +58,40 @@ Ext.define('Ux.xpotronix.xpStore', {
 		this.addEvents( 'rowcountchange' );
 		this.addEvents( 'loadblank' );
 
-		/* cuando cambia el parent_store */
 
-		this.parent_store && 
-		this.parent_store.on({
-			changerowindex: {
-				buffer: 100,
-				fn: this.on_changerowindex,
-				scope: this
-			}
-		});
+		/* parent_store */
 
-		/* carga un registro en blanco cuando la relacion es de parent */
+		if ( tmp = this.parent_store ) {
 
-		this.parent_store && this.foreign_key_type == 'parent' && (!this.passive) &&
-		this.parent_store.on({
-			loadblank: {
-				buffer: 100,
-				fn: this.add_blank,
-				scope: this
-			}
-		});
+			var tmp;
+
+			if ( typeof this.parent_store == 'string' )
+				this.parent_store = Ext.StoreMgr.lookup( tmp ) || 
+					console.error( "no encuentro el parent_store " + tmp );
+
+			this.parent_store.add_child( this );
+
+			/* cuando cambia el parent_store */
+
+			false && this.parent_store.on({
+				changerowindex: {
+					buffer: 100,
+					fn: this.on_changerowindex,
+					scope: this
+				}
+			});
+
+			/* carga un registro en blanco cuando la relacion es de parent */
+
+			this.foreign_key_type == 'parent' && (!this.passive) &&
+			false && this.parent_store.on({
+				loadblank: {
+					buffer: 100,
+					fn: this.add_blank,
+					scope: this
+				}
+			});
+		}
 
 
 		/* cuando el se haya modificado el store y tenga un fk == parent setea la fk */
@@ -121,7 +103,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		}); /*}}}*/
 
-		this.on('load', function(s, a, b) { //{{{
+		false && this.on('load', function(s, a, b) { //{{{
 
 			this.foreign_key_values = null;
 
@@ -184,7 +166,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		}); //}}}
 
-		this.on('beforeload', this.before_load);
+		false && this.on('beforeload', this.before_load);
 
 		this.childs.each(function(ch) { //{{{
 
@@ -822,9 +804,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	go_to: function(record, stay) { /*{{{*/
-
-		var ri = record.index;
+	go_to: function( ri, stay ) { /*{{{*/
 
 		if (stay === undefined)
 			var stay = true;

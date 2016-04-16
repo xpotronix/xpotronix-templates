@@ -22,23 +22,26 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	feat: null,
 	loadMask: true,
 	rowEditing: null,
-	
+	multiSelect: true,
 
 	initComponent:function() {/*{{{*/
 
+
+		this.selModel = this.getSelectionModel();	
 		
     		this.rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
         		clicksToMoveEditor: 1,
         		autoCancel: false
     		});
 
+		this.store = Ext.StoreMgr.lookup( this.store );
 
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
 		Ext.apply( this, { 
 
-			plugins: [this.rowEditing],
+			/* plugins: [this.rowEditing], */
 
 			dockedItems: [{
 				itemId: 'pagingtoolbar',
@@ -67,6 +70,12 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		}, this);
 
 		*/
+
+		/* call parent */
+		this.callParent(arguments);
+
+                this.getStore().on('beforeload', this.rememberSelection, this);
+                this.getView().on('refresh', this.refreshSelection, this);
 
 		this.on( 'render', function() {
 
@@ -104,10 +113,102 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this);
 
-		// call parent
-		this.callParent();
+	 	this.on('validateedit', function(e, a, b){/*{{{*/
 
+	    		var cm = e.grid.colModel.config;
+			var field = cm[e.column];
+
+       			if ( field.editor.field.initialConfig.displayField == '_label') { 
+
+	  			var label = field.name + '_label';
+	  			e.record.data[label] = field.editor.field.getRawValue() ;	
+
+       			}
+
+	 	});/*}}}*/
+
+		this.selModel.on('selectionchange', function(sm, selection) {/*{{{*/
+
+			return true; 
+		
+			if ( selection.length == 1 ) 
+				this.store.go_to( selection[0].index ); /* DEBUG: esto por ahora */
+
+			return true;
+
+		}, this, { buffer: 500 });/*}}}*/
+
+		this.selModel.on( 'beforeselect', function() {
+
+			if ( ! Ext.isEmptyObject( this.dirty_childs() ) ) {
+
+				Ext.Msg.alert( 'Atención', 'Hubo modificaciones: guarde o descarte los cambios' );
+				return false;
+			}
+
+		}, this.store );
+
+
+		this.on( 'afterrender', function() {/*{{{*/
+
+			return true;
+
+			if ( this.store.getCount() ) 
+				this.selModel.select( this.store.rowIndex );
+
+		} );/*}}}*/
+
+		this.store.on( 'add', function() {
+
+			if ( ! this.selModel.getSelected() ) 
+				this.store.go_to( 0 );
+
+		}, this );
+	
+
+                this.store.on( 'load', function() {/*{{{*/
+
+			return true;
+
+			if ( this.rendered && this.store.getCount() ) 
+				this.selModel.select( this.store.rowIndex );
+
+		}, this);/*}}}*/
+
+                this.store.on('changerowindex', function(s, rowIndex) {/*{{{*/
+
+			return true;
+
+			if ( this.rendered && this.store.getCount() ) 
+				this.selModel.select( s.rowIndex );
+
+                }, this );/*}}}*/
+               
 	}, // eo function initComponent/*}}}*/
+
+
+
+            rememberSelection: function(selModel, selectedRecords) {
+                this.selectedRecords = this.getSelectionModel().getSelection();
+                this.getView().saveScrollState();
+            },
+            refreshSelection: function() {
+
+                if (this.selectedRecords === undefined || 0 >= this.selectedRecords.length) {
+                    return;
+                }
+
+                var newRecordsToSelect = [];
+                for (var i = 0; i < this.selectedRecords.length; i++) {
+                    record = this.getStore().getById(this.selectedRecords[i].getId());
+                    if (!Ext.isEmpty(record)) {
+                        newRecordsToSelect.push(record);
+                    }
+                }
+
+                this.getSelectionModel().select(newRecordsToSelect);
+		// Ext.defer(this.setScrollTop, 30, this, [this.getView().scrollState.top]);
+            },
 
 	onRender:function() {//{{{
 
