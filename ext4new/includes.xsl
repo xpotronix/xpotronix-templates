@@ -68,6 +68,7 @@
 		<script type="text/javascript" src="/ux4/xpotronix/extensions.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/misc.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpPagingToolbar.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpProxy.js"/>
 
 	</xsl:template><!--}}}-->
 

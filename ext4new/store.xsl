@@ -29,6 +29,65 @@
 
 		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',$obj_name)"/>', {
 			extend: 'Ext.data.Model'
+			,class_name: '<xsl:value-of select="@name"/>'
+			,module: '<xsl:value-of select="//*:session/feat/module"/>'
+			,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="@name"/>', module: '<xsl:value-of select="//*:session/feat/module"/>' }
+
+			<xsl:if test="foreign_key">
+
+				<xsl:variable name="parent"><xsl:if test="../name()='obj'"><xsl:value-of select="../@name"/></xsl:if></xsl:variable>
+
+				<xsl:variable name="assoc_type">
+					<xsl:choose>
+						<xsl:when test="foreign_key/@type='parent'">hasOne</xsl:when>
+						<xsl:otherwise>belongsTo</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+
+				,associations:[
+
+					{<xsl:for-each select="foreign_key/ref">
+						name: '<xsl:value-of select="concat($obj_name,'_',$parent,'_',@local,'_',@remote)"/>'
+						,model: '<xsl:value-of select="concat($application_name,'.model.',$parent)"/>'
+						,type: '<xsl:value-of select="$assoc_type"/>'
+						,primaryKey: '<xsl:value-of select="@local"/>'
+						,foreignKey: '<xsl:value-of select="@remote"/>'
+
+					</xsl:for-each>}<xsl:if test="position()!=last()">,</xsl:if>
+				]
+
+			</xsl:if>
+
+			<xsl:if test="count(obj/foreign_key)">
+
+				<xsl:variable name="parent" select="@name"/>
+
+				<xsl:variable name="assoc_type">
+					<xsl:choose>
+						<xsl:when test="foreign_key/@type='parent'">hasOne</xsl:when>
+						<xsl:otherwise>hasMany</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+
+				,associations:[
+
+					{<xsl:for-each select="obj/foreign_key/ref">
+
+						<xsl:variable name="child" select="../../@name"/>
+
+						name: '<xsl:value-of select="concat($obj_name,'_',$child,'_',@local,'_',@remote)"/>'
+						,model: '<xsl:value-of select="concat($application_name,'.model.',$child)"/>'
+						,type: '<xsl:value-of select="$assoc_type"/>'
+						,primaryKey: '<xsl:value-of select="@remote"/>'
+						,foreignKey: '<xsl:value-of select="@local"/>'
+						,root: 'c_'
+						,associationKey: '&gt;<xsl:value-of select="$child"/>'
+
+					</xsl:for-each>}<xsl:if test="position()!=last()">,</xsl:if>
+				]
+
+			</xsl:if>
+
 			,fields: [
 				{name: '__ID__', mapping: '@ID', type: 'string'},
 				{name: '__new__', mapping: '@new', type: 'int'},
@@ -53,6 +112,20 @@
 			,module: '<xsl:value-of select="//*:session/feat/module"/>'
 			,feat: <xsl:apply-templates select="." mode="feats"/>
 			,acl: {<xsl:apply-templates select="//*:metadata/obj[@name=$obj_name]/acl"/>}
+
+			,primary_key: <xsl:apply-templates select="." mode="primary_key"/>
+			<xsl:if test="../name()='obj'">
+				,parent_store: '<xsl:value-of select="../@name"/>'
+			</xsl:if>
+
+			<xsl:if test="foreign_key">
+			,foreign_key: [<xsl:apply-templates select="foreign_key/ref"/>]
+			<xsl:if test="foreign_key/@type">
+			,foreign_key_type: '<xsl:value-of select="foreign_key/@type"/>'</xsl:if>
+			<xsl:if test="foreign_key/@passive">
+			,passive: <xsl:value-of select="foreign_key/@passive"/></xsl:if>
+			</xsl:if>
+
 			,pageSize: <xsl:value-of select="xp:get_feat(.,'page_rows')"/>
 			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>}
 			,{<xsl:value-of select="config"/>}));
@@ -90,6 +163,9 @@
 
 		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>', {
 			extend: 'Ext.data.Model'
+			,class_name: '<xsl:value-of select="@name"/>'
+			,module: '<xsl:value-of select="//*:session/feat/module"/>'
+			,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="@name"/>', module: '<xsl:value-of select="//*:session/feat/module"/>' }
 			,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
 
 	</xsl:template><!--}}}-->
