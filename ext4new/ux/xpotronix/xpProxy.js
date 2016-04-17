@@ -16,9 +16,18 @@ Ext.define('Ux.xpotronix.xpProxy', {
 
 	class_name: null, module: null, blank_url: null,
 
+	startParam: 'g[start]',
+	limitParam: 'g[limit]', 
+	pageParam: null, 
+	sortParam: 'g[sort]', 
+	directionParam: 'g[dir]', 
+	filterParam: null, 
+	groupParam: null, 
+	groupDirectionParam: null, 
+
 	constructor: function( config ) {
 
-		this.url = '?v=xml&a=' + App.get_feat('query_action') + '&r=' + config.class_name + '&m=' + config.module,
+		this.url = '?v=xml&a=data_r&r=' + config.class_name + '&m=' + config.module,
 		this.blank_url = '?v=xml&a=blank&r=' + config.class_name + '&m=' + config.module,
 
 		this.reader = {
@@ -28,7 +37,19 @@ Ext.define('Ux.xpotronix.xpProxy', {
 			updates_record: 'changes/' + config.class_name,
 			id: '@uiid',
 			totalProperty: '@total_records',
-			messageProperty: '@msg'
+			messageProperty: '@msg',
+			root: 'c_'
+		};
+
+		this.writer = {
+
+			type: 'xml',
+			record: '>' + config.class_name,
+			updates_record: 'changes/' + config.class_name,
+			id: '@uiid',
+			totalProperty: '@total_records',
+			messageProperty: '@msg',
+			root: 'c_'
 		};
 
 		this.callParent(arguments);
