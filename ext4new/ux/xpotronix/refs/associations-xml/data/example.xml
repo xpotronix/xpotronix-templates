@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProductResultSet>
+   <ProductType>
+      <id>55</id>
+      <name>Product Name</name>
+      <sometag>asdf</sometag>
+      <addressList>
+         <address>
+            <street>12345 a</street>
+            <city>myCity</city>
+         </address>
+         <address>
+            <street>234567 b</street>
+            <city>Denver</city>
+         </address>
+      </addressList>
+      <phoneContactList>
+         <phoneContact>
+            <primary>234</primary>
+            <cell>4667</cell>
+         </phoneContact>
+         <phoneContact>
+            <primary>5467</primary>
+            <cell>87904</cell>
+         </phoneContact>
+      </phoneContactList>
+      <oneToOne>
+         <firstField>value</firstField>
+         <secondField>value</secondField>
+      </oneToOne>
+   </ProductType>
+</ProductResultSet>
