@@ -129,6 +129,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.selModel.on('selectionchange', function(sm, selection) {/*{{{*/
 
+			this.active = selection[0];
+
 			return true; 
 		
 			if ( selection.length == 1 ) 

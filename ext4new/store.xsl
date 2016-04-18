@@ -47,11 +47,13 @@
 				,associations:[
 
 					{<xsl:for-each select="foreign_key/ref">
-						name: '<xsl:value-of select="concat($obj_name,'_',$parent,'_',@local,'_',@remote)"/>'
+						name: '<xsl:value-of select="$parent"/>'
 						,model: '<xsl:value-of select="concat($application_name,'.model.',$parent)"/>'
 						,type: '<xsl:value-of select="$assoc_type"/>'
-						,primaryKey: '<xsl:value-of select="@local"/>'
-						,foreignKey: '<xsl:value-of select="@remote"/>'
+						,autoload: true
+						/*,primaryKey: '<xsl:value-of select="@local"/>'*/
+						/*,foreignKey: '<xsl:value-of select="@remote"/>'*/
+						/* ,associationKey: 'c_><xsl:value-of select="$obj_name"/>' */
 
 					</xsl:for-each>}<xsl:if test="position()!=last()">,</xsl:if>
 				]
@@ -75,13 +77,12 @@
 
 						<xsl:variable name="child" select="../../@name"/>
 
-						name: '<xsl:value-of select="concat($obj_name,'_',$child,'_',@local,'_',@remote)"/>'
+						name: '<xsl:value-of select="$child"/>'
 						,model: '<xsl:value-of select="concat($application_name,'.model.',$child)"/>'
 						,type: '<xsl:value-of select="$assoc_type"/>'
-						,primaryKey: '<xsl:value-of select="@remote"/>'
-						,foreignKey: '<xsl:value-of select="@local"/>'
-						,root: 'c_'
-						,associationKey: '&gt;<xsl:value-of select="$child"/>'
+						,autoload: true
+						/*,primaryKey: '<xsl:value-of select="@remote"/>'*/
+						/*,foreignKey: '<xsl:value-of select="@local"/>'*/
 
 					</xsl:for-each>}<xsl:if test="position()!=last()">,</xsl:if>
 				]

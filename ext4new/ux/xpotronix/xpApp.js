@@ -443,8 +443,6 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	handle_login: function( form, action ) {/*{{{*/
 
-		debugger;
-
 		try {
 
 			obj = Ext.decode(action.response.responseText); 
