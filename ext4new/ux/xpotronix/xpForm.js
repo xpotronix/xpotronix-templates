@@ -72,7 +72,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			load: { fn:function(){this.loadRecord();}, buffer: 200, scope:this },
 			update: { fn:function( s, r, o ){ if ( o == Ext.data.Record.EDIT || o == Ext.data.Record.COMMIT ) this.loadRecord();}, buffer: 200, scope:this },
 			// datachanged: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
-			changerowindex: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
+			//changerowindex: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
 			clear: {  fn:function() {this.getForm().reset();}, buffer: 200, scope:this }	
 		});
 

@@ -16,12 +16,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	requires: ['Ux.xpotronix.xpProxy'],
 
-	class_name: null, module: null, parent_store: null,
+	class_name: null, 
+	module: null, 
+	parent_store: null,
 
 	feat: {},
 	acl: {},
 
-	rowIndex: null, rowKey: null, filter: null,
+	rowIndex: null,
+	rowKey: null, 
+	filter: null,
 	pageSize: 20,
 
 	primary_key: this.primary_key || [],
@@ -33,6 +37,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 	remoteFilter: this.remoteSort || true,
 	pruneModifiedRecords: true,
 	autoLoad: false,
+
+	selection: [],
 
 	constructor: function(config) {
 
@@ -54,7 +60,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 		/* eventos */
 
 		this.addEvents( 'serverstoreupdate' ); 
-		this.addEvents( 'changerowindex' );
+		this.addEvents( 'selectionchange' );
 		this.addEvents( 'rowcountchange' );
 		this.addEvents( 'loadblank' );
 
@@ -73,10 +79,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			/* cuando cambia el parent_store */
 
-			false && this.parent_store.on({
-				changerowindex: {
+			this.parent_store.on({
+				selectionchange: {
 					buffer: 100,
-					fn: this.on_changerowindex,
+					fn: this.on_selectionchange,
 					scope: this
 				}
 			});
@@ -84,7 +90,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			/* carga un registro en blanco cuando la relacion es de parent */
 
 			this.foreign_key_type == 'parent' && (!this.passive) &&
-			false && this.parent_store.on({
+			this.parent_store.on({
 				loadblank: {
 					buffer: 100,
 					fn: this.add_blank,
@@ -103,7 +109,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		}); /*}}}*/
 
-		false && this.on('load', function(s, a, b) { //{{{
+		this.on('load', function(s, a, b) { //{{{
 
 			this.foreign_key_values = null;
 
@@ -166,7 +172,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		}); //}}}
 
-		false && this.on('beforeload', this.before_load);
+		this.on('beforeload', this.before_load);
 
 		this.childs.each(function(ch) { //{{{
 
@@ -463,19 +469,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	on_changerowindex: function(s, ri) { /*{{{*/
+	on_selectionchange: function(s, ri) { /*{{{*/
 
-		// DEBUG: access en juscaba2
-		if ((!this.acl.access && !App.application == 'juscaba2') || !this.acl.list || !this.foreign_key.length || this.passive)
-			return;
-
-		if (ri == -1 || this.parent_store.cr().get('__new__')) {
-
-			this.removeAll();
-			this.go_to(-1);
-
-		} else
-			this.load();
+		this.load();
 
 	},
 	/*}}}*/
@@ -804,6 +800,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
+	set_selection: function( selection ) {/*{{{*/
+	
+		this.fireEvent('selectionchange', this, this.selection = selection);
+
+	},/*}}}*/
+
 	go_to: function( ri, stay ) { /*{{{*/
 
 		if (stay === undefined)
@@ -830,7 +832,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.rowKey = c ? this.cr().get('__ID__') : null;
 
-		this.fireEvent('changerowindex', this, this.rowIndex);
+		this.fireEvent('selectionchange', this, this.rowIndex);
 
 		return true;
 

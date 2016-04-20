@@ -24,6 +24,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	rowEditing: null,
 	multiSelect: true,
 
+	selection: [],
+
 	initComponent:function() {/*{{{*/
 
 
@@ -127,14 +129,9 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	 	});/*}}}*/
 
-		this.selModel.on('selectionchange', function(sm, selection) {/*{{{*/
+		this.on('selectionchange', function(sm, selection) {/*{{{*/
 
-			this.active = selection[0];
-
-			return true; 
-		
-			if ( selection.length == 1 ) 
-				this.store.go_to( selection[0].index ); /* DEBUG: esto por ahora */
+			this.store.set_selection( this.selection = selection );
 
 			return true;
 
@@ -152,8 +149,6 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 
 		this.on( 'afterrender', function() {/*{{{*/
-
-			return true;
 
 			if ( this.store.getCount() ) 
 				this.selModel.select( this.store.rowIndex );
