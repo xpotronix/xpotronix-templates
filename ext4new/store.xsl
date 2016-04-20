@@ -139,7 +139,7 @@
 			{	name:'<xsl:value-of select="$parent"/>'
 				,model:'<xsl:value-of select="concat($application_name,'.model.',$parent)"/>'
 				,type:'<xsl:value-of select="$assoc_type"/>'
-				,autoload:true
+				/* ,autoload:true */
 				,primaryKey:'<xsl:value-of select="@local"/>'
 				,foreignKey:'<xsl:value-of select="@remote"/>'
 				/*,associationKey:'c_><xsl:value-of select="$obj_name"/>' */
@@ -161,7 +161,7 @@
 			{	name:'<xsl:value-of select="$child"/>'
 				,model:'<xsl:value-of select="concat($application_name,'.model.',$child)"/>'
 				,type:'<xsl:value-of select="$assoc_type"/>'
-				,autoload: true
+				/* ,autoload: true */
 				,primaryKey:'<xsl:value-of select="@remote"/>'
 				,foreignKey:'<xsl:value-of select="@local"/>'
 

@@ -19,6 +19,8 @@
 
 	<xsl:template match="xpotronix:model" mode="stores"><!--{{{-->
 		var tmp;
+		var config;
+		var model;
 		<xsl:apply-templates select=".//obj" mode="store"/>
 	</xsl:template><!--}}}-->
 
@@ -26,13 +28,13 @@
 	<xsl:template match="obj" mode="model">
 		<xsl:variable name="obj_name" select="@name"/>
 
-		Ext.define( '<xsl:value-of select="$obj_name"/>', {
+		model = Ext.define( '<xsl:value-of select="$obj_name"/>_model', {
 			extend: 'Ext.data.model'
 			,fields: [
 				{name: '__ID__', mapping: '@ID', type: 'string'},
 				{name: '__new__', mapping: '@new', type: 'int'},
 				{name: '__acl__', mapping: '@acl', type: 'string'},
-				<xsl:apply-templates select="//xpotronix:metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
+				<xsl:apply-templates select="//*:metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
 					<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
 			]});
@@ -45,11 +47,18 @@
 
 		<xsl:apply-templates select="." mode="model"/>
 
-		App.store.add( tmp = new Ext.ux.xpotronix.xpStore( Ext.apply( 
-			{ 
+Ext.define('Person',{
+        extend: 'Ext.data.Model',
+        fields: [
+            'Name', 'dob', "orlando"
+        ]
+    });
+
+		config = Ext.apply({ 
 			storeId: '<xsl:value-of select="@name"/>'
+			,model: '<xsl:value-of select="$obj_name"/>_model'
 			,class_name: '<xsl:value-of select="@name"/>'
-			,module: '<xsl:value-of select="//xpotronix:session/feat/module"/>'
+			,module: '<xsl:value-of select="//*:session/feat/module"/>'
 			,primary_key: <xsl:apply-templates select="." mode="primary_key"/>
 			<xsl:if test="../name()='obj'">
 			,parent_store: App.store.item( '<xsl:value-of select="../@name"/>' )
@@ -64,13 +73,15 @@
 			<xsl:if test="foreign_key/@passive">
 			,passive: <xsl:value-of select="foreign_key/@passive"/></xsl:if>
 			</xsl:if>  
-
-
 			,pageSize: <xsl:value-of select="xp:get_feat(.,'page_rows')"/>
-			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>
-		 	,model: '<xsl:value-of select="$obj_name"/>'
-			},{<xsl:value-of select="config"/>})
-		));
+			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>}
+
+			,{<xsl:value-of select="config"/>});
+
+		/* tmp = new Ext.ux.xpotronix.xpStore( config ); */
+		tmp = Ext.create( 'xpStore', config );
+
+		App.store.add( tmp );
 
 		<xsl:if test="../name()='obj'">
 		App.store.item( '<xsl:value-of select="../@name"/>' ).add_child( tmp );
@@ -94,11 +105,11 @@
 	App.store.add( new Ext.ux.xpotronix.xpStore({
 		storeId: '<xsl:value-of select="concat(../from,'_',@name)"/>'
 		,class_name: '<xsl:value-of select="$obj_name"/>'
-		,module: '<xsl:value-of select="//xpotronix:session/feat/module"/>'
+		,module: '<xsl:value-of select="//*:session/feat/module"/>'
 		,primary_key: ['id'] 
 		,parent_store: App.store.item( '<xsl:value-of select="$parent_obj_name"/>' )
 		<!-- DEBUG: aca hago piruetas para obtener el nombre del atributo que posee este eh. Hay que cambiar a fk -->
-		,foreign_key: [{local:'id',remote:'<xsl:value-of select="//xpotronix:metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}]
+		,foreign_key: [{local:'id',remote:'<xsl:value-of select="//*:metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}]
 		,foreign_key_type: 'parent'
 		,remoteSort: true 
 		,pageSize: 20

@@ -30,8 +30,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	primary_key: this.primary_key || [],
 	foreign_key: this.foreign_key || [],
-	foreign_key_type: this.foreign_key_type,
-	foreign_key_values: null,
+	foreign_key_values: [],
 
 	remoteSort: this.remoteSort || true,
 	remoteFilter: this.remoteSort || true,
@@ -82,14 +81,14 @@ Ext.define('Ux.xpotronix.xpStore', {
 			this.parent_store.on({
 				selectionchange: {
 					buffer: 100,
-					fn: this.on_selectionchange,
+					fn: this.onSelectionChange,
 					scope: this
 				}
 			});
 
 			/* carga un registro en blanco cuando la relacion es de parent */
 
-			this.foreign_key_type == 'parent' && (!this.passive) &&
+			this.foreign_key.type == 'parent' && (!this.passive) &&
 			this.parent_store.on({
 				loadblank: {
 					buffer: 100,
@@ -104,7 +103,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.on('update', function(s, r, o) { /*{{{*/
 
-			if (s.foreign_key_type == 'parent' && o == Ext.data.Record.EDIT)
+			if (s.foreign_key.type == 'parent' && o == Ext.data.Record.EDIT)
 				s.set_parent_fk();
 
 		}); /*}}}*/
@@ -136,7 +135,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 					}
 
 
-					if (Ext.isEmptyObject(this.foreign_key_values)) {
+					if ( this.foreign_key_values.length == 0 ) {
 
 						this.suspendEvents();
 						this.bind(r, this.foreign_key_values);
@@ -167,7 +166,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		}); //}}}
 
-		this.on('beforeload', this.before_load);
+		this.on('beforeload', this.onBeforeLoad);
 
 		this.childs.each(function(ch) { //{{{
 
@@ -310,7 +309,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 
 
-	before_load: function(store, options) { /*{{{*/
+	onBeforeLoad: function(store, options) { /*{{{*/
 
 		if ((!options.add) && this.dirty && (!Ext.isEmptyObject(this.dirty()) || !Ext.isEmptyObject(this.dirty_childs()))) {
 
@@ -346,7 +345,7 @@ Ext.define('Ux.xpotronix.xpStore', {
                         var params = {};
                         params['s[' + this.class_name +']['+ vars +']'] = this.baseParams.query;
 
-			Ext.apply( options.params, params );
+			Ext.apply( options.filters, params );
 
 		}
 
@@ -355,7 +354,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 		// FilterRow
 		if (this.filter && this.filter.shown) {
 
-			Ext.apply(options.params, this.filter.getFilterDataXp());
+			Ext.apply(options.filters, this.filter.getFilterDataXp());
 
 		}
 
@@ -364,7 +363,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		if (this.parent_store) {
 
-			var fk = this.get_foreign_key();
+			var fk = this.foreign_key_values;
 
 			if (Ext.isEmptyObject(fk)) return;
 
@@ -379,9 +378,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 				}
 				else 
 				*/
-				Ext.apply(options.params, this.get_foreign_key());
+				Ext.apply( options.filters, this.foreign_key_values );
 
-			} else if (this.foreign_key_type == 'parent')
+			} else if (this.foreign_key.type == 'parent')
 				return;
 			else
 				return false;
@@ -430,7 +429,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					this.suspendEvents();
 
-					if (this.foreign_key_type != 'parent')
+					if (this.foreign_key.type != 'parent')
 
 						this.bind(nr, this.get_foreign_key());
 
@@ -464,9 +463,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	on_selectionchange: function( selections ) { /*{{{*/
+	onSelectionChange: function( selections ) { /*{{{*/
 
-		this.foreign_key_values = ( this.parent_store && this.foreign_key_type != 'parent') ? 
+		this.foreign_key_values = ( this.parent_store && this.foreign_key.type != 'parent') ? 
 		this.get_foreign_key( selections ): 
 		[];
 
@@ -699,24 +698,30 @@ Ext.define('Ux.xpotronix.xpStore', {
 		var key = {};
 		var keys = [];
 
-		Ext.each( selections, function( s ) {
 
-			Ext.each( this.foreign_key.refs, function( ref ) {
+		if ( selections.length > 0 ) {
 
-				var r = ref.remote, l = ref.local, value = s.data[r];
+			Ext.each( selections, function( s ) {
 
-				if (value == undefined)
-					(typeof console != 'undefined') && console.error('no encuentro la clave foranea ' + ref.remote);
-				else
-					key[l] = value.dateFormat ?
-					value.dateFormat(App.feat.date_long_format) :
-					value;
+				Ext.each( this.foreign_key.refs, function( ref ) {
 
-			}, this);
+					var r = ref.remote, l = ref.local;
+					var value = s.data[r];
 
-			keys.push( key );
+					if (value == undefined)
+						(typeof console != 'undefined') && console.error('no encuentro la clave foranea ' + ref.remote);
+					else
+						key[l] = value.dateFormat ?
+						value.dateFormat(App.feat.date_long_format) :
+						value;
 
-		}, this );
+				}, this);
+
+				keys.push( key );
+
+			}, this );
+
+		}
 
 		return keys;
 
