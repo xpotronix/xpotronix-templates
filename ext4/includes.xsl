@@ -35,11 +35,11 @@
 	    	<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/css/visual/grid.css" />
 	    	<link rel="stylesheet" type="text/css" href="/ext4/resources/css/structure/grid.css" /> -->
 
-		<link rel="stylesheet" type="text/css" href="/ux/xpotronix/xpThumbs.css"/>
+		<link rel="stylesheet" type="text/css" href="/ux4/xpotronix/xpThumbs.css"/>
 
 		<!-- FilterRow -->
 
-		<link rel="stylesheet" type="text/css" href="/ux/grid/FilterRow.css"/>
+		<link rel="stylesheet" type="text/css" href="/ux4/grid/FilterRow.css"/>
 
 		<!-- GridFilters -->
 
@@ -48,13 +48,13 @@
 
 		<!-- file -->
 	
-		<link rel="stylesheet" type="text/css" href="/ux/file/css/filetype.css"/>
-		<link rel="stylesheet" type="text/css" href="/ux/file/css/icons.css"/>
-		<link rel="stylesheet" type="text/css" href="/ux/file/css/filetree.css"/>
+		<link rel="stylesheet" type="text/css" href="/ux4/file/css/filetype.css"/>
+		<link rel="stylesheet" type="text/css" href="/ux4/file/css/icons.css"/>
+		<link rel="stylesheet" type="text/css" href="/ux4/file/css/filetree.css"/>
 
 		<!-- other extensions css -->
 
-		<link rel="stylesheet" type="text/css" href="/ux/xpotronix/extensions.css"/>
+		<link rel="stylesheet" type="text/css" href="/ux4/xpotronix/extensions.css"/>
 
 		<!-- local app.css -->
 
@@ -79,8 +79,8 @@
 		
 		<!-- <script type="text/javascript" src="/ext4/src/locale/ext-lang-es.js"></script> -->
 		<!-- <script type="text/javascript" src="/ext4/src/ext-core/src/core/Loader.js"></script> -->
-		<script type="text/javascript" src="/ux/state/HttpProvider.js"></script>
-		<script type="text/javascript" src="/ux/util.js"></script>
+		<script type="text/javascript" src="/ux4/state/HttpProvider.js"></script>
+		<script type="text/javascript" src="/ux4/util.js"></script>
 		<script type="text/javascript">
 		Ext.Compat.showErrors = true;
 		</script>
@@ -88,7 +88,7 @@
 
 		<xsl:if test="//cmp[@type='ux.GMapPanel3']">
 			<script type="text/javascript" src="http://maps.google.com.ar/maps/api/js?sensor=false"></script> 
-			<script type="text/javascript" src="/ux/map/Ext.ux.GMapPanel3.js"></script>
+			<script type="text/javascript" src="/ux4/map/Ext.ux.GMapPanel3.js"></script>
 		</xsl:if>
 
 	</xsl:template><!--}}}-->
@@ -110,45 +110,45 @@
 
 		<!-- DateTime Field -->
 
-		<!-- <script type="text/javascript" src="/ux/form/DateTime.js"></script> -->
-		<script type="text/javascript" src="/ux/grid/Search.js"></script>
+		<!-- <script type="text/javascript" src="/ux4/form/DateTime.js"></script> -->
+		<script type="text/javascript" src="/ux4/grid/Search.js"></script>
 
 		<!-- FilterRow -->
 
-		<script type="text/javascript" src="/ux/grid/FilterRow.js"></script>
+		<script type="text/javascript" src="/ux4/grid/FilterRow.js"></script>
 
 		<!-- xpotronix -->
 
-		<script type="text/javascript" src="/ux/xpotronix/xpApp.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpObj.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpStore.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpGrid.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpGridDropZone.js"/>
-		<!-- <script type="text/javascript" src="/ux/xpotronix/xpGridFilter.js"/> -->
-		<script type="text/javascript" src="/ux/xpotronix/xpForm.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpPanel.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpObj.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpStore.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpGrid.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpGridDropZone.js"/>
+		<!-- <script type="text/javascript" src="/ux4/xpotronix/xpGridFilter.js"/> -->
+		<script type="text/javascript" src="/ux4/xpotronix/xpForm.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpPanel.js"/>
 
-		<script type="text/javascript" src="/ux/xpotronix/xpFilterRow.js"></script>
+		<script type="text/javascript" src="/ux4/xpotronix/xpFilterRow.js"></script>
 	
 		<!-- fileUpload & Panel -->
 	
-		<!-- <script type="text/javascript" src="/ux/file/js/Ext.ux.FileUploader.js"></script> -->
-		<!-- <script type="text/javascript" src="/ux/file/js/Ext.ux.UploadPanel.js"></script> -->
-		<!-- <script type="text/javascript" src="/ux/file/js/Ext.ux.form.BrowseButton.js"></script> -->
-		<!-- <script type="text/javascript" src="/ux/xpotronix/xpUploadPanel.js"/> -->
+		<!-- <script type="text/javascript" src="/ux4/file/js/Ext.ux.FileUploader.js"></script> -->
+		<!-- <script type="text/javascript" src="/ux4/file/js/Ext.ux.UploadPanel.js"></script> -->
+		<!-- <script type="text/javascript" src="/ux4/file/js/Ext.ux.form.BrowseButton.js"></script> -->
+		<!-- <script type="text/javascript" src="/ux4/xpotronix/xpUploadPanel.js"/> -->
 	
 		<!-- thumbs --> 
 
-		<script type="text/javascript" src="/ux/xpotronix/xpThumbs.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/DataViewPlugins.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpThumbs.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/DataViewPlugins.js"/>
 	
 		<!-- security -->
-		<!-- <script type="text/javascript" src="/ux/crypto.js"/> -->
+		<!-- <script type="text/javascript" src="/ux4/crypto.js"/> -->
 
 		<!-- other extensions -->
 
-		<!-- <script type="text/javascript" src="/ux/xpotronix/extensions.js"/> -->
-		<script type="text/javascript" src="/ux/xpotronix/misc.js"/>
+		<!-- <script type="text/javascript" src="/ux4/xpotronix/extensions.js"/> -->
+		<script type="text/javascript" src="/ux4/xpotronix/misc.js"/>
 
 	</xsl:template><!--}}}-->
 
@@ -161,7 +161,7 @@
 
 	<xsl:template match="*:document" mode="include-login-js"><!--{{{-->
 		<xsl:apply-templates select="." mode="include-ext-js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpApp.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js"/>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="file" mode="include-js"><!--{{{-->
