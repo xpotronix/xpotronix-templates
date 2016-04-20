@@ -111,11 +111,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.on('load', function(s, a, b) { //{{{
 
-			this.foreign_key_values = null;
-
-			if (this.parent_store && this.foreign_key_type != 'parent')
-
-				this.foreign_key_values = this.get_foreign_key();
 
 			if (this.getCount()) {
 
@@ -378,8 +373,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 				/* DEBUG: esto estaba para limitar que cuando hay una clave vacia no cargue todos los registros
 				   pero ahora lo resuelve bien xpdataobject
 
-				if ( this.is_foreign_key_empty() ) {
-					if ( this.foreign_key_type != 'parent' ) 
+				if ( this.foreign_key_values.length == 0 ) {
+					if ( this.foreign_key.type != 'parent' ) 
 						return false;
 				}
 				else 
@@ -469,11 +464,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	on_selectionchange: function(s, ri) { /*{{{*/
+	on_selectionchange: function( selections ) { /*{{{*/
+
+		this.foreign_key_values = ( this.parent_store && this.foreign_key_type != 'parent') ? 
+		this.get_foreign_key( selections ): 
+		[];
 
 		this.load();
 
 	},
+
 	/*}}}*/
 
 	getRecordCurrentForeignKey: function(r) { /*{{{*/
@@ -694,49 +694,31 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	get_foreign_key: function() { /*{{{*/
+	get_foreign_key: function( selections ) { /*{{{*/
 
-		var keys = {};
+		var key = {};
+		var keys = [];
 
-		if (!this.parent_store) return keys;
+		Ext.each( selections, function( s ) {
 
-		var ps = this.parent_store;
+			Ext.each( this.foreign_key.refs, function( ref ) {
 
-		if (ps.rowIndex === null ||
-			ps.rowIndex < 0 ||
-			ps.data.items.length == 0 ||
-			ps.data.items.length < ps.rowIndex)
-			return keys;
+				var r = ref.remote, l = ref.local, value = s.data[r];
 
-		if (ps.cr() == 'undefined') return keys;
+				if (value == undefined)
+					(typeof console != 'undefined') && console.error('no encuentro la clave foranea ' + ref.remote);
+				else
+					key[l] = value.dateFormat ?
+					value.dateFormat(App.feat.date_long_format) :
+					value;
 
-		Ext.each(this.foreign_key, function(ref) {
+			}, this);
 
-			var value = ps.cr().get(ref.remote);
+			keys.push( key );
 
-			if (value == undefined)
-				(typeof console != 'undefined') && console.error('no encuentro la clave foranea ' + ref.remote);
-			else
-				keys[ref.local] = value.dateFormat ?
-				value.dateFormat(App.feat.date_long_format) :
-				value;
-
-		}, this);
+		}, this );
 
 		return keys;
-
-	},
-	/*}}} */
-
-	is_foreign_key_empty: function() { /*{{{*/
-
-		var fk = this.get_foreign_key();
-
-		for (var i in fk)
-			if (fk[i] == '' || fk[i] == null)
-				return true;
-
-		return false;
 
 	},
 	/*}}}*/
@@ -802,7 +784,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	set_selection: function( selection ) {/*{{{*/
 	
-		this.fireEvent('selectionchange', this, this.selection = selection);
+		this.fireEvent('selectionchange', this.selection = selection );
 
 	},/*}}}*/
 

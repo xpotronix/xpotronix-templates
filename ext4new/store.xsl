@@ -61,15 +61,10 @@
 
 			,primary_key: <xsl:apply-templates select="." mode="primary_key"/>
 			<xsl:if test="../name()='obj'">
-				,parent_store: '<xsl:value-of select="../@name"/>'
-			</xsl:if>
-
+			,parent_store: '<xsl:value-of select="../@name"/>'
 			<xsl:if test="foreign_key">
-			,foreign_key: [<xsl:apply-templates select="foreign_key/ref"/>]
-			<xsl:if test="foreign_key/@type">
-			,foreign_key_type: '<xsl:value-of select="foreign_key/@type"/>'</xsl:if>
-			<xsl:if test="foreign_key/@passive">
-			,passive: <xsl:value-of select="foreign_key/@passive"/></xsl:if>
+			,foreign_key: <xsl:apply-templates select="foreign_key"/>
+			</xsl:if>
 			</xsl:if>
 
 			,pageSize: <xsl:value-of select="xp:get_feat(.,'page_rows')"/>
@@ -78,7 +73,10 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="ref"><!--{{{-->{ local: '<xsl:value-of select="@local"/>', remote: '<xsl:value-of select="@remote"/>', value: null }<xsl:if test="position()!=last()">,</xsl:if>
+	<xsl:template match="foreign_key"><!--{{{-->{type:'<xsl:value-of select="type"/>',<xsl:if test="foreign_key/@passive">,passive: <xsl:value-of select="foreign_key/@passive"/></xsl:if>refs:[<xsl:apply-templates select="ref"/>]} 
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="ref"><!--{{{-->{local:'<xsl:value-of select="@local"/>',remote:'<xsl:value-of select="@remote"/>'}<xsl:if test="position()!=last()">,</xsl:if>
 	</xsl:template><!--}}}-->
 
         <xsl:template match="query" mode="store_eh"><!--{{{-->
