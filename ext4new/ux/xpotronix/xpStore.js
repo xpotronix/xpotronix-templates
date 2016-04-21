@@ -25,7 +25,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	rowIndex: null,
 	rowKey: null, 
-	filter: null,
 	pageSize: 20,
 
 	primary_key: this.primary_key || [],
@@ -166,7 +165,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		}); //}}}
 
-		this.on('beforeload', this.onBeforeLoad);
+		/* this.on('beforeload', this.onBeforeLoad); */
 
 		this.childs.each(function(ch) { //{{{
 
@@ -349,7 +348,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		}
 
-		*/
 
 		// FilterRow
 		if (this.filter && this.filter.shown) {
@@ -358,6 +356,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		}
 
+		*/
 
 		/* resuelve el foreign key */
 
