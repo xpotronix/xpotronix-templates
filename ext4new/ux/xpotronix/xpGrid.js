@@ -43,7 +43,11 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		Ext.apply( this, { 
 
-			/* plugins: [this.rowEditing], */
+			plugins: [
+				this.rowEditing,{
+				ptype:'saki-gms'
+				,filterOnEnter:true}
+			],
 
 			dockedItems: [{
 				itemId: 'pagingtoolbar',
