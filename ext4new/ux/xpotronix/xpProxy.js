@@ -18,12 +18,12 @@ Ext.define('Ux.xpotronix.xpProxy', {
 
 	startParam: 'g[start]',
 	limitParam: 'g[limit]', 
-	pageParam: null, 
+	// pageParam: null, 
 	sortParam: 'g[sort]', 
 	directionParam: 'g[dir]', 
-	filterParam: null, 
-	groupParam: null, 
-	groupDirectionParam: null, 
+	// filterParam: null, 
+	// groupParam: null, 
+	// groupDirectionParam: null, 
 
 	constructor: function( config ) {
 
@@ -54,6 +54,21 @@ Ext.define('Ux.xpotronix.xpProxy', {
 
 		this.callParent(arguments);
 	},
+
+
+    encodeFilters: function(filters) {
+        var min = [],
+            length = filters.length,
+            i = 0;
+
+        for (; i < length; i++) {
+            min[i] = {
+                property: filters[i].property,
+                value   : filters[i].value
+            };
+        }
+        return this.applyEncoding(min);
+    }
 
 
 }); // extend
