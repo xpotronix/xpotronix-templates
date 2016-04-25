@@ -38,7 +38,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	selection: [],
 
-	constructor: function(config) {
+	constructor: function(config) {/*{{{*/
 
 		this.params = config.params || {
 			start: 0,
@@ -55,12 +55,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.callParent(arguments);
 
-		/* eventos */
+		/* eventos propios */
 
-		this.addEvents( 'serverstoreupdate' ); 
 		this.addEvents( 'selectionchange' );
 		this.addEvents( 'rowcountchange' );
 		this.addEvents( 'loadblank' );
+		this.addEvents( 'serverstoreupdate' ); 
 
 
 		/* parent_store */
@@ -100,14 +100,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* cuando el se haya modificado el store y tenga un fk == parent setea la fk */
 
-		this.on('update', function(s, r, o) { /*{{{*/
+		this.on('update', function(s, r, o) {
 
 			if (s.foreign_key.type == 'parent' && o == Ext.data.Record.EDIT)
 				s.set_parent_fk();
 
-		}); /*}}}*/
+		}); 
 
-		this.on('load', function(s, a, b) { //{{{
+		/* on load */
+
+		this.on('load', function(s, a, b) {
 
 
 			if (this.getCount()) {
@@ -163,77 +165,21 @@ Ext.define('Ux.xpotronix.xpStore', {
 					this.go_to(-1);
 			}
 
-		}); //}}}
+		});
 
 		/* this.on('beforeload', this.onBeforeLoad); */
 
-		this.childs.each(function(ch) { //{{{
+		this.childs.each(function(ch) {
 
 			if (!ch.passive) ch.init();
 
-		}); //}}}
+		});
 
-	},
+	},/*}}}*/
 
+/* events fn */
 
-/*
-	loadRecords: function(o, options, success) {
-		var i, len;
-
-		if (this.isDestroyed === true) {
-			return;
-		}
-		if (!o || success === false) {
-			if (success !== false) {
-				this.fireEvent('load', this, [], options);
-			}
-			if (options.callback) {
-				options.callback.call(options.scope || this, [], options, false, o);
-			}
-			return;
-		}
-		var r = o.records,
-			t = o.totalRecords || r.length;
-		if (!options || options.add !== true) {
-			if (this.pruneModifiedRecords) {
-				this.modified = [];
-			}
-			for (i = 0, len = r.length; i < len; i++) {
-				r[i].join(this);
-			}
-			if (this.snapshot) {
-				this.data = this.snapshot;
-				delete this.snapshot;
-			}
-			this.clearData();
-			this.data.addAll(r);
-			this.totalLength = t;
-			this.applySort();
-			this.fireEvent('datachanged', this);
-		} else {
-			var toAdd = [],
-				rec,
-				cnt = 0;
-			for (i = 0, len = r.length; i < len; ++i) {
-				rec = r[i];
-				if (this.indexOfId(rec.id) > -1) {
-					this.doUpdate(rec);
-				} else {
-					toAdd.push(rec);
-					++cnt;
-				}
-			}
-			this.totalLength = Math.max(t, this.data.length + cnt);
-			toAdd.length && this.insert(0, toAdd);
-		}
-		this.fireEvent('load', this, r, options);
-		if (options.callback) {
-			options.callback.call(options.scope || this, r, options, true);
-		}
-	},
-
-	*/
-	update_model: function(e) {
+	update_model: function(e) {/*{{{*/
 
 		/* toma los parametros del elemento XML */
 
@@ -305,8 +251,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 		}
 
 		return a;
-	},
-
+	},/*}}}*/
 
 	onBeforeLoad: function(store, options) { /*{{{*/
 
@@ -377,7 +322,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 				}
 				else 
 				*/
-				Ext.apply( options.filters, this.foreign_key_values );
+				/* Ext.apply( options.filters, this.foreign_key_values ); */
 
 			} else if (this.foreign_key.type == 'parent')
 				return;
