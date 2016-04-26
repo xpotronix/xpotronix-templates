@@ -16,6 +16,7 @@ Ext.define('Ux.xpotronix.xpProxy', {
 
 	class_name: null, module: null, blank_url: null,
 
+	/*
 	startParam: 'g[start]',
 	limitParam: 'g[limit]', 
 	// pageParam: null, 
@@ -24,11 +25,12 @@ Ext.define('Ux.xpotronix.xpProxy', {
 	// filterParam: null, 
 	// groupParam: null, 
 	// groupDirectionParam: null, 
+	*/
 
 	constructor: function( config ) {
 
-		this.url = '?v=xml&a=data&r=' + config.class_name + '&m=' + config.module;
-		this.blank_url = '?v=xml&a=blank&r=' + config.class_name + '&m=' + config.module;
+		this.url = '?v=xml&a=data&p=ext4&r=' + config.class_name + '&m=' + config.module;
+		this.blank_url = '?v=xml&a=blank&p=ext4&r=' + config.class_name + '&m=' + config.module;
 
 		this.reader = {
 

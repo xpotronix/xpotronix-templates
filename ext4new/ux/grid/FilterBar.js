@@ -304,7 +304,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
 	// private
 	parseFiltersConfig: function() {
 		var me = this;
-		var columns = this.grid.headerCt.getGridColumns(true);
+		var columns = this.grid.headerCt.getGridColumns();
 		me.columns.clear();
 		me.autoStores.clear();
 		Ext.each(columns, function(column) {
@@ -566,7 +566,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
 		var excludedCols = [];
 		if (me.actionColumn) excludedCols.push(me.actionColumn.id);
 		if (me.extraColumn) excludedCols.push(me.extraColumn.id);
-		Ext.each(me.grid.headerCt.getGridColumns(true), function(column) {
+		Ext.each(me.grid.headerCt.getGridColumns(), function(column) {
 			if (!Ext.Array.contains(excludedCols, column.id)) {
 				column.setPadding = Ext.Function.createInterceptor(column.setPadding, function(h) {
 					if (column.hasCls(Ext.baseCSSPrefix + 'column-header-checkbox')) { //checkbox column
@@ -798,7 +798,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
 		var me = this,
 			field = undefined;
 
-		Ext.each(me.grid.headerCt.getGridColumns(true), function(col) {
+		Ext.each(me.grid.headerCt.getGridColumns(), function(col) {
 			if (col.filter) {
 				field = me.fields.get(col.dataIndex);
 				return false;

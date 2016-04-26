@@ -43,10 +43,13 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		Ext.apply( this, { 
 
-			plugins: [
-				this.rowEditing,{
-				ptype:'saki-gms'
-				,filterOnEnter:true}
+			plugins: [this.rowEditing, 
+				{
+			        	ptype: 'filterbar',
+			        	renderHidden: false,
+			        	showShowHideButton: true,
+			        	showClearAllButton: true
+				}
 			],
 
 			dockedItems: [{
