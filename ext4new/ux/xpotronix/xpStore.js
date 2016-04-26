@@ -413,6 +413,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 		this.get_foreign_key( selections ): 
 		[];
 
+		Ext.each( this.foreign_key_values, function( key ) {
+
+			this.filter( key, this.foreign_key_values[key] );
+
+		});
+
 		this.load();
 
 	},
@@ -639,13 +645,13 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	get_foreign_key: function( selections ) { /*{{{*/
 
-		var key = {};
 		var keys = [];
-
 
 		if ( selections.length > 0 ) {
 
 			Ext.each( selections, function( s ) {
+
+				var key = {};
 
 				Ext.each( this.foreign_key.refs, function( ref ) {
 

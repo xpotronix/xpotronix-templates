@@ -33,6 +33,13 @@
 
 		<link rel="stylesheet" type="text/css" href="/ext4/resources/css/ext-all.css" />
 
+		<!-- filterbar css -->
+
+                <link rel="stylesheet" type="text/css" href="/ux4/resources/css/uxs.css" />
+                <link rel="stylesheet" type="text/css" href="/ux4/resources/css/overrides.css" />
+                <link rel="stylesheet" type="text/css" href="/ux4/resources/css/app.css" />
+
+
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document" mode="include-ext-js"><!--{{{-->
@@ -49,6 +56,15 @@
 
 		<script type="text/javascript" src="/ux4/state/HttpProvider4.js"></script>
 		<script type="text/javascript" src="/ux4/util.js"></script>
+
+                
+		<!-- FilterBar -->
+		<script type="text/javascript" src="/ux4/form/field/ClearButton.js"></script>
+                <script type="text/javascript" src="/ux4/form/field/OperatorButton.js"></script>
+                <script type="text/javascript" src="/ux4/grid/column/ActionPro.js"></script>
+                <script type="text/javascript" src="/ux4/grid/FilterBar.js"></script>
+                <script type="text/javascript" src="/ux4/grid/AutoResizer.js"></script>
+
 
 	</xsl:template><!--}}}-->
 

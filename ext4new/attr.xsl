@@ -331,8 +331,6 @@
 	<xsl:otherwise>Ext.util.Format.dateRenderer(App.feat.date_format + ' ' + App.feat.time_format)</xsl:otherwise>
 </xsl:choose></xsl:template><!--}}}-->
 
-
-
 <xsl:template match="filter"><!--{{{-->
 <xsl:if test="position()-1">,</xsl:if>filter:true</xsl:template><!--}}}-->
 
