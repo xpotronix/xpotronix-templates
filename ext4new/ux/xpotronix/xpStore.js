@@ -409,18 +409,19 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	onSelectionChange: function( selections ) { /*{{{*/
 
-		this.foreign_key_values = ( this.parent_store && this.foreign_key.type != 'parent') ? 
-		this.get_foreign_key( selections ): 
+		var me = this;
+
+		me.clearFilter(true);
+
+		me.foreign_key_values = ( me.parent_store && me.foreign_key.type != 'parent') ? 
+		me.get_foreign_key( selections ): 
 		[];
 
-		Ext.each( this.foreign_key_values, function( key ) {
-
-			this.filter( key, this.foreign_key_values[key] );
-
+		Ext.each( me.foreign_key_values, function( key ) {
+			me.addFilter( key.property, key.value );
 		});
 
-		this.load();
-
+		me.load();
 	},
 
 	/*}}}*/
@@ -655,15 +656,18 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				Ext.each( this.foreign_key.refs, function( ref ) {
 
-					var r = ref.remote, l = ref.local;
+					var r = ref.remote;
 					var value = s.data[r];
+
+					key.property = ref.local;
 
 					if (value == undefined)
 						(typeof console != 'undefined') && console.error('no encuentro la clave foranea ' + ref.remote);
-					else
-						key[l] = value.dateFormat ?
+					else {
+						key.value = value.dateFormat ?
 						value.dateFormat(App.feat.date_long_format) :
 						value;
+					}
 
 				}, this);
 
