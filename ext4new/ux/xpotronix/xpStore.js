@@ -338,7 +338,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		options = Ext.apply({}, options);
 
-		this.proxy = this.blank_proxy;
+		var url = this.proxy.url;
+
+		this.proxy.url = this.proxy.blank_url;
 
 		this.load({
 			add: true,
@@ -373,12 +375,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					this.suspendEvents();
 
-					if (this.foreign_key.type != 'parent')
+					if ( this.parent_store ) {
 
-						this.bind(nr, this.get_foreign_key());
+						if (this.foreign_key.type == 'parent')
 
-					else
-						this.set_parent_fk();
+							this.set_parent_fk();
+
+						else
+							this.bind(nr, this.get_foreign_key());
+
+					}
 
 					this.resumeEvents();
 					nr.dirty = false;
@@ -388,8 +394,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					// this.insert( 0, nr ) ;
 
+					/* DEBUG: no hay mas go_to en el store
 					if (!options.silent)
-						this.go_to(0, false);
+						this.go_to(0, false); 
+					*/
 
 					if (options.callback)
 						options.callback.call(options.scope || this, nr, this);
@@ -400,7 +408,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				/* volver los parametros atras para hacer los load normales */
 				delete this.lastOptions.add;
-				this.proxy = this.store_proxy;
+				this.proxy.url = url;
 			}
 		});
 
@@ -418,10 +426,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 		[];
 
 		Ext.each( me.foreign_key_values, function( key ) {
-			me.addFilter( key.property, key.value );
+			me.filter( key.property, key.value );
 		});
 
-		me.load();
+		// me.load();
 	},
 
 	/*}}}*/
