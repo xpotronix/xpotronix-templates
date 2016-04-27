@@ -406,8 +406,6 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	addRecord:function() {//{{{
 
-		alert ( 'disabled addRecord' ); return;
-
 		if ( ! this.acl.add ) return;
 
         	if ( this.store.parent_store && this.store.foreign_key.length && this.store.parent_store.rowIndex === null ) {
