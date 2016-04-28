@@ -122,21 +122,16 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this);
 
-	 	this.on('validateedit', function(e, a, b){/*{{{*/
+	 	this.on('validateedit', function(e, eOpts ){/*{{{*/
 
-			/*
+			/* actualiza el _label del registro al seleccionar en el combobox */
 
-	    		var cm = e.grid.colModel.config;
-			var field = cm[e.column];
+			var field = eOpts.column.field;
+			var data  = eOpts.record.data;
 
-       			if ( field.editor.field.initialConfig.displayField == '_label') { 
-
-	  			var label = field.name + '_label';
-	  			e.record.data[label] = field.editor.field.getRawValue() ;	
-
+       			if ( field.displayField == '_label') { 
+	  			data[eOpts.field + '_label'] = field.getRawValue() ;	
        			}
-
-			*/
 
 	 	});/*}}}*/
 
