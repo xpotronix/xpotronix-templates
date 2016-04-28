@@ -29,8 +29,8 @@ Ext.define('Ux.xpotronix.xpProxy', {
 
 	constructor: function( config ) {
 
-		this.url = '?v=xml&a=data&p=ext4&r=' + config.class_name + '&m=' + config.module;
-		this.blank_url = '?v=xml&a=blank&p=ext4&r=' + config.class_name + '&m=' + config.module;
+		this.url = '?v=xml&a=data&b=ext4&r=' + config.class_name + '&m=' + config.module;
+		this.blank_url = '?v=xml&a=blank&b=ext4&r=' + config.class_name + '&m=' + config.module;
 
 		this.reader = {
 

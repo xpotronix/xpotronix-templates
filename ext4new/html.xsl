@@ -31,15 +31,6 @@ eduardo spotorno, julio 2007
 	<xsl:variable name="doctype_decl_strict"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:variable>
 	<xsl:variable name="doctype_decl"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">]]></xsl:variable>
 
-	<xsl:template match="*:document" mode="head"><!--{{{-->
-<head>
-<xsl:apply-templates select="." mode="meta"/>
-<xsl:apply-templates select="." mode="title"/>
-<xsl:apply-templates select="." mode="favicon"/>
-<xsl:apply-templates select="." mode="include-all-css"/>
-</head>
-	</xsl:template><!--}}}-->
-
 	<xsl:template match="*:document" mode="meta"><!--{{{-->
 <xsl:element name="meta">
 	<xsl:attribute name="name">Description</xsl:attribute>
