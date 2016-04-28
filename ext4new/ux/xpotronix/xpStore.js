@@ -550,7 +550,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		// current record
 
-		return this.getAt(this.rowIndex);
+		return this.selection[0];
 
 	}, //}}}
 

@@ -11,16 +11,14 @@
  */
 
 
-/*
 var recurse_items = function( cmp, fn, scope ) {
 
-	cmp.items.each( function( it ) {
+	cmp.items && cmp.items.each( function( it ) {
 
 		fn.call( scope, it );
 		it.items && it.items.getCount() && recurse_items( it, fn, scope );
 	});
 };
-*/
 
 Ext.define( 'Ux.xpotronix.xpForm', { 
 
@@ -101,9 +99,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		if ( !this.store ) return;
 
-		/*
-
-		recurse_items( this.getForm(), function(i){
+		recurse_items( this, function(i) {
 
 			var event_name = (i.xtype == 'checkbox') ? 'check' : 'change';
 
@@ -134,15 +130,12 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		}, this );
 
-		*/
 
 		// this.loadRecord();
 
 	},/*}}}*/
 
 	enableForm: function() {/*{{{*/
-
-		/*
 
 		recurse_items( this.getForm(), function( it ) {
 
@@ -152,13 +145,10 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		}, this );
 
-		*/
 
 	},/*}}}*/
 
 	disableForm: function() {/*{{{*/
-
-		/*
 
 		recurse_items( this.getForm(), function( it ) {
 
@@ -167,13 +157,9 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		}, this );
 
-		*/
-
 	},/*}}}*/
 
 	loadRecord: function() { /*{{{*/
-
-		/*
 
 		if ( ( ! this.rendered ) && ( ! this.isVisible() ) ) return;
 
@@ -216,8 +202,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 		}
 
 		this.fireEvent( 'loadrecord', this, this.store, r );
-
-		*/
 
 	},/*}}}*/
 
