@@ -62,11 +62,9 @@
 	<xsl:message>** CURRENT_USER: <xsl:value-of select="$current_user"/></xsl:message>
 	<xsl:choose>
 		<xsl:when test="($login_window='true') and ($anon_user='1' or $current_user='')">
-			<xsl:apply-templates select="." mode="include-login-js"/>
 			<xsl:apply-templates select="." mode="body_login"/>
 		</xsl:when>
 		<xsl:otherwise>
-			<xsl:apply-templates select="." mode="include-all-js"/>
 			<body>
 			<xsl:apply-templates select="." mode="application"/>
 			</body>
@@ -74,6 +72,17 @@
 	</xsl:choose>
 </html>
 	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="head"><!--{{{-->
+<head>
+<xsl:apply-templates select="." mode="meta"/>
+<xsl:apply-templates select="." mode="title"/>
+<xsl:apply-templates select="." mode="favicon"/>
+<xsl:apply-templates select="." mode="include-all-css"/>
+<xsl:apply-templates select="." mode="include-all-js"/>
+</head>
+	</xsl:template><!--}}}-->
+
 
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 
@@ -185,7 +194,8 @@
 
 		enabled: true,
 		paths: {
-			'Ux.xpotronix': '/ux4/xpotronix'
+			'Ux.xpotronix': '/ux4/xpotronix',
+			'Ext.ux': '/ux4'
 		}
 	});
 

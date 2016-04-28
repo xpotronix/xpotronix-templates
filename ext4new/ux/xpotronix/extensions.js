@@ -1,6 +1,20 @@
 /* bugfix para las versiones nuevas del chrome */
 
+
+/*if ( Ext.grid.RowEditorButtons ) 
+	Ext.apply( Ext.grid.RowEditorButtons.prototype, { position: 'top' } );
+*/
+
 Ext.chromeVersion = Ext.isChrome ? parseInt(( /chrome\/(\d{2})/ ).exec(navigator.userAgent.toLowerCase())[1],10) : NaN;
+
+	if (Ext.grid.RowEditor) {
+		Ext.apply(Ext.grid.RowEditor.prototype, {
+			saveBtnText : "Guardar",
+			cancelBtnText : "Cancelar",
+			errorsText : "Errores",
+			dirtyText : "Debe guardar o cancelar sus cambios"
+		});
+	}
 
 Ext.override(Ext.grid.ColumnModel, {
 	getTotalWidth : function(includeHidden) {

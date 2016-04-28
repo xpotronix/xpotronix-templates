@@ -81,10 +81,16 @@
 			</xsl:otherwise>
 		</xsl:choose>
 
-		<script type="text/javascript" src="/ux4/xpotronix/extensions.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/misc.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpPagingToolbar.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpProxy.js"/>
+
+		<!-- DateTimeField -->
+
+		<script type="text/javascript" src="/ux4/form/DateTimePicker.js"></script>
+		<script type="text/javascript" src="/ux4/form/DateTimeField.js"></script>
+
+		<script type="text/javascript" src="/ux4/xpotronix/extensions.js"/>
 
 	</xsl:template><!--}}}-->
 

@@ -146,7 +146,7 @@
 	</field><!--}}}-->
 
 	<field type="xpdatetime"><!--{{{-->
-		<xtype>xdatetime</xtype>
+		<xtype>datetimefield</xtype>
 		<timeConfig>
 			<minValue>7:00 AM</minValue>
 			<maxValue>6:00 PM</maxValue>

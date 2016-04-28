@@ -98,18 +98,22 @@
 		,remoteSort: true 
 		,pageSize: 20
 		,passive: true
-	    	,baseParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>','f[query_field]':'_label'},{<xsl:apply-templates select="../../.." mode="extra_param"/>})
         	});
         </xsl:template><!--}}}-->
 
 	<xsl:template match="query" mode="model_eh"><!--{{{-->
-		<xsl:variable name="obj_name" select="@name"/>
+
+		<xsl:variable name="parent_obj_name" select="../../../@name"/>
+		<xsl:variable name="obj_name" select="from"/>
+		<xsl:variable name="eh_name" select="@name"/>
 
 		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>', {
 			extend: 'Ext.data.Model'
 			,class_name: '<xsl:value-of select="@name"/>'
 			,module: '<xsl:value-of select="//*:session/feat/module"/>'
-			,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="@name"/>', module: '<xsl:value-of select="//*:session/feat/module"/>' }
+			,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="$obj_name"/>', module: '<xsl:value-of select="//*:session/feat/module"/>', 
+				extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-templates select="../../.." mode="extra_param"/>}) 
+			}
 			,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
 
 	</xsl:template><!--}}}-->
