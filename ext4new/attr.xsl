@@ -314,7 +314,7 @@
 <xsl:param name="attr" tunnel="yes"/>
 <xsl:if test="position()-1">,</xsl:if>renderer:<xsl:choose>
 	<xsl:when test=".!=''">function(value,p,record) {return <xsl:value-of select="."  disable-output-escaping="yes"/>}</xsl:when>
-	<xsl:otherwise>function(value, p, record){ debugger; return record.data['<xsl:value-of select="$attr/@name"/>_label'];}</xsl:otherwise>
+	<xsl:otherwise>function(value, p, record){ return record.data['<xsl:value-of select="$attr/@name"/>_label'];}</xsl:otherwise>
 </xsl:choose></xsl:template><!---}}}-->
 
 <xsl:template match="*:renderer[ancestor::*/@type='xpdate']"><!--{{{-->
