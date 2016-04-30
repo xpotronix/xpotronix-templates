@@ -114,27 +114,18 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			if (this.getCount()) {
 
+				/*
+
 				this.go_to_rowKey();
 
 				var r = this.getAt(0);
 
 				if (this.getCount() == 1 && r.get('__new__')) {
 
-					/*  recibio un registro en blanco (opcion "datab" del server) */
+					// recibio un registro en blanco (opcion "datab" del server)
 
-					for (var f in r.data) {
 
-						if (r.data[f] || Ext.isObject(r.data[f])) {
-
-							if (!r.modified)
-								r.modified = {};
-
-							if (typeof r.modified[f] == 'undefined')
-								r.modified[f] = r.data[f];
-
-						}
-					}
-
+					this.initRecord( r );
 
 					if ( this.foreign_key_values.length == 0 ) {
 
@@ -148,6 +139,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 					this.rowIndex = null;
 					this.go_to(0);
 				}
+
+				*/
 
 			} else {
 
@@ -361,17 +354,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					var nr = br;
 
-					for (var f in br.data) {
-
-						if (br.data[f] || Ext.isObject(br.data[f])) {
-
-							if (!nr.modified)
-								nr.modified = {};
-
-							if (typeof nr.modified[f] == 'undefined')
-								nr.modified[f] = br.data[f];
-						}
-					}
+					this.initRecord( nr, br );
 
 					this.suspendEvents();
 
@@ -414,6 +397,23 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	},
 	/*}}}*/
+
+	initRecord: function( nr, br ) {/*{{{*/
+
+		if ( br == undefined ) br = nr;
+
+			for (var f in br.data) {
+
+				if (br.data[f] || Ext.isObject(br.data[f])) {
+
+					if (!nr.modified)
+						nr.modified = {};
+
+					if (typeof nr.modified[f] == 'undefined')
+						nr.modified[f] = br.data[f];
+				}
+			}
+	},/*}}}*/
 
 	onSelectionChange: function( selections ) { /*{{{*/
 
@@ -550,7 +550,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		// current record
 
-		return this.selection[0];
+		var s = this.selection;
+
+		return ( s.length ) ? s[0] : {};
 
 	}, //}}}
 
@@ -740,6 +742,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		return this.go_to(this.rowIndex - 1);
 	},
+
 	/*}}}*/
 
 	next: function() { /*{{{*/

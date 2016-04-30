@@ -25,13 +25,14 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	extend: 'Ext.form.FormPanel', 
 	alias: 'xpForm',
 
-	obj: null,
-	acl: null,
+	obj: undefined,
+	acl: undefined,
 	border: false,
 	show_buttons: true,
 	loadMask: true,
 	buttonAlign: 'left',
-	feat: null,
+	feat: undefined,
+	controller: undefined,
 
 /*
 
@@ -46,13 +47,9 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 */
 
-	initComponent:function() {/*{{{*/
+	constructor: function(config) {/*{{{*/
 
-		this.acl = this.acl || this.obj.acl;
-		this.processes_menu = this.processes_menu || this.obj.processes_menu;
-		this.store = Ext.StoreMgr.lookup( this.store );
-
-		Ext.apply( this, { 
+		Ext.apply( config, { 
 
 			dockedItems: [{
 				xtype: 'xppagingtoolbar',
@@ -63,17 +60,20 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			}],
 		});
 
+		this.callParent(arguments);
+
+	},/*}}}*/
+
+	initComponent:function() {/*{{{*/
+
 		this.callParent();
 
-		this.store && this.store.on({
+		this.acl = this.acl || this.obj.acl;
+		this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
-			load: { fn:function(){this.loadRecord();}, buffer: 200, scope:this },
-			update: { fn:function( s, r, o ){ if ( o == Ext.data.Record.EDIT || o == Ext.data.Record.COMMIT ) this.loadRecord();}, buffer: 200, scope:this },
-			// datachanged: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
-			//changerowindex: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
-			clear: {  fn:function() {this.getForm().reset();}, buffer: 200, scope:this }	
-		});
+		/* busca un controlador, default la xpGrid del objeto */
 
+		this.find_controller();
 
 		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
 
@@ -91,47 +91,127 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	}, /*}}}*/
 
-	onRender: function() { /*{{{*/
+	find_controller: function() {/*{{{*/
 
-		// call parent
+		if ( this.controller == undefined ) 
+			this.controller = this.class_name + '_xpGrid';
+		
+		if (typeof this.controller == 'string') {
+
+			if ( ! ( this.controller = Ext.getCmp( this.controller ) ) )
+				return false;
+
+			this.store = this.controller.store; // DEBUG para compatibilidad
+
+		} else  this.store = Ext.StoreMgr.lookup( this.store );
+
+		this.controller && this.controller.on({
+			selectionchange: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
+		});
+
+		this.store && this.store.on({
+
+			load: { fn:function(){this.loadRecord();}, buffer: 200, scope:this },
+			update: { fn:function( s, r, o ){ if ( o == Ext.data.Record.EDIT || o == Ext.data.Record.COMMIT ) this.loadRecord();}, buffer: 200, scope:this },
+			// datachanged: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
+			clear: {  fn:function() {this.getForm().reset();}, buffer: 200, scope:this }	
+		});
+
+	},/*}}}*/
+
+
+
+	onRender: function() { /*{{{*/
 
 		this.callParent();
 
-		if ( !this.store ) return;
+		if ( this.controller || this.find_controller() ) {
 
-		recurse_items( this, function(i) {
+			recurse_items( this, function(i) {
 
-			var event_name = (i.xtype == 'checkbox') ? 'check' : 'change';
+				var event_name = (i.xtype == 'checkbox') ? 'check' : 'change';
 
-			i.on( event_name, function(e) {
+				i.on( event_name, function(e) {
 
-				var record = this.store.cr();
+					var record = this.controller.selModel.selected.first();
 
-				if ( record ) {
+					if ( record ) {
 
-					// guarda los cambios del form en el store
+						// guarda los cambios del form en el store
 
-					// this.suspendEvents( true );
+						// this.suspendEvents( true );
 
-					record.set(e.name, e.getValue());
+						debugger;
 
-					if ( e.xtype == 'combo' && e.mode == 'remote' )
-						
-						record.set(e.name+'_label', e.getRawValue())
+						record.set(e.name, e.getValue());
 
-					// this.resumeEvents();
+						// if ( e.xtype == 'combo' && e.mode == 'remote' ) DEBUG: remote??
 
-					// e.focus();
-				}
-		
-				return true;
+						if ( e.xtype == 'combo' )
+							
+							record.set(e.name+'_label', e.getRawValue())
 
-			}, this);
+						// this.resumeEvents();
 
-		}, this );
+						// e.focus();
+					}
+			
+					return true;
 
+				}, this);
+
+			}, this );
+
+		}
 
 		// this.loadRecord();
+
+	},/*}}}*/
+
+	loadRecord: function() { /*{{{*/
+
+		var me = this;
+
+		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) return;
+
+		var r = me.controller.selModel.selected.first();
+
+		if ( r && r.get ) { 
+
+			recurse_items( me,  function( it ) {
+
+				it.setValue( r.get( it.name ) );
+
+				// if ( it.xtype == 'combo' && it.mode == 'remote' ) { // DEBUG: remote??
+				if ( it.xtype == 'combo' ) {
+
+					// para los comboboxes que no han sido cargados aun
+
+					it.valueNotFoundText = r.get( it.name + '_label' );
+					it.setValue(r.get( it.name ) );
+					delete it.valueNotFoundText;
+				}
+
+			}, me );
+
+			var is_new = r.get('__new__');
+
+			var enabled = ( me.obj.acl.edit && !is_new ) || ( me.obj.acl.add && is_new );
+
+			if ( enabled )
+
+				me.enableForm();
+
+			else 	me.disableForm();
+
+
+		} else {
+
+			me.getForm().reset();
+			me.disableForm();
+		}
+
+		// me.fireEvent( 'loadrecord', me, me.store, r );
 
 	},/*}}}*/
 
@@ -159,58 +239,14 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	},/*}}}*/
 
-	loadRecord: function() { /*{{{*/
-
-		if ( ( ! this.rendered ) && ( ! this.isVisible() ) ) return;
-
-		var r = this.store.cr();
-
-		var f = this.getForm();	
-
-		if ( r && r.get ) { 
-
-			recurse_items( f,  function( it ) {
-
-				it.setValue( r.get( it.name ) );
-
-				if ( it.xtype == 'combo' && it.mode == 'remote' ) {
-
-					// para los comboboxes que no han sido cargados aun
-
-					it.valueNotFoundText = r.get( it.name + '_label' );
-					it.setValue(r.get( it.name ) );
-					delete it.valueNotFoundText;
-				}
-
-			}, this );
-
-			var is_new = r.get('__new__');
-
-			var enabled = ( this.store.acl.edit && !is_new ) || ( this.store.acl.add && is_new );
-
-			if ( enabled )
-
-				this.enableForm();
-
-			else 	this.disableForm();
-
-
-		} else {
-
-			f.reset();
-			this.disableForm();
-		}
-
-		this.fireEvent( 'loadrecord', this, this.store, r );
-
-	},/*}}}*/
-
 	get_selections: function() {/*{{{*/
 
+		return this.controller.selModel.selected;	
+
+		/*
 		var cr = this.store.cr();
-
 		return ( cr == undefined ) ? [] : [cr];
-
+		*/
 
 	}/*}}}*/
 
