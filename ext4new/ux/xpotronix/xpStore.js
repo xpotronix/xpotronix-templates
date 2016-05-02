@@ -336,7 +336,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 		this.proxy.url = this.proxy.blank_url;
 
 		this.load({
-			add: true,
+			addRecords: true,
 			scope: this,
 			callback: function(abr) {
 
@@ -615,7 +615,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			ch.revert_changes();
 		});
 
-		this.go_to(this.rowIndex, false);
+		// this.go_to(this.rowIndex, false);
 
 	},
 	/*}}}*/
