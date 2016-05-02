@@ -21,7 +21,6 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	inspect_w: null,
 	feat: null,
 	loadMask: true,
-	rowEditing: null,
 	multiSelect: true,
 
 	selection: [],
@@ -211,7 +210,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		}
 
 		this.getSelectionModel().select(newRecordsToSelect);
-		// Ext.defer(this.setScrollTop, 30, this, [this.getView().scrollState.top]);
+		Ext.defer(this.el.setScrollTop, 30, this.el, [this.getView().scrollState.top]);
+
 	},/*}}}*/
 
 	onRender:function() {//{{{
@@ -238,7 +238,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	startEditingBlank: function() {/*{{{*/
 
-		this.rowEditing.startEdit(0,0);
+		this.getPlugin().startEdit(0,0);
 
 	},/*}}}*/
 

@@ -83,7 +83,6 @@
 </head>
 	</xsl:template><!--}}}-->
 
-
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 
 	<xsl:variable name="menu_bar" select="xp:get_feat($root_obj,'menu_bar')"/>
@@ -190,15 +189,7 @@
 		<xsl:call-template name="events_monitor"/>
 	</xsl:if>
 
-	Ext.Loader.setConfig({
-
-		enabled: true,
-		paths: {
-			'Ux.xpotronix': '/ux4/xpotronix',
-			'Ext.ux': '/ux4'
-		}
-	});
-
+	<xsl:apply-templates select="." mode="loader"/>
 
 	<xsl:if test="*:session/feat/theme">
 	/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
@@ -393,8 +384,13 @@ Ext.define('<xsl:value-of select="concat($application_name,'.controller.',../*:s
 <body class="login">
 
 <script type="text/javascript">
+
+<xsl:apply-templates select="." mode="loader"/>
+
 Ext.namespace( 'App' );
+
 var App = Ext.create( 'Ux.xpotronix.xpApp', {feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> } );
+
 
 Ext.onReady(function(){
 
@@ -410,6 +406,19 @@ Ext.onReady(function(){
 </div>
 
 </body>
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="loader"><!--{{{-->
+
+	Ext.Loader.setConfig({
+
+		enabled: true,
+		paths: {
+			'Ux.xpotronix': '/ux4/xpotronix',
+			'Ext.ux': '/ux4'
+		}
+	});
+
 	</xsl:template><!--}}}-->
 
 </xsl:stylesheet>
