@@ -119,8 +119,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	},/*}}}*/
 
-
-
 	onRender: function() { /*{{{*/
 
 		this.callParent();
@@ -248,6 +246,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 		return ( cr == undefined ) ? [] : [cr];
 		*/
 
-	}/*}}}*/
+	},/*}}}*/
 
 }); // eo extend
