@@ -382,7 +382,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		var panel = null;
 
-		this.panels.each( function(p){ 
+		this.panel.obj.panels.each( function(p){ 
 
 			if ( p.display_as == 'inspect' ) {
 				panel = p;

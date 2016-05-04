@@ -139,7 +139,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 						// this.suspendEvents( true );
 
-						debugger;
+						// debugger;
 
 						record.set(e.name, e.getValue());
 
