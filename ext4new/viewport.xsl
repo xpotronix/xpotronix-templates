@@ -145,31 +145,21 @@
 
 		<!-- panel -->
 
-		<xsl:for-each select="*:model//obj">
+		<xsl:for-each select="*:model//panel">
 
-			<xsl:variable name="obj_name" select="@name"/>
-			<xsl:variable name="obj_metadata" select="//*:metadata/obj[@name=$obj_name]"/>
+			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 
-			<xsl:message>**** OBJ_METADATA:<xsl:copy-of select="$obj_metadata/@name"/></xsl:message>
+			<xsl:message>****** PANEL_ID: <xsl:value-of select="$panel_id"/></xsl:message>
 
+			<xsl:result-document method="text"
+			encoding="utf-8"
+			href="{concat($application_path,'/',$application_name,'/view/',$panel_id,'.js')}">
+
+				<xsl:apply-templates select="." mode="define"/>
+
+			</xsl:result-document>
 
 		</xsl:for-each>
-
-			<xsl:for-each select="*:model//panel">
-
-				<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-
-				<xsl:message>****** PANEL_ID: <xsl:value-of select="$panel_id"/></xsl:message>
-
-				<xsl:result-document method="text"
-				encoding="utf-8"
-				href="{concat($application_path,'/',$application_name,'/view/',$panel_id,'.js')}">
-
-					<xsl:apply-templates select="." mode="define"/>
-
-				</xsl:result-document>
-
-			</xsl:for-each>
 
 		<!-- controller -->
 
@@ -415,9 +405,19 @@ Ext.onReady(function(){
 		enabled: true,
 		paths: {
 			'Ux.xpotronix': '/ux4/xpotronix',
-			'Ext.ux': '/ux4'
+			'Ext.ux': '/ux4',
+			'Ext': '/ext4'
 		}
 	});
+
+	Ext.require([ 
+
+		'Ext.tip.*', 
+		'Ext.Window.*', 
+		'Ext.grid.*', 
+		'Ext.data.*', 
+		'Ext.dd.*' 
+	]);
 
 	</xsl:template><!--}}}-->
 

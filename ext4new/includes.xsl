@@ -84,6 +84,8 @@
 		<script type="text/javascript" src="/ux4/xpotronix/misc.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpPagingToolbar.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpProxy.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpObj.js"/>
 
 		<!-- DateTimeField -->
 
