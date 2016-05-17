@@ -175,7 +175,7 @@
 	</field><!--}}}-->
 
 	<field type="xpentry_help"><!--{{{-->
-		<xtype>combo</xtype>
+		<xtype>xpcombo</xtype>
 		<valueField>id</valueField>
 		<hiddenName/>
 		<displayField>_label</displayField>

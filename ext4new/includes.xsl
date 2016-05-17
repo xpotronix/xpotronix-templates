@@ -82,10 +82,14 @@
 		</xsl:choose>
 
 		<script type="text/javascript" src="/ux4/xpotronix/misc.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpCellEditing.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpPagingToolbar.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpComboBox.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpProxy.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpObj.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpGrid.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpStore.js"/>
 
 		<!-- DateTimeField -->
 
