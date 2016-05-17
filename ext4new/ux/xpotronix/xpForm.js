@@ -198,7 +198,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 						if ( e.xtype == 'xpcombo' ) {
 
-							debugger;
 							record.set(e.name+'_label', e.getRawValue());
 						}
 
