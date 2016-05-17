@@ -13,6 +13,8 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 	extend: 'Ext.form.field.ComboBox',
 	alias: 'widget.xpcombo',
 
+	debug: false,
+
 	panel: null,
 
 	alternateClassName: [
@@ -26,7 +28,7 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 	setValue: function( value,  b ) {
 
-		if ( value ) {
+		if ( value !== undefined ) {
 
 			/* carga un registro fake en el store del combobox para que pueda machear el forceSelections */
 
@@ -37,45 +39,31 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 				var s = this.store;
 
 				var data = s.get_foreign_key_record( g.selModel.getSelection(), true );
-				// console.log(data);
+				this.debug && console.log(data);
 
 				/* hago un suspendEvents porque enloquece la funcion updateIndex del combobox */
 
 				s.suspendEvents();
-
 				if ( s.getCount() > 0 ) 
 					s.removeAt( 0 );
 
 				s.insert(0,data);
-
 				s.resumeEvents();
 
-				// console.log( s.getCount() );
-
-				this.callParent(arguments);
-
-				/* esto con el parent_store no funciono, lo dejo de referencia
-
-				var data = s.get_foreign_key_record(s.parent_store.selections, true);
-				// console.log(data);
-				s.insert(0,data);
-
-				*/
+				this.debug && console.log( s.getCount() );
 
 			} else if ( f = this.up('form') ) {
 
 
-				console.error('estoy aca!!! arreglar el valueNotFound y agregar los botones ADELANTE y ATRAS en el FORM para DEBUG');	
 				r = f.controller.selModel.selected.first();
 				this.valueNotFoundText = r.get( this.name + '_label' );
-				this.callParent(arguments);
-				this.valueNotFoundText = '';
 
 			}
 
-		} else 
+		}
 
-			delete this.valueNotFound; // DEBUG: solo para form
+		this.callParent(arguments);
+		delete this.valueNotFound;
 
 
 	}

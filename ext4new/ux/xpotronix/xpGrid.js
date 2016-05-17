@@ -140,7 +140,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 			return true;
 
-		}, this, { buffer: 500 });/*}}}*/
+		}, this, { buffer: 200 });/*}}}*/
 
 		this.selModel.on( 'beforeselect', function() {
 

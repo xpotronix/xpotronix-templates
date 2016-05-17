@@ -163,7 +163,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	},/*}}}*/
 
-	onRender_DIABLED: function() { /*{{{*/
+	onRender: function() { /*{{{*/
 
 		this.callParent();
 
@@ -227,22 +227,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		if ( r && r.get ) { 
 
-			recurse_items( me,  function( it ) {
-
-				it.setValue( r.get( it.name ) );
-
-				// if ( it.xtype == 'combo' && it.mode == 'remote' ) { // DEBUG: remote??
-				if ( it.xtype == 'combo' ) {
-
-					// para los comboboxes que no han sido cargados aun
-
-					it.valueNotFoundText = r.get( it.name + '_label' );
-					it.setValue(r.get( it.name ) );
-					delete it.valueNotFoundText;
-				}
-
-			}, me );
-
 			var is_new = r.get('__new__');
 
 			var enabled = ( me.obj.acl.edit && !is_new ) || ( me.obj.acl.add && is_new );
@@ -299,4 +283,4 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	},/*}}}*/
 
-}); // eo extend
+}); /* eo extend */
