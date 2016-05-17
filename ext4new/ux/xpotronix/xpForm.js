@@ -86,11 +86,19 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 		this.on({ 
 
 			afterrender: { 
-				fn: function() { 
-					this.loadRecord( this.controller.selModel.selected.first() || {} ) 
+				fn: function( form ) {
+					var r;
+					if ( r = form.controller.selModel.selected.first() )
+						form.loadRecord( r ) 
 				}, 
-				scope: this, 
 				buffer:200 }
+		});
+
+		this.getForm().on( "change", function( a, b, c ){ 
+
+
+			alert( 'cambió' ); 
+
 		});
 
 
@@ -115,7 +123,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			selectionchange: { 
 
 				fn:function( a, b, c ) {
-					this.getForm().reset();
 					this.loadRecord(this.controller.selModel.selected.first());
 				}, 
 				buffer: 200, 
@@ -171,30 +178,31 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 			recurse_items( this, function(i) {
 
+				/* consoleDebugFn( i ); return; */
+
 				var event_name = (i.xtype == 'checkbox') ? 'check' : 'change';
 
-				i.on( event_name, function(e) {
+				i.on( event_name, function( e, a, b ) {
 
 					var record = this.controller.selModel.selected.first();
 
 					if ( record ) {
 
 						// guarda los cambios del form en el store
-
 						// this.suspendEvents( true );
-
-						// debugger;
+						//debugger;
 
 						record.set(e.name, e.getValue());
 
 						// if ( e.xtype == 'combo' && e.mode == 'remote' ) DEBUG: remote??
 
-						if ( e.xtype == 'combo' )
-							
-							record.set(e.name+'_label', e.getRawValue())
+						if ( e.xtype == 'xpcombo' ) {
+
+							debugger;
+							record.set(e.name+'_label', e.getRawValue());
+						}
 
 						// this.resumeEvents();
-
 						// e.focus();
 					}
 			
