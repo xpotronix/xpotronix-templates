@@ -85,7 +85,12 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.on({ 
 
-			afterrender: { fn: function() { this.loadRecord() }, scope: this, buffer:200 }
+			afterrender: { 
+				fn: function() { 
+					this.loadRecord( this.controller.selModel.selected.first() || {} ) 
+				}, 
+				scope: this, 
+				buffer:200 }
 		});
 
 
@@ -106,20 +111,59 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 		} else  this.store = Ext.StoreMgr.lookup( this.store );
 
 		this.controller && this.controller.on({
-			selectionchange: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
+
+			selectionchange: { 
+
+				fn:function( a, b, c ) {
+					this.getForm().reset();
+					this.loadRecord(this.controller.selModel.selected.first());
+				}, 
+				buffer: 200, 
+				scope: this },
 		});
 
 		this.store && this.store.on({
 
-			load: { fn:function(){this.loadRecord();}, buffer: 200, scope:this },
-			update: { fn:function( s, r, o ){ if ( o == Ext.data.Record.EDIT || o == Ext.data.Record.COMMIT ) this.loadRecord();}, buffer: 200, scope:this },
-			// datachanged: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
-			clear: {  fn:function() {this.getForm().reset();}, buffer: 200, scope:this }	
+			/*
+			load: { 
+				fn:function( a, b, c ){
+					this.loadRecord( 
+						this.controller.selModel.selected.first()||{});
+				}, 
+				buffer: 200, 
+				scope: this },
+
+			*/
+
+			update: { 
+				fn:function( s, r, o ) { 
+
+					if ( o == Ext.data.Record.EDIT || o == Ext.data.Record.COMMIT ) 
+						this.loadRecord(this.controller.selModel.selected.first());
+
+				}, 
+				buffer: 200, 
+				scope: this },
+
+			clear: {  
+				fn:function( a, b, c ) {
+					this.getForm().reset();
+				}, 
+				buffer: 200, 
+				scope: this }
+
+			/* ,datachanged: { 
+				fn:function() {
+					this.loadRecord(this.controller.selModel.selected.first());
+				}, 
+				buffer: 200, 
+				scope: this }
+			*/
 		});
 
 	},/*}}}*/
 
-	onRender: function() { /*{{{*/
+	onRender_DIABLED: function() { /*{{{*/
 
 		this.callParent();
 
@@ -166,13 +210,20 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	},/*}}}*/
 
-	loadRecord: function() { /*{{{*/
+	loadRecord_DISABLED: function( a, b, c ) { /*{{{*/
+
 
 		var me = this;
 
 		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) return;
 
 		var r = me.controller.selModel.selected.first();
+
+		debugger;
+
+		this.getForm().setValues( r );
+
+		return;
 
 		if ( r && r.get ) { 
 
