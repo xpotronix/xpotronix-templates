@@ -37,7 +37,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		Ext.apply( this, { 
 
 			plugins: [{
-					ptype: 'cellediting',
+					ptype: 'xpcellediting',
         				clicksToMoveEditor: 1,
 		        		autoCancel: false,
 					errorSummary: false 

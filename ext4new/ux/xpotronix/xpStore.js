@@ -28,7 +28,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	pageSize: 20,
 
 	primary_key: this.primary_key || [],
-	foreign_key: this.foreign_key || [],
+	foreign_key: this.foreign_key || {},
 	foreign_key_values: [],
 
 	remoteSort: this.remoteSort || true,
@@ -36,7 +36,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	pruneModifiedRecords: true,
 	autoLoad: false,
 
-	selection: [],
+	selections: null,
 
 	constructor: function(config) {/*{{{*/
 
@@ -79,7 +79,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			this.parent_store.on({
 				selectionchange: {
-					buffer: 100,
 					fn: this.onSelectionChange,
 					scope: this
 				}
@@ -417,17 +416,31 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	onSelectionChange: function( selections ) { /*{{{*/
 
-		var me = this;
+		var me = this, data = [];
+
+		this.selections = selections;
 
 		me.clearFilter(true);
 
-		me.foreign_key_values = ( me.parent_store && me.foreign_key.type != 'parent') ? 
-		me.get_foreign_key( selections ): 
-		[];
+		if ( me.foreign_key.type == 'parent') {
 
-		Ext.each( me.foreign_key_values, function( key ) {
-			me.filter( key.property, key.value );
-		});
+			me.foreign_key_values = [];
+
+		} else if ( me.foreign_key.type == 'eh' ) {
+
+			// data = me.get_foreign_key_record(selections, true);
+			// console.log(data);
+			// me.insert(0,data);
+
+		} else {
+
+			me.foreign_key_values = me.get_foreign_key( selections );
+
+			Ext.each( me.foreign_key_values, function( key ) {
+				me.filter( key.property, key.value );
+			});
+
+		}
 
 		// me.load();
 	},
@@ -550,7 +563,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		// current record
 
-		var s = this.selection;
+		var s = this.selections;
 
 		return ( s.length ) ? s[0] : {};
 
@@ -692,6 +705,62 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
+
+	get_foreign_key_record: function( selections, label ) { /*{{{*/
+
+		var keys = [];
+		var key = {};
+		var i, j, ref, s, r, rl, value;
+
+		if ( selections.length > 0 ) {
+
+			for( i = 0; i < selections.length; i++ ) {	
+
+				key = {};
+				s = selections[i];
+
+				for( j = 0; j < this.foreign_key.refs.length; j ++ ) {
+
+					ref = this.foreign_key.refs[j];
+					r = ref.remote;
+					rl = ref.remote + '_label';
+					value = s.data[r];
+
+					if (value == undefined)
+						(typeof console != 'undefined') && console.error('no encuentro la clave foranea ' + ref.remote);
+					else {
+						value = value.dateFormat ?
+						value.dateFormat(App.feat.date_long_format) :
+						value;
+					}
+
+
+					/* hot fix para que traiga directamente el registro con id y _label */
+
+					if ( label ) {
+
+						key['id'] = value;
+						key['_label'] = s.data[rl];
+
+					} else {
+
+						key[r] = value;
+						key[rl] = s.data[rl];
+					}
+
+				}
+
+				keys.push( key );
+
+			}
+
+		}
+
+		return keys;
+
+	},
+	/*}}}*/
+
 	get_search_key: function(keys) { /*{{{*/
 
 		var search_fields = {};
@@ -752,9 +821,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	set_selection: function( selection ) {/*{{{*/
+	set_selection: function( selections ) {/*{{{*/
 	
-		this.fireEvent('selectionchange', this.selection = selection );
+		this.fireEvent('selectionchange', this.selections = selections );
 
 	},/*}}}*/
 
