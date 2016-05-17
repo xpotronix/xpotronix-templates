@@ -73,7 +73,7 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="foreign_key"><!--{{{-->{type:'<xsl:value-of select="type"/>',<xsl:if test="foreign_key/@passive">,passive: <xsl:value-of select="foreign_key/@passive"/></xsl:if>refs:[<xsl:apply-templates select="ref"/>]} 
+	<xsl:template match="foreign_key"><!--{{{-->{type:'<xsl:value-of select="type"/>',<xsl:if test="@passive">,passive: <xsl:value-of select="@passive"/></xsl:if>refs:[<xsl:apply-templates select="ref"/>]} 
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="ref"><!--{{{-->{local:'<xsl:value-of select="@local"/>',remote:'<xsl:value-of select="@remote"/>'}<xsl:if test="position()!=last()">,</xsl:if>
@@ -82,41 +82,50 @@
         <xsl:template match="query" mode="store_eh"><!--{{{-->
 
 	<xsl:variable name="parent_obj_name" select="../../../@name"/>
-	<xsl:variable name="obj_name" select="from"/>
+	<xsl:variable name="obj_name">
+		<xsl:choose>
+			<xsl:when test="contains(from,'.')">
+				<xsl:value-of select="substring-after(from,'.')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="from"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	<xsl:variable name="eh_name" select="@name"/>
 
 	Ext.define('<xsl:value-of select="concat($application_name,'.store.',../from,'_',@name)"/>', {
-		extend: 'Ux.xpotronix.xpStore'
-		,alias: '<xsl:value-of select="concat(../from,'_',@name)"/>'
-		,model: '<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>'
-		,class_name: '<xsl:value-of select="$obj_name"/>'
-		,module: '<xsl:value-of select="//*:session/feat/module"/>'
-		,primary_key: ['id'] 
+		extend:'Ux.xpotronix.xpStore'
+		,alias:'<xsl:value-of select="concat(../from,'_',@name)"/>'
+		,model:'<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>'
+		,class_name:'<xsl:value-of select="$obj_name"/>'
+		,module:'<xsl:value-of select="//*:session/feat/module"/>'
+		,parent_store:'<xsl:value-of select="$parent_obj_name"/>'
+		,primary_key:['id'] 
 		<!-- DEBUG: aca hago piruetas para obtener el nombre del atributo que posee este eh. Hay que cambiar a fk -->
-		,foreign_key: [{local:'id',remote:'<xsl:value-of select="//*:metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}]
-		,foreign_key_type: 'parent'
-		,remoteSort: true 
-		,pageSize: 20
-		,passive: true
+		,foreign_key:{type:'eh',refs: [{local:'id',remote:'<xsl:value-of select="//*:metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}] }
+		,remoteSort:true 
+		,pageSize:20
+		,passive:true
         	});
         </xsl:template><!--}}}-->
 
 	<xsl:template match="query" mode="model_eh"><!--{{{-->
 
 		<xsl:variable name="parent_obj_name" select="../../../@name"/>
-		<xsl:variable name="obj_name" select="from"/>
-		<xsl:variable name="eh_name" select="@name"/>
+			<xsl:variable name="obj_name" select="from"/>
+			<xsl:variable name="eh_name" select="@name"/>
 
-		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>', {
-			extend: 'Ext.data.Model'
-			,class_name: '<xsl:value-of select="@name"/>'
-			,module: '<xsl:value-of select="//*:session/feat/module"/>'
-			,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="$obj_name"/>', module: '<xsl:value-of select="//*:session/feat/module"/>', 
-				extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-templates select="../../.." mode="extra_param"/>}) 
-			}
-			,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
+			Ext.define( '<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>', {
+extend: 'Ext.data.Model'
+,class_name: '<xsl:value-of select="@name"/>'
+,module: '<xsl:value-of select="//*:session/feat/module"/>'
+,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="$obj_name"/>', module: '<xsl:value-of select="//*:session/feat/module"/>', 
+extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-templates select="../../.." mode="extra_param"/>}) 
+}
+,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
 
-	</xsl:template><!--}}}-->
+			</xsl:template><!--}}}-->
 
 	<xsl:template match="obj" mode="associations"><!--{{{-->
 		<xsl:message>en associations</xsl:message>
