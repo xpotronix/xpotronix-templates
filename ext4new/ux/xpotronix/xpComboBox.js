@@ -26,41 +26,57 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 	setValue: function( value,  b ) {
 
-
 		if ( value ) {
 
 			/* carga un registro fake en el store del combobox para que pueda machear el forceSelections */
 
-			var s = this.store;
-			var r;
+			var g, f, r;
 
-                	var data = s.get_foreign_key_record( this.up('grid').selModel.getSelection(), true );
-                	// console.log(data);
+			if ( g = this.up('grid') ) {
 
-			/* hago un suspendEvents porque enloquece la funcion updateIndex del combobox */
+				var s = this.store;
 
-			s.suspendEvents();
+				var data = s.get_foreign_key_record( g.selModel.getSelection(), true );
+				// console.log(data);
 
-			if ( s.getCount() > 0 ) 
-				s.removeAt( 0 );
+				/* hago un suspendEvents porque enloquece la funcion updateIndex del combobox */
 
-                	s.insert(0,data);
+				s.suspendEvents();
 
-			s.resumeEvents();
+				if ( s.getCount() > 0 ) 
+					s.removeAt( 0 );
 
-			// console.log( s.getCount() );
+				s.insert(0,data);
 
-			/* esto con el parent_store no funciono, lo dejo de referencia
+				s.resumeEvents();
 
-			var data = s.get_foreign_key_record(s.parent_store.selections, true);
-			// console.log(data);
-			s.insert(0,data);
+				// console.log( s.getCount() );
 
-			*/ 
+				this.callParent(arguments);
 
-		}
+				/* esto con el parent_store no funciono, lo dejo de referencia
 
-		this.callParent(arguments);
+				var data = s.get_foreign_key_record(s.parent_store.selections, true);
+				// console.log(data);
+				s.insert(0,data);
+
+				*/
+
+			} else if ( f = this.up('form') ) {
+
+
+				console.error('estoy aca!!! arreglar el valueNotFound y agregar los botones ADELANTE y ATRAS en el FORM para DEBUG');	
+				r = f.controller.selModel.selected.first();
+				this.valueNotFoundText = r.get( this.name + '_label' );
+				this.callParent(arguments);
+				this.valueNotFoundText = '';
+
+			}
+
+		} else 
+
+			delete this.valueNotFound; // DEBUG: solo para form
+
 
 	}
 });
