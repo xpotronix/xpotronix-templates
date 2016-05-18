@@ -6,6 +6,8 @@ Ext.chromeVersion = Ext.isChrome ? parseInt(( /chrome\/(\d{2})/ ).exec(navigator
 	Ext.apply( Ext.grid.RowEditorButtons.prototype, { position: 'top' } );
 */
 
+/* que no chequee si han cambiado los valores */
+Ext.form.field.Field.prototype.suspendCheckChange = 1;
 
 consoleDebugFn = function( e ) {
 
