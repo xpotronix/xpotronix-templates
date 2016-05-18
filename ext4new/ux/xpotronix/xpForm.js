@@ -184,6 +184,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 				i.on( event_name, function( e, a, b ) {
 
+
 					var record = this.controller.selModel.selected.first();
 
 					if ( record ) {
@@ -191,6 +192,11 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 						// guarda los cambios del form en el store
 						// this.suspendEvents( true );
 						//debugger;
+
+						if ( i.isEqual( e.getValue(), record.get( e.name ) ) )
+							return true;
+
+						console.log( e.name + ': ' + e.lastValue + ' << ' + e.getValue() );
 
 						record.set(e.name, e.getValue());
 
