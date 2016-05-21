@@ -32,13 +32,14 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 			/* carga un registro fake en el store del combobox para que pueda machear el forceSelections */
 
-			var g, f, r;
+			var p = this.up('grid') || this.up('form');
 
-			if ( g = this.up('grid') ) {
+			if ( p ) {
 
 				var s = this.store;
+				var selModel = p.selModel || p.controller.selModel;
 
-				var data = s.get_foreign_key_record( g.selModel.getSelection(), true );
+				var data = s.get_foreign_key_record( selModel.getSelection(), true );
 				this.debug && console.log(data);
 
 				/* hago un suspendEvents porque enloquece la funcion updateIndex del combobox */
@@ -52,19 +53,16 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 				this.debug && console.log( s.getCount() );
 
-			} else if ( f = this.up('form') ) {
+				if ( p = this.up('form') ) {
 
+					var r = p.controller.selModel.selected.first();
+					this.valueNotFoundText = r.get( this.name + '_label' );
 
-				r = f.controller.selModel.selected.first();
-				this.valueNotFoundText = r.get( this.name + '_label' );
-
-			}
-
+				}
+			} 
 		}
 
 		this.callParent(arguments);
 		delete this.valueNotFound;
-
-
 	}
 });
