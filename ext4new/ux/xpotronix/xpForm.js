@@ -62,11 +62,16 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.callParent(arguments);
 
+		/* consoleDebugFn( this ); */
+		/* consoleDebugFn( this.getForm() ); */
+
 	},/*}}}*/
 
 	initComponent:function() {/*{{{*/
 
 		this.callParent();
+
+		/* this.getForm().trackResetOnLoad = true; */
 
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
@@ -92,13 +97,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 						form.loadRecord( r ) 
 				}, 
 				buffer:200 }
-		});
-
-		this.getForm().on( "change", function( a, b, c ){ 
-
-
-			alert( 'cambió' ); 
-
 		});
 
 
