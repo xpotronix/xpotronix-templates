@@ -87,31 +87,33 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
  	save_button: function( panel ) {/*{{{*/
 
-        	var tb = new Ext.Button({
+        	return {
        	        	icon: '/ext/resources/images/default/dd/drop-yes.gif',
 			text: 'Guardar',
                 	cls: 'x-btn-text-icon',
 			disabled: true,
                 	tooltip: '<b>Guardar</b><br/>Pulse aqui para guardar las modificaciones',
+			margin: '5 5 5 5',
 			listeners:{ click:{ scope: this, fn:function( btn ) {
+				debugger;
                 		App.process_request({ m: App.feat.module, a: 'process', p: 'store',  x: App.serialize() });
 			}, buffer:200 }}
-		});
+		};
 
-		return tb;
 
 	},/*}}}*/
 
 	add_button: function( panel ) {/*{{{*/
 
-		return new Ext.Button({
+		return {
 			icon: '/ext/resources/images/default/dd/drop-add.gif',
 			cls: 'x-btn-text-icon',
 			text: 'Agregar',
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Agregar</b><br/>Pulse aqui para agregar un nuevo registro',
+			margin: '5 5 5 5',
 			listeners:{click:{scope:panel, fn:this.addRecord, buffer:200}}
-		});
+		};
 
 
 	},/*}}}*/

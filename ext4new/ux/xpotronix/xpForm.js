@@ -57,6 +57,13 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 				store: this.store,
 				dock: 'top',
 				displayInfo: true
+			},{
+				xtype: 'toolbar',
+				panel: this,
+				store: this.store,
+				dock: 'bottom',
+				displayInfo: true,
+				layout: { pack: 'center' }
 			}],
 		});
 
@@ -82,10 +89,12 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
 
-			this.buttons = [new Ext.toolbar.Spacer({ width: 145 })];
-			this.buttons.push( this.obj.save_button( this ) );
+			var bbar = this.getDockedItems('toolbar[dock=bottom]')[0];
 
-			this.acl.add && this.buttons.push( this.obj.add_button( this ) );
+			this.acl.add && bbar.add( this.obj.add_button( this ) );
+			bbar.add('-');
+			bbar.add( this.obj.save_button( this ));
+
 		}
 
 		this.on({ 
@@ -94,7 +103,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 				fn: function( form ) {
 					var r;
 					if ( r = form.controller.selModel.selected.first() )
-						form.loadRecord( r ) 
+						form.loadRecord( r );
 				}, 
 				buffer:200 }
 		});
