@@ -51,7 +51,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	 */
 	alternateHandlers: false,
 
-	constructor: function(config) {
+	constructor: function(config) {/*{{{*/
 
 		Ext.apply(config, {
 			pageSize: 20,
@@ -63,9 +63,9 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		this.callParent(arguments);
 
-	},
+	},/*}}}*/
 
-	initComponent: function() {
+	initComponent: function() {/*{{{*/
 
 		var me = this;
 
@@ -105,10 +105,9 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 				}
 			});
 		}
-	},
+	},/*}}}*/
 
-
-	onRender: function() {
+	onRender: function() {/*{{{*/
 
 		var panel = this.panel;
 
@@ -154,7 +153,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		this.callParent();
 
-	},
+	},/*}}}*/
 
 	/*}}}*/
 
@@ -217,8 +216,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	form_left_button: function( panel ) {/*{{{*/
 
-		alert( 'form_left_button' );
-
 		var tb = new Ext.Button( {
 			// id: 'leftButton',
 			text: 'Atras',
@@ -229,10 +226,32 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		});
 
+		tb.setDisabled( !this.store.rowIndex );
 
+		this.store.on( 'changerowindex', function( s, rowIndex ) { 
+			tb.setDisabled( !rowIndex );
+		}, tb );
 
-		// tb.setDisabled( !this.store.rowIndex );
+		return tb;
 
+	},/*}}}*/
+
+	form_right_button: function( panel ) {/*{{{*/
+
+		var tb = new Ext.Toolbar.Button( {
+			// id: 'rightButton',
+			text: 'Adelante',
+	               	menuAlign: 'tr?',
+			disabled: true,
+	               	tooltip: 'Ir hacia el proximo elemento',
+			listeners:{click:{scope:this.store, fn:function(){ this.next() },buffer:200}}
+			} );
+
+		tb.setDisabled( ! ( this.store.rowIndex < ( this.store.getCount() - 1 ) ) );
+
+		this.store.on( 'changerowindex', function( s, rowIndex ) { 
+			tb.setDisabled( ! ( rowIndex < ( s.getCount() - 1 ) ) );
+		}, tb );
 
 		return tb;
 
@@ -254,6 +273,106 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
         	        }, buffer:200 } } 
 
 			} )
+
+	},/*}}}*/
+
+	    export_dialog: function( panel ) {/*{{{*/
+
+	    var form = new Ext.form.FormPanel({
+		baseCls: 'x-plain',
+		labelWidth: 55,
+		url:'save-form.php',
+		defaultType: 'textfield',
+
+		items: [{
+		    xtype: 'combo',
+		    id: panel.name + '_export_dialog_max_records',
+		    fieldLabel: 'Cantidad Máxima',
+		    store: new Ext.data.SimpleStore({
+				fields: ['id', 'label'],
+				data : [ [1000,'1000'], [10000,'10000']]}),
+		    name: 'max_records',
+		    anchor:'100%',
+		    displayField: 'label',
+		    valueField: 'id',
+		    typeAhead: true,
+		    mode: 'local',
+		    triggerAction: 'all',
+		    emptyText:'Seleccionar la cantidad de registros a exportar',
+		    selectOnFocus:true
+
+		}]
+	    });
+
+	    var win = new Ext.Window({
+		title: 'Exportar Objetos',
+		width: 500,
+		// height:300,
+		constrain: true,
+		minWidth: 300,
+		minHeight: 300,
+		layout: 'fit',
+		plain:true,
+		bodyStyle:'padding:5px;',
+		buttonAlign:'center',
+		items: form,
+
+		buttons: [{
+		    text: 'Exportar',
+		    listeners: { click: { scope: panel, fn: function() {  
+
+			var store = this.store;
+			var q_params = {};
+
+			Ext.apply( q_params, store.get_foreign_key() );
+
+
+			// de xpStore.js	
+
+			// Search (global search)
+			if ( store.baseParams.query && store.baseParams.fields ) {
+
+				var vars = eval(store.baseParams.fields).join(App.feat.key_delimiter);
+
+				var params = {};
+				params['s[' + store.class_name +']['+ vars +']'] = store.baseParams.query;
+
+				Ext.apply( q_params, params );
+
+			}
+
+			if ( this.store.lastOptions )
+				Ext.apply( q_params, this.store.lastOptions.params );
+
+			var display_only_fields = [];
+
+			Ext.each( this.getColumnModel().config, function( f ) {
+
+				f.hidden || display_only_fields.push( f.name );
+			});
+
+			Ext.apply( q_params, { m: this.class_name, 
+				v: 'csv', 
+				'f[ignore_null_fields]': 0, 
+				'f[include_dataset]': 2, // DS_NORMALIZED
+				'g[start]': 0,
+				'g[limit]': form.items.get( panel.name + '_export_dialog_max_records').getValue(),
+				'f[display_only]': display_only_fields.join(',')
+			});
+
+			// alert( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
+
+			window.open ("?" + Ext.urlEncode( q_params ), "mywindow" ); 
+			win.hide(); 
+
+			}, buffer: 200 }}
+		},{
+		    text: 'Cancelar',
+		    handler: function() { win.hide(); }
+		}]
+	    });
+
+	    return win;	
 
 	},/*}}}*/
 
@@ -287,8 +406,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 					fn: function(btn) { 
 
 						if ( btn == 'yes' ) 
-							// this.store.revert_changes();
-							alert( 'disabled discard_changes' );
+							this.store.revert_changes();
 					},
 					scope: panel
 				});
@@ -296,6 +414,12 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 				}, buffer:200 } 
 			} 
 		});
+
+		this.store.on( 'update', function( s, r, o ) { 
+			if ( this.el && this.el.dom ) 
+				( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
+		}, tb );
+
 
 		return tb;
 
@@ -315,6 +439,28 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	},/*}}}*/
 
+	save_button: function( panel ) {/*{{{*/
+
+        	var tb = new Ext.Toolbar.Button({
+       	        	icon: '/ext/resources/images/default/dd/drop-yes.gif',
+			text: 'Guardar',
+                	cls: 'x-btn-text-icon',
+			disabled: true,
+                	tooltip: '<b>Guardar</b><br/>Pulse aqui para guardar las modificaciones',
+			listeners:{ click:{ scope: this, fn:function( btn ) {
+                		App.process_request({ m: App.feat.module, a: 'process', p: 'store',  x: App.serialize() });
+			}, buffer:200 }}
+		});
+
+		this.store.on( 'update', function( s, r, o ) { 
+			if ( this.el && this.el.dom ) 
+				( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
+		}, tb );
+
+		return tb;
+
+	},/*}}}*/
+
 	assign_button: function( panel ) {/*{{{*/
         	return new Ext.Button({
        	        	icon: '/ux/images/arrow_up.png',
@@ -323,8 +469,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			// disabled: true,
                 	tooltip: '<b>Asignar</b><br/>Asocia el registro actual al panel principal',
 			listeners:{ click:{ scope: this, fn:function( btn ) {
-				// this.store.set_parent_fk();
-				alert( 'assign_button' );
+				this.store.set_parent_fk();
 			}, buffer:200 }}
 		});
 
@@ -391,6 +536,20 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		});
 
 		return panel;
+
+	},/*}}}*/
+
+	add_button: function( panel ) {/*{{{*/
+
+		return new Ext.Toolbar.Button({
+			icon: '/ext/resources/images/default/dd/drop-add.gif',
+			cls: 'x-btn-text-icon',
+			text: 'Agregar',
+	                menuAlign: 'tr?',
+	                tooltip: '<b>Agregar</b><br/>Pulse aqui para agregar un nuevo registro',
+			listeners:{click:{scope:panel, fn:this.addRecord, buffer:200}}
+		});
+
 
 	},/*}}}*/
 
@@ -496,107 +655,5 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		}
 
 	}, // eo function addRecord//}}}
-
-    export_dialog: function( panel ) {//{{{
-
-    var form = new Ext.form.FormPanel({
-        baseCls: 'x-plain',
-        labelWidth: 55,
-        url:'save-form.php',
-        defaultType: 'textfield',
-
-        items: [{
-	    xtype: 'combo',
-	    id: panel.name + '_export_dialog_max_records',
-            fieldLabel: 'Cantidad Máxima',
-	    store: new Ext.data.SimpleStore({
-    			fields: ['id', 'label'],
-    			data : [ [1000,'1000'], [10000,'10000']]}),
-	    name: 'max_records',
-	    anchor:'100%',
-	    displayField: 'label',
-	    valueField: 'id',
-            typeAhead: true,
-            mode: 'local',
-            triggerAction: 'all',
-            emptyText:'Seleccionar la cantidad de registros a exportar',
-            selectOnFocus:true
-
-        }]
-    });
-
-    var win = new Ext.Window({
-        title: 'Exportar Objetos',
-        width: 500,
-        // height:300,
-	constrain: true,
-        minWidth: 300,
-        minHeight: 300,
-        layout: 'fit',
-        plain:true,
-        bodyStyle:'padding:5px;',
-        buttonAlign:'center',
-        items: form,
-
-        buttons: [{
-            text: 'Exportar',
-	    listeners: { click: { scope: panel, fn: function() {  
-
-		alert( 'disabled listeners' ); return;
-
-		var store = this.store;
-		var q_params = {};
-
-		Ext.apply( q_params, store.get_foreign_key() );
-
-
-		// de xpStore.js	
-
-		// Search (global search)
-		if ( store.baseParams.query && store.baseParams.fields ) {
-
-			var vars = eval(store.baseParams.fields).join(App.feat.key_delimiter);
-
-                        var params = {};
-                        params['s[' + store.class_name +']['+ vars +']'] = store.baseParams.query;
-
-			Ext.apply( q_params, params );
-
-		}
-
-		if ( this.store.lastOptions )
-			Ext.apply( q_params, this.store.lastOptions.params );
-
-		var display_only_fields = [];
-
-		Ext.each( this.getColumnModel().config, function( f ) {
-
-			f.hidden || display_only_fields.push( f.name );
-		});
-
-		Ext.apply( q_params, { m: this.class_name, 
-			v: 'csv', 
-			'f[ignore_null_fields]': 0, 
-			'f[include_dataset]': 2, // DS_NORMALIZED
-			'g[start]': 0,
-			'g[limit]': form.items.get( panel.name + '_export_dialog_max_records').getValue(),
-			'f[display_only]': display_only_fields.join(',')
-		});
-
-		// alert( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
-
-		window.open ("?" + Ext.urlEncode( q_params ), "mywindow" ); 
-		win.hide(); 
-
-		}, buffer: 200 }}
-        },{
-            text: 'Cancelar',
-	    handler: function() { win.hide(); }
-        }]
-    });
-
-    return win;	
-
-}//}}}
 
 });
