@@ -563,9 +563,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		// current record
 
-		var s = this.selections;
-
-		return ( s.length ) ? s[0] : {};
+		return ( this.selections.length ) ? this.selections[0] : {};
 
 	}, //}}}
 
@@ -704,7 +702,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	},
 	/*}}}*/
-
 
 	get_foreign_key_record: function( selections, label ) { /*{{{*/
 
@@ -885,13 +882,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 	serialize_record: function(record, fields) { /*{{{*/
 
 		// var trim = Ext.util.Format.trim;
-		var escapex = Ext.util.Format.escapeXml;
-
-		var result = '',
-			nodeList = '';
-		var element = this.class_name;
-
-		var value;
+		var escapex = Ext.util.Format.escapeXml,
+		element = this.class_name,
+		result = '',
+		nodeList = '',
+		value;
 
 		if (Ext.isArray(fields)) {
 
@@ -938,10 +933,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 	serialize: function(all, fields) { /*{{{*/
 
 		var result = '',
-			nodeList = '';
-		var element = App.feat.container_tag;
-
-		var records = all ? this.getAll() : this.getModifiedRecords();
+		nodeList = '',
+		element = App.feat.container_tag,
+		records = all ? this.getAll() : this.getModifiedRecords();
 
 		Ext.each(records, function(record) {
 			if (record.dirty)

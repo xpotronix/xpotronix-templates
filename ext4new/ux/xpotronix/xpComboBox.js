@@ -51,6 +51,9 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 				s.insert(0,data);
 				s.resumeEvents();
 
+				this.bindStore(s);
+				this.updateLayout();
+
 				this.debug && console.log( s.getCount() );
 
 				if ( p = this.up('form') ) {
