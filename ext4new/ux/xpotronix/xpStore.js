@@ -615,7 +615,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	revert_changes: function() { /*{{{*/
 
-		this.rejectChanges();
+		if ( this.foreign_key.type != 'eh' ) 
+			this.rejectChanges();
 
 		this.each(function(r) {
 			if (r.get('__new__'))
