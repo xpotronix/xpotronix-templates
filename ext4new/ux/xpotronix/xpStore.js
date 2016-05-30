@@ -99,10 +99,14 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* cuando el se haya modificado el store y tenga un fk == parent setea la fk */
 
-		this.on('update', function(s, r, o) {
+		this.on('update', function(s, r, o, m) {
 
-			if (s.foreign_key.type == 'parent' && o == Ext.data.Record.EDIT)
-				s.set_parent_fk();
+			if ( o == Ext.data.Record.EDIT ) {
+
+				if ( s.foreign_key.type == 'parent' ) 
+					s.set_parent_fk();
+
+			}
 
 		}); 
 

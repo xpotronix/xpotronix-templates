@@ -29,23 +29,10 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	acl: undefined,
 	border: false,
 	show_buttons: true,
-	loadMask: true,
 	buttonAlign: 'left',
 	feat: undefined,
 	controller: undefined,
-
-/*
-
-    initEvents : function(){
-        Ext.form.FormPanel.superclass.initEvents.call(this);
-
-        if(this.loadMask){
-            this.loadMask = new Ext.LoadMask(this.bwrap,
-                    Ext.apply({store:this.store}, this.loadMask));
-        }
-    },
-
-*/
+	debug: false,
 
 	constructor: function(config) {/*{{{*/
 
@@ -108,7 +95,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 				buffer:200 }
 		});
 
-
 	}, /*}}}*/
 
 	find_controller: function() {/*{{{*/
@@ -152,11 +138,11 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			update: { 
 				fn:function( s, r, o ) { 
 
-					if ( o == Ext.data.Record.EDIT || o == Ext.data.Record.COMMIT ) 
+					if ( o == Ext.data.Record.EDIT || o == Ext.data.Record.COMMIT || o == Ext.data.Record.REJECT ) 
 						this.loadRecord(this.controller.selModel.selected.first());
 
 				}, 
-				buffer: 200, 
+				// buffer: 200, 
 				scope: this },
 
 			clear: {  
@@ -189,33 +175,19 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 				var event_name = (i.xtype == 'checkbox') ? 'check' : 'change';
 
-				i.on( event_name, function( e, a, b ) {
+				i.on( event_name, function( me, a, b ) {
 
+					/* mantiene sincronizado el form con el controlador (grid) */
 
 					var record = this.controller.selModel.selected.first();
 
 					if ( record ) {
 
-						// guarda los cambios del form en el store
-						// this.suspendEvents( true );
-						//debugger;
+						if ( ! me.isEqual( me.getValue(), record.get( me.name ) ) ) {
 
-						if ( i.isEqual( e.getValue(), record.get( e.name ) ) )
-							return true;
-
-						console.log( e.name + ': ' + e.lastValue + ' << ' + e.getValue() );
-
-						record.set(e.name, e.getValue());
-
-						// if ( e.xtype == 'combo' && e.mode == 'remote' ) DEBUG: remote??
-
-						if ( e.xtype == 'xpcombo' ) {
-
-							record.set(e.name+'_label', e.getRawValue());
+							this.debug && console.log( me.name + ': ' + me.lastValue + ' << ' + me.getValue() );
+							record.set( me.name, me.getValue() );
 						}
-
-						// this.resumeEvents();
-						// e.focus();
 					}
 			
 					return true;
@@ -230,7 +202,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	},/*}}}*/
 
-	loadRecord_DISABLED: function( a, b, c ) { /*{{{*/
+	loadRecord: function( a, b, c ) { /*{{{*/
 
 
 		var me = this;
@@ -239,11 +211,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		var r = me.controller.selModel.selected.first();
 
-		debugger;
-
-		this.getForm().setValues( r );
-
-		return;
+		this.callParent(arguments);
 
 		if ( r && r.get ) { 
 
