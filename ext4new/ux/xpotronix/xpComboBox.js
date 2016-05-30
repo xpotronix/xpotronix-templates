@@ -12,60 +12,152 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 	extend: 'Ext.form.field.ComboBox',
 	alias: 'widget.xpcombo',
-
 	debug: false,
-
 	panel: null,
+	alternateClassName: ['xpcombobox'],
+	requires: ['Ext.form.field.ComboBox'],
 
-	alternateClassName: [
-		'xpcombobox'
-	],
+	listeners: {/*{{{*/
 
-	requires: [
-		'Ext.form.field.ComboBox'
-	],
+		change: {
 
+			fn: function( me, newValue, oldValue ) {
 
-	setValue: function( value,  b ) {
+				if ( newValue !== oldValue ) {
 
-		if ( value !== undefined ) {
+					var p = this.panel,
+					me = this,
+					selModel = p.selModel || p.controller.selModel,
+					record = selModel.selected.first();
 
-			/* carga un registro fake en el store del combobox para que pueda machear el forceSelections */
+					/* cambia el valor del _label correspondiente a este field en el record */
 
-			var p = this.up('grid') || this.up('form');
+					if ( record ) {
 
-			if ( p ) {
+						if ( me.isEqual( me.getValue(), record.get( me.name ) ) )
+							return true;
 
-				var s = this.store;
-				var selModel = p.selModel || p.controller.selModel;
-
-				var data = s.get_foreign_key_record( selModel.getSelection(), true );
-				this.debug && console.log(data);
-
-				/* hago un suspendEvents porque enloquece la funcion updateIndex del combobox */
-
-				s.suspendEvents();
-				if ( s.getCount() > 0 ) 
-					s.removeAt( 0 );
-
-				s.insert(0,data);
-				s.resumeEvents();
-
-				this.bindStore(s);
-				this.updateLayout();
-
-				this.debug && console.log( s.getCount() );
-
-				if ( p = this.up('form') ) {
-
-					var r = p.controller.selModel.selected.first();
-					this.valueNotFoundText = r.get( this.name + '_label' );
-
+						this.debug && console.log( me.name + ': ' + me.lastValue + ' << ' + me.getValue() );
+						record.set(me.name, me.getValue());
+						record.set(me.name+'_label', me.getRawValue());
+					}
 				}
-			} 
+			}
 		}
+	},/*}}}*/
+
+	onRender: function() {/*{{{*/
 
 		this.callParent(arguments);
-		delete this.valueNotFound;
-	}
+		this.panel = this.up('grid') || this.up('form');
+
+	},	/*}}}*/
+
+    setValue: function(value, doSelect) {/*{{{*/
+        var me = this,
+            valueNotFoundText = me.valueNotFoundText,
+            inputEl = me.inputEl,
+            i, len, record,
+            dataObj,
+            matchedRecords = [],
+            displayTplData = [],
+            processedValue = [];
+
+        if (me.store.loading) {
+            // Called while the Store is loading. Ensure it is processed by the onLoad method.
+            me.value = value;
+            me.setHiddenValue(me.value);
+            return me;
+        }
+
+        // This method processes multi-values, so ensure value is an array.
+        value = Ext.Array.from(value);
+
+        // Loop through values, matching each from the Store, and collecting matched records
+        for (i = 0, len = value.length; i < len; i++) {
+            record = value[i];
+            if (!record || !record.isModel) {
+                record = me.findRecordByValue(record);
+            }
+            // record found, select it.
+            if (record) {
+                matchedRecords.push(record);
+                displayTplData.push(record.data);
+                processedValue.push(record.get(me.valueField));
+            }
+            // record was not found, this could happen because
+            // store is not loaded or they set a value not in the store
+            else {
+                // If we are allowing insertion of values not represented in the Store, then push the value and
+                // create a fake record data object to push as a display value for use by the displayTpl
+                if (!me.forceSelection) {
+                    processedValue.push(value[i]);
+                    dataObj = {};
+                    dataObj[me.displayField] = value[i];
+                    displayTplData.push(dataObj);
+                    // TODO: Add config to create new records on selection of a value that has no match in the Store
+                }
+                // Else, if valueNotFoundText is defined, display it, otherwise display nothing for this value
+                else if (Ext.isDefined(valueNotFoundText)) {
+
+                    displayTplData.push(valueNotFoundText);
+
+                } else {
+
+			if ( value !== undefined ) {
+
+				/* carga un registro fake para que pueda machear el valor en forceSelection */
+
+				var p = this.panel; 
+
+				if ( p ) {
+
+					var s = this.store;
+					var selModel = p.selModel || p.controller.selModel;
+
+					var data = s.get_foreign_key_record( selModel.getSelection(), true );
+					this.debug && console.log(data);
+
+					record = s.model.create(data[0]);
+
+					matchedRecords.push(record);
+					displayTplData.push(record.data);
+					processedValue.push(record.get(me.valueField));
+			 
+					if ( p = this.up('form') ) {
+
+						this.valueNotFoundText = record.get( this.name + '_label' );
+
+					}
+				} 
+			}
+		}
+            }
+        }
+
+        // Set the value of this field. If we are multiselecting, then that is an array.
+        me.setHiddenValue(processedValue);
+        me.value = me.multiSelect ? processedValue : processedValue[0];
+        if (!Ext.isDefined(me.value)) {
+            me.value = null;
+        }
+        me.displayTplData = displayTplData; //store for getDisplayValue method
+        me.lastSelection = me.valueModels = matchedRecords;
+
+        if (inputEl && me.emptyText && !Ext.isEmpty(value)) {
+            inputEl.removeCls(me.emptyCls);
+        }
+
+        // Calculate raw value from the collection of Model data
+        me.setRawValue(me.getDisplayValue());
+        me.checkChange();
+
+        if (doSelect !== false) {
+            me.syncSelection();
+        }
+        me.applyEmptyText();
+
+        return me;
+    }/*}}}*/
+
 });
