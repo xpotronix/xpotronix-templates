@@ -475,13 +475,13 @@
 <xsl:param name="obj" tunnel="yes"/>
 <xsl:param name="attr" tunnel="yes"/>
 <!--<xsl:message><xsl:value-of select="."/></xsl:message>-->
-<xsl:if test="position()-1">,</xsl:if>dateFormat:App.feat.date_long_format + ' ' + App.feat.time_format</xsl:template><!--}}}-->
+<xsl:if test="position()-1">,</xsl:if>dateFormat:'c'</xsl:template><!--}}}-->
 
 <xsl:template match="dateFormat[ancestor::*/@type='xpdate' and ../@section='record']"><!--{{{-->
 <xsl:param name="obj" tunnel="yes"/>
 <xsl:param name="attr" tunnel="yes"/>
 <!--<xsl:message><xsl:value-of select="."/></xsl:message>-->
-<xsl:if test="position()-1">,</xsl:if>dateFormat:App.feat.date_long_format</xsl:template><!--}}}-->
+<xsl:if test="position()-1">,</xsl:if>dateFormat:'c'</xsl:template><!--}}}-->
 
 <xsl:template match="dateFormat[../@section='field' or not(../@section)]"><!--{{{-->
 <xsl:param name="obj" tunnel="yes"/>
