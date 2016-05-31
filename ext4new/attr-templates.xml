@@ -31,7 +31,7 @@
 	</record><!--}}}-->
 
 	<record type="xpdatetime"><!--{{{-->
-		<type>date</type>
+		<type>datetimefield</type>
 		<dateFormat/>
 	</record><!--}}}-->
 
