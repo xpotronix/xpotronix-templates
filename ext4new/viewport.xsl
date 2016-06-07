@@ -87,6 +87,158 @@
 
 	<xsl:variable name="menu_bar" select="xp:get_feat($root_obj,'menu_bar')"/>
 
+	<xsl:variable name="code">
+
+		<xsl:apply-templates select="." mode="loader"/>
+
+
+		var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
+
+		Ext.Ajax.timeout = 60000;
+		var App;
+
+		if ( App !== undefined ) {
+
+			App.reconfigure( config_App );
+
+		} else {
+
+			Ext.namespace('App');
+			App = Ext.create( 'Ux.xpotronix.xpApp', config_App );
+		}
+
+		document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
+
+		<!-- objects -->
+
+		<xsl:apply-templates select="*:metadata/obj" mode="config"/>
+
+
+		<!-- model -->
+
+		<xsl:for-each select="*:model//obj">
+
+			<xsl:apply-templates select="." mode="model"/>
+
+			<!-- model_eh -->
+
+			<xsl:for-each select="queries/query/query">
+
+				<xsl:apply-templates select="." mode="model_eh"/>
+
+			</xsl:for-each>
+
+		</xsl:for-each>
+
+		<!-- store -->
+
+		<xsl:for-each select="*:model//obj">
+
+			<xsl:apply-templates select="." mode="store"/>
+
+			<!-- store_eh -->
+
+			<xsl:for-each select="queries/query/query">
+
+				<xsl:apply-templates select="." mode="store_eh"/>
+
+			</xsl:for-each>
+
+		</xsl:for-each>
+
+		<!-- panel -->
+
+		<xsl:for-each select="*:model//panel">
+
+			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+
+				<xsl:apply-templates select="." mode="define"/>
+
+		</xsl:for-each>
+
+		<!-- controller -->
+
+			<xsl:apply-templates select="*:model" mode="controller"/>
+
+
+	<xsl:if test="*:session/var/EVENTS_MONITOR=1">
+		<xsl:call-template name="events_monitor"/>
+	</xsl:if>
+
+
+	<xsl:if test="*:session/feat/theme">
+	/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
+	</xsl:if>
+
+	Ext.onReady(function() {
+
+		/*
+		var wait = Ext.LoadMask(document.body, {msg:'Aguarde por favor ...'});
+		wait.show();
+		*/
+
+		<xsl:if test="$menu_bar='true'">
+		App.menu = Ext.create( 'Ext.Toolbar', <xsl:apply-templates select="*:session/menu"/> );
+		/*
+		Ext.Ajax.request({
+			url: '?a=menu&amp;v=ext4/menubar',
+			success: function(resp) {
+				var arr = Ext.decode( resp.responseText ); 
+				App.menu = Ext.create( 'Ext.Toolbar' );
+
+				Ext.each( arr, function(o) { 
+					App.menu.add(o); 
+				});
+		
+				App.fireEvent( 'configready' );
+			}});
+		*/
+		</xsl:if>
+
+		/* Ext.Loader.setConfig({enabled:false}); */
+
+		/* application/viewport */
+
+		Ext.application({/*{{{*/
+
+		    requires: ['Ext.container.Viewport'],
+
+		    name: '<xsl:value-of select="$application_name"/>',
+		    //appFolder: 'modules', 
+
+		    controllers: [
+			'<xsl:value-of select="*:session/feat/module"/>'
+		    ],
+
+		    launch: function() {
+			<xsl:apply-templates select="*:model" mode="viewport"/>
+		    }
+		});/*}}}*/
+
+	}); /* onReady ends */
+
+
+	</xsl:variable>
+	<!-- output final del codigo -->
+
+		
+	<script type="text/javascript">
+	<xsl:choose>
+		<xsl:when test="//*:session/var/UNNORMALIZED=1">
+			<xsl:value-of select="$code" disable-output-escaping="yes"/>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:value-of select="normalize-space($code)" disable-output-escaping="yes"/>
+		</xsl:otherwise>
+	</xsl:choose>
+	</script>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="application_files"><!--{{{-->
+
+	<xsl:variable name="menu_bar" select="xp:get_feat($root_obj,'menu_bar')"/>
+
 		<!-- model -->
 
 		<xsl:for-each select="*:model//obj">
@@ -232,7 +384,7 @@
 
 		<xsl:apply-templates select="*:metadata/obj" mode="config"/>
 
-		// Ext.Loader.setConfig({enabled:false});
+		/*Ext.Loader.setConfig({enabled:false});*/
 
 		/* application/viewport */
 
@@ -241,7 +393,7 @@
 		    requires: ['Ext.container.Viewport'],
 
 		    name: '<xsl:value-of select="$application_name"/>',
-		    //appFolder: 'modules', 
+		    /* appFolder: 'modules',  */
 
 		    controllers: [
 			'<xsl:value-of select="*:session/feat/module"/>'
@@ -339,7 +491,7 @@ Ext.define('<xsl:value-of select="concat($application_name,'.controller.',../*:s
 
 	    record.set(values);
 	    win.close();
-	    // synchronize the store after editing the record
+	    /* synchronize the store after editing the record */
 	    this.getUsersStore().sync();
 	}
 
