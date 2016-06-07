@@ -465,11 +465,11 @@
 <xsl:template match="field/format[ancestor::*/@type='xpdatetime']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
 <xsl:param name="obj" tunnel="yes"/>
-<xsl:if test="position()-1">,</xsl:if>format:App.feat.date_format</xsl:template><!--}}}-->
+<xsl:if test="position()-1">,</xsl:if>format:App.feat.date_format + ' ' + App.feat.time_format</xsl:template><!--}}}-->
 
 <xsl:template match="format[ancestor::*/@type='xpdatetime']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
-<xsl:if test="position()-1">,</xsl:if>format:App.feat.date_long_format</xsl:template><!--}}}-->
+<xsl:if test="position()-1">,</xsl:if>format:App.feat.date_long_format + ' ' + App.feat.time_format</xsl:template><!--}}}-->
 
 <xsl:template match="dateFormat[ancestor::*/@type='xpdatetime' and ../@section='record']"><!--{{{-->
 <xsl:param name="obj" tunnel="yes"/>

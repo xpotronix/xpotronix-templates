@@ -93,14 +93,14 @@
 
 		<!-- DateTimeField -->
 
-		<!--
+		<!-- 
 		<script type="text/javascript" src="/ux4/form/datetime/UX_TimePickerField.js"></script>
 		<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimePicker.js"></script>
 		<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimeField.js"></script>
-		<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimeMenu.js"></script>-->
+		<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimeMenu.js"></script> -->
 
 		<script type="text/javascript" src="/ux4/form/DateTimePicker.js"></script>
-		<script type="text/javascript" src="/ux4/form/DateTimeField.js"></script> 
+		<script type="text/javascript" src="/ux4/form/DateTimeField.js"></script>
 
 		<script type="text/javascript" src="/ux4/xpotronix/extensions.js"/>
 

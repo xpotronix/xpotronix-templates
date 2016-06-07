@@ -31,8 +31,8 @@
 	</record><!--}}}-->
 
 	<record type="xpdatetime"><!--{{{-->
-		<type>datetimefield</type>
-		<dateFormat/>
+		<type>date</type>
+		<format/>
 	</record><!--}}}-->
 
 	<!-- column -->
@@ -93,7 +93,7 @@
 		<filter>{showFilterIcon:false,field:{style:'text-align:right;'}}</filter>
 		<renderer/>		
 		<editor>
-			<timePosition>below</timePosition>
+			<!-- <timePosition>below</timePosition>  -->
 		</editor>
 	</column><!--}}}-->
 
@@ -147,6 +147,8 @@
 
 	<field type="xpdatetime"><!--{{{-->
 		<xtype>datetimefield</xtype>
+		<format/>
+		<!-- 
 		<timeConfig>
 			<minValue>7:00 AM</minValue>
 			<maxValue>6:00 PM</maxValue>
@@ -155,7 +157,7 @@
 		<otherToNow>false</otherToNow>
 		<timePosition>right</timePosition>
 		<dateFormat/>
-		<timeFormat/>
+		<timeFormat/> -->
 	</field><!--}}}-->
 
 	<field type="xpenum"><!--{{{-->
