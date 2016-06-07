@@ -34,6 +34,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
+		App.obj.get(this.class_name).panels.add(this);
+
 		Ext.apply( this, { 
 
 			plugins: [{
