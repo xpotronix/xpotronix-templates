@@ -89,6 +89,7 @@
 		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpObj.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpGrid.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpForm.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpStore.js"/>
 
 		<!-- DateTimeField -->
