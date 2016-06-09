@@ -195,7 +195,6 @@
 		*/
 		</xsl:if>
 
-		/* Ext.Loader.setConfig({enabled:false}); */
 
 		/* application/viewport */
 
@@ -204,7 +203,6 @@
 		    requires: ['Ext.container.Viewport'],
 
 		    name: '<xsl:value-of select="$application_name"/>',
-		    //appFolder: 'modules', 
 
 		    controllers: [
 			'<xsl:value-of select="*:session/feat/module"/>'
@@ -384,7 +382,6 @@
 
 		<xsl:apply-templates select="*:metadata/obj" mode="config"/>
 
-		/*Ext.Loader.setConfig({enabled:false});*/
 
 		/* application/viewport */
 
@@ -442,62 +439,22 @@
 /* controller */
 
 	
-Ext.define('<xsl:value-of select="concat($application_name,'.controller.',../*:session/feat/module)"/>', {/*{{{*/
+	Ext.define('<xsl:value-of select="concat($application_name,'.controller.',../*:session/feat/module)"/>', {/*{{{*/
 
-    extend: 'Ext.app.Controller',
+	    extend: 'Ext.app.Controller',
 
-    views: [<xsl:for-each select="obj//panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+	    views: [<xsl:for-each select="obj//panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
-    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+	    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
-    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+	    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
-    init: function() {
-        this.control({
+	    init: function() {
+		this.control({});
+	    }
 
-	/*
-            'viewport > panel': {
-                render: this.onPanelRendered
-            },
 
-	    'userlist': {
-                itemdblclick: this.editUser
-            },
-
-	    'useredit button[action=save]': {
-                click: this.updateUser
-            } */
-        });
-    },
-
-	/*
-
-    onPanelRendered: function() {
-        console.log('The panel was rendered');
-    },
-
-    editUser: function(grid, record) {
-
-        console.log('Double clicked on ' + record.get('name'));
-        var view = Ext.widget('useredit');
-        view.down('form').loadRecord(record);
-    },
-
-	updateUser: function(button) {
-	    var win    = button.up('window'),
-		form   = win.down('form'),
-		record = form.getRecord(),
-		values = form.getValues();
-
-	    record.set(values);
-	    win.close();
-	    /* synchronize the store after editing the record */
-	    this.getUsersStore().sync();
-	}
-
-	*/
-
-});/*}}}*/
+	});/*}}}*/
 
 
 	</xsl:template><!--}}}-->
@@ -554,7 +511,7 @@ Ext.onReady(function(){
 
 	Ext.Loader.setConfig({
 
-		enabled: true,
+		enabled: false,
 		paths: {
 			'Ux.xpotronix': '/ux4/xpotronix',
 			'Ext.ux': '/ux4',
