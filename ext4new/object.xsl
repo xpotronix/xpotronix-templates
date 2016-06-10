@@ -75,7 +75,7 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="script">
+	<xsl:template match="script"><!--{{{-->
 			,script:{ fn:function( selections, command, item ) {
 			<xsl:value-of select="."/>
 		}<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if> }
@@ -100,8 +100,7 @@
 
 		}<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if> }
 
-	</xsl:template>
-
+	</xsl:template><!--}}}-->
 
 	<xsl:template match="process" mode="param"><!--{{{-->
 		<xsl:for-each select="param/*">
