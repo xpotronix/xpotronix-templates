@@ -16,28 +16,6 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 	extend: 'Ext.Component',
 	alias: 'xpObj',
 
-	constructor: function( config ) {
-
-    	this.panels = new Ext.util.MixedCollection(false);
-    	this.panels.getKey = function(o){ return o.id; };
-
-	this.config = config | {};
-
-	Ext.apply( this, config ); 
-
-	Ux.xpotronix.xpObj.superclass.constructor.call( this );
-
-	this.on( 'beforedestroy', function(){
-
-		this.panels.each( function(p){ 
-			p.destroy();
-			this.panels.remove(p);
-			delete p;
-		}, this );
-	});
-
-	}, 
-
 	config: 	null,
 
 	class_name: 	null,
@@ -57,6 +35,28 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 	buttons: 	null,
 	feat:		{},
 	export_w: 	null,
+
+	constructor: function( config ) {/*{{{*/
+
+		this.panels = new Ext.util.MixedCollection(false);
+		this.panels.getKey = function(o){ return o.id; };
+
+		this.config = config | {};
+
+		Ext.apply( this, config ); 
+
+		Ux.xpotronix.xpObj.superclass.constructor.call( this );
+
+		this.on( 'beforedestroy', function(){
+
+			this.panels.each( function(p){ 
+				p.destroy();
+				this.panels.remove(p);
+				delete p;
+			}, this );
+		});
+
+	},/*}}}*/
 
 	serialize_selection_item: function( item ) {/*{{{*/
 
