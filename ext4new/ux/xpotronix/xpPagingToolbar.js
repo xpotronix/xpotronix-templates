@@ -166,7 +166,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		if ( item.params == undefined ) 
 			item.params = {};
 
-		var selections = panel.get_selections();
+		var selections = panel.getSelection();
 
 		/* prepara la funcion enviada por parametro desde xpotronix */
 
@@ -573,7 +573,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	    	delete_confirm: function ( panel ) {//{{{
 
-		var m = panel.get_selections();
+		var m = panel.getSelection();
 
         	if ( m.length ) {
                 		Ext.MessageBox.confirm('Message', 
@@ -598,7 +598,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		var saved = 0;
 
-		Ext.each( panel.get_selections(), function( r ) {
+		Ext.each( panel.getSelection(), function( r ) {
 
 			if ( r.get('__new__') ) 
 				this.remove( r );
@@ -612,7 +612,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
                         m: this.class_name,
                         a: 'process',
                         p: 'delete',
-                        x: this.serialize_selections( panel.get_selections() ),
+                        x: this.serialize_selections( panel.getSelections() ),
                         process_name: 'Borrar la Selección'
                 }, function() { 
 

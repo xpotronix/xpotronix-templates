@@ -137,7 +137,7 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 		}
 	},/*}}}*/
 
-	get_selections: function () {/*{{{*/
+	getSelection: function () {/*{{{*/
 
 		return this.dv.getSelectedRecords();
 
