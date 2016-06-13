@@ -14,6 +14,8 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	alias: 'widget.xppagingtoolbar',
 
 	panel: null,
+	i_panel: null,
+	i_panel_class: 'solicitud_licencia',
 
 	alternateClassName: [
 		'xppagingtoolbar'
@@ -477,17 +479,10 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	inspect_window: function(){/*{{{*/
 
-		var i_panel = this.get_inspect_panel();
-		var iw;
+		if ( ! this.i_panel )  
 
-		if ( ! i_panel ) return;
+			this.i_panel = new Ext.Window({
 
-		if ( ! ( iw = Ext.getCmp( 'inspect_' + i_panel.id ) ) ) {
-
-			Ext.apply( i_panel, { region: 'center' } );
-
-			iw = new Ext.Window({
-				id: 'inspect_' + i_panel.id,
 				width: 600,
 				height:400,
 				minWidth: 300,
@@ -501,13 +496,10 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 				bodyStyle:'padding:5px;',
 				buttonAlign:'center',
 				buttons: [{ text: 'Cerrar', handler:function(){ iw.hide();}} ],
-				items: [ i_panel ]
+				items: [{ xtype: this.i_panel_class, region: 'center' }]
 			});
 
-			this.panels.add(iw);
-		}
-
-		iw.show();
+		this.i_panel.show();
 
 	},/*}}}*/
 
@@ -519,7 +511,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			text: 'Ver',
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Inspeccionar</b><br/>Pulse aqui para inspeccionar el registro seleccionado',
-			listeners:{click:{scope:panel, fn:this.inspect_window, buffer:200}}
+			listeners:{click:{scope:this, fn:this.inspect_window, buffer:200}}
 		});
 	},/*}}}*/
 
