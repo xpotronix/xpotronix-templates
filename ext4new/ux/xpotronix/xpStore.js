@@ -563,13 +563,19 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	}, //}}}
 
-	cr: function() { //{{{
+	cr: function() {/*{{{*/
 
 		// current record
 
 		return ( this.selections.length ) ? this.selections[0] : {};
 
-	}, //}}}
+	},/*}}}*/
+
+	getSelection() {/*{{{*/
+
+		return this.selections;
+
+	},/*}}}*/
 
 	get_new: function() { //{{{
 

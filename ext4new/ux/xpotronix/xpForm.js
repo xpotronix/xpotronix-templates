@@ -31,7 +31,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	show_buttons: true,
 	buttonAlign: 'left',
 	feat: undefined,
-	controller: undefined,
 	debug: false,
 
 	constructor: function(config) {/*{{{*/
@@ -67,14 +66,12 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.callParent();
 
+		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
+
 		/* this.getForm().trackResetOnLoad = true; */
 
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
-
-		/* busca un controlador, default la xpGrid del objeto */
-
-		this.find_controller();
 
 		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
 
@@ -91,7 +88,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			afterrender: { 
 				fn: function( form ) {
 					var r;
-					if ( r = form.controller.selModel.selected.first() )
+					if ( r = form.getSelection()[0] )
 						form.loadRecord( r );
 				}, 
 				buffer:200 }
@@ -99,77 +96,12 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	}, /*}}}*/
 
-	find_controller: function() {/*{{{*/
-
-		if ( this.controller == undefined ) 
-			this.controller = this.class_name + '_xpGrid';
-		
-		if (typeof this.controller == 'string') {
-
-			if ( ! ( this.controller = Ext.getCmp( this.controller ) ) )
-				return false;
-
-			this.store = this.controller.store; // DEBUG para compatibilidad
-
-		} else  this.store = Ext.StoreMgr.lookup( this.store );
-
-		this.controller && this.controller.on({
-
-			selectionchange: { 
-
-				fn:function( a, b, c ) {
-					this.loadRecord(this.controller.selModel.selected.first());
-				}, 
-				buffer: 200, 
-				scope: this },
-		});
-
-		this.store && this.store.on({
-
-			/*
-			load: { 
-				fn:function( a, b, c ){
-					this.loadRecord( 
-						this.controller.selModel.selected.first()||{});
-				}, 
-				buffer: 200, 
-				scope: this },
-
-			*/
-
-			update: { 
-				fn:function( s, r, o ) { 
-
-					if ( o == Ext.data.Record.EDIT || o == Ext.data.Record.COMMIT || o == Ext.data.Record.REJECT ) 
-						this.loadRecord(this.controller.selModel.selected.first());
-
-				}, 
-				// buffer: 200, 
-				scope: this },
-
-			clear: {  
-				fn:function( a, b, c ) {
-					this.getForm().reset();
-				}, 
-				buffer: 200, 
-				scope: this }
-
-			/* ,datachanged: { 
-				fn:function() {
-					this.loadRecord(this.controller.selModel.selected.first());
-				}, 
-				buffer: 200, 
-				scope: this }
-			*/
-		});
-
-	},/*}}}*/
 
 	onRender: function() { /*{{{*/
 
 		this.callParent();
 
-		if ( this.controller || this.find_controller() ) {
+		if ( this.store ) {
 
 			recurse_items( this, function(i) {
 
@@ -181,7 +113,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 					/* mantiene sincronizado el form con el controlador (grid) */
 
-					var record = this.controller.selModel.selected.first();
+					var record = this.getSelection()[0];
 
 					if ( record ) {
 
@@ -211,7 +143,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) return;
 
-		var r = me.controller.selModel.selected.first();
+		var r = me.getSelection()[0];
 
 		this.callParent(arguments);
 
@@ -262,9 +194,9 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	},/*}}}*/
 
-	get_selections: function() {/*{{{*/
+	getSelection: function() {/*{{{*/
 
-		return this.controller.selModel.selected;	
+		return this.store.selections;	
 
 		/*
 		var cr = this.store.cr();

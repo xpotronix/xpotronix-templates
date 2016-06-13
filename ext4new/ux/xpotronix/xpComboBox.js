@@ -27,8 +27,7 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 					var p = this.panel,
 					me = this,
-					selModel = p.selModel || p.controller.selModel,
-					record = selModel.selected.first();
+					record = p.store.selections[0];
 
 					/* cambia el valor del _label correspondiente a este field en el record */
 
@@ -113,9 +112,8 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 				if ( p ) {
 
 					var s = this.store;
-					var selModel = p.selModel || p.controller.selModel;
 
-					var data = s.get_foreign_key_record( selModel.getSelection(), true );
+					var data = s.get_foreign_key_record( p.store.getSelection(), true );
 					this.debug && console.log(data);
 
 					record = s.model.create(data[0]);

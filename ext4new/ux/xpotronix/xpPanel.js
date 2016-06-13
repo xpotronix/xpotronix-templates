@@ -106,7 +106,7 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 	invertSelection:function(){//{{{
 
 		var sm = this.getSelectionModel();
-		var sl = sm.getSelections();
+		var sl = sm.getSelection();
 
 		for( var i = 0; i < this.store.getCount(); i ++ ) {
 
@@ -117,7 +117,7 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 		}
 	},//}}}
 
-	get_selections: function() {/*{{{*/
+	getSelection: function() {/*{{{*/
 
 		return [ this.store.cr() ];
 

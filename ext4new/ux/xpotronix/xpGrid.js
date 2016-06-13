@@ -244,7 +244,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	},/*}}}*/
 
-	get_selections: function() {/*{{{*/
+	getSelection: function() {/*{{{*/
 
 		return this.selModel.getSelection();
 
