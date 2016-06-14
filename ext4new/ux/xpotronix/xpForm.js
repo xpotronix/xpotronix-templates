@@ -87,15 +87,36 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 			afterrender: { 
 				fn: function( form ) {
-					var r;
-					if ( r = form.getSelection()[0] )
-						form.loadRecord( r );
+
+					var r = form.getSelection();
+
+					if ( r !== null )
+						form.loadRecord( r[0] );
 				}, 
 				buffer:200 }
 		});
 
-	}, /*}}}*/
+		this.store.on({
 
+			selectionchange: {
+
+				fn: function( a, b, c ) {
+
+					var form = this;
+	
+					var r = form.getSelection();
+
+					if ( r !== null )
+						form.loadRecord( r[0] );
+				
+
+				}, 
+				scope: this,
+				buffer:200
+			} 
+		});
+
+	}, /*}}}*/
 
 	onRender: function() { /*{{{*/
 
