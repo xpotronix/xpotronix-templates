@@ -80,6 +80,11 @@
 <xsl:apply-templates select="." mode="favicon"/>
 <xsl:apply-templates select="." mode="include-all-css"/>
 <xsl:apply-templates select="." mode="include-all-js"/>
+
+<xsl:for-each select="*:metadata/obj/files/file[@type='js' and @mode='events']">
+	<script type="text/javascript" src="{@name}"/>
+</xsl:for-each>
+
 </head>
 	</xsl:template><!--}}}-->
 
