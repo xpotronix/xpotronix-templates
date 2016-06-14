@@ -829,7 +829,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	set_selection: function( selections ) {/*{{{*/
+	setSelection: function( selections ) {/*{{{*/
 	
 		this.fireEvent('selectionchange', this.selections = selections );
 
