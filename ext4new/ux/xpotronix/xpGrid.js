@@ -158,14 +158,14 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		this.on( 'afterrender', function() {/*{{{*/
 
 			if ( this.store.getCount() ) 
-				this.selModel.select( this.store.rowIndex );
+				this.selModel.select( 0 );
 
 		} );/*}}}*/
 
 		this.store.on( 'add', function() {
 
 			if ( ! this.selModel.getSelected() ) 
-				this.store.go_to( 0 );
+				this.store.select( 0 );
 
 		}, this );
 	
@@ -175,19 +175,10 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			return true;
 
 			if ( this.rendered && this.store.getCount() ) 
-				this.selModel.select( this.store.rowIndex );
+				this.selModel.select( 0 );
 
 		}, this);/*}}}*/
 
-                this.store.on('changerowindex', function(s, rowIndex) {/*{{{*/
-
-			return true;
-
-			if ( this.rendered && this.store.getCount() ) 
-				this.selModel.select( s.rowIndex );
-
-                }, this );/*}}}*/
-               
 	}, // eo function initComponent/*}}}*/
 
 	rememberSelection: function(selModel, selectedRecords) {/*{{{*/

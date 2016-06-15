@@ -101,6 +101,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.on('update', function(s, r, o, m) {
 
+			console.log( 'update ' + this.class_name );
+
 			if ( o == Ext.data.Record.EDIT ) {
 
 				if ( s.foreign_key.type == 'parent' ) 
@@ -139,8 +141,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					r.dirty = false;
 
-					this.rowIndex = null;
-					this.go_to(0);
+					//// this.rowIndex = null;
+					//// this.go_to(0);
 				}
 
 				*/
@@ -157,8 +159,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				if (App.get_feat('query_action', this) == 'datab')
 					this.add_blank();
-				else
-					this.go_to(-1);
+				//// else
+					//// this.go_to(-1);
 			}
 
 		});
@@ -238,7 +240,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			this.remove(this.getById(uiid));
 			this.totalLength--;
 			this.fireEvent('rowcountchange', this);
-			this.go_to(this.rowIndex, false);
+			//// this.go_to(this.rowIndex, false);
 
 		} else {
 
@@ -637,7 +639,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			ch.revert_changes();
 		});
 
-		// this.go_to(this.rowIndex, false);
+		//// this.go_to(this.rowIndex, false);
 
 	},
 	/*}}}*/
@@ -837,6 +839,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	go_to: function( ri, stay ) { /*{{{*/
 
+		this.debug && console.log( 'go_to()' ); return;
+
 		if (stay === undefined)
 			var stay = true;
 
@@ -869,6 +873,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 	/*}}}*/
 
 	go_to_rowKey: function() { /*{{{*/
+
+		this.debug && console.log( 'go_to_rowKey' ); return; 
 
 		if (this.rowKey === null) {
 

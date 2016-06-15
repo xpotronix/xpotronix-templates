@@ -13,10 +13,10 @@
 
 var recurse_items = function( cmp, fn, scope ) {
 
-	cmp.items && cmp.items.each( function( it ) {
+	cmp.items && cmp.items.each && cmp.items.each( function( it ) {
 
 		fn.call( scope, it );
-		it.items && it.items.getCount() && recurse_items( it, fn, scope );
+		it.items && it.items.length && recurse_items( it, fn, scope );
 	});
 };
 
