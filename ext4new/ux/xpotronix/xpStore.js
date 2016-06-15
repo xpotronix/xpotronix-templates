@@ -101,7 +101,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.on('update', function(s, r, o, m) {
 
-			console.log( 'update ' + this.class_name );
+			console.log( 'update ' + this.class_name + ', record modified ' + JSON.stringify( r.modified ) );
 
 			debugger;
 
@@ -589,10 +589,14 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	}, //}}}
 
+	isDirty: function() {/*{{{*/
 
-isDirty: function() {
-        return (this.getNewRecords().length > 0 || this.getUpdatedRecords().length > 0 || this.getRemovedRecords().length > 0);
-    }
+		this.debug && console.log( 'isDirty' );
+
+		return (this.getNewRecords().length > 0 || 
+			this.getUpdatedRecords().length > 0 || 
+			this.getRemovedRecords().length > 0);
+	},/*}}}*/
 
 	dirty: function(check_childs) { /*{{{*/
 
