@@ -103,6 +103,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			console.log( 'update ' + this.class_name );
 
+			debugger;
+
 			if ( o == Ext.data.Record.EDIT ) {
 
 				if ( s.foreign_key.type == 'parent' ) 
@@ -586,6 +588,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 		return r;
 
 	}, //}}}
+
+
+isDirty: function() {
+        return (this.getNewRecords().length > 0 || this.getUpdatedRecords().length > 0 || this.getRemovedRecords().length > 0);
+    }
 
 	dirty: function(check_childs) { /*{{{*/
 
