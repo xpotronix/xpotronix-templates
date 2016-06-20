@@ -306,12 +306,18 @@
 
  	<xsl:template match="panel" mode="obj_metadata"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
-		<xsl:message>obj_metadata: <xsl:value-of select="name"/></xsl:message>
 		<xsl:variable name="obj_name">
 			<xsl:choose>
-				<xsl:when test="@obj"><xsl:value-of select="@obj"/></xsl:when>
-				<xsl:when test="parent::*[name()='obj']"><xsl:value-of select="parent::*[name()='obj']/@name"/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="ancestor::*[name()='obj']/@name"/></xsl:otherwise>
+				<xsl:when test="@obj">
+					<xsl:value-of select="@obj"/>
+				</xsl:when>
+				<xsl:when test="parent::*[name()='obj']">
+					<xsl:value-of select="parent::*[name()='obj']/@name"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<!-- closest ancestor -->
+					<xsl:value-of select="ancestor-or-self::*[name()='obj'][1]/@name"/>
+				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<!-- <xsl:message>obj_local_name: <xsl:value-of select="$obj_name"/></xsl:message> -->
