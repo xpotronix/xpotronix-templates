@@ -306,6 +306,7 @@
 
  	<xsl:template match="panel" mode="obj_metadata"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:message>obj_metadata: <xsl:value-of select="name"/></xsl:message>
 		<xsl:variable name="obj_name">
 			<xsl:choose>
 				<xsl:when test="@obj"><xsl:value-of select="@obj"/></xsl:when>
