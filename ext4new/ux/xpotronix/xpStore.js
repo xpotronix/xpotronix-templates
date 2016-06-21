@@ -101,9 +101,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.on('update', function(s, r, o, m) {
 
-			console.log( 'update ' + this.class_name + ', record modified ' + JSON.stringify( r.modified ) );
-
-			debugger;
+			console.log( 'update op: ' + o + ', class: ' + this.class_name + ', record modified: ' + JSON.stringify( r.modified ) );
 
 			if ( o == Ext.data.Record.EDIT ) {
 
