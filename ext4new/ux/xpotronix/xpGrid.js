@@ -172,8 +172,6 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
                 this.store.on( 'load', function() {/*{{{*/
 
-			return true;
-
 			if ( this.rendered && this.store.getCount() ) 
 				this.selModel.select( 0 );
 

@@ -92,8 +92,10 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 					var r = form.getSelection();
 
-					if ( r !== null )
+					if ( r.length )
 						form.loadRecord( r[0] );
+					else
+						form.getForm().reset();
 				}, 
 				buffer:200 }
 		});
@@ -108,8 +110,10 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	
 					var r = form.getSelection();
 
-					if ( r.length != 0 )
+					if ( r.length )
 						form.loadRecord( r[0] );
+					else
+						form.getForm().reset();
 				
 
 				}, 
