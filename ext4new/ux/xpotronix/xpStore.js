@@ -80,7 +80,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 			this.parent_store.on({
 				selectionchange: {
 					fn: this.onSelectionChange,
-					scope: this
+					scope: this,
+					buffer: 500
 				}
 			});
 
