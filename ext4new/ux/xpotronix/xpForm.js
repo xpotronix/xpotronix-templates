@@ -60,6 +60,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 		/* consoleDebugFn( this ); */
 		/* consoleDebugFn( this.getForm() ); */
 
+		this.addEvents( 'loadrecord' );
+
 	},/*}}}*/
 
 	initComponent:function() {/*{{{*/
@@ -106,7 +108,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	
 					var r = form.getSelection();
 
-					if ( r !== null )
+					if ( r.length != 0 )
 						form.loadRecord( r[0] );
 				
 
@@ -122,32 +124,45 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.callParent();
 
+		if ( ! this.store ) return;
+
+		var field_names = [];
+
+		Ext.each( this.store.model.getFields(), function( i ) { field_names.push( i.name ) } );
+
 		if ( this.store ) {
 
 			recurse_items( this, function(i) {
 
 				/* consoleDebugFn( i ); return; */
 
-				var event_name = (i.xtype == 'checkbox') ? 'check' : 'change';
+				if ( i.name != undefined && Ext.Array.contains( field_names, i.name ) ) {
 
-				i.on( event_name, function( me, a, b ) {
+					/* DEBUG: hay que ver si aca es el evento correcto para cuando cambia un valir, tal vez validateedit */
 
-					/* mantiene sincronizado el form con el controlador (grid) */
+					var event_name = (i.xtype == 'checkbox') ? 'check' : 'change';
 
-					var record = this.getSelection()[0];
+					this.debug && console.log( 'class: ' + i.$className + ', name: ' + i.name );
 
-					if ( record ) {
+					i.on( event_name, function( me, a, b ) {
 
-						if ( ! me.isEqual( me.getValue(), record.get( me.name ) ) ) {
+						/* mantiene sincronizado el form con el controlador (grid) */
 
-							this.debug && console.log( me.name + ': ' + me.lastValue + ' << ' + me.getValue() );
-							record.set( me.name, me.getValue() );
+						var record = this.getSelection()[0];
+
+						if ( record ) {
+
+							if ( ! me.isEqual( me.getValue(), record.get( me.name ) ) ) {
+
+								this.debug && console.log( me.name + ': ' + me.lastValue + ' << ' + me.getValue() );
+								record.set( me.name, me.getValue() );
+							}
 						}
-					}
-			
-					return true;
+				
+						return true;
 
-				}, this);
+					}, this);
+				}
 
 			}, this );
 
@@ -187,7 +202,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			me.disableForm();
 		}
 
-		// me.fireEvent( 'loadrecord', me, me.store, r );
+		me.fireEvent( 'loadrecord', me, me.store, r );
 
 	},/*}}}*/
 
