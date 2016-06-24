@@ -92,7 +92,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 					var r = form.getSelection();
 
-					if ( r.length )
+					if ( r && r.length )
 						form.loadRecord( r[0] );
 					else
 						form.getForm().reset();
@@ -110,7 +110,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	
 					var r = form.getSelection();
 
-					if ( r.length )
+					if ( r && r.length )
 						form.loadRecord( r[0] );
 					else
 						form.getForm().reset();
