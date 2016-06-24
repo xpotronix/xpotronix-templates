@@ -27,6 +27,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 	cm:		[],
 	panels:		null,
 	store:		null,
+	inspect:	[],
 
 	columns: 	[],
 	fields: 	[],

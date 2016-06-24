@@ -14,8 +14,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	alias: 'widget.xppagingtoolbar',
 
 	panel: null,
-	i_panel: null,
-	i_panel_class: 'solicitud_licencia',
 
 	alternateClassName: [
 		'xppagingtoolbar'
@@ -143,13 +141,13 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			this.insert(pos, this.add_process_menu(panel));
 
 		if (panel.acl.edit || panel.acl.add)
-			this.insert(pos, this.panel.obj.save_button(panel));
+			this.insert(pos, this.save_button(panel));
 
 		if (panel.acl.add)
-			this.insert(pos, this.panel.obj.add_button(panel));
+			this.insert(pos, this.add_button(panel));
 
 
-		if (this.get_inspect_panel())
+		if (this.panel.obj.inspect.length)
 			b = this.insert(pos, this.inspect_button(panel));
 
 
@@ -240,7 +238,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	form_right_button: function( panel ) {/*{{{*/
 
-		var tb = new Ext.Toolbar.Button( {
+		var tb = new Ext.Button( {
 			// id: 'rightButton',
 			text: 'Adelante',
 	               	menuAlign: 'tr?',
@@ -443,7 +441,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	save_button: function( panel ) {/*{{{*/
 
-        	var tb = new Ext.Toolbar.Button({
+        	var tb = new Ext.Button({
        	        	icon: '/ext/resources/images/default/dd/drop-yes.gif',
 			text: 'Guardar',
                 	cls: 'x-btn-text-icon',
@@ -481,22 +479,23 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		if ( ! this.i_panel )  
 
-			this.i_panel = new Ext.Window({
+			this.i_panel = Ext.create('widget.window', {
 
 				width: 600,
-				height:400,
 				minWidth: 300,
+				height:400,
 				minHeight: 200,
-				constrain: true,
 				closable: true,
 				closeAction : 'hide',
 				maximizable: true,
 				layout: 'border',
 				plain:true,
-				bodyStyle:'padding:5px;',
+				border:false,
 				buttonAlign:'center',
-				buttons: [{ text: 'Cerrar', handler:function(){ iw.hide();}} ],
-				items: [{ xtype: this.i_panel_class, region: 'center' }]
+				items:[
+					{xtype:'tabpanel',region:'center',
+					items:[
+						{xtype:this.panel.obj.inspect[0],region:'center'}]}]
 			});
 
 		this.i_panel.show();
@@ -504,14 +503,14 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	},/*}}}*/
 
 	inspect_button: function( panel ) {/*{{{*/
-
 		return new Ext.Button({
 	                icon: '/ux/images/application_form_magnify.png',
 			cls: 'x-btn-text-icon',
 			text: 'Ver',
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Inspeccionar</b><br/>Pulse aqui para inspeccionar el registro seleccionado',
-			listeners:{click:{scope:this, fn:this.inspect_window, buffer:200}}
+			handler: this.inspect_window,
+			scope:this 
 		});
 	},/*}}}*/
 
@@ -533,7 +532,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	add_button: function( panel ) {/*{{{*/
 
-		return new Ext.Toolbar.Button({
+		return new Ext.Button({
 			icon: '/ext/resources/images/default/dd/drop-add.gif',
 			cls: 'x-btn-text-icon',
 			text: 'Agregar',
