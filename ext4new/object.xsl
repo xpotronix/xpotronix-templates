@@ -36,7 +36,9 @@
 		,extra_param:{<xsl:apply-templates select="." mode="extra_param"/>}
 		,store:'<xsl:value-of select="@name"/>'
 		,feat:<xsl:apply-templates select="." mode="feats"/>
+		,inspect:<xsl:apply-templates select="." mode="inspect"/>
 		<xsl:if test="count(processes/process[(not(@display) or @display!='hide') and acl/@action='permit' and acl/@role=$role])">
+
 		,processes_menu:<xsl:apply-templates select="processes">
 				<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
@@ -44,6 +46,9 @@
 	}));
 
 	</xsl:template><!--}}}-->
+
+	<xsl:template match="obj" mode="inspect">[<xsl:for-each select="//*:model//obj[@name=current()/@name]/panel[@display='inspect']">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>]</xsl:template>
+
 
 	<xsl:template match="obj" mode="extra_param"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>
