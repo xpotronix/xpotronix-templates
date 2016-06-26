@@ -38,7 +38,7 @@
 
 	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
 
-	<xsl:param name="root_obj" select="//*:metadata/obj[1]"/>
+	<xsl:param name="root_obj" select="//*:model/obj[1]"/>
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
 	<xsl:param name="current_user" select="//*:session/users/user_username"/>
 	<xsl:param name="anon_user" select="//*:session/users/_anon"/>
@@ -111,6 +111,8 @@
 			Ext.namespace('App');
 			App = Ext.create( 'Ux.xpotronix.xpApp', config_App );
 		}
+
+		App.feat.root_obj = '<xsl:value-of select="$root_obj/@name"/>';
 
 		document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
 
@@ -357,6 +359,8 @@
 			Ext.namespace('App');
 			App = Ext.create( 'Ux.xpotronix.xpApp', config_App );
 		}
+
+		App.feat.root_obj = '<xsl:value-of select="$root_obj"/>';
 
 		document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
 
