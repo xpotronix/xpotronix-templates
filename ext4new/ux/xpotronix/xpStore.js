@@ -200,17 +200,20 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		if (a == 'i' || a == 'u') {
 
+			var prev_record = this.proxy.reader.record,
+			prev_root = this.proxy.reader.root;
+
 			/* cambia la raiz del registro para leer el elemento actual */
 			this.proxy.reader.record = "";
+			this.proxy.reader.root = "";
 
 			/* devuelve un array de records */
 			rs = this.proxy.reader.readRecords(e);
 
 			/* ajusta el totalRecords al totalLength anterior */
-			rs.totalRecords = this.totalLength;
+			rs.totalRecords = this.totalCount;
 
-			if (uiid)
-				rs.records[0].id = uiid; /* queda como el caracu. hacerlo mas eficiente */
+			uiid && ( rs.records[0].id = uiid ); // DEBUG: feo 
 
 			/* incorpora ese unico registro al store 
 			   suspende los eventos para que no se propagen los load */
@@ -222,9 +225,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 			this.resumeEvents();
 
 			/* reestablece el espacio de nombres para el reader */
-			this.proxy.reader.record = this.ns;
+			this.proxy.reader.record = prev_record;
+			this.proxy.reader.root = prev_root;
 
-			var rr = this.findExact('id', uiid);
+
+			// ACA ESTOY
+			var rr = this.getById(uiid);
 
 			rr && rr.commit();
 

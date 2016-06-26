@@ -259,15 +259,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		this.debug && this.debug_show_changed_records( md );
 
-		var s;
-
-		md.length && this.store.each( function( i ) {
-
-			if ( i.class_name != undefined )
-				return s = i;
-		}, this);
-
-		return s.serialize();
+		return this.store.lookup( App.feat.root_obj ).serialize();
 
 	},//}}}
 
