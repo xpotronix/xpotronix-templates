@@ -210,36 +210,75 @@ Ext.define('Ux.xpotronix.xpStore', {
 			/* devuelve un array de records */
 			rs = this.proxy.reader.readRecords(e);
 
-			/* ajusta el totalRecords al totalLength anterior */
-			rs.totalRecords = this.totalCount;
-
-			uiid && ( rs.records[0].id = uiid ); // DEBUG: feo 
-
-			/* incorpora ese unico registro al store 
-			   suspende los eventos para que no se propagen los load */
-
-			this.suspendEvents();
-			this.loadRecords(rs, {
-				add: true
-			}, true);
-			this.resumeEvents();
-
 			/* reestablece el espacio de nombres para el reader */
 			this.proxy.reader.record = prev_record;
 			this.proxy.reader.root = prev_root;
 
+			/* ajusta el totalRecords al totalLength anterior */
+			rs.totalRecords = this.totalCount;
+
+			/* uiid && ( rs.records[0].id = uiid ); // DEBUG: feo  */
+
+			/* incorpora ese unico registro al store 
+			   suspende los eventos para que no se propagen los load */
+
+			// this.suspendEvents();
+			rs = this.add(rs.records);
+			// this.resumeEvents();
+
 
 			// ACA ESTOY
-			var rr = this.getById(uiid);
+			var rr = rs[0];
 
-			rr && rr.commit();
+			if ( rr ) {
 
-			for (var i = 0; i < this.modified.length; i++) {
-				if (this.modified[i].id == uiid) {
-					this.modified.splice(i);
+				rr.modified = {};
+				rr.commit();
+			}
+
+			/* como hacer update
+			Ext.define('Writer.Person', {
+			    extend: 'Ext.data.Model',
+			    fields: [
+				{name: 'id', type: 'int'},
+				{name: 'name', type: 'string'}
+			    ],
+			    proxy {
+			      // Config for your proxy, it's a must for model to have a proxy.
+			    }
+			});
+
+			Writer.Person.load(3, {
+			    scope: grid,
+			    failure: function(record, operation) {
+				//do something if the load failed
+			    },
+			    success: function(record, operation) {
+				var store = grid.getStore(),
+				    recToUpdate = store.getById(3);
+
+				 recToUpdate.set(record.getData());
+
+			     // Do commit if you need: if the data from
+			     // the server differs from last commit data
+				 recordToUpdate.commit();
+
+				 grid.getView().refreshNode(store.indexOfId(3));
+			    },
+			    callback: function(record, operation) {
+				//do something whether the load succeeded or failed
+			    }
+			});
+			*/
+
+			/*
+			for (var i = 0; i < rr.modified.length; i++) {
+				if (rr.modified[i].id == uiid) {
+					rr.modified.splice(i);
 					break;
 				}
 			}
+			*/
 
 
 		} else if (a == 'd') {
