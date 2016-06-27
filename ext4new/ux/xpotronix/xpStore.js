@@ -222,6 +222,22 @@ Ext.define('Ux.xpotronix.xpStore', {
 			/* incorpora ese unico registro al store 
 			   suspende los eventos para que no se propagen los load */
 
+
+			
+
+			var rec_id;
+
+			if ( rec_id = this.findBy( '__ID__', rs.records[0].get('__ID__') ) ) {
+
+				
+
+
+			} else {
+
+
+
+			}
+
 			// this.suspendEvents();
 			rs = this.add(rs.records);
 			// this.resumeEvents();
