@@ -62,12 +62,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 		this.addEvents( 'loadblank' );
 		this.addEvents( 'serverstoreupdate' ); 
 
+		var tmp = this.parent_store;
 
 		/* parent_store */
 
-		if ( tmp = this.parent_store ) {
+		if ( tmp ) {
 
-			var tmp;
 
 			if ( typeof this.parent_store == 'string' )
 				this.parent_store = Ext.StoreMgr.lookup( tmp ) || 
@@ -182,33 +182,32 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* toma los parametros del elemento XML */
 
-		var a = e.getAttribute('action');
+		var ID 	 = e.getAttribute('__ID__');
 		var uiid = e.getAttribute('uiid');
-		var ID = e.getAttribute('ID');
-		var rs = null;
 
-		if (uiid == undefined) {
+		if (uiid === undefined) {
 
 			/* si no vino con uiid, trata de buscarlo en el store */
-
 			var ri = this.find('__ID__', ID);
 
 			if (ri > -1)
-
 				uiid = this.getAt(ri).id;
 		}
+
+		var a = e.getAttribute('action');
 
 		if (a == 'i' || a == 'u') {
 
 			var prev_record = this.proxy.reader.record,
 			prev_root = this.proxy.reader.root;
 
-			/* cambia la raiz del registro para leer el elemento actual */
+			/* cambia las queries para poder leer changes/* */
 			this.proxy.reader.record = "";
 			this.proxy.reader.root = "";
 
 			/* devuelve un array de records */
-			rs = this.proxy.reader.readRecords(e);
+			var rs = this.proxy.reader.readRecords(e);
+			var nr = rs.records[0];
 
 			/* reestablece el espacio de nombres para el reader */
 			this.proxy.reader.record = prev_record;
@@ -217,89 +216,34 @@ Ext.define('Ux.xpotronix.xpStore', {
 			/* ajusta el totalRecords al totalLength anterior */
 			rs.totalRecords = this.totalCount;
 
-			/* uiid && ( rs.records[0].id = uiid ); // DEBUG: feo  */
+			var rid = this.findExact( '__ID__', nr.get('__ID__') );
 
-			/* incorpora ese unico registro al store 
-			   suspende los eventos para que no se propagen los load */
+			if ( rid ) {
 
+				/* modifica */
 
-			
+				var er = this.getAt(rid);
+				er.set(nr.getData());
+				er.commit();
 
-			var rec_id;
-
-			if ( rec_id = this.findBy( '__ID__', rs.records[0].get('__ID__') ) ) {
-
-				
-
+				/* DEBUG: en el grid
+				grid.getView().refreshNode(store.indexOfId(3));
+				*/
 
 			} else {
 
+				// this.suspendEvents();
+				this.add(nr);
+				// this.resumeEvents();
 
+				// this.fireEvent('rowcountchange', this);
 
 			}
-
-			// this.suspendEvents();
-			rs = this.add(rs.records);
-			// this.resumeEvents();
-
-
-			// ACA ESTOY
-			var rr = rs[0];
-
-			if ( rr ) {
-
-				rr.modified = {};
-				rr.commit();
-			}
-
-			/* como hacer update
-			Ext.define('Writer.Person', {
-			    extend: 'Ext.data.Model',
-			    fields: [
-				{name: 'id', type: 'int'},
-				{name: 'name', type: 'string'}
-			    ],
-			    proxy {
-			      // Config for your proxy, it's a must for model to have a proxy.
-			    }
-			});
-
-			Writer.Person.load(3, {
-			    scope: grid,
-			    failure: function(record, operation) {
-				//do something if the load failed
-			    },
-			    success: function(record, operation) {
-				var store = grid.getStore(),
-				    recToUpdate = store.getById(3);
-
-				 recToUpdate.set(record.getData());
-
-			     // Do commit if you need: if the data from
-			     // the server differs from last commit data
-				 recordToUpdate.commit();
-
-				 grid.getView().refreshNode(store.indexOfId(3));
-			    },
-			    callback: function(record, operation) {
-				//do something whether the load succeeded or failed
-			    }
-			});
-			*/
-
-			/*
-			for (var i = 0; i < rr.modified.length; i++) {
-				if (rr.modified[i].id == uiid) {
-					rr.modified.splice(i);
-					break;
-				}
-			}
-			*/
-
 
 		} else if (a == 'd') {
 
-			this.remove(this.getById(uiid));
+			// DEBUG: hacerlo por el __ID__
+			this.remove(this.findExact('__ID__', ID));
 			this.totalLength--;
 			this.fireEvent('rowcountchange', this);
 			//// this.go_to(this.rowIndex, false);
@@ -345,8 +289,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 			}
 
 			var vars = server_vars.join(App.feat.key_delimiter);
-
                         var params = {};
+
                         params['s[' + this.class_name +']['+ vars +']'] = this.baseParams.query;
 
 			Ext.apply( options.filters, params );
