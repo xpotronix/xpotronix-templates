@@ -102,6 +102,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.store.on({
 
+			update: { fn: function( form ) { this.loadRecord( form.getSelection()[0] ); }, scope: this, buffer:50 },
+
 			selectionchange: {
 
 				fn: function( a, b, c ) {
