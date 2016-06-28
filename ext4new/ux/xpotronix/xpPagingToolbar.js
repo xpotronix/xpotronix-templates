@@ -141,7 +141,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			this.insert(pos, this.add_process_menu(panel));
 
 		if (panel.acl.edit || panel.acl.add)
-			this.insert(pos, this.save_button(panel));
+			this.insert(pos, this.panel.obj.save_button(panel));
 
 		if (panel.acl.add)
 			this.insert(pos, this.add_button(panel));
@@ -436,28 +436,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 					this.delete_confirm( panel );
 				}, buffer:200}}
 		});
-
-	},/*}}}*/
-
-	save_button: function( panel ) {/*{{{*/
-
-        	var tb = new Ext.Button({
-       	        	icon: '/ext/resources/images/default/dd/drop-yes.gif',
-			text: 'Guardar',
-                	cls: 'x-btn-text-icon',
-			disabled: true,
-                	tooltip: '<b>Guardar</b><br/>Pulse aqui para guardar las modificaciones',
-			listeners:{ click:{ scope: this, fn:function( btn ) {
-                		App.process_request({ m: App.feat.module, a: 'process', p: 'store',  x: App.serialize() });
-			}, buffer:200 }}
-		});
-
-		this.store.on( 'update', function( s, r, o ) { 
-			if ( this.el && this.el.dom ) 
-				( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
-		}, tb );
-
-		return tb;
 
 	},/*}}}*/
 

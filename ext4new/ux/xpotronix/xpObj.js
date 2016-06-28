@@ -86,21 +86,27 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	},/*}}}*/
 
- 	save_button: function( panel ) {/*{{{*/
+	save_button: function( panel ) {/*{{{*/
 
-        	return {
+        	var tb = new Ext.Button({
        	        	icon: '/ext/resources/images/default/dd/drop-yes.gif',
 			text: 'Guardar',
                 	cls: 'x-btn-text-icon',
 			disabled: true,
                 	tooltip: '<b>Guardar</b><br/>Pulse aqui para guardar las modificaciones',
-			margin: '5 5 5 5',
 			listeners:{ click:{ scope: this, fn:function( btn ) {
-				debugger;
                 		App.process_request({ m: App.feat.module, a: 'process', p: 'store',  x: App.serialize() });
 			}, buffer:200 }}
-		};
+		});
 
+		panel.store.on( 'update', function( s, r, o ) { 
+			if ( this.el && this.el.dom ) 
+				( o == Ext.data.Record.EDIT ) ? 
+					this.enable():
+					this.disable();
+		}, tb );
+
+		return tb;
 
 	},/*}}}*/
 
