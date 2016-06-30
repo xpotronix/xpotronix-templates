@@ -117,52 +117,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.on('load', function(s, a, b) {
 
-
-			if (this.getCount()) {
-
-				/*
-
-				this.go_to_rowKey();
-
-				var r = this.getAt(0);
-
-				if (this.getCount() == 1 && r.get('__new__')) {
-
-					// recibio un registro en blanco (opcion "datab" del server)
-
-
-					this.initRecord( r );
-
-					if ( this.foreign_key_values.length == 0 ) {
-
-						this.suspendEvents();
-						this.bind(r, this.foreign_key_values);
-						this.resumeEvents();
-					}
-
-					r.dirty = false;
-
-					//// this.rowIndex = null;
-					//// this.go_to(0);
-				}
-
-				*/
-
-			} else {
-
-				if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', this.proxy.reader.xmlData) == 'ACC_DENIED') {
-
-					App.login();
-					return;
-				}
-
-				this.rowIndex = null;
-
-				if (App.get_feat('query_action', this) == 'datab')
-					this.add_blank();
-				//// else
-					//// this.go_to(-1);
-			}
+			this.update_model( this.proxy.reader.xmlData );
 
 		});
 
