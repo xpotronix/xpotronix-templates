@@ -185,6 +185,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 		var ID 	 = e.getAttribute('__ID__');
 		var uiid = e.getAttribute('uiid');
 
+
+		if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', e ) == 'ACC_DENIED') {
+
+			App.login();
+			return;
+		}
+
+
+
 		if (uiid === undefined) {
 
 			/* si no vino con uiid, trata de buscarlo en el store */
