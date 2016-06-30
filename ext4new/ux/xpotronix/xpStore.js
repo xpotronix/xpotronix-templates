@@ -117,7 +117,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.on('load', function(s, a, b) {
 
-			this.update_model( this.proxy.reader.xmlData );
+
+
+			if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', this.proxy.reader.xmlData ) == 'ACC_DENIED') {
+
+				App.login();
+				return;
+			}
+
+
+			// this.update_model( this.proxy.reader.xmlData );
 
 		});
 
@@ -139,14 +148,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		var ID 	 = e.getAttribute('__ID__');
 		var uiid = e.getAttribute('uiid');
-
-
-		if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', e ) == 'ACC_DENIED') {
-
-			App.login();
-			return;
-		}
-
 
 
 		if (uiid === undefined) {
