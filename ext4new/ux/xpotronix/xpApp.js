@@ -10,142 +10,281 @@
 
 Ext.ns( 'Ux.xpotronix' );
 
+Ext.define('AppStatsModel', {/*{{{*/
+
+	extend: 'Ext.data.Model'
+
+	,proxy: { type: 'memory' 
+		,reader: {
+			type: 'xml',
+			record: 'changes',
+		}
+	}
+	,fields: [{name: 'value', mapping: '@value'}]
+
+});/*}}}*/
+
+Ext.define('AppMsgsModel', {/*{{{*/
+
+	extend: 'Ext.data.Model'
+	,proxy: { type: 'memory' 
+		,reader: {
+			type: 'xml',
+			record: 'messages > message',
+			root: 'xpotronix:messages',
+			successProperty: 'status',
+			messageProperty: 'message'
+		}
+	}
+	,fields: [
+		{name: 'type', mapping: '@type'}
+		,{name: 'level', mapping: '@level'}
+		,{name: 'file', mapping: '@file'}
+		,{name: 'line', mapping: '@line'}
+		,{name: '', mapping: ''}
+	]
+
+});/*}}}*/
+
+
+
+Ext.define('AppStatsStore', { /*{{{*/
+
+	extend: 'Ext.data.Store'
+	,model: 'AppStatsModel'
+	,alias: 'AppStatsStore'
+
+	});/*}}}*/
+
+Ext.define('AppMsgsStore', { /*{{{*/
+
+	extend: 'Ext.data.Store'
+	,model: 'AppMsgsModel'
+	,alias: 'AppMsgsStore'
+
+});/*}}}*/
+
+Ext.define('AppMsgsGrid', {/*{{{*/
+
+	syncSize: true,
+	columns: [
+			{ header: "Tipo", width: 120, dataIndex: 'type', sortable: false },
+			{ header: "Nivel", width: 180, dataIndex: 'level', sortable: false, hidden:true },
+			{ header: "Archivo", width: 115, dataIndex: 'file', sortable: false, hidden: true },
+			{ header: "Linea", width: 100, dataIndex: 'line', sortable: false, hidden: true },
+			{ header: "Texto", width: 100, dataIndex: '', sortable: false }]
+
+	}); /*}}}*/
+
+Ext.define('AppChangePasswordPanel', { /*{{{*/
+
+	xtype: 'formpanel',
+        labelWidth:80,
+        url:'?m=users&a=change_password', 
+        frame:true, 
+        title:'Cambiar Contraseña', 
+        defaultType:'textfield',
+	monitorValid:true,
+
+        items:[{ 
+                fieldLabel:'Nueva Clave', 
+                name:'password', 
+                inputType:'password', 
+                allowBlank:false 
+            },{ 
+                fieldLabel:'Repetir Clave', 
+                name:'password_repeat', 
+                inputType:'password', 
+                allowBlank:false 
+            }],
+ 
+        buttons:[{ 
+                text:'Cambiar',
+                formBind: true,	 
+
+                handler:function( a, b, c ){ 
+
+                    this.getForm().submit({ 
+                        method:'POST', 
+                        waitTitle:'Conectando', 
+                        waitMsg:'Enviando datos, aguarde ...',
+
+			success:function(){ 
+
+				win.hide();
+		                Ext.Msg.show( {
+		                msg : 'El cambio de su clave ha sido satisfactorio',
+		                width :300,
+		                wait :true,
+		                buttons: Ext.Msg.OK,
+		                waitConfig : {
+		                        interval :200
+		                }
+	                	} );
+
+			},
+		
+                        failure:function(form, action){ 
+                            if(action.failureType == 'server'){ 
+                                obj = Ext.decode(action.response.responseText); 
+                                Ext.Msg.alert('Fallo la autorizacion', obj.errors.reason); 
+                            }else{ 
+				if ( ! ( reason = action.response.responseText)  ) reason = 'Servidor fuera de linea, por favor reingrese en unos minutos ...';
+                                Ext.Msg.alert('Mensaje', 'No puedo conectarme con el servidor: ' + reason); 
+                            } 
+                            this.getForm().reset(); 
+                        } 
+                    }); 
+                } 
+            },{
+
+		text:'Cancelar',
+		handler:function(){ this.hide();}
+
+	    }] 
+    });/*}}}*/
+
+Ext.define( 'ChangePasswordWindow', {/*{{{*/
+
+		extend: 'Ext.Window',
+        	layout:'fit',
+        	width:300,
+        	height:150,
+		constrain: true,
+        	closable: false,
+        	resizable: false,
+       	 	plain: true,
+        	border: false,
+        	items: ['ChangePasswordPanel']
+
+});/*}}}*/
+
 Ext.define( 'Ux.xpotronix.xpApp', {
 
-
-	mixins: {
-		observable: 'Ext.util.Observable'
-	},
+	mixins: { observable: 'Ext.util.Observable' },
 
 	name: 			'xpApp',
 	alias: 			'xpApp',
 
-	menu:			null,
-	changes_buffer: 	null,
-	login_w: 		null,
-	change_password_w: 	null,
 	fake_dirty_records:	[],
 	prevent_reload:		false, // on windows login
 	debug:			false,
 
-	constructor: function( config ) {
+	constructor: function( config ) {/*{{{*/
 
-	var version = '4.2.1';
+		var version = '4.2.1';
 
-	/* 
-	if ( Ext.version != version )
-		( typeof console != 'undefined' ) && console.error( 'Atención: la versión requerida de la librería ExtJs es la ' + version + ': la versión provista es la ' + Ext.version );
+		// this.check_ext_version( version );
 
-	*/
+		Ext.apply( this, config );
 
+		this.mixins.observable.constructor.call(this, config);
 
-	Ext.apply( this, config );
+		Ext.SSL_SECURE_URL = '/ext/resources/images/vista/s.gif';
+		Ext.BLANK_IMAGE_URL = '/ext/resources/images/vista/s.gif';
 
-	this.mixins.observable.constructor.call(this, config);
+		Ext.tip.QuickTipManager.init();
 
-	Ext.SSL_SECURE_URL = '/ext/resources/images/vista/s.gif';
-	Ext.BLANK_IMAGE_URL = '/ext/resources/images/vista/s.gif';
+		this.init_state_manager();
+ 
+		// Ext.Ajax.timeout = 600000;
 
-	Ext.tip.QuickTipManager.init();
+		this.session = null;	
 
-	if ( this.state_manager == 'http' ) {
+		this.obj = new Ext.util.MixedCollection(false);
+		this.obj.getKey = function(o){ return o.class_name; }
 
-		Ext.state.Manager.setProvider(new Ext.ux.state.HttpProvider({
-			url:'?m=user_preferences'
-	 		,user:'649254989'
-			,session:'session'
-			,id:'1'
-			,readBaseParams:{a: 'process', p:'readState'}
-			,saveBaseParams:{a: 'process', p:'saveState'}
-			,autoRead:false
-		//	,logFailure:true
-		//	,logSuccess:true
-			,paramNames: {
-				id:'id'
-				,name:'name'
-				,value:'value'
-				,user:'user'
-				,session:'session'
-				,data:'ui_state'
+		this.store = Ext.StoreMgr;
+
+		this.conn_process   = new Ext.data.Connection();
+		this.conn_process.on( 'requestcomplete', this.on_complete, this );
+		this.conn_process.on( 'requestexception', this.on_complete_exception , this );
+
+		this.panel = {
+
+			status: {
+
+				store: 'AppStatsStore'
+				,grid: 'AppStatsGrid'
+				,window: null
+			},
+
+			messages: {
+
+				store: 'AppMsgsStore'
+				,grid: 'AppMsgsGrid' 
+				,window: null
+
+			},
+
+			login: {
+				window: null,
+				process: 'login'
+			},
+
+			password: {
+				window: null,
+				process: 'change_password'
 			}
-		}));
- 
-		Ext.state.Manager.getProvider().initState( eval( this.user.ui_state ) );
 
-	} else
+		};
 
-		Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
- 
-	// Ext.Ajax.timeout = 600000;
+		this.window_onbeforeunload();
 
-	this.session = null;	
+	},/*}}}*/
 
-	this.obj = new Ext.util.MixedCollection(false);
-        this.obj.getKey = function(o){ return o.class_name; }
+	/* init */
 
-	this.store = Ext.StoreMgr;
+	init_state_manager: function() {/*{{{*/
 
-	this.messages_proxy = new Ext.data.MemoryProxy();
-	this.conn_process   = new Ext.data.Connection();
+		if ( this.state_manager == 'http' ) {
 
-        this.conn_process.on( 'requestcomplete', this.on_complete, this );
-	this.conn_process.on( 'requestexception', this.on_complete_exception , this );
+			Ext.state.Manager.setProvider(new Ext.ux.state.HttpProvider({
+				url:'?m=user_preferences'
+				,user:'649254989'
+				,session:'session'
+				,id:'1'
+				,readBaseParams:{a: 'process', p:'readState'}
+				,saveBaseParams:{a: 'process', p:'saveState'}
+				,autoRead:false
+			//	,logFailure:true
+			//	,logSuccess:true
+				,paramNames: {
+					id:'id'
+					,name:'name'
+					,value:'value'
+					,user:'user'
+					,session:'session'
+					,data:'ui_state'
+				}
+			}));
+	 
+			Ext.state.Manager.getProvider().initState( eval( this.user.ui_state ) );
 
+		} else
 
-	window.onbeforeunload = function() {
+			Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
 
-		if ( App.getModifiedStores && App.getModifiedStores().length ) 
-    			return 'Hay cambios que no han sido guardados todavía. Si presiona [Aceptar], perderá los cambios. Si presiona [Cancelar], presione el botón de [Guardar] y luego cierre la página';
-  	};
+		},/*}}}*/
 
+	check_ext_version: function( version ) {/*{{{*/
 
-	Ext.define( 'AppStats', {
-		extend: 'Ext.data.Model',
-		fields: [{name: 'value', mapping: '@value'}]});
+		if ( Ext.version != version )
+			( typeof console != 'undefined' ) && 
+			console.error( 'Atención: la versión requerida de la librería ExtJs es la '
+				+ version + ': la versión provista es la ' 
+				+ Ext.version );
 
-	this.status_store = new Ext.data.Store({//{{{
+	},/*}}}*/
 
-   		proxy: this.messages_proxy,
-   		reader: new Ext.data.XmlReader({
-			record: 'status',
-			model: 'AppStats'
-		})
-		});//}}}
+	window_onbeforeunload: function() {/*{{{*/
 
-	Ext.define( 'AppMsgs', {
-		extend: 'Ext.data.Model',
-		fields: [
-              			{name: 'type', mapping: '@type'}
-               			,{name: 'level', mapping: '@level'}
-               			,{name: 'file', mapping: '@file'}
-               			,{name: 'line', mapping: '@line'}
-               			,{name: '', mapping: ''}
-			]
-		});
+		window.onbeforeunload = function() {
 
-	this.messages_grid = Ext.create( 'Ext.grid.Panel', {
-
-		id: '__messagesGrid',
-		syncSize: true,
-
-       		store: new Ext.data.Store({
-   			proxy: this.messages_proxy,
-   			reader: new Ext.data.XmlReader({
-				record: 'message',
-				model: 'AppMsgs'
-			})
-		}),
-
-		columns: [
-            			{ header: "Tipo", width: 120, dataIndex: 'type', sortable: false },
-            			{ header: "Nivel", width: 180, dataIndex: 'level', sortable: false, hidden:true },
-            			{ header: "Archivo", width: 115, dataIndex: 'file', sortable: false, hidden: true },
-            			{ header: "Linea", width: 100, dataIndex: 'line', sortable: false, hidden: true },
-            			{ header: "Texto", width: 100, dataIndex: '', sortable: false }]
-
-		});
-
-	},
+			if ( this.getModifiedStores && this.getModifiedStores().length ) 
+				return 'Hay cambios que no han sido guardados todavía. Si presiona [Aceptar], perderá los cambios. Si presiona [Cancelar], presione el botón de [Guardar] y luego cierre la página';
+			};
+	},/*}}}*/
 
 	reconfigure: function( config ) {/*{{{*/
 
@@ -189,6 +328,8 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		return ret;
 	},/*}}}*/
+
+	/* store changes handling */
 
 	getModifiedStores: function() {/*{{{ */
 
@@ -259,60 +400,19 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		this.debug && this.debug_show_changed_records( md );
 
-		return this.store.lookup( App.feat.root_obj ).serialize();
+		return this.store.lookup( this.feat.root_obj ).serialize();
 
-	},//}}}
-
-	showPleaseWait: function( msg, progressText ) {//{{{
-
-		Ext.Msg.show({
-			msg : msg,
-			icon: Ext.MessageBox.INFO,
-			progressText: progressText,
-			width :400,
-			wait :true,
-			buttons: Ext.Msg.CANCEL,
-			waitConfig : { interval :200 }
-			});
-	},//}}}
-
-	load_changes_buffer: function() {/*{{{*/
-
-		this.changes_buffer = this.serialize();
-
-	},/*}}}*/
-
-	showSaveChanges: function() {//{{{
-
-		Ext.Msg.show({
-
-			msg :'Hay cambios sin guardar. Desea guardar los cambios?',
-			width :300,
-			buttons: Ext.Msg.YESNOCANCEL,
-			fn: this.fnSaveChanges
-
-		});
-
-	},//}}}
-
-	 hidePleaseWait: function() {//{{{
-
-		Ext.Msg.hide();
-
-	},//}}}
-
-	hideSaveChanges: function() {//{{{
-		Ext.Msg.hide();
 	},//}}}
 
 	save: function() {/*{{{*/
 
 		App.process_request({ m: App.feat.module, a: 'process', p: 'store',  x: App.serialize() });
+
 	},/*}}}*/
 
  	process_request: function( p, callback ) {/*{{{*/
 
-		this.showPleaseWait( 'Ejecutando la acción ... Aguarde','Procesando ...' );
+		this.showPleaseWait( 'Ejecutando la acción ... Aguarde', 'Procesando ...' );
 
 		var url = { m: p.m, a: p.a };
 		delete( p.m );
@@ -327,23 +427,15 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	}, /*}}}*/
 
-	fnSaveChanges: function( btn ) {/*{{{*/
-
-		if ( btn == 'yes' ) 
-			App.process_request({ m: App.feat.module, a: 'process', p: 'store',  x: App.serialize() });
-	},/*}}}*/
+	/* transact response handlers */
 
 	handle_messages: function( param ) {/*{{{*/
 
-		var mp = Ext.getCmp('__messagesPanel');
+		if ( typeof this.panel.messages.store == 'string' )
+			this.panel.messages.store = Ext.create( this.panel.messages.store );
 
-		if ( mp && !mp.findById('__messagesGrid') ) {
-			mp.add( this.messages_grid );
-			mp.doLayout();
-		}
-
-		var ms = this.messages_grid.store;
-		ms.loadData(  param.responseXML, false );
+		var ms = this.panel.messages.store;
+		ms.proxy.reader.readRecords( param.responseXML, false );
 		var msgs = '';
 
 		for ( var i = 0; r = ms.getAt(i); i++ ) {
@@ -358,6 +450,16 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 			buttons: Ext.Msg.OK,
 			icon: Ext.Msg.INFO
 		});
+			
+	},/*}}}*/
+
+	handle_status: function( param ) {/*{{{*/
+
+		if ( typeof this.panel.status.store == 'string' )
+			this.panel.status.store = Ext.create( this.panel.status.store );
+
+		var ms = this.panel.status.store;
+		ms.proxy.reader.readRecords( param.responseXML, false );
 			
 	},/*}}}*/
 
@@ -376,7 +478,8 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		}
 
 		this.handle_messages( param );
-		this.status_store.loadData( param.responseXML, false );
+		this.handle_status( param );
+		this.panel.status.store.loadData( param.responseXML, false );
 
 		return true;
 
@@ -433,6 +536,18 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	},/*}}}*/
 
+	login: function( prevent_reload ) {/*{{{*/
+
+		this.prevent_reload = prevent_reload;
+
+		if ( !this.panel.login.window ) 
+			this.panel.login.window = this.login_window();
+
+		this.panel.login.window.show();
+
+
+	},/*}}}*/
+
 	handle_login: function( form, action ) {/*{{{*/
 
 		try {
@@ -461,35 +576,21 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		} else if ( obj.success ) {
 
-			App.login_w.hide();
+			this.panel.login.window.hide();
 
-		if ( ! App.prevent_reload ) {
-			Ext.Msg.show({
-				id: 'win_ingresando',
-				msg : form.title,
-				progressText: 'Ingresando, aguarde por favor ...',
-				width :300,
-				wait :true,
-				buttons: Ext.Msg.CANCEL,
-				waitConfig : { interval: 200 }
-			});
+			if ( ! this.prevent_reload ) {
+				Ext.Msg.show({
+					id: 'win_ingresando',
+					msg : form.title,
+					progressText: 'Ingresando, aguarde por favor ...',
+					width :300,
+					wait :true,
+					buttons: Ext.Msg.CANCEL,
+					waitConfig : { interval: 200 }
+				});
 
-
-			var target = ( window.parent ) ? window.parent.location : window.location;
-
-			if ( App.feat.login_location )
-				if ( window.parent ) 
-					window.parent.location = App.feat.login_location;
-				else 
-					window.location = App.feat.login_location;
-			else
-				if ( window.parent )	
-					window.parent.location.reload();
-				else
-					window.location.reload();
-				
-			
-		}
+				this.reload_app();
+			}
 
 		} else if ( ! obj.success ) {
 
@@ -501,7 +602,78 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		}
 	},/*}}}*/
 
+	reload_app: function() {/*{{{*/
+
+		var target = ( window.parent ) ? window.parent.location : window.location;
+
+		if ( this.feat.login_location )
+			if ( window.parent ) 
+				window.parent.location = this.feat.login_location;
+			else 
+				window.location = this.feat.login_location;
+		else
+			if ( window.parent )	
+				window.parent.location.reload();
+			else
+				window.location.reload();
+	},/*}}}*/
+
+	logout: function() {/*{{{*/
+
+	    conn = new Ext.data.Connection();
+
+	    conn.on( 'requestcomplete', function() { 
+
+		alert('Presione [Aceptar] para salir de la aplicación');
+		window.location.reload();}, 
+
+		this );
+
+            conn.request({ method: 'POST', url: '?' + Ext.urlEncode( { a: 'logout' } ) });
+
+	},/*}}}*/
+
+	/* user ui */
+
+	showPleaseWait: function( msg, progressText ) {//{{{
+
+		Ext.Msg.show({
+			msg : msg,
+			icon: Ext.MessageBox.INFO,
+			progressText: progressText,
+			width :400,
+			wait :true,
+			buttons: Ext.Msg.CANCEL,
+			waitConfig : { interval :200 }
+			});
+	},//}}}
+
+	showSaveChanges: function() {//{{{
+		var me = this;
+		Ext.Msg.show({
+			msg :'Hay cambios sin guardar. Desea guardar los cambios?',
+			width :300,
+			buttons: Ext.Msg.YESNOCANCEL,
+			scope: me,
+			fn: function( btn ) {
+				( btn == 'yes' ) && me.save();
+			}
+		});
+	},//}}}
+
+	 hidePleaseWait: function() {//{{{
+
+		Ext.Msg.hide();
+
+	},//}}}
+
+	hideSaveChanges: function() {//{{{
+		Ext.Msg.hide();
+	},//}}}
+
 	login_window: function() {/*{{{*/
+
+		var me = this;
 
 		var doLoginForm = function(){ 
 
@@ -514,13 +686,13 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 				method:'POST', 
 				waitTitle:'Conectando', 
 				waitMsg:'Enviando datos, aguarde ...',
-				scope: this,
-				success: App.handle_login,
-				failure: App.handle_login
+				scope: me,
+				success: me.handle_login,
+				failure: me.handle_login
 			}); 
 		};
 
-		var base_url = (App.feat.base_url == undefined) ? '' : App.feat.base_url;
+		var base_url = (this.feat.base_url == undefined) ? '' : this.feat.base_url;
 
 		var login = new Ext.FormPanel({ 
 		
@@ -584,129 +756,12 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		
 	},/*}}}*/
 
-	login: function( prevent_reload ) {/*{{{*/
-
-		this.prevent_reload = prevent_reload;
-
-		if ( !this.login_w ) 
-			this.login_w = this.login_window();
-
-		this.login_w.show();
-
-
-	},/*}}}*/
-
-	change_password_window: function() {/*{{{*/
-
-
-    var login = new Ext.FormPanel({ 
-
-        labelWidth:80,
-        url:'?m=users&a=change_password', 
-        frame:true, 
-        title:'Cambiar Contraseña', 
-        defaultType:'textfield',
-	monitorValid:true,
-
-        items:[{ 
-                fieldLabel:'Nueva Clave', 
-                name:'password', 
-                inputType:'password', 
-                allowBlank:false 
-            },{ 
-                fieldLabel:'Repetir Clave', 
-                name:'password_repeat', 
-                inputType:'password', 
-                allowBlank:false 
-            }],
- 
-        buttons:[{ 
-                text:'Cambiar',
-                formBind: true,	 
-
-                handler:function(){ 
-
-                    login.getForm().submit({ 
-                        method:'POST', 
-                        waitTitle:'Conectando', 
-                        waitMsg:'Enviando datos, aguarde ...',
-
-			success:function(){ 
-
-				win.hide();
-		                Ext.Msg.show( {
-		                msg : 'El cambio de su clave ha sido satisfactorio',
-		                width :300,
-		                wait :true,
-		                buttons: Ext.Msg.OK,
-		                waitConfig : {
-		                        interval :200
-		                }
-	                	} );
-
-			},
-		
-                        failure:function(form, action){ 
-                            if(action.failureType == 'server'){ 
-                                obj = Ext.decode(action.response.responseText); 
-                                Ext.Msg.alert('Fallo la autorizacion', obj.errors.reason); 
-                            }else{ 
-				if ( ! ( reason = action.response.responseText)  ) reason = 'Servidor fuera de linea, por favor reingrese en unos minutos ...';
-                                Ext.Msg.alert('Mensaje', 'No puedo conectarme con el servidor: ' + reason); 
-                            } 
-                            login.getForm().reset(); 
-                        } 
-                    }); 
-                } 
-            },{
-
-		text:'Cancelar',
-		handler:function(){ win.hide();}
-
-	    }] 
-    });
- 
-
-    	var win = new Ext.Window({
-        	layout:'fit',
-        	width:300,
-        	height:150,
-		constrain: true,
-        	closable: false,
-        	resizable: false,
-       	 	plain: true,
-        	border: false,
-        	items: [login]
-		});
-
-
-	return win;
-
-
-	},/*}}}*/
-
 	change_password: function() {/*{{{*/
 
-		if ( !this.change_password_w ) 
-			this.change_password_w = this.change_password_window();
+		if ( ! this.panel.password.window )
+			this.panel.password.window = Ext.create('ChangePasswordWindow');
 
-		this.change_password_w.show();
-
-
-	},/*}}}*/
-
-	logout: function() {/*{{{*/
-
-	    conn = new Ext.data.Connection();
-
-	    conn.on( 'requestcomplete', function() { 
-
-		alert('Presione [Aceptar] para salir de la aplicación');
-		window.location.reload();}, 
-
-		this );
-
-            conn.request({ method: 'POST', url: '?' + Ext.urlEncode( { a: 'logout' } ) });
+		this.panel.password.window.show();
 
 	},/*}}}*/
 
@@ -715,6 +770,8 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		return ( obj && obj.feat[key] !== undefined ) ? obj.feat[key] : this.feat[key];
 
 	}/*}}}*/
+
+
 
 }); // extend
 

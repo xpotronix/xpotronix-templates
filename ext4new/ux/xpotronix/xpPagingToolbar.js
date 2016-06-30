@@ -591,6 +591,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
                         p: 'delete',
                         x: this.serialize_selections( panel.getSelection() ),
                         process_name: 'Borrar la Selección'
+
                 }, function() { 
 
 			panel.getView &&

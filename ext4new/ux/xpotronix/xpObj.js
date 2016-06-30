@@ -94,9 +94,7 @@ Ext.define( 'Ux.xpotronix.xpObj', {
                 	cls: 'x-btn-text-icon',
 			disabled: true,
                 	tooltip: '<b>Guardar</b><br/>Pulse aqui para guardar las modificaciones',
-			listeners:{ click:{ scope: this, fn:function( btn ) {
-                		App.process_request({ m: App.feat.module, a: 'process', p: 'store',  x: App.serialize() });
-			}, buffer:200 }}
+			listeners:{ click:{ scope: this, fn:App.save, buffer:200 }}
 		});
 
 		panel.store.on( 'update', function( s, r, o ) { 
