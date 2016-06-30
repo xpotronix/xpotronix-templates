@@ -30,10 +30,8 @@ Ext.define('AppMsgsModel', {/*{{{*/
 	,proxy: { type: 'memory' 
 		,reader: {
 			type: 'xml',
-			record: 'messages > message',
-			root: 'xpotronix:messages',
-			successProperty: 'status',
-			messageProperty: 'message'
+			root: 'xpotronix|messages/messages'
+			record: 'message',
 		}
 	}
 	,fields: [
@@ -45,8 +43,6 @@ Ext.define('AppMsgsModel', {/*{{{*/
 	]
 
 });/*}}}*/
-
-
 
 Ext.define('AppStatsStore', { /*{{{*/
 
@@ -144,7 +140,7 @@ Ext.define('AppChangePasswordPanel', { /*{{{*/
 	    }] 
     });/*}}}*/
 
-Ext.define( 'ChangePasswordWindow', {/*{{{*/
+Ext.define('ChangePasswordWindow', {/*{{{*/
 
 		extend: 'Ext.Window',
         	layout:'fit',
@@ -199,6 +195,8 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		this.conn_process   = new Ext.data.Connection();
 		this.conn_process.on( 'requestcomplete', this.on_complete, this );
 		this.conn_process.on( 'requestexception', this.on_complete_exception , this );
+
+		this.response = { status: null, changes: [], messages: [] };
 
 		this.panel = {
 
@@ -465,6 +463,8 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	parse_response: function( param ) {/*{{{*/
 
+		var q = Ext.DomQuery, ns = 'xpotronix|messages';
+
 		if ( ! param.responseXML ) {
 
 			Ext.Msg.show({
@@ -477,6 +477,12 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 			return false;
 		}
 
+		this.response.status 	= q.selectValue( ns + "/status/@value", param.responseXML );
+		this.response.messages 	= q.select( ns + "/messages/message", param.responseXML );
+		this.response.changes 	= q.select( ns + "/changes", param.responseXML );
+
+		debugger;
+
 		this.handle_messages( param );
 		this.handle_status( param );
 		this.panel.status.store.loadData( param.responseXML, false );
@@ -487,10 +493,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	update_model: function( param ) {/*{{{*/
 
-		var q = Ext.DomQuery;
 		var ms = [];
 
-		Ext.each( q.select( 'changes/*', param.responseXML ), function( e ) { 
+		Ext.each( this.response.changes, function( e ) { 
 
 			var s;
 
@@ -518,7 +523,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	},/*}}}*/
 
-	on_complete: function(sender, param) { // Callback called on response/*{{{*/
+	on_complete: function( sender, param ) { // Callback called on response/*{{{*/
 
 		this.hidePleaseWait();
 		this.parse_response( param ) && this.update_model( param );
