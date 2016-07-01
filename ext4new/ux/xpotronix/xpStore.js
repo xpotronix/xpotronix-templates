@@ -325,8 +325,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 							this.set_parent_fk();
 
-						else
-							this.bind(nr, this.get_foreign_key());
+						else if ( this.parent_store.selections.length )
+							this.bind(nr, this.get_foreign_key( this.parent_store.selections[0] ));
 
 					}
 
@@ -488,7 +488,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		var ps_cr = this.parent_store.cr();
 
-		if (ps_cr) {
+		if ( ps_cr ) {
 
 			var cr = this.cr();
 
@@ -646,6 +646,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		var keys = [];
 
+		selections || ( selections = this.store.selections );
+
 		if ( selections.length > 0 ) {
 
 			Ext.each( selections, function( s ) {
@@ -660,7 +662,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 					key.property = ref.local;
 
 					if (value == undefined)
-						(typeof console != 'undefined') && console.error('no encuentro la clave foranea ' + ref.remote);
+						console.error('no encuentro la clave foranea ' + ref.remote);
 					else {
 						key.value = value.dateFormat ?
 						value.dateFormat(App.feat.date_long_format) :
@@ -700,8 +702,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 					rl = ref.remote + '_label';
 					value = s.data[r];
 
-					if (value == undefined)
-						(typeof console != 'undefined') && console.error('no encuentro la clave foranea ' + ref.remote);
+					if (value === undefined)
+						console.error('no encuentro la clave foranea ' + ref.remote);
 					else {
 						value = value.dateFormat ?
 						value.dateFormat(App.feat.date_long_format) :

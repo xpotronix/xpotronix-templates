@@ -77,12 +77,15 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
 
+			var tbar = this.getDockedItems('toolbar[dock=top]')[0];
 			var bbar = this.getDockedItems('toolbar[dock=bottom]')[0];
 
-			this.acl.add && bbar.add( this.obj.add_button( this ) );
-			bbar.add('-');
-			bbar.add( this.obj.save_button( this ));
+			if ( tbar ) {
 
+				this.acl.add && bbar.add( tbar.add_button( this ) );
+				bbar.add('-');
+				bbar.add( tbar.save_button( this ));
+			}
 		}
 
 		this.on({ 

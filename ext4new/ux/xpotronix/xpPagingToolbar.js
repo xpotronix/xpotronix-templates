@@ -109,15 +109,17 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	onRender: function() {/*{{{*/
 
-		var panel = this.panel;
+		var panel = this.panel, panel_xtype = panel.getXType();
 
 		// botones
 
-		if (panel.getXType() == 'xpForm' || panel.getXType() == 'xpPanel') {
+		// DEBUG: hay que especificar si el panel es sigle o multiple (ej. selection type)
 
-			this.insert(this.items.length - 2, panel.form_left_button(panel));
+		if ( 	panel_xtype.substr(panel_xtype.length - 6) == 'xpForm' || 
+			panel_xtype.substr(panel_xtype.length - 7) == 'xpPanel') {
 
-			this.insert(this.items.length - 2, panel.form_right_button(panel));
+			this.insert(this.items.length - 2, this.form_left_button(panel));
+			this.insert(this.items.length - 2, this.form_right_button(panel));
 		}
 
 		var b, pos = this.items.length - 2;
@@ -141,7 +143,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			this.insert(pos, this.add_process_menu(panel));
 
 		if (panel.acl.edit || panel.acl.add)
-			this.insert(pos, this.panel.obj.save_button(panel));
+			this.insert(pos, this.save_button(panel));
 
 		if (panel.acl.add)
 			this.insert(pos, this.add_button(panel));
@@ -218,7 +220,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		var tb = new Ext.Button( {
 			// id: 'leftButton',
-			text: 'Atras',
+			text: 'Atre',
 	               	menuAlign: 'tr?',
 			disabled: true,
 	               	tooltip: 'Ir hacia el elemento previo'
@@ -228,7 +230,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		tb.setDisabled( !this.store.rowIndex );
 
-		this.store.on( 'changerowindex', function( s, rowIndex ) { 
+		this.store.on( 'selectionchange', function( s, rowIndex ) { 
 			tb.setDisabled( !rowIndex );
 		}, tb );
 
@@ -325,8 +327,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			var store = this.store;
 			var q_params = {};
 
-			Ext.apply( q_params, store.get_foreign_key() );
-
+			Ext.apply( q_params, store.get_foreign_key( this.panel.store.selections[0] ) );
 
 			// de xpStore.js	
 
@@ -519,11 +520,35 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			text: 'Agregar',
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Agregar</b><br/>Pulse aqui para agregar un nuevo registro',
-			listeners:{click:{scope:panel, fn:this.addRecord, buffer:200}}
+			listeners:{click:{scope:this, fn:this.addRecord, buffer:200}}
 		});
 
 
 	},/*}}}*/
+
+
+	save_button: function( panel ) {/*{{{*/
+
+        	var tb = new Ext.Button({
+       	        	icon: '/ext/resources/images/default/dd/drop-yes.gif',
+			text: 'Guardar',
+                	cls: 'x-btn-text-icon',
+			disabled: true,
+                	tooltip: '<b>Guardar</b><br/>Pulse aqui para guardar las modificaciones',
+			listeners:{ click:{ scope: this, fn:App.save, buffer:200 }}
+		});
+
+		panel.store.on( 'update', function( s, r, o ) { 
+			if ( this.el && this.el.dom ) 
+				( o == Ext.data.Record.EDIT ) ? 
+					this.enable():
+					this.disable();
+		}, tb );
+
+		return tb;
+
+	},/*}}}*/
+
 
 	add_process_menu: function( panel ) {/*{{{*/
 
@@ -607,22 +632,33 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	addRecord:function() {//{{{
 
-		if ( ! this.acl.add ) return;
+		var panel = this.panel;
 
-        	if ( this.store.parent_store && this.store.foreign_key.length && this.store.parent_store.rowIndex === null ) {
+		if ( ! panel.acl.add ) return;
+
+        	if ( panel.store.parent_store && panel.store.parent_store.selections.length === 0 ) {
 
                 	Ext.Msg.alert( 'Error', 'No se ha seleccionado ningun registro en el panel principal. Por favor, seleccione uno' );
 
         	} else {
 
-			this.store.add_blank({ callback: function() {
 
-				var i_panel = this.get_inspect_panel();
+			panel.store.add_blank({ callback: function() {
 
-				if ( i_panel && ( this.getXType() != i_panel.getXType() ) )
-					this.inspect_window();
-				else if ( this.startEditingBlank )
-					this.startEditingBlank();
+				// DEBUG: manejar la insercion de nuevos registros, donde los pone
+
+				panel.selModel.select(0);
+
+				/* se fija que sean distintos en el tipo (que o abra otra grilla del mismo objeto) */
+
+				if ( panel.obj.inspect.length )
+					if ( this.i_panel )
+						this.i_panel.show();
+					else
+						this.inspect_window();
+
+				else if ( panel.startEditingBlank )
+					panel.startEditingBlank();
 
 			}, scope: this });
 		}

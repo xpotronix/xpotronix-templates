@@ -86,43 +86,6 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	},/*}}}*/
 
-	save_button: function( panel ) {/*{{{*/
-
-        	var tb = new Ext.Button({
-       	        	icon: '/ext/resources/images/default/dd/drop-yes.gif',
-			text: 'Guardar',
-                	cls: 'x-btn-text-icon',
-			disabled: true,
-                	tooltip: '<b>Guardar</b><br/>Pulse aqui para guardar las modificaciones',
-			listeners:{ click:{ scope: this, fn:App.save, buffer:200 }}
-		});
-
-		panel.store.on( 'update', function( s, r, o ) { 
-			if ( this.el && this.el.dom ) 
-				( o == Ext.data.Record.EDIT ) ? 
-					this.enable():
-					this.disable();
-		}, tb );
-
-		return tb;
-
-	},/*}}}*/
-
-	add_button: function( panel ) {/*{{{*/
-
-		return {
-			icon: '/ext/resources/images/default/dd/drop-add.gif',
-			cls: 'x-btn-text-icon',
-			text: 'Agregar',
-	                menuAlign: 'tr?',
-	                tooltip: '<b>Agregar</b><br/>Pulse aqui para agregar un nuevo registro',
-			margin: '5 5 5 5',
-			listeners:{click:{scope:panel, fn:this.addRecord, buffer:200}}
-		};
-
-
-	},/*}}}*/
-
 }); // extend
 
 // vim600: fdm=marker sw=3 ts=8 ai:
