@@ -30,8 +30,8 @@ Ext.define('AppMsgsModel', {/*{{{*/
 	,proxy: { type: 'memory' 
 		,reader: {
 			type: 'xml',
-			root: 'xpotronix|messages/messages'
-			record: 'message',
+			root: 'messages',
+			record: 'message'
 		}
 	}
 	,fields: [
@@ -427,13 +427,41 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	/* transact response handlers */
 
+	parse_response: function( param ) {/*{{{*/
+
+		var q = Ext.DomQuery, ns = 'xpotronix|messages';
+
+		if ( ! param.responseXML ) {
+
+			Ext.Msg.show({
+				title: 'Atención',
+				icon: Ext.Msg.ERROR,
+				width: 400,
+				buttons: Ext.Msg.OK,
+				msg: 'No pude conectarme con el servidor: por favor, comuníquese con el administrador de la aplicación'
+			});	
+			return false;
+		}
+
+		this.response.status 	= q.selectValue( ns + "/status/@value", param.responseXML );
+		this.response.messages 	= q.selectNode( ns + "/messages", param.responseXML );
+		this.response.changes 	= q.select( ns + "/changes/*", param.responseXML );
+
+		this.handle_messages( param );
+		this.handle_status( param );
+
+		return true;
+
+	}, /*}}}*/
+
 	handle_messages: function( param ) {/*{{{*/
 
-		if ( typeof this.panel.messages.store == 'string' )
-			this.panel.messages.store = Ext.create( this.panel.messages.store );
-
 		var ms = this.panel.messages.store;
-		ms.proxy.reader.readRecords( param.responseXML, false );
+
+		if ( typeof ms == 'string' )
+			ms = Ext.create( ms );
+
+		ms.loadRawData( this.response.messages );
 		var msgs = '';
 
 		for ( var i = 0; r = ms.getAt(i); i++ ) {
@@ -453,43 +481,14 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	handle_status: function( param ) {/*{{{*/
 
-		if ( typeof this.panel.status.store == 'string' )
-			this.panel.status.store = Ext.create( this.panel.status.store );
-
 		var ms = this.panel.status.store;
-		ms.proxy.reader.readRecords( param.responseXML, false );
+
+		if ( typeof ms == 'string' )
+			ms = Ext.create( ms );
+
+		ms.proxy.reader.readRecords( param.responseXML );
 			
 	},/*}}}*/
-
-	parse_response: function( param ) {/*{{{*/
-
-		var q = Ext.DomQuery, ns = 'xpotronix|messages';
-
-		if ( ! param.responseXML ) {
-
-			Ext.Msg.show({
-				title: 'Atención',
-				icon: Ext.Msg.ERROR,
-				width: 400,
-				buttons: Ext.Msg.OK,
-				msg: 'No pude conectarme con el servidor: por favor, comuníquese con el administrador de la aplicación'
-			});	
-			return false;
-		}
-
-		this.response.status 	= q.selectValue( ns + "/status/@value", param.responseXML );
-		this.response.messages 	= q.select( ns + "/messages/message", param.responseXML );
-		this.response.changes 	= q.select( ns + "/changes", param.responseXML );
-
-		debugger;
-
-		this.handle_messages( param );
-		this.handle_status( param );
-		this.panel.status.store.loadData( param.responseXML, false );
-
-		return true;
-
-	}, /*}}}*/
 
 	update_model: function( param ) {/*{{{*/
 
