@@ -58,7 +58,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 		/* eventos propios */
 
 		this.addEvents( 'selectionchange' );
-		this.addEvents( 'rowcountchange' );
 		this.addEvents( 'loadblank' );
 		this.addEvents( 'serverstoreupdate' ); 
 
@@ -183,35 +182,23 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			var rid = this.findExact( '__ID__', nr.get('__ID__') );
 
-			if ( rid ) {
+			if ( rid >= 0 ) {
 
 				/* modifica */
-
 				var er = this.getAt(rid);
 				er.set(nr.getData());
 				er.commit();
 
-				/* DEBUG: en el grid
-				grid.getView().refreshNode(store.indexOfId(3));
-				*/
-
 			} else {
 
-				// this.suspendEvents();
+				/* agrega */
 				this.add(nr);
-				// this.resumeEvents();
-
-				// this.fireEvent('rowcountchange', this);
-
 			}
 
 		} else if (a == 'd') {
 
-			// DEBUG: hacerlo por el __ID__
 			this.remove(this.findExact('__ID__', ID));
 			this.totalLength--;
-			this.fireEvent('rowcountchange', this);
-			//// this.go_to(this.rowIndex, false);
 
 		} else {
 
@@ -307,13 +294,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		options = Ext.apply({}, options);
 
-		var url = this.proxy.url;
-
-		this.proxy.url = this.proxy.blank_url;
-
 		this.load({
+
 			addRecords: true,
 			scope: this,
+			url: this.proxy.blank_url, 
 			callback: function(abr) {
 
 				Ext.each(abr, function(br) {
@@ -351,7 +336,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 					// DEBUG: falta parametrizar en que lugar lo pone
 					// DEBUG: aca fuerza a que vuelva a leer el registro. En realidad lo que cambia es la clave, no el rowIndex
 
-					// this.insert( 0, nr ) ;
+					this.insert( 0, nr ) ;
 
 					/* DEBUG: no hay mas go_to en el store
 					if (!options.silent)
@@ -367,7 +352,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				/* volver los parametros atras para hacer los load normales */
 				delete this.lastOptions.add;
-				this.proxy.url = url;
 			}
 		});
 

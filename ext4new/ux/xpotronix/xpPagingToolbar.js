@@ -315,6 +315,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		plain:true,
 		bodyStyle:'padding:5px;',
 		buttonAlign:'center',
+		closeAction: 'hide',
 		items: form,
 
 		buttons: [{
@@ -351,12 +352,14 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 				f.hidden || display_only_fields.push( f.name );
 			});
 
+			var limit = form.getForm().findField('max_records').getValue()
+
 			Ext.apply( q_params, { m: this.class_name, 
 				v: 'csv', 
 				'f[ignore_null_fields]': 0, 
 				'f[include_dataset]': 2, // DS_NORMALIZED
 				'g[start]': 0,
-				'g[limit]': form.items.get( panel.name + '_export_dialog_max_records').getValue(),
+				'g[limit]': limit,
 				'f[display_only]': display_only_fields.join(',')
 			});
 
