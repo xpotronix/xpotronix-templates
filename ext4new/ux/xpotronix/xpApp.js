@@ -268,7 +268,6 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 	check_ext_version: function( version ) {/*{{{*/
 
 		if ( Ext.version != version )
-			( typeof console != 'undefined' ) && 
 			console.error( 'Atención: la versión requerida de la librería ExtJs es la '
 				+ version + ': la versión provista es la ' 
 				+ Ext.version );

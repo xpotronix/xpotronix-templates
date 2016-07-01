@@ -165,7 +165,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		this.store.on( 'add', function() {
 
 			if ( ! this.selModel.getSelection() ) 
-				this.store.select( 0 );
+				this.selModel.select( 0 );
 
 		}, this );
 	
