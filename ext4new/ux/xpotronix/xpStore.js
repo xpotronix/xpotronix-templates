@@ -26,6 +26,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	rowIndex: null,
 	rowKey: null, 
 	pageSize: 20,
+	lastTotalCount: 0,
 
 	primary_key: this.primary_key || [],
 	foreign_key: this.foreign_key || {},
@@ -140,6 +141,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},/*}}}*/
 
 /* events fn */
+
+    getTotalCount: function() {
+
+	if ( this.lastTotalCount )
+		this.totalCount = this.lastTotalCount;
+
+        return this.totalCount || 0;
+    },
+
 
 	update_model: function(e) {/*{{{*/
 
@@ -294,31 +304,30 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		options = Ext.apply({}, options);
 
+		/* guarda el totalCount */
+
+		this.lastTotalCount = this.totalCount;
+
 		this.load({
 
 			addRecords: true,
 			scope: this,
-			url: this.proxy.blank_url, 
+			url: this.proxy.blank_url,
+
 			callback: function(abr) {
 
+				/* resetea el lastTotalCount */
+				this.lastTotalCount = 0;
+
+				/* por cada registro recibido */
 				Ext.each(abr, function(br) {
-
-					// para los campos que vengan con datos en el server
-					// los pone como modified por que si no, no los graba
-
-					// var nr = br.copy(br.get('__ID__'));
-
-					/*
-					var nr = br.copy();
-					Ext.data.Record.id( nr );
-					*/
 
 					var nr = br;
 
+					/* marcas de dirty para campos con valores */
 					this.initRecord( nr, br );
 
-					this.suspendEvents();
-
+					//this.suspendEvents();
 					if ( this.parent_store ) {
 
 						if (this.foreign_key.type == 'parent')
@@ -330,19 +339,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					}
 
-					this.resumeEvents();
+					// this.resumeEvents();
+
+					/* si no lo guarda no lo considera modificado */
 					nr.dirty = false;
 
 					// DEBUG: falta parametrizar en que lugar lo pone
-					// DEBUG: aca fuerza a que vuelva a leer el registro. En realidad lo que cambia es la clave, no el rowIndex
 
-					this.insert( 0, nr ) ;
+					this.insert( 0, nr );
 
-					/* DEBUG: no hay mas go_to en el store
-					if (!options.silent)
-						this.go_to(0, false); 
-					*/
-
+					/* callback para despues de agregar en blanco */
 					if (options.callback)
 						options.callback.call(options.scope || this, nr, this);
 
