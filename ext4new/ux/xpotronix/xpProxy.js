@@ -58,6 +58,12 @@ Ext.define('Ux.xpotronix.xpProxy', {
 	},
 
 
+	/*
+	afterRequest: function(request, success) {
+		debugger;
+	},*/
+
+
     encodeFilters: function(filters) {
         var min = [],
             length = filters.length,
