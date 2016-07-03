@@ -241,7 +241,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	form_right_button: function( panel ) {/*{{{*/
 
 		var tb = new Ext.Button( {
-			// id: 'rightButton',
 			text: 'Adelante',
 	               	menuAlign: 'tr?',
 			disabled: true,
@@ -261,7 +260,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	export_button: function( panel ) {/*{{{*/
 
-		return new Ext.Button( {
+		return {
 	                icon: '/ux/images/grid.png',
 	                cls: 'x-btn-text-icon',
 			text: 'Exportar',
@@ -269,125 +268,29 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 			listeners: { click: { scope:this, fn: function(){
 
-	                        this.export_w || ( this.export_w = this.export_dialog( panel ) );
+	                        this.export_w || ( this.export_w = Ext.create( 'AppExportWindow', { toolbar: this } ) );
 				this.export_w.show();
 
         	        }, buffer:200 } } 
 
-			} )
+			}; 
 
 	},/*}}}*/
 
-	    export_dialog: function( panel ) {/*{{{*/
+	export_dialog: function( panel ) {/*{{{*/
 
-	    var form = new Ext.form.FormPanel({
-		baseCls: 'x-plain',
-		labelWidth: 55,
-		url:'save-form.php',
-		defaultType: 'textfield',
-
-		items: [{
-		    xtype: 'combo',
-		    id: panel.name + '_export_dialog_max_records',
-		    fieldLabel: 'Cantidad Máxima',
-		    store: new Ext.data.SimpleStore({
-				fields: ['id', 'label'],
-				data : [ [1000,'1000'], [10000,'10000']]}),
-		    name: 'max_records',
-		    anchor:'100%',
-		    displayField: 'label',
-		    valueField: 'id',
-		    typeAhead: true,
-		    mode: 'local',
-		    triggerAction: 'all',
-		    emptyText:'Seleccionar la cantidad de registros a exportar',
-		    selectOnFocus:true
-
-		}]
-	    });
-
-	    var win = new Ext.Window({
-		title: 'Exportar Objetos',
-		width: 500,
-		// height:300,
-		constrain: true,
-		minWidth: 300,
-		minHeight: 300,
-		layout: 'fit',
-		plain:true,
-		bodyStyle:'padding:5px;',
-		buttonAlign:'center',
-		closeAction: 'hide',
-		items: form,
-
-		buttons: [{
-		    text: 'Exportar',
-		    listeners: { click: { scope: panel, fn: function() {  
-
-			var store = this.store;
-			var q_params = {};
-
-			Ext.apply( q_params, store.get_foreign_key( this.panel.store.selections[0] ) );
-
-			// de xpStore.js	
-
-			// Search (global search)
-			if ( store.baseParams.query && store.baseParams.fields ) {
-
-				var vars = eval(store.baseParams.fields).join(App.feat.key_delimiter);
-
-				var params = {};
-				params['s[' + store.class_name +']['+ vars +']'] = store.baseParams.query;
-
-				Ext.apply( q_params, params );
-
-			}
-
-			if ( this.store.lastOptions )
-				Ext.apply( q_params, this.store.lastOptions.params );
-
-			var display_only_fields = [];
-
-			Ext.each( this.getColumnModel().config, function( f ) {
-
-				f.hidden || display_only_fields.push( f.name );
-			});
-
-			var limit = form.getForm().findField('max_records').getValue()
-
-			Ext.apply( q_params, { m: this.class_name, 
-				v: 'csv', 
-				'f[ignore_null_fields]': 0, 
-				'f[include_dataset]': 2, // DS_NORMALIZED
-				'g[start]': 0,
-				'g[limit]': limit,
-				'f[display_only]': display_only_fields.join(',')
-			});
-
-			// alert( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
-
-			window.open ("?" + Ext.urlEncode( q_params ), "mywindow" ); 
-			win.hide(); 
-
-			}, buffer: 200 }}
-		},{
-		    text: 'Cancelar',
-		    handler: function() { win.hide(); }
-		}]
-	    });
-
-	    return win;	
+		return new Ext.Window();
 
 	},/*}}}*/
 
 	invert_button: function( panel ) {/*{{{*/
 
-		return new Ext.Button( {
+		return {
 	                icon: '/ext/resources/images/default/layout/stuck.gif',
 	                cls: 'x-btn-text-icon',
 			text: 'Inv. Sel.',
 	                tooltip: '<b>Invertir la Selección</b><br/>Cambie el estado de no seleccionado por seleccionado y viceversa',
-	                listeners: { click: { scope:panel, fn:panel.invertSelection, buffer:200 } } } );
+	                listeners: { click: { scope:panel, fn:panel.invertSelection, buffer:200 } } };
 
 	},/*}}}*/
 
@@ -485,7 +388,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	},/*}}}*/
 
 	inspect_button: function( panel ) {/*{{{*/
-		return new Ext.Button({
+		return {
 	                icon: '/ux/images/application_form_magnify.png',
 			cls: 'x-btn-text-icon',
 			text: 'Ver',
@@ -493,23 +396,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	                tooltip: '<b>Inspeccionar</b><br/>Pulse aqui para inspeccionar el registro seleccionado',
 			handler: this.inspect_window,
 			scope:this 
-		});
-	},/*}}}*/
-
-	get_inspect_panel: function() {/*{{{*/
-
-		var panel = null;
-
-		this.panel.obj.panels.each( function(p){ 
-
-			if ( p.display_as == 'inspect' ) {
-				panel = p;
-				return;
-			}
-		});
-
-		return panel;
-
+		};
 	},/*}}}*/
 
 	add_button: function( panel ) {/*{{{*/
@@ -525,7 +412,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 
 	},/*}}}*/
-
 
 	save_button: function( panel ) {/*{{{*/
 
@@ -548,7 +434,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		return tb;
 
 	},/*}}}*/
-
 
 	add_process_menu: function( panel ) {/*{{{*/
 
