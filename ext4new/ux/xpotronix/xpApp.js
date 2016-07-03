@@ -72,9 +72,128 @@ Ext.define('AppMsgsGrid', {/*{{{*/
 
 	}); /*}}}*/
 
+Ext.define('AppExportWindow', {/*{{{*/
+
+	extend: 'Ext.window.Window',
+	title: 'Exportar Objetos',
+	width: 500,
+	// height:300,
+	constrain: true,
+	minWidth: 300,
+	minHeight: 100,
+	layout: 'fit',
+	plain:true,
+	bodyStyle:'padding:5px;',
+	buttonAlign:'center',
+	closeAction: 'hide',
+	toolbar: null,
+
+	items: [{
+
+		xtype: 'form',
+		baseCls: 'x-plain',
+		labelWidth: 55,
+		defaultType: 'textfield',
+
+		items: [{
+
+		    xtype: 'combo',
+		    fieldLabel: 'Cantidad Máxima',
+		    store: new Ext.data.SimpleStore({
+				fields: ['id', 'label'],
+				data : [ [1000,'1000'], [10000,'10000']]}),
+		    name: 'max_records',
+		    anchor:'100%',
+		    displayField: 'label',
+		    valueField: 'id',
+		    typeAhead: true,
+		    mode: 'local',
+		    triggerAction: 'all',
+		    selectOnFocus:true
+
+		}]
+	    }],
+
+	listeners: {
+
+		show: {
+
+			fn: function( w ) { 
+
+				var total_count = w.toolbar.store.getTotalCount(),
+				max_records = this.down('form').getForm().findField('max_records');
+				max_records.emptyText = ( total_count > 10000 ) ? 'Redefina la busqueda, demasiados registros (' + total_count + ')' : 'Seleccionar la cantidad de registros a exportar';
+				max_records.applyEmptyText();
+				max_records.setValue( ( total_count > 10000 ) ? null : total_count );
+			}
+		}
+	},
+
+	buttons: [{
+
+	    text: 'Exportar',
+	    listeners: { click: { fn: function() {  
+
+		var win = this.up('window');
+		var store = win.toolbar.store;
+		var q_params = {};
+
+		alert( 'falta ajustar parametros' ); return;
+
+		Ext.apply( q_params, store.get_foreign_key() );
+
+		// de xpStore.js	
+
+		// Search (global search)
+		if ( store.baseParams.query && store.baseParams.fields ) {
+
+			var vars = eval(store.baseParams.fields).join(App.feat.key_delimiter);
+
+			var params = {};
+			params['s[' + store.class_name +']['+ vars +']'] = store.baseParams.query;
+
+			Ext.apply( q_params, params );
+
+		}
+
+		if ( store.lastOptions )
+			Ext.apply( q_params, store.lastOptions.params );
+
+		var display_only_fields = [];
+
+		Ext.each( getColumnModel().config, function( f ) {
+
+			f.hidden || display_only_fields.push( f.name );
+		});
+
+		var limit = win.down('form').getForm().findField('max_records').getValue();
+
+		Ext.apply( q_params, { m: this.class_name, 
+			v: 'csv', 
+			'f[ignore_null_fields]': 0, 
+			'f[include_dataset]': 2, // DS_NORMALIZED
+			'g[start]': 0,
+			'g[limit]': limit,
+			'f[display_only]': display_only_fields.join(',')
+		});
+
+		// alert( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
+
+		window.open ("?" + Ext.urlEncode( q_params ), "BrowserExportWindow" ); 
+		win.hide(); 
+
+		}, buffer: 200 }}
+	},{
+	    text: 'Cancelar',
+	    handler: function() { 
+		this.up('window').hide(); 
+	}
+	}]
+    });/*}}}*/
+
 Ext.define('AppChangePasswordPanel', { /*{{{*/
 
-	xtype: 'formpanel',
+	extend: 'Ext.form.Panel',
         labelWidth:80,
         url:'?m=users&a=change_password', 
         frame:true, 
