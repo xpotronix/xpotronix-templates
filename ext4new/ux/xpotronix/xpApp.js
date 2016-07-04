@@ -382,7 +382,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 			Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
 
-		},/*}}}*/
+	},/*}}}*/
 
 	check_ext_version: function( version ) {/*{{{*/
 

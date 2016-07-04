@@ -27,7 +27,7 @@
 		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
 		<xsl:variable name="type_name" select="@type"/>{
 		alias:'widget.<xsl:value-of select="$panel_id"/>'
-		<!-- ,id:'<xsl:value-of select="$panel_id"/>' -->
+		,stateId:'<xsl:value-of select="$panel_id"/>'
 		,class_name:'<xsl:value-of select="$obj/@name"/>'
 		,obj:App.obj.get('<xsl:value-of select="$obj/@name"/>')
 		,acl:App.obj.get('<xsl:value-of select="$obj/@name"/>').acl
@@ -244,7 +244,7 @@
 		Ext.define('<xsl:value-of select="concat($application_name,'.view.',$panel_id)"/>', Ext.apply(
 		{extend:'Ux.xpotronix.xpUploadPanel'
 		,buttonsAt:'tbar'
-		<!-- ,id:'<xsl:value-of select="$panel_id"/>' -->
+		,stateId:'<xsl:value-of select="$panel_id"/>' -->
 		,url:'?m=<xsl:value-of select="$obj/obj/@name"/>&amp;a=process&amp;p=upload'
 		,path:'root'
 		,maxFileSize:App.feat.max_file_size

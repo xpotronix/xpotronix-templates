@@ -23,7 +23,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 	feat: {},
 	acl: {},
 
-	rowIndex: null,
 	rowKey: null, 
 	pageSize: 20,
 	lastTotalCount: 0,
@@ -37,7 +36,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 	pruneModifiedRecords: true,
 	autoLoad: false,
 
-	selections: null,
+	selections: undefined,
+	selModel: undefined,
+	rowIndex: undefined,
 
 	constructor: function(config) {/*{{{*/
 
@@ -609,8 +610,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 			ch.revert_changes();
 		});
 
-		//// this.go_to(this.rowIndex, false);
-
 	},
 	/*}}}*/
 
@@ -803,46 +802,20 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	setSelection: function( selections ) {/*{{{*/
-	
-		this.fireEvent('selectionchange', this.selections = selections );
+	setSelection: function( selections, selModel ) {/*{{{*/
+
+		var curPos;
+		this.selections = selections;
+		this.selModel = selModel;
+
+		if ( ( curPos = this.selModel.getCurrentPosition() ) !== undefined )
+			this.rowIndex = curPos.row;
+		else
+			this.rowIndex = undefined;
+
+		this.fireEvent('selectionchange', selections, selModel );
 
 	},/*}}}*/
-
-	go_to: function( ri, stay ) { /*{{{*/
-
-		this.debug && console.log( 'go_to()' ); return;
-
-		if (stay === undefined)
-			var stay = true;
-
-		var c = this.getCount();
-
-		if (stay) {
-
-			if (ri == this.rowIndex && ri < c && ri >= 0)
-				return;
-
-		} else if (!Ext.isEmptyObject(this.dirty_childs())) {
-
-			Ext.Msg.alert('Atención', 'Hubo modificaciones: guarde o descarte los cambios');
-			return;
-		}
-
-
-		if (ri >= c)
-			this.rowIndex = c - 1;
-		else
-			this.rowIndex = ri;
-
-		this.rowKey = c ? this.cr().get('__ID__') : null;
-
-		this.fireEvent('selectionchange', this, this.rowIndex);
-
-		return true;
-
-	},
-	/*}}}*/
 
 	go_to_rowKey: function() { /*{{{*/
 
