@@ -138,7 +138,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.on('selectionchange', function(sm, selection) {/*{{{*/
 
-			this.store.setSelection( selection );
+			this.store.setSelection( selection, this.selModel );
 
 			return true;
 
