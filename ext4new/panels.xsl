@@ -80,7 +80,7 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="panel[@type='xpPanel' or @type='Viewport' or @type='Window' or @type='Tab' or @type='xpThumbs' or @type='xpUploadPanel']" mode="panel_config_override"><!--{{{-->
+	<xsl:template match="panel[@type='xpPanel' or @type='Viewport' or @type='Window' or @type='Tab' or @type='xpThumbs' or @type='xpImageViewer' or @type='xpUploadPanel']" mode="panel_config_override"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
@@ -181,6 +181,19 @@
 		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
 
 	</xsl:template><!--}}}-->
+
+	<xsl:template match="panel[@type='xpImageViewer']" mode="define"><!--{{{-->
+
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
+		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+		Ext.define('<xsl:value-of select="concat($application_name,'.view.',$panel_id)"/>',Ext.apply(
+		{extend:'Ux.xpotronix.xpGrid',stateful:true,layout:'fit',deferredRender:true,split:true,syncSize:true,autoScroll:true}
+		,<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
+
+	</xsl:template><!--}}}-->
+
+
 
 	<xsl:template match="panel[@type='xpPanel']" mode="define"><!--{{{-->
 
@@ -335,7 +348,13 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="cmp[not(@ref)]" mode="sub"><!--{{{-->
-		{	xtype: '<xsl:value-of select="@type"/>',
+		<xsl:variable name="xtype">
+			<xsl:choose>
+				<xsl:when test="@type"><xsl:value-of select="@type"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="'panel'"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		{	xtype: '<xsl:value-of select="$xtype"/>',
 			<xsl:if test="@id">id:'<xsl:value-of select="@id"/>'<xsl:if test="config or items">,</xsl:if></xsl:if>
 			<xsl:if test="config"><xsl:value-of select="config"/><xsl:if test="items/*">,</xsl:if></xsl:if>
 			<xsl:if test="items/*">items:[<xsl:apply-templates select="items/*"></xsl:apply-templates>]</xsl:if>
