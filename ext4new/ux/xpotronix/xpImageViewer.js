@@ -9,13 +9,46 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,defaultZoom:'fit' //can be 'fit' or any number between 6 and sliderWidth
 	,defaultZoomSliderValue:20 //out of sliderWidth
 	,sliderWidth:100
-	,loadingImg:'/inc/img/loading.gif'
+	,loadingImg:'/ext4/resources/ext-theme-classic/images/grid/loading.gif'
+	,store:undefined
 
-	,zoomSelection:function(combo,rec,idx){
+	,constructor: function(config) {/*{{{*/
+
+	App.obj.get(this.class_name).panels.add(this);
+
+	Ext.apply( config, { 
+
+			dockedItems: [{
+				xtype: 'xppagingtoolbar',
+				panel: this,
+				store: this.store,
+				dock: 'top',
+				displayInfo: true
+			},{
+				xtype: 'toolbar',
+				panel: this,
+				store: this.store,
+				dock: 'bottom',
+				displayInfo: true,
+				layout: { pack: 'center' }
+			}],
+		});
+
+		this.callParent(arguments);
+
+		/* consoleDebugFn( this ); */
+		/* consoleDebugFn( this.getForm() ); */
+
+		this.addEvents( 'loadrecord' );
+
+	}/*}}}*/
+
+	,zoomSelection:function(combo,rec,idx){/*{{{*/
 		this.zoom = rec.data.value;
 		this.zoomImage();
-	}
-	,repositionImage:function(){
+	}/*}}}*/
+
+	,repositionImage:function(){/*{{{*/
 		var setProps = {
 			left: 0
 			,top: 0
@@ -26,9 +59,10 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 		if(this.compRef.imageEl.dom.height < this.compRef.imageCont.body.dom.clientHeight){
 			setProps.top = (this.compRef.imageCont.body.dom.clientHeight - this.compRef.imageEl.dom.height)/2;
 		}
-		this.compRef.imageEl.setStyle(setProps);
-	}
-	,setImage:function(imagePath){
+		Ext.apply( this.compRef.imageEl.dom, setProps );
+	}/*}}}*/
+
+	,setImage:function(imagePath){/*{{{*/
 		
 		this.image = imagePath;
 		if(this.compRef.imageEl){
@@ -104,15 +138,17 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 		});
 		
 		ie.appendTo(this.compRef.imageCont.body.dom);
-	}
-	,getNormalizedZoom:function(zoomSliderValue){
+	}/*}}}*/
+
+	,getNormalizedZoom:function(zoomSliderValue){/*{{{*/
 		zoomSliderValue = (zoomSliderValue / this.sliderWidth)*500;
 		if(zoomSliderValue < 1){
 			return 1;
 		}
 		return Math.round(zoomSliderValue);
-	}
-	,zoomImage:function(){
+	}/*}}}*/
+
+	,zoomImage:function(){/*{{{*/
 	
 		var scaling, wProp, hProp, newWidth, newHeight, setProps, curScrollXratio, curScrollYratio;
 		if(this.zoom == 'fit'){
@@ -140,14 +176,16 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 		
 		curScrollXratio = curScrollXratio == 0 ? .5 : curScrollXratio;
 		curScrollYratio = curScrollYratio == 0 ? .5 : curScrollYratio;
-		this.compRef.imageEl.setStyle(setProps);
+		Ext.apply( this.compRef.imageEl.dom, setProps);
 		
 		this.repositionImage();
 		
 		this.compRef.imageCont.body.dom.scrollLeft = curScrollXratio * (this.compRef.imageEl.dom.clientWidth-this.compRef.imageCont.body.dom.clientWidth);
 		this.compRef.imageCont.body.dom.scrollTop = curScrollYratio * (this.compRef.imageEl.dom.clientHeight-this.compRef.imageCont.body.dom.clientHeight);
-	}
-	,initComponent:function(){
+	}/*}}}*/
+
+	,initComponent:function(){/*{{{*/
+
 		this.mouseDown = false;
 		this.zoom = this.defaultZoom;
 		this.imageWidth = 1;
@@ -170,7 +208,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				xtype:'tbtext'
 				,ref:'../imageName'
 				,refO:this.compRef
-				,itemId:'imageName'
+				,name:'imageName'
 				,text:this.image != Ext.BLANK_IMAGE_URL ? this.image : ''
 			}]
 			,bbar:[{
@@ -183,7 +221,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,ref:'../autoFitZoom'
 				,labelCls:'x-hidden'
 				,refO:this.compRef
-				,itemId:'autoFitZoom'
+				,name:'autoFitZoom'
 				,checked: this.defaultZoom == 'fit' ? true : false
 				,listeners:{
 					scope:this
@@ -212,14 +250,14 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,width:40
 				,ref:'../zoomText'
 				,refO:this.compRef
-				,itemId:'zoomText'
+				,name:'zoomText'
 				,text:this.defaultZoom == 'fit' ? 'Fit' : this.defaultZoom
 			},{
 				xtype:'slider'
 				,ref:'../zoomSlider'
 				,refO:this.compRef
 				,labelCls:'x-hidden'
-				,itemId:'zoomSlider'
+				,name:'zoomSlider'
 				,value: this.defaultZoomSliderValue
 				,minValue:0
 				,maxValue:100
@@ -244,17 +282,27 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,ref:'../imageDimensions'
 				,refO:this.compRef
 				,width:75
-				,itemId:'imageDimensions'
+				,name:'imageDimensions'
 			}]
 			,items:{
 				autoScroll:true
 				,ref:'imageCont'
-				,itemId:'imageCont'
+				,name:'imageCont'
 				//,frame:true
 				,cls:'image-viewer'
 				,listeners:{
 					scope:this
 					,render:function(comp){
+
+
+						// DEBUG: hot fix
+						this.compRef.imageCont = this.query('*[name=imageCont]')[0];
+						this.compRef.imageDimensions = this.query('*[name=imageDimensions]')[0];
+						this.compRef.zoomText = this.query('*[name=zoomText]')[0];
+						this.compRef.autoFitZoom = this.query('*[name=autoFitZoom]')[0];
+						this.compRef.zoomSlider = this.query('*[name=zoomSlider]')[0];
+
+
 						var le = new Ext.core.Element(document.createElement('img'));
 						this.compRef.loadingEl = le;
 							
@@ -272,7 +320,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 						if(this.image){
 							//console.log(this.compRef);
 							//console.log(this.compRef.imageDimensions);
-							this.setImage(this.image);
+							// this.setImage(this.image);
 						}else{
 							le.addCls('x-hidden');
 						}
@@ -294,8 +342,31 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				}
 			}
 		});
+
 		
-		imageViewer.superclass.initComponent.call(this, arguments);
-		
-	}
+		this.callParent(this, arguments);
+	
+		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
+
+		/* this.getForm().trackResetOnLoad = true; */
+
+		this.acl = this.acl || this.obj.acl;
+		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+
+		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
+
+			var tbar = this.getDockedItems('toolbar[dock=top]')[0];
+			var bbar = this.getDockedItems('toolbar[dock=bottom]')[0];
+
+			if ( tbar ) {
+
+				this.acl.add && bbar.add( tbar.add_button( this ) );
+				bbar.add('-');
+				bbar.add( tbar.save_button( this ));
+			}
+		}
+
+	
+	}/*}}}*/
+
 });
