@@ -535,7 +535,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	},/*}}}*/
 
-	getSelection() {/*{{{*/
+	getSelection: function() {/*{{{*/
 
 		return this.selections;
 
