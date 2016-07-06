@@ -7,8 +7,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,cursorDownClass: 'cursor-closed-hand'
 	,imageNameLabel:'Image File Name:'
 	,defaultZoom:'fit' //can be 'fit' or any number between 6 and sliderWidth
-	,defaultZoomSliderValue:20 //out of sliderWidth
-	,sliderWidth:100
+	,defaultZoomSliderValue:50 //out of sliderWidth
+	,sliderWidth:200
 	,loadingImg:'/ext4/resources/ext-theme-classic/images/grid/loading.gif'
 	,store:undefined
 
@@ -141,7 +141,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	}/*}}}*/
 
 	,getNormalizedZoom:function(zoomSliderValue){/*{{{*/
-		zoomSliderValue = (zoomSliderValue / this.sliderWidth)*500;
+		zoomSliderValue = (zoomSliderValue / this.sliderWidth)*200;
 		if(zoomSliderValue < 1){
 			return 1;
 		}
@@ -197,17 +197,14 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 		this.image = this.image || Ext.BLANK_IMAGE_URL;
 		
 		Ext.apply(this,{
-			width:400
-			,height:400
-			,layout:'fit'
-			,refO:this.compRef
+
+			layout:'fit'
+
 			,tbar:[{
 				xtype:'tbtext'
 				,text:this.imageNameLabel
 			},{
 				xtype:'tbtext'
-				,ref:'../imageName'
-				,refO:this.compRef
 				,name:'imageName'
 				,text:this.image != Ext.BLANK_IMAGE_URL ? this.image : ''
 			}]
@@ -218,9 +215,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 			},{
 				xtype:'checkbox'
 				,width:20
-				,ref:'../autoFitZoom'
 				,labelCls:'x-hidden'
-				,refO:this.compRef
 				,name:'autoFitZoom'
 				,checked: this.defaultZoom == 'fit' ? true : false
 				,listeners:{
@@ -248,14 +243,10 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 			},{
 				xtype:'tbtext'
 				,width:40
-				,ref:'../zoomText'
-				,refO:this.compRef
 				,name:'zoomText'
 				,text:this.defaultZoom == 'fit' ? 'Fit' : this.defaultZoom
 			},{
 				xtype:'slider'
-				,ref:'../zoomSlider'
-				,refO:this.compRef
 				,labelCls:'x-hidden'
 				,name:'zoomSlider'
 				,value: this.defaultZoomSliderValue
@@ -279,15 +270,14 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,text:'Dimensions:'
 			},{
 				xtype:'tbtext'
-				,ref:'../imageDimensions'
-				,refO:this.compRef
 				,width:75
 				,name:'imageDimensions'
 			}]
 			,items:{
 				autoScroll:true
-				,ref:'imageCont'
 				,name:'imageCont'
+				,xtype: 'image'
+				,mode: 'image'
 				//,frame:true
 				,cls:'image-viewer'
 				,listeners:{
@@ -303,19 +293,14 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 						this.compRef.zoomSlider = this.query('*[name=zoomSlider]')[0];
 
 
-						var le = new Ext.core.Element(document.createElement('img'));
-						this.compRef.loadingEl = le;
-							
-						le.set({
-							src:this.loadingImg
-						});
-						le.appendTo(comp.body.dom);
-							
-						le.setStyle({
+						this.compRef.imageCont.setSrc(this.loadingImg);
+						/*		
+						this.compRef.imageCont.setStyle({
 							position:'absolute'
 							,top:'20px'
 							,left:'20px'
 						});
+						*/
 							
 						if(this.image){
 							//console.log(this.compRef);
