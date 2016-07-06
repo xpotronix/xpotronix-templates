@@ -15,7 +15,7 @@
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/"
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/">
 
-<!-- panel_config -->
+	<!-- panel_config -->
 
 	<xsl:template match="panel" mode="panel_config"><!--{{{-->
 
@@ -38,7 +38,7 @@
 
 	</xsl:template><!--}}}-->
 
-<!-- ui_overides -->
+	<!-- ui_overides -->
 
 	<xsl:template match="panel[@type='xpGrid']" mode="panel_config_override"><!--{{{-->
 
