@@ -187,7 +187,7 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		Ext.define('<xsl:value-of select="concat($application_name,'.view.',$panel_id)"/>',Ext.apply(
-		{extend:'Ux.xpotronix.xpGrid',stateful:true,layout:'fit',deferredRender:true,split:true,syncSize:true,autoScroll:true}
+		{extend:'Ux.xpotronix.xpImageViewer',stateful:true,layout:'fit',deferredRender:true,split:true,syncSize:true,autoScroll:true}
 		,<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
 
@@ -200,7 +200,7 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		Ext.define('<xsl:value-of select="concat($application_name,'.view.',$panel_id)"/>',Ext.apply(
-		{extend:'Ux.xpotronix.xpPanel',labelWidth:150,bodyStyle:{'background-color':'white','font-size':'13px',padding:'5px'},width:'100%',autoScroll:true}
+		{extend:'Ux.xpotronix.xpPanel',labelWidth:150,bodyStyle:{'background-color':'white','font-size':'13px',padding:'5px'},width:'100%'}
 		,<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
 
