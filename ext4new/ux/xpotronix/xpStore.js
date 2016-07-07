@@ -353,7 +353,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 					if (options.callback)
 						options.callback.call(options.scope || this, nr, this);
 
-					this.fireEvent('loadblank', this, nr, options)
+					this.fireEvent('loadblank', this, nr, options);
 
 				}, this);
 
