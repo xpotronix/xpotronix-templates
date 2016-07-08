@@ -107,9 +107,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 	,zoomImage:function(){/*{{{*/
 	
-		var wProp, hProp, newWidth, newHeight, setProps, curScrollXratio, curScrollYratio,
-		elDom = this.compRef.imageCont.el.dom,
-		scaling = this.zoom / 100;
+		var scaling, wProp, hProp, newWidth, newHeight, setProps, curScrollXratio, curScrollYratio,
+		elDom = this.compRef.imageCont.el.dom;
 
 		if ( this.zoom == 'fit' ) {
 			
@@ -117,7 +116,11 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 			hProp = elDom.clientHeight / this.imageHeight;
 
 			scaling = ( wProp < hProp ) ? wProp : hProp;
-		} 
+
+		} else {
+
+			scaling = this.zoom / 100;
+		}
 
 		this.setStyle({
 			width: this.imageWidth * scaling
@@ -278,8 +281,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 								this.imageLoaded = true;
 								
-								this.imageWidth = this.compRef.imageCont.el.dom.width;
-								this.imageHeight = this.compRef.imageCont.el.dom.height;
+								this.imageWidth = this.compRef.imageCont.el.dom.naturalWidth;
+								this.imageHeight = this.compRef.imageCont.el.dom.naturalHeight;
 
 								this.compRef.imageDimensions.setText(this.imageWidth+' x '+this.imageHeight);
 					
