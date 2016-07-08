@@ -11,6 +11,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,sliderWidth:200
 	,loadingImg:'/ext4/resources/ext-theme-classic/images/grid/loading.gif'
 	,store:undefined
+	,debug: false
 
 	,constructor: function(config) {/*{{{*/
 
@@ -49,92 +50,105 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	}/*}}}*/
 
 	,repositionImage:function(){/*{{{*/
-		var setProps = {
-			left: 0
-			,top: 0
-		};
-		if(this.compRef.imageCont.el.dom.width < this.compRef.imageCont.el.dom.clientWidth){
-			setProps.left = (this.compRef.imageCont.el.dom.clientWidth - this.compRef.imageCont.el.dom.width)/2;
-		}
-		if(this.compRef.imageCont.el.dom.height < this.compRef.imageCont.el.dom.clientHeight){
-			setProps.top = (this.compRef.imageCont.el.dom.clientHeight - this.compRef.imageCont.el.dom.height)/2;
-		}
-		Ext.apply( this.compRef.imageCont.el.dom, setProps );
+
+		var elDom = this.compRef.imageCont.el.dom,
+		panelDom = this.body.dom;
+
+		this.setStyle({
+
+			left: (elDom.width < panelDom.clientWidth) ? (panelDom.clientWidth - elDom.width)/2 : 0
+			,top: (elDom.height < panelDom.clientHeight) ? (panelDom.clientHeight - elDom.height)/2 : 0
+		});
+
 	}/*}}}*/
 
 	,setImage:function(imagePath){/*{{{*/
 		
-		this.image = imagePath;
-		
-		var ie = this.compRef.imageCont.el;
-		this.compRef.imageEl = ie;
+		var ic = this.compRef.imageCont;
 
-		this.compRef.imageCont.setSrc( this.image );
-		this.compRef.imageCont.cls = this.cursorOverClass;
-		this.compRef.imageCont.style = {position:'absolute', height:'auto', width:'auto'};
+		ic.setSrc( this.image = imagePath );
+		ic.cls = this.cursorOverClass;
 
+		// this.setStyle({position:'absolute', height:'auto', width:'auto'});
 		// ie.appendTo(this.compRef.imageCont.el.dom);
+
+	}/*}}}*/
+
+	,setStyle:function(config) {/*{{{*/
+
+		for( var key in config ) {
+
+			/* horrible */
+			var value;
+
+			if ( key == 'width' || key == 'height' )
+				value = this.round( config[key] ) + 'px';
+			else
+				value = config[key];
+
+			this.compRef.imageCont.el.setStyle( key, value );
+		};
+
+	}/*}}}*/
+
+	,round: function(value, decimals) {/*{{{*/
+
+		decimals = decimals || 0;
+		return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+
 	}/*}}}*/
 
 	,getNormalizedZoom:function(zoomSliderValue){/*{{{*/
+
 		zoomSliderValue = (zoomSliderValue / this.sliderWidth)*200;
-		if(zoomSliderValue < 1){
-			return 1;
-		}
-		return Math.round(zoomSliderValue);
+		return ( zoomSliderValue < 1 ) ? 1 : Math.round(zoomSliderValue);
+
 	}/*}}}*/
 
 	,zoomImage:function(){/*{{{*/
 	
-		var scaling, wProp, hProp, newWidth, newHeight, setProps, curScrollXratio, curScrollYratio;
-		if(this.zoom == 'fit'){
+		var wProp, hProp, newWidth, newHeight, setProps, curScrollXratio, curScrollYratio,
+		elDom = this.compRef.imageCont.el.dom,
+		scaling = this.zoom / 100;
+
+		if ( this.zoom == 'fit' ) {
 			
-			wProp = this.compRef.imageCont.el.dom.clientWidth / this.imageWidth;
-			hProp = this.compRef.imageCont.el.dom.clientHeight / this.imageHeight;
-			if(wProp < hProp){
-				scaling=wProp;
-			}else{
-				scaling=hProp;
-			}
-			
-		}else{
-			scaling = this.zoom / 100;
-		}
-		newWidth = this.imageWidth * scaling;
-		newHeight = this.imageHeight * scaling;
-		setProps = {
-			width: newWidth
-			,height: newHeight
-		};
+			wProp = elDom.clientWidth / this.imageWidth;
+			hProp = elDom.clientHeight / this.imageHeight;
+
+			scaling = ( wProp < hProp ) ? wProp : hProp;
+		} 
+
+		this.setStyle({
+			width: this.imageWidth * scaling
+			,height: this.imageHeight * scaling
+		});
 		
-		curScrollXratio = this.compRef.imageCont.el.dom.scrollLeft / (this.compRef.imageCont.el.dom.clientWidth-this.compRef.imageCont.el.dom.clientWidth);
-		curScrollYratio = this.compRef.imageCont.el.dom.scrollTop / (this.compRef.imageCont.el.dom.clientHeight-this.compRef.imageCont.el.dom.clientHeight);
+		this.repositionImage();
+
+		curScrollXratio = elDom.scrollLeft / (elDom.clientWidth-elDom.clientWidth);
+		curScrollYratio = elDom.scrollTop / (elDom.clientHeight-elDom.clientHeight);
 		
 		curScrollXratio = curScrollXratio == 0 ? .5 : curScrollXratio;
 		curScrollYratio = curScrollYratio == 0 ? .5 : curScrollYratio;
-		this.compRef.imageCont.el.set(setProps);
 		
-		this.repositionImage();
-		
-		this.compRef.imageCont.el.dom.scrollLeft = curScrollXratio * (this.compRef.imageCont.el.dom.clientWidth-this.compRef.imageCont.el.dom.clientWidth);
-		this.compRef.imageCont.el.dom.scrollTop = curScrollYratio * (this.compRef.imageCont.el.dom.clientHeight-this.compRef.imageCont.el.dom.clientHeight);
+		elDom.scrollLeft = curScrollXratio * (elDom.clientWidth-elDom.clientWidth);
+		elDom.scrollTop = curScrollYratio * (elDom.clientHeight-elDom.clientHeight);
+
 	}/*}}}*/
 
 	,initComponent:function(){/*{{{*/
 
-		this.mouseDown = false;
-		this.zoom = this.defaultZoom;
-		this.imageWidth = 1;
-		this.imageHeight = 1;
-		this.imageLoaded = false;
-		
-		this.compRef = {};
-		
-		this.image = this.image || Ext.BLANK_IMAGE_URL;
-		
 		Ext.apply(this,{
 
-			layout:'fit'
+			mouseDown: false
+			,zoom: this.defaultZoom
+			,imageWidth: 1
+			,imageHeight: 1
+			,imageLoaded: false
+			,compRef: {}
+			,image: this.image || Ext.BLANK_IMAGE_URL
+			,layout:'fit'
 
 			,tbar:[{
 				xtype:'tbtext'
@@ -144,6 +158,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,name:'imageName'
 				,text:this.image != Ext.BLANK_IMAGE_URL ? this.image : ''
 			}]
+
 			,bbar:[{
 				xtype:'tbtext'
 				,text:'Fit'
@@ -209,6 +224,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,width:75
 				,name:'imageDimensions'
 			}]
+
 			,items:{
 				autoScroll:true
 				,name:'imageCont'
@@ -233,18 +249,20 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 
 						this.compRef.imageCont.setSrc(this.loadingImg);
-						/*		
-						this.compRef.imageCont.setStyle({
+
+						this.setStyle({
 							position:'absolute'
 							,top:'20px'
 							,left:'20px'
 						});
-						*/
 							
 						if(this.image){
-							//console.log(this.compRef);
-							//console.log(this.compRef.imageDimensions);
-							// this.setImage(this.image);
+
+							this.debug && console.log(this.compRef);
+							this.debug && console.log(this.compRef.imageDimensions);
+
+							this.setImage(this.image);
+
 						}else{
 							le.addCls('x-hidden');
 						}
@@ -257,6 +275,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 							scope:this
 
 							,load:function(){
+
 								this.imageLoaded = true;
 								
 								this.imageWidth = this.compRef.imageCont.el.dom.width;
@@ -267,42 +286,49 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 								// this.compRef.loadingEl.addCls('x-hidden');
 								this.zoomImage();
 							}
+
 							,mouseout:function(event, el){
+
 								this.mouseDown = false;
 								
 								Ext.fly(el).replaceCls(this.cursorDownClass, this.cursorOverClass);
 							}
+
 							,mousedown:function(event, el){
 
 								this.mouseDown = true;
 								this.mouseDownXY = event.getXY();
 								
-								this.mouseDownScrollLeft = this.compRef.imageCont.el.dom.scrollLeft;
-								this.mouseDownScrollTop = this.compRef.imageCont.el.dom.scrollTop;
+								this.mouseDownScrollLeft = this.body.dom.scrollLeft;
+								this.mouseDownScrollTop = this.body.dom.scrollTop;
 								
 								Ext.fly(el).replaceCls(this.cursorOverClass, this.cursorDownClass);
 								event.stopEvent(); // prevents native browser dragging
 							}
+
 							,mouseup:function(event, el){
+
 								this.mouseDown = false;
 								
 								Ext.fly(el).replaceCls(this.cursorDownClass, this.cursorOverClass);
 							}
+
 							,mousemove:function(event, el){
+
 								if(this.mouseDown === true){
 
 									var xy = event.getXY();
 									
 									if(xy[0] > this.mouseDownXY[0]){
-										this.compRef.imageCont.el.dom.scrollLeft = this.mouseDownScrollLeft - (xy[0] - this.mouseDownXY[0]);
+										this.body.dom.scrollLeft = this.mouseDownScrollLeft - (xy[0] - this.mouseDownXY[0]);
 									}else if(xy[0] < this.mouseDownXY[0]){
-										this.compRef.imageCont.el.dom.scrollLeft = this.mouseDownScrollLeft + (this.mouseDownXY[0] - xy[0]);
+										this.body.dom.scrollLeft = this.mouseDownScrollLeft + (this.mouseDownXY[0] - xy[0]);
 									}
 									
 									if(xy[1] > this.mouseDownXY[1]){
-										this.compRef.imageCont.el.dom.scrollTop = this.mouseDownScrollTop - (xy[1] - this.mouseDownXY[1]);
+										this.body.dom.scrollTop = this.mouseDownScrollTop - (xy[1] - this.mouseDownXY[1]);
 									}else if(xy[1] < this.mouseDownXY[1]){
-										this.compRef.imageCont.el.dom.scrollTop = this.mouseDownScrollTop + (this.mouseDownXY[1] - xy[1]);
+										this.body.dom.scrollTop = this.mouseDownScrollTop + (this.mouseDownXY[1] - xy[1]);
 									}
 									
 									event.stopEvent();
@@ -312,6 +338,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 					}
 				}
 			}
+
 			,listeners:{
 				scope:this
 				,resize:{
@@ -328,7 +355,6 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 			}
 		});
 
-		
 		this.callParent(this, arguments);
 	
 		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
