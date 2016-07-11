@@ -11,7 +11,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,sliderWidth:200
 	,loadingImg:'/ext4/resources/ext-theme-classic/images/grid/loading.gif'
 	,store:undefined
-	,debug: false
+	,debug: true 
+	,resizable: true
 
 	,constructor: function(config) {/*{{{*/
 
@@ -37,8 +38,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 		this.callParent(arguments);
 
-		/* consoleDebugFn( this ); */
-		/* consoleDebugFn( this.getForm() ); */
+		this.debug && consoleDebugFn( this );
 
 		this.addEvents( 'loadrecord' );
 
@@ -158,7 +158,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,text:this.imageNameLabel
 			},{
 				xtype:'tbtext'
-				,name:'imageName'
+				,name:'imageFileName'
 				,text:this.image != Ext.BLANK_IMAGE_URL ? this.image : ''
 			}]
 
@@ -233,8 +233,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,name:'imageCont'
 				,xtype: 'image'
 				,autoEl: 'img'
-				,shrinkWrap:0
-				//,frame:true
+				// ,shrinkWrap:true
+				,frame:true
 				,cls:'image-viewer'
 
 				,listeners:{
@@ -245,6 +245,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 						// DEBUG: hot fix
 						this.compRef.imageCont = this.query('*[name=imageCont]')[0];
+						this.compRef.imageFileName = this.query('*[name=imageFileName]')[0];
 						this.compRef.imageDimensions = this.query('*[name=imageDimensions]')[0];
 						this.compRef.zoomText = this.query('*[name=zoomText]')[0];
 						this.compRef.autoFitZoom = this.query('*[name=autoFitZoom]')[0];
@@ -273,6 +274,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 					,afterrender: function( comp ) {
 
+						this.debug && consoleDebugFn( this.compRef.imageCont.el );
+
 						this.compRef.imageCont.el.on({ 
 
 							scope:this
@@ -285,6 +288,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 								this.imageHeight = this.compRef.imageCont.el.dom.naturalHeight;
 
 								this.compRef.imageDimensions.setText(this.imageWidth+' x '+this.imageHeight);
+								this.compRef.imageFileName.setText(this.image);
 					
 								// this.compRef.loadingEl.addCls('x-hidden');
 								this.zoomImage();
@@ -372,7 +376,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 			var tbar = this.getDockedItems('toolbar[dock=top]')[0];
 			var bbar = this.getDockedItems('toolbar[dock=bottom]')[0];
 
-			if ( tbar ) {
+			if ( tbar && bbar ) {
 
 				this.acl.add && bbar.add( tbar.add_button( this ) );
 				bbar.add('-');

@@ -80,7 +80,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			var tbar = this.getDockedItems('toolbar[dock=top]')[0];
 			var bbar = this.getDockedItems('toolbar[dock=bottom]')[0];
 
-			if ( tbar ) {
+			if ( tbar && bbar ) {
 
 				this.acl.add && bbar.add( tbar.add_button( this ) );
 				bbar.add('-');
