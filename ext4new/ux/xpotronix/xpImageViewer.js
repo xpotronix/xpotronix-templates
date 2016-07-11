@@ -352,9 +352,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 					delay:50
 					,fn:function(){
 						if(this.imageLoaded){
-							if(this.zoom == 'fit'){
-								this.zoomImage();
-							}
+							this.zoomImage();
 							this.repositionImage();
 						}
 					}
