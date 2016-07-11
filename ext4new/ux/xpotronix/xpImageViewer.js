@@ -5,7 +5,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 	,cursorOverClass: 'cursor-open-hand'
 	,cursorDownClass: 'cursor-closed-hand'
-	,imageNameLabel:'Image File Name:'
+	,imageNameLabel:'Nombre Archivo:'
 	,defaultZoom:'fit' //can be 'fit' or any number between 6 and sliderWidth
 	,defaultZoomSliderValue:50 //out of sliderWidth
 	,sliderWidth:200
@@ -221,7 +221,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 			},'->',{
 				xtype:'tbtext'
 				,width:60
-				,text:'Dimensions:'
+				,text:'Dimensiones:'
 			},{
 				xtype:'tbtext'
 				,width:75
