@@ -452,7 +452,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 			item = new Ext.menu.Item( pm[i] );
 			item.on( 'click', function( it ) { 
-				this.process_selections( panel, it, this ) 
+				this.process_selections( panel, it, panel.obj) 
 			}, this );
 			menu_params.menu.items[i] = item;
                 }
