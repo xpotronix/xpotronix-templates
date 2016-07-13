@@ -96,6 +96,9 @@
 		<script type="text/javascript" src="/ux4/xpotronix/xpStore.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpImageViewer.js"/>
 
+		<script type="text/javascript" src="/ux4/xpotronix/xpThumbs.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/DataViewPlugins.js"/>
+	
 		<!-- DateTimeField -->
 
 		<!-- 
