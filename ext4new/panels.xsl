@@ -154,7 +154,7 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		Ext.define('<xsl:value-of select="concat($application_name,'.view.',$panel_id)"/>',Ext.apply(
-		{extend:'Ux.xpotronix.xpForm',split:true,deferredRender:true,bodyStyle:'padding:5px',width:'100%',labelWidth:150,defaults:{width:400},defaultType:'textfield',autoScroll:true}
+		{extend:'Ux.xpotronix.xpForm',split:true,stateful:true,deferredRender:true,bodyStyle:'padding:5px',width:'100%',labelWidth:150,defaults:{width:400},defaultType:'textfield',autoScroll:true}
 		,<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
 
@@ -165,7 +165,7 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		Ext.define('<xsl:value-of select="concat($application_name,'.view.',$panel_id)"/>',Ext.apply(
-		{extend:'Ux.xpotronix.xpData',bodyStyle:'padding:5px 5px 0',defaults:{width:300},width:'100%',autoScroll:true}
+		{extend:'Ux.xpotronix.xpData',stateful:true,bodyStyle:'padding:5px 5px 0',defaults:{width:300},width:'100%',autoScroll:true}
 		,<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
 
@@ -176,7 +176,7 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		Ext.define('<xsl:value-of select="concat($application_name,'.view.',$panel_id)"/>',Ext.apply(
-		{extend:'Ux.xpotronix.xpThumbs',layout:'fit',syncSize:true,autoScroll:true}
+		{extend:'Ux.xpotronix.xpThumbs',stateful:true,layout:'fit',syncSize:true,autoScroll:true}
 		,<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
 
@@ -187,7 +187,7 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		Ext.define('<xsl:value-of select="concat($application_name,'.view.',$panel_id)"/>',Ext.apply(
-		{extend:'Ux.xpotronix.xpImageViewer',stateful:true,layout:'fit',deferredRender:true,split:true,syncSize:true,autoScroll:true}
+		{extend:'Ux.xpotronix.xpImageViewer',stateful:true,resizable:false,layout:'fit',deferredRender:true,split:true,syncSize:true,autoScroll:true}
 		,<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
 
