@@ -7,7 +7,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,cursorDownClass: 'cursor-closed-hand'
 	,imageNameLabel:'Nombre Archivo:'
 	,defaultZoom:'fit' //can be 'fit' or any number between 6 and sliderWidth
-	,defaultZoomSliderValue:50 //out of sliderWidth
+	,defaultZoomSliderValue:40 //out of sliderWidth
 	,sliderWidth:200
 	,loadingImg:'/ext4/resources/ext-theme-classic/images/grid/loading.gif'
 	,store:undefined
@@ -204,9 +204,9 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,labelCls:'x-hidden'
 				,name:'zoomSlider'
 				,value: this.defaultZoomSliderValue
-				,minValue:0
+				,minValue:10
 				,maxValue:100
-				,increment:1
+				,increment:5
 				,width:this.sliderWidth
 				,listeners:{
 					scope:this
@@ -214,8 +214,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 						this.zoom = this.getNormalizedZoom(newVal);
 						//this.zoomSelector.setValue(this.zoom);
 						this.compRef.zoomText.setText(this.zoom+' %');
-						this.zoomImage();
 						this.compRef.autoFitZoom.setValue(false);
+						this.zoomImage();
 					}
 				}
 			},'->',{
@@ -348,7 +348,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 			,listeners:{
 				scope:this
-				,resize:{
+				,move:{
 					delay:50
 					,fn:function(){
 						if(this.imageLoaded){
