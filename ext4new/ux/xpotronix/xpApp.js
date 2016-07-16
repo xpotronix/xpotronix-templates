@@ -475,7 +475,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 				Ext.each( o.records, function( r ) {
 
-					o.store.markRecordModifiedChain( r, this.fake_dirty_records );
+					o.store.markModifiedRecordChain( r, this.fake_dirty_records );
 
 				}, this );
 			
@@ -522,7 +522,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	save: function() {/*{{{*/
 
-		App.process_request({ m: App.feat.module, a: 'process', p: 'store',  x: App.serialize() });
+		App.process_request({m:App.feat.module,a:'process',p:'store',b:'ext4',x:App.serialize()});
 
 	},/*}}}*/
 
