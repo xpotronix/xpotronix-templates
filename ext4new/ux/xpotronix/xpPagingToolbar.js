@@ -179,6 +179,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
         	                m: obj.class_name,
                 	        a: 'process',
 				p: item.value,
+				b: 'ext4',
 	                        x: obj.serialize_selections( selections )
 
                 	}, item.params ), item.params.callback );
@@ -220,18 +221,18 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		var tb = new Ext.Button( {
 			// id: 'leftButton',
-			text: 'Atre',
+			text: 'Atras',
 	               	menuAlign: 'tr?',
 			disabled: true,
 	               	tooltip: 'Ir hacia el elemento previo'
-			//,listeners:{click:{scope:this.store, fn:function() { this.prev() },buffer:200 }}
+			,listeners:{click:{scope:this.store, fn:function() { this.selModel.selectPrevious(); },buffer:200 }}
 
 		});
 
 		tb.setDisabled( !this.store.rowIndex );
 
-		this.store.on( 'selectionchange', function( s, rowIndex ) { 
-			tb.setDisabled( !rowIndex );
+		this.store.on( 'selectionchange', function( selection, selModel ) { 
+			tb.setDisabled( !selModel.store.rowIndex );
 		}, tb );
 
 		return tb;
@@ -245,13 +246,13 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	               	menuAlign: 'tr?',
 			disabled: true,
 	               	tooltip: 'Ir hacia el proximo elemento',
-			listeners:{click:{scope:this.store, fn:function(){ this.next() },buffer:200}}
+			listeners:{click:{scope:this.store, fn:function(){ this.selModel.selectNext(); },buffer:200}}
 			} );
 
 		tb.setDisabled( ! ( this.store.rowIndex < ( this.store.getCount() - 1 ) ) );
 
-		this.store.on( 'changerowindex', function( s, rowIndex ) { 
-			tb.setDisabled( ! ( rowIndex < ( s.getCount() - 1 ) ) );
+		this.store.on( 'selectionchange', function( selection, selModel ) { 
+			tb.setDisabled( ! ( selModel.store.rowIndex < ( selModel.store.getCount() - 1 ) ) );
 		}, tb );
 
 		return tb;

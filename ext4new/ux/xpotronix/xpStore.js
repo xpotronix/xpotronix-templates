@@ -473,19 +473,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	markRecordModifiedChain: function(r, fdr) { /*{{{*/
+	markModifiedRecordChain: function(r, fdr) { /*{{{*/
 
 		var pr = this.getParentRecord(r);
 
 		if (pr && !pr.dirty) {
 
-			var tmp = pr.get('__ID__');
-			pr.set('__ID__', null);
-			pr.set('__ID__', tmp);
-
+			pr.setDirty();
 			fdr.push(pr);
-
-			pr.store.markRecordModifiedChain(pr, fdr);
+			pr.store.markModifiedRecordChain(pr, fdr);
 		}
 
 	},

@@ -149,7 +149,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 					/* DEBUG: hay que ver si aca es el evento correcto para cuando cambia un valir, tal vez validateedit */
 
-					var event_name = (i.xtype == 'checkbox') ? 'check' : 'change';
+					var event_name = (i.xtype == 'checkbox') ? 'check' : 'blur';
 
 					this.debug && console.log( 'class: ' + i.$className + ', name: ' + i.name );
 
@@ -170,7 +170,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 				
 						return true;
 
-					}, this);
+					}, this, { buffer: 500 });
 				}
 
 			}, this );
