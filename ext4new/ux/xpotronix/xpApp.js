@@ -79,7 +79,7 @@ Ext.define('AppTreeMenuStore', {/*{{{*/
 	autoLoad: true,
 	proxy: {
 		type: 'ajax',
-		url: '?v=xml&amp;a=menu&amp;v=ext4/menu-js',
+		url: '?v=xml&amp;a=menu&amp;v=ext4new/menu-js',
 		async: false,
 		reader: {
 			type: 'json',
@@ -154,7 +154,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 				App.user_node = this.getNodeById('user');
 				App.user_node && App.user_node.setText( App.user_node.text + ' <b>' + App.user.user_username + '</b>' );
 
-				Ext.Loader.loadScript( { url:App.feat.defaultSrc + '&v=ext4/loader' + normalized } );
+				Ext.Loader.loadScript( { url:App.feat.defaultSrc + '&v=ext4new/loader' + normalized } );
 			}
 		}}
 
@@ -206,7 +206,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 						var src = href;
 						var layout = Ext.getCmp('xpApp_layout');
 
-						Ext.Loader.loadScript( { url: src + '&v=ext4/loader&UNNORMALIZED=1' } );
+						Ext.Loader.loadScript( { url: src + '&v=ext4new/loader&UNNORMALIZED=1' } );
 					}
 				}
 
