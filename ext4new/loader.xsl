@@ -36,19 +36,22 @@
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
 
-	<xsl:output method="text" encoding="UTF-8" indent="no"/>
+	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
 
-	<xsl:param name="root_obj" select="//*:metadata/obj[1]"/>
+	<xsl:param name="root_obj" select="//*:model/obj[1]"/>
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
 	<xsl:param name="current_user" select="//*:session/users/user_username"/>
 	<xsl:param name="anon_user" select="//*:session/users/_anon"/>
+	<xsl:param name="application_path" select="'/var/www/sites/xpotronix/xpay'"/>
 
 	<xsl:variable name="session" select="//*:session"/>
+	<!-- <xsl:variable name="application_name" select="upper-case(//*:session/feat/application)"/> -->
+	<xsl:variable name="application_name" select="'app'"/>
 
 	<xsl:template match="/"><!--{{{-->
 		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
 		<!-- <xsl:message terminate="yes"><xsl:value-of select="//*:metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
-		<xsl:apply-templates mode="main_content"/>
+		<xsl:apply-templates/>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document"><!--{{{--> 
@@ -56,138 +59,177 @@
 </xsl:text>
 <html>
 	<xsl:apply-templates select="." mode="head"/>
-	<xsl:apply-templates select="." mode="main_content"/>
+	<xsl:message>** CURRENT_USER: <xsl:value-of select="$current_user"/></xsl:message>
+	<xsl:choose>
+		<xsl:when test="($login_window='true') and ($anon_user='1' or $current_user='')">
+			<xsl:apply-templates select="." mode="body_login"/>
+		</xsl:when>
+		<xsl:otherwise>
+			<body>
+			<xsl:apply-templates select="." mode="application"/>
+			</body>
+		</xsl:otherwise>
+	</xsl:choose>
 </html>
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="*:document" mode="body"><!--{{{-->
-		<body>
-			<xsl:apply-templates select="." mode="application_context"/>
-		</body>
+	<xsl:template match="*:document" mode="head"><!--{{{-->
+<head>
+<xsl:apply-templates select="." mode="meta"/>
+<xsl:apply-templates select="." mode="title"/>
+<xsl:apply-templates select="." mode="favicon"/>
+<xsl:apply-templates select="." mode="include-all-css"/>
+<xsl:apply-templates select="." mode="include-all-js"/>
+
+<xsl:for-each select="*:metadata/obj/files/file[@type='js' and @mode='events']">
+	<script type="text/javascript" src="{@name}"/>
+</xsl:for-each>
+
+</head>
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="*:document" mode="main_content"><!--{{{-->
-		<xsl:message>current user: <xsl:value-of select="$current_user"/></xsl:message>
-		<xsl:choose>
-			<xsl:when test="($login_window='true') and ($anon_user='1' or $current_user='')">
-				<xsl:apply-templates select="." mode="include-login-js"/>
-				<xsl:apply-templates select="." mode="body_login"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates select="." mode="include-all-js"/>
-				<xsl:apply-templates select="." mode="body"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template><!--}}}-->
+	<xsl:template match="*:document" mode="application"><!--{{{-->
 
-	<xsl:template match="*:document" mode="application_context"><!--{{{-->
-	
 	<xsl:variable name="menu_bar" select="xp:get_feat($root_obj,'menu_bar')"/>
+
 	<xsl:variable name="code">
 
-	<xsl:if test="//*:session/var/EVENTS_MONITOR=1">
+		<xsl:apply-templates select="." mode="loader"/>
+
+
+		var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
+
+		Ext.Ajax.timeout = 60000;
+		var App;
+
+		if ( App !== undefined ) {
+
+			App.reconfigure( config_App );
+
+		} else {
+
+			Ext.namespace('App');
+			App = Ext.create( 'Ux.xpotronix.xpApp', config_App );
+		}
+
+		App.feat.root_obj = '<xsl:value-of select="$root_obj/@name"/>';
+
+		document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
+
+		<!-- objects -->
+
+		<xsl:apply-templates select="*:metadata/obj" mode="config"/>
+
+
+		<!-- model -->
+
+		<xsl:for-each select="*:model//obj">
+
+			<xsl:apply-templates select="." mode="model"/>
+
+			<!-- model_eh -->
+
+			<xsl:for-each select="queries/query/query">
+
+				<xsl:apply-templates select="." mode="model_eh"/>
+
+			</xsl:for-each>
+
+		</xsl:for-each>
+
+		<!-- store -->
+
+		<xsl:for-each select="*:model//obj">
+
+			<xsl:apply-templates select="." mode="store"/>
+
+			<!-- store_eh -->
+
+			<xsl:for-each select="queries/query/query">
+
+				<xsl:apply-templates select="." mode="store_eh"/>
+
+			</xsl:for-each>
+
+		</xsl:for-each>
+
+		<!-- panel -->
+
+		<xsl:for-each select="*:model//panel">
+
+			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+
+				<xsl:apply-templates select="." mode="define"/>
+
+		</xsl:for-each>
+
+		<!-- controller -->
+
+			<xsl:apply-templates select="*:model" mode="controller"/>
+
+
+	<xsl:if test="*:session/var/EVENTS_MONITOR=1">
 		<xsl:call-template name="events_monitor"/>
 	</xsl:if>
 
-	/* shortcuts */
 
-        var fm = Ext.form, Ed = Ext.grid.GridEditor;
-
-	<xsl:if test="//*:session/feat/theme">
-		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//*:session/feat/theme"/>");
+	<xsl:if test="*:session/feat/theme">
+	/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
 	</xsl:if>
-
-
-	Ext.Ajax.timeout = 60000;	
-
-	var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
-
-	if ( App == undefined ) {
-
-		var App = Ext.create( 'Ux.xpotronix.xpApp',  config_App );
-
-	} else {
-
-		App.reconfigure( config_App );
-	}
-
 
 	Ext.onReady(function() {
 
-	document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="//feat/page_title[1]"/>';
+		/*
+		var wait = Ext.LoadMask(document.body, {msg:'Aguarde por favor ...'});
+		wait.show();
+		*/
 
-	<xsl:if test="$menu_bar='true'">
-	App.menu = new Ext.Toolbar( <xsl:apply-templates select="//*:session/menu"/> );
-	/*
-	Ext.Ajax.request({
-		url: '?a=menu&amp;v=ext4/menubar',
-		success: function(resp) {
-			var arr = Ext.decode( resp.responseText ); 
-			App.menu = new Ext.Toolbar();
+		<xsl:if test="$menu_bar='true'">
+		App.menu = Ext.create( 'Ext.Toolbar', <xsl:apply-templates select="*:session/menu"/> );
+		/*
+		Ext.Ajax.request({
+			url: '?a=menu&amp;v=ext4/menubar',
+			success: function(resp) {
+				var arr = Ext.decode( resp.responseText ); 
+				App.menu = Ext.create( 'Ext.Toolbar' );
 
-			Ext.each( arr, function(o) { 
-				App.menu.add(o); 
-			});
-	
-			App.fireEvent( 'configready' );
-		}});
-	*/
-	</xsl:if>
-
-	<xsl:apply-templates select="*:model" mode="stores"/>
-
-	<xsl:apply-templates select="*:metadata/obj" mode="config"/>
-
-	<xsl:apply-templates select="*:metadata/obj" mode="panels"/>
-
-		var App_layout = function() {
-			var layout = <xsl:choose>
-				<xsl:when test="//*:model/obj/layout">
-					<xsl:apply-templates select="//*:model/obj/layout">
-						<xsl:with-param name="obj" select="//*:metadata/obj[1]" tunnel="yes"/>
-					</xsl:apply-templates>
-				</xsl:when>
-
-				<xsl:otherwise>
-					<xsl:apply-templates select="*:model" mode="viewport">
-						<!-- <xsl:with-param name="standalone" select="true()"/> -->
-					</xsl:apply-templates>
-				</xsl:otherwise>
-
-			</xsl:choose>
-
-	                var iframe = Ext.getCmp('iframe');
-        	        iframe.add( layout );
-                	iframe.doLayout();
-		};
-
-
-		var events_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>];
-		var post_render_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>];
-
-		if ( events_js.length ) 
-			Ext.Loader.load( events_js, 
-				function() {
-					App_layout();
-					App.fireEvent( 'configready' );
+				Ext.each( arr, function(o) { 
+					App.menu.add(o); 
 				});
-		else {
-			App_layout();
-			App.fireEvent( 'configready' );
-		}
+		
+				App.fireEvent( 'configready' );
+			}});
+		*/
+		</xsl:if>
 
 
-		if ( post_render_js.length ) 
-			Ext.Loader.load( post_render_js );
+		/* application/viewport */
 
-	});
+		Ext.application({/*{{{*/
+
+		    requires: ['Ext.container.Viewport'],
+
+		    name: '<xsl:value-of select="$application_name"/>',
+
+		    controllers: [
+			'<xsl:value-of select="*:session/feat/module"/>'
+		    ],
+
+		    launch: function() {
+			<xsl:apply-templates select="." mode="viewport"/>
+		    }
+		});/*}}}*/
+
+	}); /* onReady ends */
+
+
 	</xsl:variable>
 	<!-- output final del codigo -->
 
 		
 	<script type="text/javascript">
 	<xsl:choose>
-		<xsl:when test="//*:session/var/UNNORMALIZED=1">
+		<xsl:when test="//*:session/var/UNNORMALIZED">
 			<xsl:value-of select="$code" disable-output-escaping="yes"/>
 		</xsl:when>
 		<xsl:otherwise>
@@ -195,6 +237,306 @@
 		</xsl:otherwise>
 	</xsl:choose>
 	</script>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="application_files"><!--{{{-->
+
+	<xsl:variable name="menu_bar" select="xp:get_feat($root_obj,'menu_bar')"/>
+
+		<!-- model -->
+
+		<xsl:for-each select="*:model//obj">
+
+			<xsl:result-document method="text"
+			encoding="utf-8"
+			href="{concat($application_path,'/',$application_name,'/model/',@name,'.js')}">
+
+			<xsl:apply-templates select="." mode="model"/>
+
+			</xsl:result-document>
+
+			<!-- model_eh -->
+
+			<xsl:for-each select="queries/query/query">
+
+				<xsl:result-document method="text"
+				encoding="utf-8"
+				href="{concat($application_path,'/',$application_name,'/model/',../from,'_',@name,'.js')}">
+
+				<xsl:apply-templates select="." mode="model_eh"/>
+
+				</xsl:result-document>
+
+			</xsl:for-each>
+
+		</xsl:for-each>
+
+		<!-- store -->
+
+		<xsl:for-each select="*:model//obj">
+
+			<xsl:result-document method="text"
+			encoding="utf-8"
+			href="{concat($application_path,'/',$application_name,'/store/',@name,'.js')}">
+
+			<xsl:apply-templates select="." mode="store"/>
+
+			</xsl:result-document>
+
+			<!-- store_eh -->
+
+			<xsl:for-each select="queries/query/query">
+
+				<xsl:result-document method="text"
+				encoding="utf-8"
+				href="{concat($application_path,'/',$application_name,'/store/',../from,'_',@name,'.js')}">
+
+				<xsl:apply-templates select="." mode="store_eh"/>
+
+				</xsl:result-document>
+
+			</xsl:for-each>
+
+		</xsl:for-each>
+
+		<!-- panel -->
+
+		<xsl:for-each select="*:model//panel">
+
+			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+
+			<xsl:message>****** PANEL_ID: <xsl:value-of select="$panel_id"/></xsl:message>
+
+			<xsl:result-document method="text"
+			encoding="utf-8"
+			href="{concat($application_path,'/',$application_name,'/view/',$panel_id,'.js')}">
+
+				<xsl:apply-templates select="." mode="define"/>
+
+			</xsl:result-document>
+
+		</xsl:for-each>
+
+		<!-- controller -->
+
+		<xsl:result-document method="text"
+		encoding="utf-8"
+		href="{concat($application_path,'/',$application_name,'/controller/',*:session/feat/module,'.js')}">
+	
+			<xsl:apply-templates select="*:model" mode="controller"/>
+
+		</xsl:result-document>
+
+
+
+	<xsl:variable name="code">
+
+	<xsl:if test="*:session/var/EVENTS_MONITOR=1">
+		<xsl:call-template name="events_monitor"/>
+	</xsl:if>
+
+	<xsl:apply-templates select="." mode="loader"/>
+
+	<xsl:if test="*:session/feat/theme">
+	/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
+	</xsl:if>
+
+	Ext.Ajax.timeout = 60000;
+	var App;
+
+	Ext.onReady(function() {
+
+
+		var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
+
+		if ( App ) {
+
+			App.reconfigure( config_App );
+
+		} else {
+
+			Ext.namespace('App');
+			App = Ext.create( 'Ux.xpotronix.xpApp', config_App );
+		}
+
+		App.feat.root_obj = '<xsl:value-of select="$root_obj"/>';
+
+		document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
+
+		/*
+		var wait = Ext.LoadMask(document.body, {msg:'Aguarde por favor ...'});
+		wait.show();
+		*/
+
+		<xsl:if test="$menu_bar='true'">
+		App.menu = Ext.create( 'Ext.Toolbar', <xsl:apply-templates select="*:session/menu"/> );
+		/*
+		Ext.Ajax.request({
+			url: '?a=menu&amp;v=ext4/menubar',
+			success: function(resp) {
+				var arr = Ext.decode( resp.responseText ); 
+				App.menu = Ext.create( 'Ext.Toolbar' );
+
+				Ext.each( arr, function(o) { 
+					App.menu.add(o); 
+				});
+		
+				App.fireEvent( 'configready' );
+			}});
+		*/
+		</xsl:if>
+
+		/* config objects */
+
+		<xsl:apply-templates select="*:metadata/obj" mode="config"/>
+
+
+		/* application/viewport */
+
+		Ext.application({/*{{{*/
+
+		    requires: ['Ext.container.Viewport'],
+
+		    name: '<xsl:value-of select="$application_name"/>',
+		    /* appFolder: 'modules',  */
+
+		    controllers: [
+			'<xsl:value-of select="*:session/feat/module"/>'
+		    ],
+
+		    launch: function() {
+			<xsl:apply-templates select="*:model" mode="viewport"/>
+		    }
+		});/*}}}*/
+
+	}); /* onReady ends */
+
+
+	</xsl:variable>
+	<!-- output final del codigo -->
+
+		
+	<script type="text/javascript">
+	<xsl:choose>
+		<xsl:when test="//*:session/var/UNNORMALIZED">
+			<xsl:value-of select="$code" disable-output-escaping="yes"/>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:value-of select="normalize-space($code)" disable-output-escaping="yes"/>
+		</xsl:otherwise>
+	</xsl:choose>
+	</script>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:model" mode="controller"><!--{{{-->
+
+	<xsl:variable name="items">
+		<xsl:for-each select=".//obj">
+			<xsl:element name="model">
+				<xsl:attribute name="name" select="@name"/>
+			</xsl:element>
+			<xsl:for-each select="queries/query/query">
+				<xsl:element name="model">
+					<xsl:attribute name="name" select="concat(../from,'_',@name)"/>
+				</xsl:element>
+			</xsl:for-each>
+		</xsl:for-each>
+	</xsl:variable>
+
+/* controller */
+
+	
+	Ext.define('<xsl:value-of select="concat($application_name,'.controller.',../*:session/feat/module)"/>', {/*{{{*/
+
+	    extend: 'Ext.app.Controller',
+
+	    views: [<xsl:for-each select="obj//panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+
+	    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+
+	    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+
+	    init: function() {
+		this.control({});
+	    }
+
+
+	});/*}}}*/
+
+
+	</xsl:template><!--}}}-->
+
+		<xsl:template match="*:document" mode="viewport"><!--{{{-->
+
+			<xsl:choose>
+				<xsl:when test="*:model/obj/layout">
+					<xsl:apply-templates select="*:model/obj/layout">
+						<xsl:with-param name="obj" select="*:metadata/obj[1]" tunnel="yes"/>
+						<xsl:with-param name="standalone" select="true()"/>
+					</xsl:apply-templates>
+				</xsl:when>
+
+				<xsl:otherwise>
+					<xsl:apply-templates select="*:model" mode="viewport">
+						<xsl:with-param name="standalone" select="true()"/>
+					</xsl:apply-templates>
+				</xsl:otherwise>
+
+			</xsl:choose>
+
+		</xsl:template><!--}}}-->
+
+<xsl:template match="*:document" mode="body_login"><!--{{{-->
+<body class="login">
+
+<script type="text/javascript">
+
+<xsl:apply-templates select="." mode="loader"/>
+
+Ext.namespace( 'App' );
+
+var App = Ext.create( 'Ux.xpotronix.xpApp', {feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> } );
+
+
+Ext.onReady(function(){
+
+	App.login();
+
+});
+</script>
+
+<div id="login-container" style="width: 340px;">
+	<div id="login-form-box">
+		<div id="login-form"></div>
+	</div>
+</div>
+
+</body>
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="loader"><!--{{{-->
+
+	Ext.Loader.setConfig({
+
+		enabled: false,
+		disableCaching: false,
+		paths: {
+			'Ux.xpotronix': '/ux4/xpotronix',
+			'Ext.ux': '/ux4',
+			'Ext': '/ext4'
+		}
+	});
+
+	Ext.require([ 
+
+		'Ext.tip.*', 
+		'Ext.Window.*', 
+		'Ext.grid.*', 
+		'Ext.data.*', 
+		'Ext.dd.*' 
+	]);
 
 	</xsl:template><!--}}}-->
 

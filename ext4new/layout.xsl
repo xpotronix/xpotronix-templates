@@ -132,68 +132,41 @@
 
 	App.layout = new Ext.Viewport({
 
-		masked: {
+		layout:'border'
+		,minWidth:600
+
+		,masked: {
     			xtype: 'loadmask',
     			message: 'My message'
 			}
-		,layout:'border'
-		,minWidth:600
+
+
 		,items:[{
 			 region:'north'
-			,xtype:'panel'
 			,html: '<xsl:value-of select="//*:dataset/class/obj[@name='home' and attr[@name='div_id']='banner'][1]/attr[@name='text']" disable-output-escaping="yes"/>'
-
 			/*,height:99, pageTitle:Ext.fly('page-title').dom.innerHTML*/
 
 		},{
 			 region:'west'
-			,layout:'ux.row'
+			,layout:'vbox'
+			,debug:true
 			,width:180
 			,minWidth:50
 			,maxWidth:300
 			/*,collapsible:true*/
 			,collapseMode:'mini'
 			,split:true
-			,items:[{
-				 id:'tree'
-				,rowHeight:1
-				,layout:'fit'
-				,autoScroll:true
-				,useArrows:true
-				,title:'Menú Principal'
-				,dataUrl: '?v=xml&amp;a=menu&amp;v=ext/menu-js'
-
-				,root: new Ext.tree.AsyncTreeNode()
-				,rootVisible: false 
-
-				,border:false
-				,xtype:'treepanel'
-				,defaultTools:false
-				,sort:false
-				,bodyStyle:'padding:5px'
-				,singleExpand:true
-				,collapsible: true
-				,stateful: true
-			},{
-				 height:240
-				,id:'detail'
-				,border:false
-				,bodyStyle:'padding:4px'
-				,title:'Ayuda'
-				,autoScroll:true
-			}]
+			,items:['AppTreeMenu']
 		},{
 			 region:'center'
-			,id:'iframe'
-			,xtype:'panel'
+			,xtype:'tabpanel'
 			,layout:'fit'
 			,defaultSrc:'<xsl:value-of select="//*:session/feat/defaultSrc"/>'
+			,items:[{html:'hola'}]
 			/*,border:true*/
 			/*,title:'&#160;'*/
 		}]
 	});
-
-
 
 	</xsl:template><!--}}}-->
 
@@ -313,9 +286,19 @@ var cardWizard = {
 
 	<xsl:template match="layout"><!--{{{-->
 		<xsl:variable name="obj_name" select="../@name"/>
+
+	Ext.create( 'Ext.Viewport', {
+
+		stateful: true,
+		layout: 'border',
+		bodyStyle: {border:0},
+
+		items:[
 		<xsl:apply-templates select="*">
 			<xsl:with-param name="obj_name" select="$obj_name"/>
-		</xsl:apply-templates>;
+		</xsl:apply-templates>
+		]});
+
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="panel" mode="panel_list"><!--{{{-->
