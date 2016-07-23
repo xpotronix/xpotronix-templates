@@ -72,6 +72,171 @@ Ext.define('AppMsgsGrid', {/*{{{*/
 
 	}); /*}}}*/
 
+Ext.define('AppTreeMenuStore', {/*{{{*/
+
+	extend: 'Ext.data.TreeStore',
+	storeId: 'AppTreeMenuStore',
+	autoLoad: true,
+	proxy: {
+		type: 'ajax',
+		url: '?v=xml&amp;a=menu&amp;v=ext4/menu-js',
+		async: false,
+		reader: {
+			type: 'json',
+			method: 'POST'
+		}
+	},
+	root: {
+		expanded: true,
+		text: "Organization",
+		leaf: 'false',
+		id: '/',
+	}
+});/*}}}*/
+
+Ext.define('AppTreeMenu', {/*{{{*/
+
+	extend: 'Ext.tree.Panel',
+	alias: 'widget.treemenu',
+	// xtype: 'treemenu',
+
+	store: Ext.create('AppTreeMenuStore'),
+
+	rowHeight:1
+	,layout:'fit'
+	,autoScroll:true
+	,useArrows:true
+	,title:'Menú Principal'
+
+	,nodeType: 'async'
+	,rootVisible: false 
+
+	,border:false
+	,defaultTools:false
+	,sort:false
+	,bodyStyle:'padding:5px'
+	,singleExpand:true
+	,collapsible: true
+	,stateful: true
+	,height:240
+	,id:'detail'
+	,border:false
+	,bodyStyle:'padding:4px'
+	,title:'Ayuda'
+	,autoScroll:true
+
+	,detailEl: null
+	,currentEx: null
+	,normalized: false
+
+	,debug: true
+
+	,listeners: {
+
+		render: { fn:function() {
+
+			this.getRootNode().expand();
+			this.showDetail('home');
+
+			}
+		}
+
+		,load: { fn:function( node ) {
+
+			// consoleDebugFn( this );
+
+			var normalized = this.normalized ? '': '&UNNORMALIZED=1';
+
+			if ( App.user_node == undefined && App.user.user_username && ! App.user._anon ) {
+
+				return;
+
+				App.user_node = this.getNodeById('user');
+				App.user_node && App.user_node.setText( App.user_node.text + ' <b>' + App.user.user_username + '</b>' );
+
+				Ext.Loader.loadScript( { url:App.feat.defaultSrc + '&v=ext4/loader' + normalized } );
+			}
+		}}
+
+		,itemclick: {
+
+			stopEvent:true, 
+
+			fn:function( panel, record, item, index, e, eOpts ) {
+
+				if ( App.getModifiedStores && App.getModifiedStores().length ) {
+
+					App.showSaveChanges();
+					return;
+				}
+
+				e.stopEvent();
+
+				// handle detail
+
+				var id = record.get('id');
+
+				if( id && Ext.fly( 'detail-' + id ) )
+					showDetail(id);
+
+				else {
+					if ( record.parentNode ) {
+
+						var parentNodeId;
+
+						if ( parentNodeId = record.parentNode.get('id') )
+
+							this.showDetail( parentNodeId );
+
+					} 
+
+
+				}
+
+				var href = record.get('href');
+
+				if( href ) {
+
+					if ( href.substring(0,11) == 'javascript:' ) {
+
+						eval( href );
+
+					} else {
+
+						var src = href;
+						var layout = Ext.getCmp('xpApp_layout');
+
+						Ext.Loader.loadScript( { url: src + '&v=ext4/loader&UNNORMALIZED=1' } );
+					}
+				}
+
+				// handle text click (toggle collapsed)
+				record.isLeaf() || record.expand();
+			}
+		}
+	}
+
+	,showDetail:function(ex) {
+
+		this.debug && console.error('no hay detail para el div_id: '+ ex );
+
+		if ( ! this.detailEl )
+			this.detailEl = Ext.getCmp('detail').body.createChild({tag:'div'});
+
+		Ext.state.Manager.set('ex', ex);
+
+		if (ex !== this.currentEx ) {
+			var detailSrc = Ext.getDom('detail-' + ex);
+
+			if ( detailSrc ) {
+				this.detailEl.hide().update(detailSrc.innerHTML).slideIn('t');
+				this.currentEx = ex;
+			}
+		}
+	}
+
+});/*}}}*/
+
 Ext.define('AppExportWindow', {/*{{{*/
 
 	extend: 'Ext.window.Window',
@@ -261,16 +426,16 @@ Ext.define('AppChangePasswordPanel', { /*{{{*/
 
 Ext.define('ChangePasswordWindow', {/*{{{*/
 
-		extend: 'Ext.Window',
-        	layout:'fit',
-        	width:300,
-        	height:150,
-		constrain: true,
-        	closable: false,
-        	resizable: false,
-       	 	plain: true,
-        	border: false,
-        	items: ['ChangePasswordPanel']
+	extend: 'Ext.Window',
+	layout:'fit',
+	width:300,
+	height:150,
+	constrain: true,
+	closable: false,
+	resizable: false,
+	plain: true,
+	border: false,
+	items: ['AppChangePasswordPanel']
 
 });/*}}}*/
 
@@ -887,13 +1052,26 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	},/*}}}*/
 
+	showTips: function() {/*{{{*/
+
+		// DEBUG: esto fue hecho en 10 minutos hay que hacer uno mejor !! 
+		var randomnumber = Math.floor(Math.random() * 7);
+
+		var tip = Ext.getDom('tip-' + randomnumber);
+
+		tip && Ext.MessageBox.show({
+			title: App.feat.page_title,
+			msg: '<center><b>Sugerencia del sistema:</b>' + tip.innerHTML + '</center>',
+			width: 300,
+			buttons: Ext.Msg.OK
+		});
+	},/*}}}*/
+
 	get_feat: function( key, obj ) {/*{{{*/
 
 		return ( obj && obj.feat[key] !== undefined ) ? obj.feat[key] : this.feat[key];
 
 	}/*}}}*/
-
-
 
 }); // extend
 

@@ -216,7 +216,7 @@
 		    ],
 
 		    launch: function() {
-			<xsl:apply-templates select="*:model" mode="viewport"/>
+			<xsl:apply-templates select="." mode="viewport"/>
 		    }
 		});/*}}}*/
 
@@ -521,6 +521,7 @@ Ext.onReady(function(){
 	Ext.Loader.setConfig({
 
 		enabled: false,
+		disableCaching: false,
 		paths: {
 			'Ux.xpotronix': '/ux4/xpotronix',
 			'Ext.ux': '/ux4',

@@ -43,6 +43,7 @@
 	<xsl:param name="current_user" select="//*:session/users/user_username"/>
 
 	<xsl:variable name="session" select="//*:session"/>
+	<xsl:variable name="application_name" select="'app'"/>
 
 	<xsl:template match="/"><!--{{{-->
 		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
@@ -58,10 +59,10 @@
 	<!-- <xsl:message><xsl:value-of select="name()"/></xsl:message> -->
 
 	<!-- <xsl:apply-templates select="." mode="include-login-js"/> -->
-	<xsl:apply-templates select="." mode="include-all-js"/>
+	<!-- <xsl:apply-templates select="." mode="include-all-js"/> -->
 
   	<!-- <script type="text/javascript" src="/ux/misc/miframe.js"></script> -->
- 	<script type="text/javascript" src="/ux/misc/RowLayout.js"></script>
+ 	<!-- <script type="text/javascript" src="/ux/misc/RowLayout.js"></script> -->
 
   	<script type="text/javascript">
 
