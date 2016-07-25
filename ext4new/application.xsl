@@ -192,17 +192,19 @@
 
 	<xsl:template match="*:document" mode="viewport"><!--{{{-->
 
+		<xsl:param name="standalone" select="true()"/>
+
 		<xsl:choose>
 			<xsl:when test="*:model/obj/layout">
 				<xsl:apply-templates select="*:model/obj/layout">
 					<xsl:with-param name="obj" select="*:metadata/obj[1]" tunnel="yes"/>
-					<xsl:with-param name="standalone" select="true()"/>
+					<xsl:with-param name="standalone" select="$standalone"/>
 				</xsl:apply-templates>
 			</xsl:when>
 
 			<xsl:otherwise>
 				<xsl:apply-templates select="*:model" mode="viewport">
-					<xsl:with-param name="standalone" select="true()"/>
+					<xsl:with-param name="standalone" select="$standalone"/>
 				</xsl:apply-templates>
 			</xsl:otherwise>
 

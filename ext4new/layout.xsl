@@ -15,7 +15,7 @@
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/"
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/">
 
-<!-- layouts --> 
+	<!-- layouts --> 
 
 	<xsl:template match="*:model" mode="viewport"><!--{{{-->
 		<xsl:param name="standalone" select="false()"/>
@@ -64,7 +64,14 @@
 		</xsl:choose>
 	</xsl:variable>
 
-	Ext.create( 'Ext.Viewport', {
+	<xsl:variable name="ui_class">
+		<xsl:choose>
+			<xsl:when test="$standalone">Viewport</xsl:when>
+			<xsl:otherwise>Panel</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+
+	Ext.create( 'Ext.<xsl:value-of select="$ui_class"/>', {
 
 		stateful: true,
 		layout: 'border',
