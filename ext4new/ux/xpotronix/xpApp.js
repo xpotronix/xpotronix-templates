@@ -119,7 +119,6 @@ Ext.define('AppTreeMenu', {/*{{{*/
 	,collapsible: true
 	,stateful: true
 	,height:240
-	,id:'detail'
 	,border:false
 	,bodyStyle:'padding:4px'
 	,title:'Ayuda'
@@ -203,10 +202,20 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 					} else {
 
-						var src = href;
-						var layout = Ext.getCmp('xpApp_layout');
+						var tp = this.up('viewport').down('tabpanel');
 
-						Ext.Loader.loadScript( { url: src + '&v=ext4new/loader&UNNORMALIZED=1' } );
+						Ext.Loader.loadScript({ 
+							url: href + '&v=ext4new/loader&UNNORMALIZED=1', 
+							onLoad:function(a,b,c) {
+
+
+							},
+							onError:function(a,b,c){
+
+								alert( 'hubo un error al procesar el requerimiento' );
+
+							},
+							scope:tp });
 					}
 				}
 
@@ -218,7 +227,10 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 	,showDetail:function(ex) {
 
+
 		this.debug && console.error('no hay detail para el div_id: '+ ex );
+
+		return;
 
 		if ( ! this.detailEl )
 			this.detailEl = Ext.getCmp('detail').body.createChild({tag:'div'});
