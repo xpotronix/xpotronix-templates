@@ -91,7 +91,7 @@
 		</xsl:if>
 
 		{ 
-			id: 'viewport_north_tabs',
+			//id: 'viewport_north_tabs',
 			xtype: 'tabpanel',
 			stateful: true,
 			titleCollapse: false, 
@@ -108,7 +108,7 @@
 
 		<xsl:if test="count($panels//*[@obj_name!=$obj_name])">
                 ,{ region:'center', 
-			id: 'viewport_center_tabs',
+			//id: 'viewport_center_tabs',
 			xtype: 'tabpanel',
 			stateful: true,
 			layoutOnTabChange: true, 
@@ -118,7 +118,7 @@
                 }</xsl:if>
 		<xsl:if test="$messages_panel='true'">
 		,{
-			id: '__messagesPanel',
+			//id: '__messagesPanel',
 			stateful: true,
 			region:'south',
 			layout: 'fit',
