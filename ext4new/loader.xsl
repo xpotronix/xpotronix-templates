@@ -57,6 +57,7 @@
 	<xsl:variable name="code">
 		Ext.onReady(function() {
 		<xsl:apply-templates mode="defines"/>
+		app.getApplication().getController('<xsl:value-of select="//*:session/feat/module"/>').init();
 		var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>
 		<xsl:apply-templates mode="add_panel"/>
 		});
@@ -75,9 +76,7 @@
 
 	</xsl:template><!--}}}-->
 
-
 	<xsl:template match="*:document" mode="add_panel">
-		debugger;
 		Ext.getCmp('mainAppTabPanel').add(tmp);
 	</xsl:template>
 
