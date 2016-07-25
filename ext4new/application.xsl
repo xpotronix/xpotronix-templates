@@ -190,25 +190,25 @@
 
 	</xsl:template><!--}}}-->
 
-		<xsl:template match="*:document" mode="viewport"><!--{{{-->
+	<xsl:template match="*:document" mode="viewport"><!--{{{-->
 
-			<xsl:choose>
-				<xsl:when test="*:model/obj/layout">
-					<xsl:apply-templates select="*:model/obj/layout">
-						<xsl:with-param name="obj" select="*:metadata/obj[1]" tunnel="yes"/>
-						<xsl:with-param name="standalone" select="true()"/>
-					</xsl:apply-templates>
-				</xsl:when>
+		<xsl:choose>
+			<xsl:when test="*:model/obj/layout">
+				<xsl:apply-templates select="*:model/obj/layout">
+					<xsl:with-param name="obj" select="*:metadata/obj[1]" tunnel="yes"/>
+					<xsl:with-param name="standalone" select="true()"/>
+				</xsl:apply-templates>
+			</xsl:when>
 
-				<xsl:otherwise>
-					<xsl:apply-templates select="*:model" mode="viewport">
-						<xsl:with-param name="standalone" select="true()"/>
-					</xsl:apply-templates>
-				</xsl:otherwise>
+			<xsl:otherwise>
+				<xsl:apply-templates select="*:model" mode="viewport">
+					<xsl:with-param name="standalone" select="true()"/>
+				</xsl:apply-templates>
+			</xsl:otherwise>
 
-			</xsl:choose>
+		</xsl:choose>
 
-		</xsl:template><!--}}}-->
+	</xsl:template><!--}}}-->
 
 <xsl:template match="*:document" mode="body_login"><!--{{{-->
 <body class="login">

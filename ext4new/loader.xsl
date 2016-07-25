@@ -37,7 +37,7 @@
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
 
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
+	<xsl:output method="text" encoding="UTF-8" indent="no"/>
 
 	<xsl:param name="root_obj" select="//*:model/obj[1]"/>
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
@@ -53,7 +53,22 @@
 
 		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
 		<!-- <xsl:message terminate="yes"><xsl:value-of select="//*:metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
+
+	<xsl:variable name="code">
 		<xsl:apply-templates mode="defines"/>
+		<xsl:apply-templates mode="viewport"/>
+	</xsl:variable>
+
+	<!-- output final del codigo -->
+
+	<xsl:choose>
+		<xsl:when test="//*:session/var/UNNORMALIZED=1">
+			<xsl:value-of select="$code" disable-output-escaping="yes"/>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:value-of select="normalize-space($code)" disable-output-escaping="yes"/>
+		</xsl:otherwise>
+	</xsl:choose>
 
 	</xsl:template><!--}}}-->
 
