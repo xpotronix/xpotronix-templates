@@ -77,7 +77,11 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document" mode="add_panel">
-		Ext.getCmp('mainAppTabPanel').add(Ext.apply(tmp, {title:'<xsl:value-of select="//*:session/feat/module"/>'})).show();
+		Ext.getCmp('mainAppTabPanel').
+			add(Ext.apply(tmp, 
+				{title:'<xsl:value-of select="//*:session/feat/module"/>',
+				closable:true
+			})).show();
 	</xsl:template>
 
 </xsl:stylesheet>
