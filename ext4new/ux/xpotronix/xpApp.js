@@ -249,6 +249,31 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 });/*}}}*/
 
+Ext.define('AppTabMenu', {/*{{{*/
+
+	extend: 'Ext.tab.Panel'
+	,alias: 'widget.tabmenu'
+
+	// xtype: 'tabmenu',
+
+	,debug: true
+
+	,listeners: {} 
+
+
+	,add: function( panel ) {
+
+		if ( false ) {
+
+			return;
+
+		}
+
+		return this.callParent(arguments);
+	} 
+
+});/*}}}*/
+
 Ext.define('AppExportWindow', {/*{{{*/
 
 	extend: 'Ext.window.Window',
