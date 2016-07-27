@@ -58,7 +58,8 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			displayInfo: true,
 			displayMsg: '{0} a {1} de {2}',
 			emptyMsg: "",
-			prependButtons: true
+			prependButtons: true,
+			enableOverflow: true
 		});
 
 		this.callParent(arguments);
