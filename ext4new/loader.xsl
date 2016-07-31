@@ -55,11 +55,20 @@
 		<!-- <xsl:message terminate="yes"><xsl:value-of select="//*:metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
 
 	<xsl:variable name="code">
+		/* module: <xsl:value-of select="//*:session/feat/module"/> */
+
 		Ext.onReady(function() {
-		<xsl:apply-templates mode="defines"/>
-		app.getApplication().getController('<xsl:value-of select="//*:session/feat/module"/>').init();
-		var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>
-		<xsl:apply-templates mode="add_panel"/>
+
+			<xsl:apply-templates mode="defines"/>
+			app.getApplication().getController('<xsl:value-of select="//*:session/feat/module"/>').init();
+			var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>
+			var tp = Ext.getCmp('mainAppTabPanel');
+			debugger;
+			tp.add(Ext.apply(tmp, 
+				{itemId:tp.lastSelection.get('itemId') + '_AppTab',
+				title:tp.lastSelection.get('text'),
+				closable:true
+			})).show();
 		});
 	</xsl:variable>
 
@@ -75,14 +84,6 @@
 	</xsl:choose>
 
 	</xsl:template><!--}}}-->
-
-	<xsl:template match="*:document" mode="add_panel">
-		Ext.getCmp('mainAppTabPanel').
-			add(Ext.apply(tmp, 
-				{title:'<xsl:value-of select="//*:session/feat/module"/>',
-				closable:true
-			})).show();
-	</xsl:template>
 
 </xsl:stylesheet>
 

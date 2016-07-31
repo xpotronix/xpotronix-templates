@@ -73,7 +73,7 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="foreign_key"><!--{{{-->{type:'<xsl:value-of select="type"/>',<xsl:if test="@passive">,passive: <xsl:value-of select="@passive"/></xsl:if>refs:[<xsl:apply-templates select="ref"/>]} 
+	<xsl:template match="foreign_key"><!--{{{-->{type:'<xsl:value-of select="@type"/>',<xsl:if test="@passive">passive: <xsl:value-of select="@passive"/>,</xsl:if>refs:[<xsl:apply-templates select="ref"/>]} 
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="ref"><!--{{{-->{local:'<xsl:value-of select="@local"/>',remote:'<xsl:value-of select="@remote"/>'}<xsl:if test="position()!=last()">,</xsl:if>
