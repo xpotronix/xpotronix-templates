@@ -72,11 +72,18 @@ Ext.define('AppMsgsGrid', {/*{{{*/
 
 	}); /*}}}*/
 
-Ext.define('AppTreeMenuStore', {/*{{{*/
+Ext.define('AppTreeMenuModel', {/*{{{*/
 
-	extend: 'Ext.data.TreeStore',
-	storeId: 'AppTreeMenuStore',
-	autoLoad: true,
+	extend: 'Ext.data.Model',
+
+	fields: [
+
+		{name: 'itemId'},
+		{name: 'text'},
+		{name: 'module'},
+		{name: 'extra'}        
+	],
+
 	proxy: {
 		type: 'ajax',
 		url: '?v=xml&amp;a=menu&amp;v=ext4new/menu-js',
@@ -85,7 +92,17 @@ Ext.define('AppTreeMenuStore', {/*{{{*/
 			type: 'json',
 			method: 'POST'
 		}
-	},
+	}
+
+});/*}}}*/
+
+Ext.define('AppTreeMenuStore', {/*{{{*/
+
+	model: 'AppTreeMenuModel',
+	extend: 'Ext.data.TreeStore',
+	storeId: 'AppTreeMenuStore',
+	autoLoad: true,
+
 	root: {
 		expanded: true,
 		text: "Organization",
@@ -127,6 +144,8 @@ Ext.define('AppTreeMenu', {/*{{{*/
 	,detailEl: null
 	,currentEx: null
 	,normalized: false
+
+	,lastSelection: null
 
 	,debug: true
 
@@ -173,17 +192,18 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 				// handle detail
 
-				var id = record.get('id');
+				var itemId = record.get('itemId');
 
-				if( id && Ext.fly( 'detail-' + id ) )
-					showDetail(id);
+				if( itemId && Ext.fly( 'detail-' + itemId ) ) {
 
-				else {
+					this.showDetail(itemId);
+
+				} else {
 					if ( record.parentNode ) {
 
 						var parentNodeId;
 
-						if ( parentNodeId = record.parentNode.get('id') )
+						if ( parentNodeId = record.parentNode.get('itemId') )
 
 							this.showDetail( parentNodeId );
 
@@ -204,18 +224,38 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 						var tp = this.up('viewport').down('tabpanel');
 
-						Ext.Loader.loadScript({ 
-							url: href + '&v=ext4new/loader&UNNORMALIZED=1', 
-							onLoad:function(a,b,c) {
+						found = false;
 
+						var key = itemId + '_AppTab';
 
-							},
-							onError:function(a,b,c){
+						tp.items.each( function( panel ) {
 
-								alert( 'hubo un error al procesar el requerimiento' );
+							if ( panel.itemId == key ) {
 
-							},
-							scope:tp });
+								found = true;
+								tp.setActiveTab( panel );
+								return;
+							}
+						});
+
+						if ( ! found ) {
+
+							tp.lastSelection = record;
+
+							Ext.Loader.loadScript({ 
+								scope:tp,
+								url: href + '&v=ext4new/loader&UNNORMALIZED=1', 
+								onLoad:function() {
+
+									/* debugger; */
+								},
+								onError:function(a,b,c){
+
+									alert( 'hubo un error al procesar el requerimiento' );
+
+								}
+							});
+						}
 					}
 				}
 
@@ -228,7 +268,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 	,showDetail:function(ex) {
 
 
-		this.debug && console.error('no hay detail para el div_id: '+ ex );
+		this.debug && console.log('no hay detail para el div_id: '+ ex );
 
 		return;
 
