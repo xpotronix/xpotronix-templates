@@ -298,7 +298,23 @@ Ext.define('AppTabMenu', {/*{{{*/
 
 	,debug: true
 
-	,listeners: {} 
+	,listeners: {
+
+		tabchange: {
+
+			fn: function(tabPanel, newTab, oldTab, eOpts) {
+
+
+				var tm = tabPanel.up('viewport').down('treemenu');
+				var record = tm.store.getRootNode().findChild('itemId',tabPanel.itemId.slice(0, -7),true);
+				tm.getSelectionModel().select(record);
+
+				debugger;
+			}
+
+		}
+
+	} 
 
 
 	,add: function( panel ) {
