@@ -153,6 +153,8 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 		render: { fn:function() {
 
+			this.up('panel').setTitle(App.feat.page_title);
+
 			this.getRootNode().expand();
 			this.showDetail('home');
 
@@ -226,7 +228,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 						found = false;
 
-						var key = itemId + '_AppTab';
+						var key = itemId;
 
 						tp.items.each( function( panel ) {
 
@@ -305,25 +307,31 @@ Ext.define('AppTabMenu', {/*{{{*/
 			fn: function(tabPanel, newTab, oldTab, eOpts) {
 
 
-				var tm = tabPanel.up('viewport').down('treemenu');
-				var record = tm.store.getRootNode().findChild('itemId',tabPanel.itemId.slice(0, -7),true);
-				tm.getSelectionModel().select(record);
+				var tm = tabPanel.up('viewport').down('treemenu'),
+				record = tm.store.getRootNode().findChild('itemId',newTab.itemId,true),
+				tmSelModel = tm.getSelectionModel(),
+				currentRecord = tmSelModel.getSelection().pop();
 
-				debugger;
+				if (currentRecord) {
+
+					if ( record.id != currentRecord ) {
+
+						record.parentNode.expand();
+						tmSelModel.select(record);
+
+						var pNode = record.parentNode;
+
+						while(pNode) {
+							pNode.expand();
+							pNode = pNode.parentNode;
+						}
+					}
+				}
 			}
-
 		}
-
 	} 
 
-
 	,add: function( panel ) {
-
-		if ( false ) {
-
-			return;
-
-		}
 
 		return this.callParent(arguments);
 	} 
