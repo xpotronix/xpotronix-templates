@@ -314,17 +314,25 @@ Ext.define('AppTabMenu', {/*{{{*/
 
 				if (currentRecord) {
 
-					if ( record.id != currentRecord ) {
+					if ( record ) {
 
-						record.parentNode.expand();
-						tmSelModel.select(record);
+						if ( record.id != currentRecord ) {
 
-						var pNode = record.parentNode;
+							record.parentNode.expand();
+							tmSelModel.select(record);
 
-						while(pNode) {
-							pNode.expand();
-							pNode = pNode.parentNode;
+							var pNode = record.parentNode;
+
+							while(pNode) {
+								pNode.expand();
+								pNode = pNode.parentNode;
+							}
 						}
+
+					} else {
+
+						tmSelModel.deselect();
+
 					}
 				}
 			}
