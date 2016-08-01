@@ -65,7 +65,7 @@
 			var tp = Ext.getCmp('mainAppTabPanel');
 			debugger;
 			tp.add(Ext.apply(tmp, 
-				{itemId:tp.lastSelection.get('itemId') + '_AppTab',
+				{itemId:tp.lastSelection.get('itemId'),
 				title:tp.lastSelection.get('text'),
 				closable:true
 			})).show();
