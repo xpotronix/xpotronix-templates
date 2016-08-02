@@ -63,7 +63,6 @@
 			app.getApplication().getController('<xsl:value-of select="//*:session/feat/module"/>').init();
 			var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>
 			var tp = Ext.getCmp('mainAppTabPanel');
-			debugger;
 			tp.add(Ext.apply(tmp, 
 				{itemId:tp.lastSelection.get('itemId'),
 				title:tp.lastSelection.get('text'),

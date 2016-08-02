@@ -193,8 +193,6 @@
 
 	</xsl:template><!--}}}-->
 
-
-
 	<xsl:template match="panel[@type='xpPanel']" mode="define"><!--{{{-->
 
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
