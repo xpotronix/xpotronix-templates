@@ -17,7 +17,7 @@
 
 	<!-- panel_config -->
 
-	<xsl:template match="panel" mode="panel_config"><!--{{{-->
+	<xsl:template match="panel" mode="panel_config_old"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
 
@@ -37,6 +37,33 @@
                 ,title:'<xsl:apply-templates select="." mode="translate"/>'}
 
 	</xsl:template><!--}}}-->
+
+	<xsl:template match="panel" mode="panel_config"><!--{{{-->
+
+		<xsl:param name="obj" tunnel="yes"/>
+		<!-- <xsl:message terminate="yes">object: <xsl:copy-of select="$obj/@name"/></xsl:message> -->
+		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
+		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+
+		<xsl:variable name="config">
+			<alias>'widget.<xsl:value-of select="$panel_id"/>'</alias>
+			<stateId>'<xsl:value-of select="$panel_id"/>'</stateId>
+			<class_name>'<xsl:value-of select="$obj/@name"/>'</class_name>
+			<obj>App.obj.get('<xsl:value-of select="$obj/@name"/>')</obj>
+			<acl>App.obj.get('<xsl:value-of select="$obj/@name"/>').acl</acl>
+			<store>'<xsl:value-of select="$obj/@name"/>'</store>
+			<feat><xsl:apply-templates select="$obj" mode="feats"/></feat>
+			<display_as>'<xsl:value-of select="@display"/>'</display_as>
+			<title>'<xsl:apply-templates select="." mode="translate"/>'</title>
+			<xsl:for-each select="@*">
+				<xsl:element name="{name()}">'<xsl:apply-templates select="." mode="json-value"/>'</xsl:element>
+			</xsl:for-each>
+		</xsl:variable>
+
+		{<xsl:for-each select="$config/*"><xsl:value-of select="name()"/>:<xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
+
+	</xsl:template><!--}}}-->
+
 
 	<!-- ui_overides -->
 
