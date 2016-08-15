@@ -89,9 +89,6 @@
 
 	</xsl:template><!--}}}--> 
 
-	<xsl:template name="user-session">{<xsl:for-each select="//*:session/users/*"><xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
-	</xsl:template>
-
 	<xsl:template match="*" mode="json-value"><!--{{{-->
 		<xsl:param name="type" select="@type"/>
 		<xsl:choose>
@@ -106,6 +103,9 @@
 			<xsl:otherwise>'<xsl:value-of select="."/>'</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template><!--}}}-->
+
+	<xsl:template name="user-session">{<xsl:for-each select="//*:session/users/*"><xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
+	</xsl:template>
 
 </xsl:stylesheet>
 

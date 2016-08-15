@@ -65,7 +65,7 @@
 	<!-- <xsl:message>en record</xsl:message> -->
 	<!-- <xsl:message><xsl:sequence select="."/></xsl:message> -->
 	<xsl:variable name="type" select="@type"/>
-	<xsl:variable name="attr_templates" select="document('attr-templates.xml')"/>
+	<xsl:variable name="attr_templates" select="document('templates.xml')"/>
 
 	<xsl:variable name="attr_attrs">
 		<xsl:apply-templates select="." mode="attr_attrs"/>
@@ -125,7 +125,7 @@
 
 <xsl:template match="attr" mode="column"><!--{{{-->
 	<xsl:variable name="type" select="@type"/>
-	<xsl:variable name="attr_templates" select="document('attr-templates.xml')"/>
+	<xsl:variable name="attr_templates" select="document('templates.xml')"/>
 	<!--<xsl:message>en column, @type: <xsl:value-of select="@type"/></xsl:message>-->
 
 
@@ -188,7 +188,7 @@
 
 <xsl:template match="attr" mode="field"><!--{{{-->
 	<xsl:variable name="type" select="@type"/>
-	<xsl:variable name="attr_templates" select="document('attr-templates.xml')"/>
+	<xsl:variable name="attr_templates" select="document('templates.xml')"/>
 	<!-- <xsl:message>en field</xsl:message> -->
 
 	<xsl:variable name="attr_attrs">
