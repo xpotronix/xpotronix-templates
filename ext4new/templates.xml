@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<attr-templates>
+<templates>
 
 	<!-- record -->
 
@@ -193,4 +193,20 @@
 		<minChars>3</minChars>
 	</field><!--}}}-->
 
-</attr-templates>
+
+	<panel type="xpGrid">
+
+		<extend>Ux.xpotronix.xpGrid</extend>
+		<stateful>true</stateful>
+		<layout>fit</fit>
+		<deferredRender>true</deferredRender>
+		<split>true</split>
+		<syncSize>true</syncSize>
+		<border>false</border>
+		<autoScroll>true</autoScroll>
+
+	</panel>
+
+
+
+</templates>

@@ -15,6 +15,8 @@
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/"
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/">
 
+	<xsl:variable name="templates" select="document('templates.xml')"/>
+
 	<!-- panel_config -->
 
 	<xsl:template match="panel" mode="panel_config_old"><!--{{{-->
@@ -63,7 +65,6 @@
 		{<xsl:for-each select="$config/*"><xsl:value-of select="name()"/>:<xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
 
 	</xsl:template><!--}}}-->
-
 
 	<!-- ui_overides -->
 
@@ -164,8 +165,8 @@
 	</xsl:template><!--}}}-->
 
 <!-- paneles por tipo -->
- 
-	<xsl:template match="panel[@type='xpGrid']" mode="define"><!--{{{-->
+
+	<xsl:template match="panel" mode="define"><!--{{{-->
 
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
@@ -175,6 +176,17 @@
 		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
 
 	</xsl:template><!--}}}-->
+
+	<!-- <xsl:template match="panel[@type='xpGrid']" mode="define">
+
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
+		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+		Ext.define('<xsl:value-of select="concat($application_name,'.view.',$panel_id)"/>',Ext.apply(
+		{extend:'Ux.xpotronix.xpGrid',stateful:true,layout:'fit',deferredRender:true,split:true,syncSize:true,border:false,autoScroll:true}
+		,<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>));
+
+	</xsl:template> -->
 
 	<xsl:template match="panel[@type='xpForm']" mode="define"><!--{{{-->
 
