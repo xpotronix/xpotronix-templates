@@ -16,6 +16,7 @@
 	xmlns="http://xpotronix.com/namespace/xpotronix/"
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/"
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions"
+	xmlns:saxon="http://saxon.sf.net/"
 	exclude-result-prefixes="#all">
 
 <xsl:template match="attr"><!--{{{-->
@@ -339,37 +340,44 @@
 
 <xsl:template match="editor[ancestor::*/@type='xptext']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
+<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 <xsl:if test="position()-1">,</xsl:if>editor:<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xpint']"><!--{{{-->
+<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 <xsl:if test="position()-1">,</xsl:if>editor:<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xpdate']"><!--{{{--> 
+<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 <!-- <xsl:message><xsl:sequence select="."/></xsl:message> -->
 <xsl:if test="position()-1">,</xsl:if>editor:<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xpdatetime']"><!--{{{--> 
+<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 <xsl:if test="position()-1">,</xsl:if>editor:<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xpboolean']"><!--{{{--> 
+<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 <xsl:if test="position()-1">,</xsl:if>editor:<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xpenum']"><!--{{{--> 
- <xsl:if test="position()-1">,</xsl:if>editor:<xsl:choose>
+<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
+<xsl:if test="position()-1">,</xsl:if>editor:<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xpentry_help']"><!--{{{-->
+<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 <xsl:if test="position()-1">,</xsl:if>editor:<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
