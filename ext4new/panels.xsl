@@ -13,6 +13,7 @@
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/"
+	xmlns:saxon="http://saxon.sf.net/"
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/">
 
 	<xsl:variable name="templates" select="document('templates.xml')"/>

@@ -198,7 +198,7 @@
 
 		<extend>Ux.xpotronix.xpGrid</extend>
 		<stateful>true</stateful>
-		<layout>fit</fit>
+		<layout>fit</layout>
 		<deferredRender>true</deferredRender>
 		<split>true</split>
 		<syncSize>true</syncSize>
