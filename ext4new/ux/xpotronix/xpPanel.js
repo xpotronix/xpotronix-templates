@@ -22,7 +22,7 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 		Ext.apply(this, config);
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
-		Ux.xpotronix.xpPanel.superclass.constructor.apply(this, arguments);
+		this.callParent(arguments);
 
 	},
 
