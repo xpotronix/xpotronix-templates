@@ -69,6 +69,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 		this.callParent();
 
 		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
+                if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
 
 		/* this.getForm().trackResetOnLoad = true; */
 

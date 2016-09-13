@@ -32,8 +32,7 @@
 		alias:'widget.<xsl:value-of select="$panel_id"/>'
 		,stateId:'<xsl:value-of select="$panel_id"/>'
 		,class_name:'<xsl:value-of select="$obj/@name"/>'
-		,obj:App.obj.get('<xsl:value-of select="$obj/@name"/>')
-		,acl:App.obj.get('<xsl:value-of select="$obj/@name"/>').acl
+		,obj:'<xsl:value-of select="$obj/@name"/>'
 		,store:'<xsl:value-of select="$obj/@name"/>'
 		,feat:<xsl:apply-templates select="$obj" mode="feats"/>
 		,display_as:'<xsl:value-of select="@display"/>'
