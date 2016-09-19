@@ -4,40 +4,55 @@
 	<!-- record -->
 
 	<record><!--{{{-->
+
 		<name/>
 		<type>string</type>
+
 	</record><!--}}}-->
 
 	<record type="xpint"><!--{{{-->
+
 		<type>int</type>
+
 	</record><!--}}}-->
 
 	<record type="xpboolean"><!--{{{-->
+
 		<type>boolean</type>
 		<renderer>formatBoolean(value,p,record)</renderer>
+
 	</record><!--}}}-->
 
 	<record type="eh_label"><!--{{{-->
+
 		<mapping/>
+
 	</record><!--}}}-->
 
 	<record type="xpdecimal"><!--{{{-->
+
 		<type>float</type>
+
 	</record><!--}}}-->
 
 	<record type="xpdate"><!--{{{-->
+
 		<type>date</type>
 		<dateFormat/>
+
 	</record><!--}}}-->
 
 	<record type="xpdatetime"><!--{{{-->
+
 		<type>date</type>
 		<format/>
+
 	</record><!--}}}-->
 
 	<!-- column -->
 
 	<column><!--{{{-->
+
 		<name/>
 		<header/>
 		<dataIndex/>
@@ -46,18 +61,22 @@
 		<align>left</align>
 		<filter>{showFilterIcon:false}</filter>
 		<editor/>
+
 	</column><!--}}}-->
 
 	<column type="xptext"><!--{{{-->
 	</column><!--}}}-->
 
 	<column type="xpint"><!--{{{-->
+
 		<align>right</align>
-		<filter>{showFilterIcon:false,field:{style:'text-align:right;'}}</filter>
+		<filter>{showFilterIcon:false,field:{fieldStyle:'text-align:right;'}}</filter>
 		<renderer/>
+
 	</column><!--}}}-->
 
 	<column type="xpboolean"><!--{{{-->
+
 		<renderer>formatBoolean(value,p,record)</renderer>
 		<filter>{showFilterIcon:false,
 			field: {
@@ -78,74 +97,97 @@
 	</column><!--}}}-->
 
 	<column type="xpdecimal"><!--{{{-->
+
 		<align>right</align>
-		<filter>{showFilterIcon:false,field:{style:'text-align:right;'}}</filter>
+		<filter>{showFilterIcon:false,field:{fieldStyle:'text-align:right;'}}</filter>
+
 	</column><!--}}}-->
 
 	<column type="xpdate"><!--{{{-->
+
 		<align>right</align>
-		<filter>{showFilterIcon:false,field:{style:'text-align:right;'}}</filter>
+		<filter>{showFilterIcon:false,field:{fieldStyle:'text-align:right;'}}</filter>
 		<renderer/>
+
 	</column><!--}}}-->
 
 	<column type="xpdatetime"><!--{{{-->
+
 		<align>right</align>
-		<filter>{showFilterIcon:false,field:{style:'text-align:right;'}}</filter>
+		<filter>{showFilterIcon:false,field:{fieldStyle:'text-align:right;'}}</filter>
 		<renderer/>		
 		<editor>
 			<!-- <timePosition>below</timePosition>  -->
 		</editor>
+
 	</column><!--}}}-->
 
 	<column type="xpenum"><!--{{{-->
+
 		<renderer/>
+
 	</column><!--}}}-->
 
 	<column type="xpentry_help"><!--{{{-->
+
 		<renderer/>
 		<filter>{showFilterIcon:false,nameSuffix:'_label'}</filter>
+
 	</column><!--}}}-->
 
 	<!-- field -->
 
        	<field><!--{{{-->
+
 		<name/>
 		<xtype>textfield</xtype>
 		<allowBlank/>
 		<fieldLabel/>
 		<inputType/>
+
 	</field><!--}}}-->
 
 	<field type="xptext"><!--{{{-->
+
 		<xtype>textarea</xtype>
 		<grow>true</grow>
 		<allowBlank/>
+
 	</field><!--}}}-->
 
 	<field type="xpint"><!--{{{-->
+
 		<xtype>numberfield</xtype>
 		<style>text-align:right;</style>
+
 	</field><!--}}}-->
 
 	<field type="xpboolean"><!--{{{-->
+
 		<xtype>checkbox</xtype>
 		<renderer>formatBoolean(value,p,record)</renderer>
+
 	</field><!--}}}-->
 
 	<field type="xpdecimal"><!--{{{-->
+
 		<xtype>numberfield</xtype>
 		<allowDecimals>true</allowDecimals>
 		<decimalPrecision>2</decimalPrecision>
 		<renderer>usMoney</renderer>
 		<style>text-align:right;</style>
+
 	</field><!--}}}-->
 
 	<field type="xpdate"><!--{{{-->
+
 		<xtype>datefield</xtype>
 		<format/>
+
 	</field><!--}}}-->
 
 	<field type="xpdatetime"><!--{{{-->
+
 		<xtype>datetimefield</xtype>
 		<format/>
 		<!-- 
@@ -158,9 +200,11 @@
 		<timePosition>right</timePosition>
 		<dateFormat/>
 		<timeFormat/> -->
+
 	</field><!--}}}-->
 
 	<field type="xpenum"><!--{{{-->
+
 		<xtype>combo</xtype>
 		<mode>local</mode>
 		<store/>
@@ -174,9 +218,11 @@
 		<allowBlank/>
 		<minChars>1</minChars>
 		<renderer/>
+
 	</field><!--}}}-->
 
 	<field type="xpentry_help"><!--{{{-->
+
 		<xtype>xpcombo</xtype>
 		<valueField>id</valueField>
 		<hiddenName/>
@@ -191,10 +237,12 @@
 		<forceSelection>true</forceSelection>
 		<allowBlank/>
 		<minChars>3</minChars>
+
 	</field><!--}}}-->
 
+	<!-- panel -->
 
-	<panel type="xpGrid">
+	<panel type="xpGrid"><!--{{{-->
 
 		<extend>Ux.xpotronix.xpGrid</extend>
 		<stateful>true</stateful>
@@ -205,8 +253,147 @@
 		<border>false</border>
 		<autoScroll>true</autoScroll>
 
-	</panel>
+	</panel><!--}}}-->
 
+ 	<panel type="xpForm"><!--{{{-->
 
+		<extend>Ux.xpotronix.xpForm</extend>
+		<split>true</split>
+		<stateful>true</stateful>
+		<deferredRender>true</deferredRender>
+		<bodyStyle>padding:5px</bodyStyle>
+		<width>100%</width>
+		<labelWidth>150</labelWidth>
+		<defaults>
+			<width>400</width>
+		</defaults>
+		<defaultType>textfield</defaultType>
+		<autoScroll>true</autoScroll>
+
+	</panel><!--}}}-->
+
+	<panel type="xpData"><!--{{{-->
+
+		<extend>Ux.xpotronix.xpData</extend>
+		<stateful>true</stateful>
+		<bodyStyle>padding:5px 5px 0</bodyStyle>
+		<width>100%</width>
+		<autoScroll>true</autoScroll>
+		<defaults>
+			<width>300</width>
+		</defaults>
+
+	</panel><!--}}}-->
+
+	<panel type="xpThumbs"><!--{{{-->
+
+		<extend>Ux.xpotronix.xpThumbs</extend>
+		<stateful>true</stateful>
+		<layout>fit</layout>
+		<syncSize>true</syncSize>
+		<autoScroll>true</autoScroll>
+
+	</panel><!--}}}-->
+
+	<panel type="xpImageViewer"><!--{{{-->
+
+		<extend>Ux.xpotronix.xpImageViewer</extend>
+		<stateful>true</stateful>
+		<layout>fit</layout>
+		<syncSize>true</syncSize>
+		<autoScroll>true</autoScroll>
+		<deferredRender>true</deferredRender>
+		<split>true</split>
+
+	</panel><!--}}}-->
+
+	<panel type="xpPanel"><!--{{{-->
+
+		<extend>Ux.xpotronix.xpPanel</extend>
+		<labelWidth>150</labelWidth>
+		<bodyStyle>
+			<background-color>white</background-color>
+			<font-size>13px</font-size>
+			<padding>5px</padding>
+		</bodyStyle>
+		<width>100%</width>
+
+	</panel><!--}}}-->
+
+	<panel type="Form"><!--{{{--> 
+
+		<extend>Ext.form.FormPanel</extend>
+		<split>true</split>
+		<deferredRender>true</deferredRender>
+		<bodyStyle>padding:5px</bodyStyle>
+		<width>100%</width>
+		<labelWidth>70</labelWidth>
+		<defaults>
+			<width>400</width>
+		</defaults>
+		<defaultType>textfield</defaultType>
+		<autoScroll>true</autoScroll>
+
+	</panel><!--}}}-->
+
+	<panel type="Tab"><!--{{{-->
+
+		<extend>Ext.TabPanel</extend>
+		<layoutOnTabChange>true</layoutOnTabChange>
+		<activeTab>0</activeTab>
+		<defaults>
+			<hideMode>300</hideMode>
+		</defaults>
+
+	</panel><!--}}}-->
+
+	<panel type="Viewport"><!--{{{-->
+
+		<extend>Ext.Viewport</extend>
+		<stateful>true</stateful>
+		<layout>border</layout>
+
+	</panel><!--}}}-->
+
+	<panel type="Window"><!--{{{-->
+
+		<extend>Ext.Window</extend>
+		<width>300</width>
+		<height>200</height>
+		<constrain>true</constrain>
+		<closable>true</closable>
+		<closeAction>hide</closeAction>
+		<maximizable>true</maximizable>
+		<layout>border</layout>
+		<plain>true</plain>
+		<bodyStyle>padding:5px</bodyStyle>
+
+	</panel><!--}}}-->
+
+	<panel type='xpUploadPanel'><!--{{{-->
+
+		<extend>Ux.xpotronix.xpUploadPanel</extend>
+		<buttonsAt>tbar</buttonsAt>
+		<url>?m=MUST_DEFINE&amp;a=process&amp;p=upload</url>
+		<path>root</path>
+		<maxFileSize>App.feat.max_file_size</maxFileSize>
+		<enableProgress>false</enableProgress>
+		<bodyStyle>background-color:white</bodyStyle>
+		<addText>Agregar</addText>
+		<clickRemoveText>Click para quitar</clickRemoveText>
+		<clickStopText>Click para detener</clickStopText>
+		<emptyText>No hay archivos</emptyText>
+		<errorText>Error</errorText>
+		<fileQueuedText>Archivo &lt;b&gt;{0}&lt;/b&gt; esta en cola para subir</fileQueuedText>
+		<fileDoneText>Archivo &lt;b&gt;{0}&lt;/b&gt; ha subido satisfactoriamente</fileDoneText>
+		<fileFailedText>Archivo &lt;b&gt;{0}&lt;/b&gt; falló en subir</fileFailedText>
+		<fileStoppedText>Archivo &lt;b&gt;{0}&lt;/b&gt; detenido por el usuario</fileStoppedText>
+		<fileUploadingText>Subiendo Archivo &lt;b&gt;{0}&lt;/b&gt;</fileUploadingText>
+		<removeAllText>Quitar Todos</removeAllText>
+		<removeText>Quitar</removeText>
+		<stopAllText>Detener Todos</stopAllText>
+		<uploadText>Subir</uploadText>
+
+	</panel><!--}}}-->
 
 </templates>
