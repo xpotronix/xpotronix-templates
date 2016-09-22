@@ -29,30 +29,56 @@
 		<xsl:variable name="panel_type" select="@type"/>	
 
 		<xsl:variable name="config">
+		
+			<config>
 
-			<alias>'widget.<xsl:value-of select="$panel_id"/>'</alias>
-			<stateId>'<xsl:value-of select="$panel_id"/>'</stateId>
-			<class_name>'<xsl:value-of select="$obj/@name"/>'</class_name>
-			<obj>App.obj.get('<xsl:value-of select="$obj/@name"/>')</obj>
-			<acl>App.obj.get('<xsl:value-of select="$obj/@name"/>').acl</acl>
-			<store>'<xsl:value-of select="$obj/@name"/>'</store>
-			<feat><xsl:apply-templates select="$obj" mode="feats"/></feat>
-			<display_as>'<xsl:value-of select="@display"/>'</display_as>
-			<title>'<xsl:apply-templates select="." mode="translate"/>'</title>
+			<alias>widget.<xsl:value-of select="$panel_id"/></alias>
+			<stateId><xsl:value-of select="$panel_id"/></stateId>
+			<class_name><xsl:value-of select="$obj/@name"/></class_name>
+			<obj type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>')</obj>
+			<acl type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>').acl</acl>
+			<store><xsl:value-of select="$obj/@name"/></store>
+			<feat type="function"><xsl:apply-templates select="$obj" mode="feats"/></feat>
+			<display_as><xsl:value-of select="@display"/></display_as>
+			<title><xsl:apply-templates select="." mode="translate"/></title>
+
 
 			<!-- attributos por default en templates.xml -->
-			<xsl:for-each select="$templates//panel[@type=$panel_type]/*">
-				<xsl:element name="{name()}"><xsl:apply-templates select="." mode="guess-json-value"/></xsl:element>
-			</xsl:for-each>
+			<xsl:sequence select="$templates//panel[@type=$panel_type]/*"/>
 	
 			<!-- attributos en el elemnto <panel/> -->
 			<xsl:for-each select="@*">
-				<xsl:element name="{name()}">'<xsl:apply-templates select="." mode="json-value"/>'</xsl:element>
+				<xsl:element name="{name()}"><xsl:value-of select="."/></xsl:element>
 			</xsl:for-each>
+
+			</config>
 			
 		</xsl:variable>
-		{<xsl:for-each select="$config/*"><xsl:value-of select="name()"/>:<xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
+
+		<xsl:apply-templates select="$config" mode="json-object"/>
+
 	</xsl:template><!--}}}-->
+
+
+	<xsl:template match="*" mode="json-object">
+
+		/* JSON OBJECT */
+
+		{<xsl:for-each select="*">
+			<xsl:choose>
+			<xsl:when test="contains(name(),'-')">'<xsl:value-of select="name()"/>'</xsl:when>
+			<xsl:otherwise><xsl:value-of select="name()"/></xsl:otherwise></xsl:choose>:<xsl:choose>
+			<xsl:when test="*"><xsl:apply-templates select="." mode="json-object"/></xsl:when>
+			<xsl:when test="@type='function' or number(.)=number(.)"><xsl:value-of select="."/></xsl:when>
+			<xsl:when test=".='true'">true</xsl:when>
+			<xsl:when test=".='false'">false</xsl:when>
+			<xsl:when test=".='null'">null</xsl:when>
+			<xsl:otherwise>'<xsl:value-of select="."/>'</xsl:otherwise>
+		</xsl:choose><xsl:if test="position()!=last()">,</xsl:if>
+		</xsl:for-each>}
+
+	</xsl:template>
+
 
 	<!-- ui_overides -->
 
@@ -194,7 +220,7 @@
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="standalone" tunnel="yes" select="false()"/>
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj"/>, type: <xsl:value-of select="@type"/></xsl:message> -->
-		Ext.apply(Ext.getCmp('<xsl:value-of select="@ref"/>'),{
+		Ext.apply({xtype:'<xsl:value-of select="@ref"/>'},{
 			<xsl:if test="@id">id:'<xsl:value-of select="@id"/>'<xsl:if test="config or items">,</xsl:if></xsl:if>
 			<xsl:if test="config"><xsl:value-of select="config"/><xsl:if test="items/*">,</xsl:if></xsl:if>
 			<xsl:if test="items/*">items:[<xsl:apply-templates select="items/*"></xsl:apply-templates>]</xsl:if>
