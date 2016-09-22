@@ -332,9 +332,6 @@
 	<xsl:otherwise>Ext.util.Format.dateRenderer(App.feat.date_format + ' ' + App.feat.time_format)</xsl:otherwise>
 </xsl:choose></xsl:template><!--}}}-->
 
-<xsl:template match="filter"><!--{{{-->
-<xsl:if test="position()-1">,</xsl:if>filter:true</xsl:template><!--}}}-->
-
 <xsl:template match="editor"><!--{{{-->
 <xsl:if test="position()-1">,</xsl:if>editor:{<xsl:apply-templates select="*"/>}</xsl:template><!--}}}-->
 
@@ -566,6 +563,16 @@
 	</xsl:otherwise>
 	</xsl:choose>
 </xsl:template><!--}}}-->
+
+<xsl:template match="*"><!--{{{-->
+<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="name()"/>:<xsl:choose>
+	<xsl:when test="*"><xsl:apply-templates select="." mode="json-object"/></xsl:when>
+	<xsl:when test="@type='function' or number(.)=number(.)"><xsl:value-of select="."/></xsl:when>
+	<xsl:when test=".='true'">true</xsl:when>
+	<xsl:when test=".='false'">false</xsl:when>
+	<xsl:when test=".='null'">null</xsl:when>
+	<xsl:otherwise>'<xsl:value-of select="."/>'</xsl:otherwise>
+</xsl:choose></xsl:template><!--}}}-->
 
 <!-- misc -->
 
