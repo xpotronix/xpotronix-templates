@@ -136,9 +136,18 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="layout"><!--{{{-->
+
+		<xsl:param name="standalone" select="false()"/>
 		<xsl:variable name="obj_name" select="../@name"/>
 
-	Ext.create( 'Ext.Viewport', {
+		<xsl:variable name="ui_class">
+			<xsl:choose>
+				<xsl:when test="$standalone">Viewport</xsl:when>
+				<xsl:otherwise>Panel</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+	Ext.create( 'Ext.<xsl:value-of select="$ui_class"/>', {
 
 		stateful: true,
 		layout: 'border',
