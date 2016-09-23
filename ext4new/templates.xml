@@ -349,9 +349,6 @@
 		<extend>Ext.TabPanel</extend>
 		<layoutOnTabChange>true</layoutOnTabChange>
 		<activeTab>0</activeTab>
-		<defaults>
-			<hideMode>300</hideMode>
-		</defaults>
 
 	</panel><!--}}}-->
 

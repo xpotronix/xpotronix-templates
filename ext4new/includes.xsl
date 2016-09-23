@@ -35,6 +35,8 @@
 		<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/ext-theme-neptune/ext-theme-neptune-all.css" /> -->
 		<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/ext-theme-access/ext-theme-access-all.css" /> -->
 
+                <link rel="stylesheet" type="text/css" href="/ux4/DataView/DragSelector.css" />
+
 		<!-- filterbar css -->
 
                 <link rel="stylesheet" type="text/css" href="/ux4/resources/css/uxs.css" />
@@ -97,7 +99,8 @@
 		<script type="text/javascript" src="/ux4/xpotronix/xpImageViewer.js"/>
 
 		<script type="text/javascript" src="/ux4/xpotronix/xpThumbs.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/DataViewPlugins.js"/>
+		<script type="text/javascript" src="/ux4/DataView/DragSelector.js"/>
+		<script type="text/javascript" src="/ux4/DataView/LabelEditor.js"/>
 	
 		<!-- DateTimeField -->
 

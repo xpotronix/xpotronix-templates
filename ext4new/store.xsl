@@ -128,7 +128,8 @@ extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-temp
 			</xsl:template><!--}}}-->
 
 	<xsl:template match="obj" mode="associations"><!--{{{-->
-		<xsl:message>en associations</xsl:message>
+
+		<!-- <xsl:message>en associations</xsl:message> -->
 
 		<xsl:variable name="obj_name" select="@name"/>
 

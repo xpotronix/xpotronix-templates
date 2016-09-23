@@ -28,70 +28,77 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 
 	constructor: function(config) {
 
-	Ext.apply(this, config);
+		App.obj.get(this.class_name).panels.add(this);
 
-	this.tpl = this.tpl || new Ext.XTemplate(/*{{{*/
+		Ext.apply( config, { 
 
-		'<tpl for=".">',
-		'<div class="thumb-wrap" id="{ID}">',
-		'<div class="thumb"><img src="{image_url}" title="{full_path}"></div>',
-		//'<span class="x-editable">{thumb_image}</span></div>',
-		'<span>{thumb_image}</span></div>',
-		'</tpl>',
-		'<div class="x-clear"></div>'
-
-	);/*}}}*/
-
-	this.dv = this.dv || new Ext.DataView({/*{{{*/
-
-		store: this.store,
-		tpl: this.tpl,
-		autoHeight:true,
-		multiSelect: true,
-		overClass:'x-view-over',
-		itemSelector:'div.thumb-wrap',
-		/* emptyText: '<h1>Por favor: seleccioná un dia y un fotografo</h1>', */
-
-		plugins: [
-			new Ext.DataView.DragSelector()
-			// ,new Ext.DataView.LabelEditor({dataIndex: 'full_path'})
-		],
-
-		prepareData: function(data){
-
-			data.image_url = App.feat.uri_thumb + 
-				data.dirname + '/' +
-				data.basename +
-				'&wp=100&hl=100&ar=x';
-				data.full_path = data.imagen || data.dirname + '/' + data.basename;
-				// data.thumb_image = data.dirname + '/' + data.basename;
-				data.thumb_image = data.basename;
-
-			return data;
-		}
-
-	});/*}}}*/
-
-	this.items = this.items || this.dv;
-
-	this.acl = this.acl || this.obj.acl;
-	this.processes_menu = this.processes_menu || this.obj.processes_menu;
-
-	Ux.xpotronix.xpThumbs.superclass.constructor.apply(this, arguments);
-
-	if(this.loadMask){
-		this.loadMask = new Ext.LoadMask(this.bwrap,Ext.apply({store:this.store}, this.loadMask));
-       	}
+			dockedItems: [{
+				xtype: 'xppagingtoolbar',
+				panel: this,
+				store: this.store,
+				dock: 'top',
+				displayInfo: true
+			}],
+		});
 
 
-},
+		this.tpl = this.tpl || [ 
 
-	initComponent:function() {//{{{
+			'<tpl for=".">',
+			'<div class="thumb-wrap" id="{ID}">',
+			'<div class="thumb"><img src="{image_url}" title="{full_path}"></div>',
+			//'<span class="x-editable">{thumb_image}</span></div>',
+			'<span>{thumb_image}</span></div>',
+			'</tpl>',
+			'<div class="x-clear"></div>' ];
 
+		this.dv = this.dv || Ext.create('Ext.view.View', {
 
-		this.obj.toolbar( this );
+			store: this.store,
+			tpl: this.tpl,
+			autoHeight:true,
+			multiSelect: true,
+			overClass:'x-view-over',
+			itemSelector:'div.thumb-wrap',
+			/* emptyText: '<h1>Por favor: seleccioná un dia y un fotografo</h1>', */
 
-		Ux.xpotronix.xpThumbs.superclass.initComponent.apply(this, arguments);
+			plugins: [
+				Ext.create('Ext.ux.DataView.DragSelector', {}),
+				Ext.create('Ext.ux.DataView.LabelEditor', {dataIndex: 'full_path'})
+			],
+
+			prepareData: function(data){
+
+				data.image_url = App.feat.uri_thumb + 
+					data.dirname + '/' +
+					data.basename +
+					'&wp=100&hl=100&ar=x';
+					data.full_path = data.imagen || data.dirname + '/' + data.basename;
+					// data.thumb_image = data.dirname + '/' + data.basename;
+					data.thumb_image = data.basename;
+
+				return data;
+			}
+
+		});
+
+		this.items = this.items || this.dv;
+
+		this.callParent(arguments);
+
+	},
+
+	initComponent:function() {
+
+		this.callParent();
+
+		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
+                if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
+
+		/* this.getForm().trackResetOnLoad = true; */
+
+		this.acl = this.acl || this.obj.acl;
+		this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
 		this.dv.on('click', function(dv, rowIndex) {/*{{{*/
 	
@@ -114,17 +121,15 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 
                 }, this );/*}}}*/
 
+	},
 
-
-	}, // eo function initComponent//}}}
-
-	onRender:function() {//{{{
+	onRender:function() {
 
 		this.callParent();
 
-	}, // eo function onRender//}}}
+	},
 
-	invertSelection:function(){/*{{{*/
+	invertSelection:function() {
 
 		var sl = this.dv.getNodes();
 
@@ -135,9 +140,9 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 			else
 				this.dv.select(i, true);
 		}
-	},/*}}}*/
+	},
 
-	getSelection: function () {/*{{{*/
+	getSelection:function(){/*{{{*/
 
 		return this.dv.getSelectedRecords();
 

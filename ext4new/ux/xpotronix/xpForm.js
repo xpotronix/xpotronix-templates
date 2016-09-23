@@ -35,9 +35,9 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	constructor: function(config) {/*{{{*/
 
-	App.obj.get(this.class_name).panels.add(this);
+		App.obj.get(this.class_name).panels.add(this);
 
-	Ext.apply( config, { 
+		Ext.apply( config, { 
 
 			dockedItems: [{
 				xtype: 'xppagingtoolbar',

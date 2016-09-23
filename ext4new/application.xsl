@@ -174,7 +174,7 @@
 
 	    extend: 'Ext.app.Controller',
 
-	    views: [<xsl:for-each select="obj//panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+	    views: [<xsl:for-each select=".//panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
 	    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
