@@ -114,6 +114,24 @@
 		</xsl:choose>
 	</xsl:template><!--}}}-->
 
+	<xsl:template match="*" mode="json-object"><!--{{{-->
+
+		<!-- /* JSON OBJECT */ -->
+
+		{<xsl:for-each select="*">
+			<xsl:choose>
+			<xsl:when test="contains(name(),'-')">'<xsl:value-of select="name()"/>'</xsl:when>
+			<xsl:otherwise><xsl:value-of select="name()"/></xsl:otherwise></xsl:choose>:<xsl:choose>
+			<xsl:when test="*"><xsl:apply-templates select="." mode="json-object"/></xsl:when>
+			<xsl:when test="@type='function' or number(.)=number(.)"><xsl:value-of select="."/></xsl:when>
+			<xsl:when test=".='true'">true</xsl:when>
+			<xsl:when test=".='false'">false</xsl:when>
+			<xsl:when test=".='null'">null</xsl:when>
+			<xsl:otherwise>'<xsl:value-of select="."/>'</xsl:otherwise>
+		</xsl:choose><xsl:if test="position()!=last()">,</xsl:if>
+		</xsl:for-each>}
+
+	</xsl:template><!--}}}-->
 
 	<xsl:template name="user-session">{<xsl:for-each select="//*:session/users/*"><xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
 	</xsl:template>

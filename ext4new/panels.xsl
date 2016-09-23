@@ -30,8 +30,6 @@
 
 	</xsl:template><!--}}}-->
 
-	<!-- panel_config -->
-
 	<xsl:template match="panel" mode="panel_config"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
@@ -71,113 +69,69 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="*" mode="json-object"><!--{{{-->
+	<xsl:template match="panel" mode="panel_config_override"><!--{{{-->
 
-		<!-- /* JSON OBJECT */ -->
-
-		{<xsl:for-each select="*">
-			<xsl:choose>
-			<xsl:when test="contains(name(),'-')">'<xsl:value-of select="name()"/>'</xsl:when>
-			<xsl:otherwise><xsl:value-of select="name()"/></xsl:otherwise></xsl:choose>:<xsl:choose>
-			<xsl:when test="*"><xsl:apply-templates select="." mode="json-object"/></xsl:when>
-			<xsl:when test="@type='function' or number(.)=number(.)"><xsl:value-of select="."/></xsl:when>
-			<xsl:when test=".='true'">true</xsl:when>
-			<xsl:when test=".='false'">false</xsl:when>
-			<xsl:when test=".='null'">null</xsl:when>
-			<xsl:otherwise>'<xsl:value-of select="."/>'</xsl:otherwise>
-		</xsl:choose><xsl:if test="position()!=last()">,</xsl:if>
-		</xsl:for-each>}
-
-	</xsl:template><!--}}}-->
-
-	<!-- ui_overides -->
-
-	<xsl:template match="panel[@type='xpGrid']" mode="panel_config_override"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+		<xsl:variable name="panel_type" select="@type"/>	
+		<xsl:variable name="default_items" select="$templates//panel[@type=$panel_type]/@default"/>
+
 		<!-- <xsl:message>panel_config_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
 		/* panel_config_override: start */
+
 		{<xsl:choose>
 			<xsl:when test="config or items">
 				<xsl:apply-templates select="config|items" mode="column"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:call-template name="default_columns"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
+				<xsl:choose>
+					<xsl:when test="$default_items='columns'">
+						<xsl:call-template name="default_columns"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
+					</xsl:when>
+					<xsl:when test="$default_items='fields'">
+						<xsl:call-template name="default_fields"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
+					</xsl:when>
+				</xsl:choose>
 			</xsl:otherwise>
 		</xsl:choose>}
+
 		/* panel_config_override: end */
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="panel[@type='xpForm' or @type='Form']" mode="panel_config_override"><!--{{{-->
-
-		<xsl:param name="obj" tunnel="yes"/>
-		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-
-		<!-- <xsl:message>panel_config_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
-
-		/* panel_config_override: start */
-		{<xsl:choose>
-			<xsl:when test="config or items">
-				<xsl:apply-templates select="config|items"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="default_fields"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>}
-		/* panel_config_override: end */
-
-	</xsl:template><!--}}}-->
-
-	<xsl:template match="panel[@type='xpPanel' or @type='Viewport' or @type='Window' or @type='Tab' or @type='xpThumbs' or @type='xpImageViewer' or @type='xpUploadPanel']" mode="panel_config_override"><!--{{{-->
-
-		<xsl:param name="obj" tunnel="yes"/>
-		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-
-		<!-- <xsl:message>panel_config_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
-
-		/* panel_config_override: start */
-		{<xsl:if test="config or items">
-			<xsl:apply-templates select="config|items" mode="panel"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
-		</xsl:if>}
-		/* panel_config_override: end */
-
-	</xsl:template><!--}}}-->
-
-	<!-- para los paneles sin items -->
+	<!-- config -->
 
 	<xsl:template match="config" mode="panel"><!--{{{-->
 		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/>
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="items" mode="panel"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
-	</xsl:template><!--}}}-->
-
-	<!-- para los paneles con default items -->
-
 	<xsl:template match="config"><!--{{{-->
 		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_fields"/></xsl:if>
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="config" mode="column"><!--{{{-->
+		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_columns"/></xsl:if>
+	</xsl:template><!--}}}-->
+
+	<!-- items -->
+
+	<xsl:template match="items" mode="panel"><!--{{{-->
+		<xsl:if test="position()-1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="items"><!--{{{-->
 		<xsl:if test="position()-1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
 	</xsl:template><!--}}}-->
 
+	<xsl:template match="items" mode="column"><!--{{{-->
+		<xsl:if test="position()-1">,</xsl:if>columns:[<xsl:apply-templates select="./*" mode="column"/>]
+	</xsl:template><!--}}}-->
+
+	<!-- default items -->
+
 	<xsl:template name="default_fields"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
 		items:[<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='disabled' or @display='password']" mode="field"/>]
-	</xsl:template><!--}}}-->
-
-	<!-- para los paneles con column model -->
-
-	<xsl:template match="config" mode="column"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_columns"/></xsl:if>
-	</xsl:template><!--}}}-->
-
-	<xsl:template match="items" mode="column"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if>
-		columns:[<xsl:apply-templates select="./*" mode="column"/>]
 	</xsl:template><!--}}}-->
 
 	<xsl:template name="default_columns"><!--{{{-->
@@ -185,6 +139,7 @@
 		columns:[<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='hide' or @display='disabled' or @display='password']" mode="column"/>]
 	</xsl:template><!--}}}-->
 
+	<!-- DEBUG: se usa? -->
 
 	<xsl:template match="items/panel"><!--{{{-->
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
