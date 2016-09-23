@@ -250,7 +250,7 @@
 
 	<!-- panel -->
 
-	<panel type="xpGrid"><!--{{{-->
+	<panel type="xpGrid" default="columns"><!--{{{-->
 
 		<extend>Ux.xpotronix.xpGrid</extend>
 		<stateful>true</stateful>
@@ -263,7 +263,7 @@
 
 	</panel><!--}}}-->
 
- 	<panel type="xpForm"><!--{{{-->
+ 	<panel type="xpForm" default="fields"><!--{{{-->
 
 		<extend>Ux.xpotronix.xpForm</extend>
 		<split>true</split>
