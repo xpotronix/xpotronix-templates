@@ -153,11 +153,10 @@
 		layout: 'border',
 		bodyStyle: {border:0},
 
-		items:[
 		<xsl:apply-templates select="*">
 			<xsl:with-param name="obj_name" select="$obj_name"/>
 		</xsl:apply-templates>
-		]});
+		});
 
 	</xsl:template><!--}}}-->
 
