@@ -80,18 +80,32 @@
 		/* panel_config_override: start */
 
 		{<xsl:choose>
-			<xsl:when test="config or items">
-				<xsl:apply-templates select="config|items" mode="column"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
+			<xsl:when test="$default_items='columns'">
+
+				<xsl:choose>
+				<xsl:when test="config or items">
+					<xsl:apply-templates select="config|items" mode="column"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="default_columns"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
+				</xsl:otherwise>
+				</xsl:choose>
+
+			</xsl:when>
+			<xsl:when test="$default_items='fields'">
+
+				<xsl:choose>
+				<xsl:when test="config or items">
+					<xsl:apply-templates select="config|items"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="default_fields"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
+				</xsl:otherwise>
+				</xsl:choose>
+
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:choose>
-					<xsl:when test="$default_items='columns'">
-						<xsl:call-template name="default_columns"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
-					</xsl:when>
-					<xsl:when test="$default_items='fields'">
-						<xsl:call-template name="default_fields"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
-					</xsl:when>
-				</xsl:choose>
+				<xsl:apply-templates select="config|items" mode="panel"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
 			</xsl:otherwise>
 		</xsl:choose>}
 
@@ -196,7 +210,7 @@
  	<xsl:template match="panel" mode="get_panel_id"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes" select=".."/>
-		<xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message>
+		<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 		<xsl:variable name="panel_id">
 			<xsl:choose>
 				<xsl:when test="@id!=''"><xsl:value-of select="@id"/></xsl:when>
@@ -215,7 +229,7 @@
 				<xsl:otherwise><xsl:value-of select="concat('UNDEFINED_',@type)"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:message>panel_id: <xsl:value-of select="$panel_id"/></xsl:message>
+		<!-- <xsl:message>panel_id: <xsl:value-of select="$panel_id"/></xsl:message> -->
 		<xsl:value-of select="$panel_id"/>
 
 	</xsl:template><!--}}}-->
