@@ -11,14 +11,16 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,sliderWidth:200
 	,loadingImg:'/ext4/resources/ext-theme-classic/images/grid/loading.gif'
 	,store:undefined
+	,obj:undefined
+	,acl:undefined
 	,debug: true 
 	,resizable: true
 
 	,constructor: function(config) {/*{{{*/
 
-	App.obj.get(this.class_name).panels.add(this);
+		App.obj.get(this.class_name).panels.add(this);
 
-	Ext.apply( config, { 
+		Ext.apply( config, { 
 
 			dockedItems: [{
 				xtype: 'xppagingtoolbar',
@@ -141,6 +143,9 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	}/*}}}*/
 
 	,initComponent:function(){/*{{{*/
+
+		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
+       	        if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
 
 		Ext.apply(this,{
 
