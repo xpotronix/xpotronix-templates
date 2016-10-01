@@ -70,7 +70,6 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 		mTop = (elDom.height < panelDom.clientHeight) ? (panelDom.clientHeight - elDom.height)/2 : 0;
 
 		this.setStyle({
-
 			left: mLeft
 			,top: mTop
 		});
@@ -84,8 +83,6 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 		ic.setSrc( this.image = imagePath );
 		ic.cls = this.cursorOverClass;
 
-		// this.setStyle({position:'absolute', height:'auto', width:'auto'});
-		// ie.appendTo(this.compRef.imageCont.el.dom);
 
 	}/*}}}*/
 
@@ -270,22 +267,6 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 
 						this.compRef.imageCont.setSrc(this.loadingImg);
-
-						/*
-
-						this.setStyle({
-						        'display': 'block',
-						        'margin': 'auto'
-						    });
-
-						this.up().setBodyStyle({
-            						'display': 'table-cell',
-            						'vertical-align': 'middle'
-        					});
-						*/
-
-
-
 							
 						if(this.image){
 
@@ -382,7 +363,6 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 					,fn:function(){
 						if(this.imageLoaded){
 							this.zoomImage();
-							this.repositionImage();
 						}
 					}
 				}
