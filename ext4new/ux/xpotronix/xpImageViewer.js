@@ -14,21 +14,32 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,obj:undefined
 	,acl:undefined
 	,debug: true 
-	,resizable: true
+	,resizable: false,layout: {
+    type: 'vbox',
+    align: 'center',
+    pack: 'center',
+}
+
 
 	,constructor: function(config) {/*{{{*/
 
 		App.obj.get(this.class_name).panels.add(this);
 
+		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
+       	        if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
+
 		Ext.apply( config, { 
 
 			dockedItems: [{
-				xtype: 'xppagingtoolbar',
-				panel: this,
-				store: this.store,
-				dock: 'top',
-				displayInfo: true
-			},{
+
+				xtype: 'xpimagetoolbar',
+ 				panel: this,
+ 				store: this.store,
+ 				dock: 'top',
+ 				displayInfo: true,
+				layout: { pack: 'center', align: 'middle' }
+			},
+			{
 				xtype: 'toolbar',
 				panel: this,
 				store: this.store,
@@ -54,12 +65,14 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,repositionImage:function(){/*{{{*/
 
 		var elDom = this.compRef.imageCont.el.dom,
-		panelDom = this.body.dom;
+		panelDom = this.body.dom,
+		mLeft = (elDom.width < panelDom.clientWidth) ? (panelDom.clientWidth - elDom.width)/2 : 0;
+		mTop = (elDom.height < panelDom.clientHeight) ? (panelDom.clientHeight - elDom.height)/2 : 0;
 
 		this.setStyle({
 
-			left: (elDom.width < panelDom.clientWidth) ? (panelDom.clientWidth - elDom.width)/2 : 0
-			,top: (elDom.height < panelDom.clientHeight) ? (panelDom.clientHeight - elDom.height)/2 : 0
+			left: mLeft
+			,top: mTop
 		});
 
 	}/*}}}*/
@@ -80,10 +93,9 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 		for( var key in config ) {
 
-			/* horrible */
 			var value;
 
-			if ( key == 'width' || key == 'height' )
+			if ( ['width','height','top','left'].indexOf(key) > -1 )
 				value = this.round( config[key] ) + 'px';
 			else
 				value = config[key];
@@ -126,7 +138,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 		this.setStyle({
 			width: this.imageWidth * scaling
-			,height: this.imageHeight * scaling
+			,height: ( this.imageHeight * scaling )
 		});
 		
 		this.repositionImage();
@@ -144,9 +156,6 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 	,initComponent:function(){/*{{{*/
 
-		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
-       	        if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
-
 		Ext.apply(this,{
 
 			mouseDown: false
@@ -158,6 +167,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 			,image: this.image || Ext.BLANK_IMAGE_URL
 			,layout:'fit'
 
+			/*
 			,tbar:[{
 				xtype:'tbtext'
 				,text:this.imageNameLabel
@@ -166,6 +176,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,name:'imageFileName'
 				,text:this.image != Ext.BLANK_IMAGE_URL ? this.image : ''
 			}]
+
+			*/
 
 			,bbar:[{
 				xtype:'tbtext'
@@ -233,15 +245,15 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,name:'imageDimensions'
 			}]
 
-			,items:{
+			,items:[{
 				autoScroll:true
 				,name:'imageCont'
 				,xtype: 'image'
 				,autoEl: 'img'
-				// ,shrinkWrap:true
+				,shrinkWrap:true
 				,frame:true
 				,cls:'image-viewer'
-
+				
 				,listeners:{
 
 					scope: this
@@ -259,11 +271,21 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 						this.compRef.imageCont.setSrc(this.loadingImg);
 
+						/*
+
 						this.setStyle({
-							position:'absolute'
-							,top:'20px'
-							,left:'20px'
-						});
+						        'display': 'block',
+						        'margin': 'auto'
+						    });
+
+						this.up().setBodyStyle({
+            						'display': 'table-cell',
+            						'vertical-align': 'middle'
+        					});
+						*/
+
+
+
 							
 						if(this.image){
 
@@ -293,8 +315,10 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 								this.imageHeight = this.compRef.imageCont.el.dom.naturalHeight;
 
 								this.compRef.imageDimensions.setText(this.imageWidth+' x '+this.imageHeight);
-								this.compRef.imageFileName.setText(this.image);
-					
+								// this.compRef.imageFileName.setText(this.image);
+
+								this.setTitle(this.image);
+
 								// this.compRef.loadingEl.addCls('x-hidden');
 								this.zoomImage();
 							}
@@ -349,7 +373,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 						});
 					}
 				}
-			}
+			}]
 
 			,listeners:{
 				scope:this
@@ -373,20 +397,6 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
-
-		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
-
-			var tbar = this.getDockedItems('toolbar[dock=top]')[0];
-			var bbar = this.getDockedItems('toolbar[dock=bottom]')[0];
-
-			if ( tbar && bbar ) {
-
-				this.acl.add && bbar.add( tbar.add_button( this ) );
-				bbar.add('-');
-				bbar.add( tbar.save_button( this ));
-			}
-		}
-
 	
 	}/*}}}*/
 
