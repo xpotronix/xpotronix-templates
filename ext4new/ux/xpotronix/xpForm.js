@@ -27,7 +27,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	obj: undefined,
 	acl: undefined,
-	border: false,
+	// border: false,
 	show_buttons: true,
 	buttonAlign: 'left',
 	feat: undefined,

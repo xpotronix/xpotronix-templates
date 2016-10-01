@@ -380,9 +380,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 				border:false,
 				buttonAlign:'center',
 				items:[
-					{xtype:'tabpanel',region:'center',
-					items:[
-						{xtype:this.panel.obj.inspect[0],region:'center'}]}]
+					{xtype:this.panel.obj.inspect[0],region:'center'}]
 			});
 
 		this.i_panel.show();
