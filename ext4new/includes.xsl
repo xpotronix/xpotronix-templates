@@ -97,6 +97,7 @@
 		<script type="text/javascript" src="/ux4/xpotronix/xpPanel.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpStore.js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpImageViewer.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpImageToolbar.js"/>
 
 		<script type="text/javascript" src="/ux4/xpotronix/xpThumbs.js"/>
 		<script type="text/javascript" src="/ux4/DataView/DragSelector.js"/>
