@@ -165,7 +165,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 			// consoleDebugFn( this );
 
-			var normalized = this.normalized ? '': '&UNNORMALIZED=1';
+			var normalized = this.normalized ? '': '&UNNORMALIZED';
 
 			if ( App.user_node == undefined && App.user.user_username && ! App.user._anon ) {
 
@@ -246,7 +246,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 							Ext.Loader.loadScript({ 
 								scope:tp,
-								url: href + '&v=ext4new/loader&UNNORMALIZED=1', 
+								url: href + '&v=ext4new/loader&UNNORMALIZED', 
 								onLoad:function() {
 
 									/* debugger; */

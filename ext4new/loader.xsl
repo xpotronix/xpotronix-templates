@@ -74,7 +74,7 @@
 	<!-- output final del codigo -->
 
 	<xsl:choose>
-		<xsl:when test="//*:session/var/UNNORMALIZED=1">
+		<xsl:when test="//*:session/var/UNNORMALIZED">
 			<xsl:value-of select="$code" disable-output-escaping="yes"/>
 		</xsl:when>
 		<xsl:otherwise>

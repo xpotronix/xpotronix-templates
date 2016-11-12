@@ -21,7 +21,7 @@
 	<xsl:template match="/">
 		<xsl:variable name="result">[<xsl:apply-templates select="menu/*[not(@access) or (@access and @access!='')]"/>]</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="//*:session/var/UNNORMALIZED=1 or $debug=true()"><xsl:value-of select="$result"/></xsl:when>
+			<xsl:when test="//*:session/var/UNNORMALIZED or $debug=true()"><xsl:value-of select="$result"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="normalize-space($result)"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
