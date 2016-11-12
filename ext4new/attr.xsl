@@ -104,7 +104,7 @@
 		</xsl:copy>
 	</xsl:variable>
 	<!-- <xsl:message>attr-list: <xsl:sequence select="$attr"/></xsl:message> -->
-	<xsl:if test="//*:session/var/UNNORMALIZED=1">
+	<xsl:if test="//*:session/var/UNNORMALIZED">
 	<xsl:text>
 /* </xsl:text><xsl:value-of select="$attr/attr/@name"/><xsl:text> */
 </xsl:text></xsl:if>
@@ -180,7 +180,7 @@
 		<xsl:message><xsl:sequence select="$attr"/></xsl:message>
 	</xsl:if> -->
 
-	<xsl:if test="//*:session/var/UNNORMALIZED=1">
+	<xsl:if test="//*:session/var/UNNORMALIZED">
 	<xsl:text>
 /* </xsl:text><xsl:value-of select="$attr/attr/@name"/><xsl:text> */
 </xsl:text></xsl:if>

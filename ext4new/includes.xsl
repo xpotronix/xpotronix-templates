@@ -49,7 +49,7 @@
 	<xsl:template match="*:document" mode="include-ext-js"><!--{{{-->
 
 		<xsl:choose>
-			<xsl:when test="//*:session/var/EXT_DEBUG=1">
+			<xsl:when test="//*:session/var/EXT_DEBUG">
     				<script type="text/javascript" src="/ext4/ext-all-debug-w-comments.js"></script>
     				<!-- <script type="text/javascript" src="/ext4/ext-debug.js"></script> -->
 			</xsl:when>
@@ -77,7 +77,7 @@
 		<!-- ux -->
 
 		<xsl:choose>
-			<xsl:when test="//*:session/var/EXT_DEBUG=1">
+			<xsl:when test="//*:session/var/EXT_DEBUG">
 			    	<!-- <script type="text/javascript" src="/ext4/examples/ux/ux-all-debug.js"></script> -->
 			</xsl:when>
 			<xsl:otherwise>
