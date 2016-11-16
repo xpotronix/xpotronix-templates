@@ -14,7 +14,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	alias: 'xpGrid',
 	obj: null,
 	acl: null,
-	layout:'fit',
+	/* layout:'fit', */
 	border:false,
 	selModel: null,
 	trackMouseOver:true,
