@@ -17,7 +17,7 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 	acl: null,
 	module: this.module,
 	trackMouseOver:true,
-	layout:'fit',
+	/* layout:'fit', */
 	border:false,
 	tpl: null,
 	dv: null,

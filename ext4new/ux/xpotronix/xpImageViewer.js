@@ -14,12 +14,13 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,obj:undefined
 	,acl:undefined
 	,debug: true 
-	,resizable: false,layout: {
-    type: 'vbox',
-    align: 'center',
-    pack: 'center',
-}
+	,resizable: false
+	,layout: {
 
+		type: 'vbox',
+		align: 'center',
+		pack: 'center',
+	}
 
 	,constructor: function(config) {/*{{{*/
 
@@ -162,7 +163,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 			,imageLoaded: false
 			,compRef: {}
 			,image: this.image || Ext.BLANK_IMAGE_URL
-			,layout:'fit'
+			/* ,layout:'fit' */
 
 			/*
 			,tbar:[{

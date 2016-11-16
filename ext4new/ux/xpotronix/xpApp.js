@@ -120,7 +120,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 	store: Ext.create('AppTreeMenuStore'),
 
 	rowHeight:1
-	,layout:'fit'
+	/* ,layout:'fit' */
 	,autoScroll:true
 	,useArrows:true
 	,title:'Menú Principal'
@@ -355,7 +355,7 @@ Ext.define('AppExportWindow', {/*{{{*/
 	constrain: true,
 	minWidth: 300,
 	minHeight: 100,
-	layout: 'fit',
+	/*layout: 'fit',*/
 	plain:true,
 	bodyStyle:'padding:5px;',
 	buttonAlign:'center',
@@ -536,7 +536,7 @@ Ext.define('AppChangePasswordPanel', { /*{{{*/
 Ext.define('ChangePasswordWindow', {/*{{{*/
 
 	extend: 'Ext.Window',
-	layout:'fit',
+	/*layout:'fit',*/
 	width:300,
 	height:150,
 	constrain: true,
@@ -1136,7 +1136,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		});
 		
 		var win = new Ext.Window({
-			layout:'fit',
+			/*layout:'fit',*/
 			width:400,
 			height:150,
 			constrain: true,

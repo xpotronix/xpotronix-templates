@@ -254,12 +254,11 @@
 
 		<extend>Ux.xpotronix.xpGrid</extend>
 		<stateful>true</stateful>
-		<layout>fit</layout>
 		<deferredRender>true</deferredRender>
 		<split>true</split>
-		<syncSize>true</syncSize>
 		<border>false</border>
-		<autoScroll>true</autoScroll>
+		<!-- <autoScroll>true</autoScroll> -->
+		<flex>1</flex>
 
 	</panel><!--}}}-->
 
@@ -312,6 +311,7 @@
 		<autoScroll>true</autoScroll>
 		<deferredRender>true</deferredRender>
 		<split>true</split>
+		<flex>1</flex>
 
 	</panel><!--}}}-->
 
