@@ -141,16 +141,23 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	},/*}}}*/
 
-/* events fn */
+	/* events fn */
 
-    getTotalCount: function() {
+	getTotalCount: function() {
 
-	if ( this.lastTotalCount )
-		this.totalCount = this.lastTotalCount;
+		if ( this.lastTotalCount )
+			this.totalCount = this.lastTotalCount;
 
-        return this.totalCount || 0;
-    },
+		return this.totalCount || 0;
+	},
 
+
+	findByUiid: function(value, start) {/*{{{*/
+		return this.data.findIndexBy(function(rec) {
+			return rec.isEqual(rec.id, value);
+		},
+		this, start);
+	},/*}}}*/
 
 	update_model: function(e) {/*{{{*/
 
@@ -158,7 +165,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		var ID 	 = e.getAttribute('__ID__');
 		var uiid = e.getAttribute('uiid');
-
 
 		if (uiid === undefined) {
 
@@ -191,7 +197,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			/* ajusta el totalRecords al totalLength anterior */
 			rs.totalRecords = this.totalCount;
 
-			var rid = this.findExact( '__ID__', nr.get('__ID__') );
+			var rid = this.findByUiid(uiid);
 
 			if ( rid >= 0 ) {
 
