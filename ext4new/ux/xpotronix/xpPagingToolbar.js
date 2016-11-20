@@ -424,6 +424,14 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			listeners:{ click:{ scope: this, fn:App.save, buffer:200 }}
 		});
 
+		panel.store.on( 'datachanged', function( s, o ) { 
+
+			if ( s.isDirty() )
+				this.enable();
+			else
+				this.disable();
+		}, tb );
+
 		panel.store.on( 'update', function( s, r, o ) { 
 			if ( this.el && this.el.dom ) 
 				( o == Ext.data.Record.EDIT ) ? 
@@ -499,10 +507,10 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		if ( saved ) App.process_request({
 
-                        m: this.class_name,
+                        m: panel.obj.class_name,
                         a: 'process',
                         p: 'delete',
-                        x: this.serialize_selections( panel.getSelection() ),
+                        x: panel.obj.serialize_selections( panel.getSelection() ),
                         process_name: 'Borrar la Selección'
 
                 }, function() { 

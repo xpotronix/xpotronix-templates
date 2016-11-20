@@ -214,7 +214,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		} else if (a == 'd') {
 
-			this.remove(this.findExact('__ID__', ID));
+			this.remove(this.getAt(this.findByUiid(uiid)));
 			this.totalLength--;
 
 		} else {
