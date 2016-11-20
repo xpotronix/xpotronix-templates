@@ -1,3 +1,49 @@
+Ext.override(Ext.grid.ViewDropZone, {
+
+    handleNodeDrop: function (data, record, position) {
+        var view = this.view,
+            store = view.getStore(),
+            index, records, i, len;
+
+
+	if ( ! data.copy ) 
+            data.view.store.remove(data.records, data.view === view);
+
+	if ( view.prepareData )
+		data.records = view.prepareData.call( this, store, data.records );
+
+        // If the copy flag is set, create a copy of the models
+        if (data.copy) {
+            records = data.records;
+            data.records = [];
+            for (i = 0, len = records.length; i < len; i++) {
+                data.records.push(records[i].copy());
+            }
+        } 
+
+
+        if (record && position) {
+            index = store.indexOf(record);
+
+            // 'after', or undefined (meaning a drop at index -1 on an empty View)...
+            if (position !== 'before') {
+                index++;
+            }
+            store.insert(index, data.records);
+        }
+        // No position specified - append.
+        else {
+            store.add(data.records);
+        }
+
+        view.getSelectionModel().select(data.records);
+    }
+
+ 
+});
+
+
+
 /* bugfix para las versiones nuevas del chrome */
 
 Ext.chromeVersion = Ext.isChrome ? parseInt(( /chrome\/(\d{2})/ ).exec(navigator.userAgent.toLowerCase())[1],10) : NaN;
