@@ -1,4 +1,4 @@
-/**
+/*
  * Uploader implementation - with the Connection object in ExtJS 4
  * 
  */
@@ -103,6 +103,7 @@ Ext.define('Ext.ux.upload.uploader.ExtJsUploader', {
             scope : this,
             headers : this.initHeaders(item),
             rawData : file,
+	    url: 'upload.php',
 
             success : Ext.Function.bind(this.onUploadSuccess, this, [
                     item
