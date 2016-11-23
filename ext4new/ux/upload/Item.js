@@ -48,7 +48,7 @@ Ext.define('Ext.ux.upload.Item', {
     },
 
     getFileApiObject : function() {
-        return this.fileApiObject;
+        return this.config.fileApiObject;
     },
 
     getId : function() {
@@ -72,8 +72,9 @@ Ext.define('Ext.ux.upload.Item', {
     },
 
     getProperty : function(propertyName) {
-        if (this.fileApiObject) {
-            return this.fileApiObject[propertyName];
+
+        if (this.config && this.config.fileApiObject) {
+            return this.config.fileApiObject[propertyName];
         }
 
         return null;
