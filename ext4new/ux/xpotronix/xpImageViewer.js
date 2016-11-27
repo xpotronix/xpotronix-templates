@@ -13,8 +13,9 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,store:undefined
 	,obj:undefined
 	,acl:undefined
-	,debug: true 
+	,debug: false
 	,resizable: false
+	,border:false
 	,layout: {
 
 		type: 'vbox',

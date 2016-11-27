@@ -44,6 +44,13 @@
                 <link rel="stylesheet" type="text/css" href="/ux4/resources/css/app.css" />
 
 
+		<!-- upload.css -->
+
+		<xsl:if test="count(*:model//cmp[@type='uploadpanel'])">
+                	<link rel="stylesheet" type="text/css" href="/ux4/upload/css/upload.css" />
+		</xsl:if>
+
+
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document" mode="include-ext-js"><!--{{{-->
@@ -118,26 +125,29 @@
 
 		<!-- upload panel -->
 
-		<script type="text/javascript" src="/ux4/upload/data/Connection.js"></script>
-		<script type="text/javascript" src="/ux4/upload/header/AbstractFilenameEncoder.js"></script>
-		<script type="text/javascript" src="/ux4/upload/header/Base64FilenameEncoder.js"></script>
-		<script type="text/javascript" src="/ux4/upload/BrowseButton.js"></script>
-		<script type="text/javascript" src="/ux4/upload/Item.js"></script>
-		<script type="text/javascript" src="/ux4/upload/uploader/AbstractUploader.js"></script>
-		<script type="text/javascript" src="/ux4/upload/uploader/AbstractXhrUploader.js"></script>
-		<script type="text/javascript" src="/ux4/upload/uploader/LegacyExtJsUploader.js"></script>
-		<script type="text/javascript" src="/ux4/upload/uploader/ExtJsUploader.js"></script>
-		<script type="text/javascript" src="/ux4/upload/uploader/DummyUploader.js"></script>
-		<script type="text/javascript" src="/ux4/upload/uploader/FormDataUploader.js"></script>
-		<script type="text/javascript" src="/ux4/upload/Store.js"></script>
-		<script type="text/javascript" src="/ux4/upload/ItemGridPanel.js"></script>
-		<script type="text/javascript" src="/ux4/upload/Manager.js"></script>
-		<script type="text/javascript" src="/ux4/upload/StatusBar.js"></script>
-		<script type="text/javascript" src="/ux4/upload/Queue.js"></script>
-		<script type="text/javascript" src="/ux4/upload/LegacyDialog.js"></script>
-		<script type="text/javascript" src="/ux4/upload/Panel.js"></script>
-		<script type="text/javascript" src="/ux4/upload/upload-all.js"></script>
-		<script type="text/javascript" src="/ux4/upload/Dialog.js"></script>
+		<xsl:if test="count(*:model//cmp[@type='uploadpanel'])">
+
+			<script type="text/javascript" src="/ux4/upload/data/Connection.js"></script>
+			<script type="text/javascript" src="/ux4/upload/header/AbstractFilenameEncoder.js"></script>
+			<script type="text/javascript" src="/ux4/upload/header/Base64FilenameEncoder.js"></script>
+			<script type="text/javascript" src="/ux4/upload/BrowseButton.js"></script>
+			<script type="text/javascript" src="/ux4/upload/Item.js"></script>
+			<script type="text/javascript" src="/ux4/upload/uploader/AbstractUploader.js"></script>
+			<script type="text/javascript" src="/ux4/upload/uploader/AbstractXhrUploader.js"></script>
+			<script type="text/javascript" src="/ux4/upload/uploader/LegacyExtJsUploader.js"></script>
+			<script type="text/javascript" src="/ux4/upload/uploader/ExtJsUploader.js"></script>
+			<script type="text/javascript" src="/ux4/upload/uploader/DummyUploader.js"></script>
+			<script type="text/javascript" src="/ux4/upload/uploader/FormDataUploader.js"></script>
+			<script type="text/javascript" src="/ux4/upload/Store.js"></script>
+			<script type="text/javascript" src="/ux4/upload/ItemGridPanel.js"></script>
+			<script type="text/javascript" src="/ux4/upload/Manager.js"></script>
+			<script type="text/javascript" src="/ux4/upload/StatusBar.js"></script>
+			<script type="text/javascript" src="/ux4/upload/Queue.js"></script>
+			<script type="text/javascript" src="/ux4/upload/LegacyDialog.js"></script>
+			<script type="text/javascript" src="/ux4/upload/Panel.js"></script>
+			<script type="text/javascript" src="/ux4/upload/Dialog.js"></script>
+
+		</xsl:if>
 
 	</xsl:template><!--}}}-->
 
