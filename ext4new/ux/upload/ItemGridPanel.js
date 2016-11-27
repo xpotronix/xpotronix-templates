@@ -11,6 +11,8 @@ Ext.define('Ext.ux.upload.ItemGridPanel', {
         'Ext.selection.CheckboxModel', 'Ext.ux.upload.Store'
     ],
 
+	alias: 'widget.itemgridpanel',
+
     layout : 'fit',
     border : 0,
 

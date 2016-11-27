@@ -45,6 +45,8 @@ Ext.define('Ext.ux.upload.Panel', {
         'Ext.ux.upload.Queue'
     ],
 
+    alias: 'widget.uploadpanel',
+
     config : {
 
         /**
