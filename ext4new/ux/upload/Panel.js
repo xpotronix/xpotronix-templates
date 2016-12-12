@@ -251,6 +251,8 @@ Ext.define('Ext.ux.upload.Panel', {
             xtype : 'toolbar',
             itemId : 'topToolbar',
             dock : 'top',
+	    enableOverflow : true,
+ 
             items : [
                 this.browseButton,
                 '-',

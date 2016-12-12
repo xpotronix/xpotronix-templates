@@ -29,7 +29,9 @@ Ext.define('Ext.ux.upload.Manager', {
                 uploaderClass = this.uploader;
             }
 
-            var uploaderOptions = this.uploaderOptions || {};
+	    /* hot fix: no se xq no anda */
+
+            var uploaderOptions = this.initialConfig.uploaderOptions || {};
             Ext.applyIf(uploaderOptions, {
                 success : this.onUploadSuccess,
                 failure : this.onUploadFailure,
