@@ -11,7 +11,7 @@ Ext.define('Ext.ux.upload.ItemGridPanel', {
         'Ext.selection.CheckboxModel', 'Ext.ux.upload.Store'
     ],
 
-	alias: 'widget.itemgridpanel',
+    alias: 'widget.itemgridpanel',
 
     layout : 'fit',
     border : 0,
@@ -55,6 +55,7 @@ Ext.define('Ext.ux.upload.ItemGridPanel', {
                     dataIndex : 'size',
                     header : this.textSize,
                     width : 100,
+		    align: 'right',
                     renderer : function(value) {
                         return Ext.util.Format.fileSize(value);
                     }

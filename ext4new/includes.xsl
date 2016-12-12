@@ -46,10 +46,14 @@
 
 		<!-- upload.css -->
 
-		<xsl:if test="count(*:model//cmp[@type='uploadpanel'])">
+		<!-- <xsl:if test="count(*:model//cmp[@type='uploadpanel'])"> -->
                 	<link rel="stylesheet" type="text/css" href="/ux4/upload/css/upload.css" />
-		</xsl:if>
+		<!-- </xsl:if> -->
 
+		<!-- local app.css -->
+
+		<link rel="stylesheet" type="text/css" href="css/app.css"/>
+		<link rel="stylesheet" type="text/css" href="css/icons.css"/>
 
 	</xsl:template><!--}}}-->
 
@@ -79,96 +83,97 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="*:document" mode="include-xpotronix-js"><!--{{{-->
+<xsl:template match="*:document" mode="include-xpotronix-js"><!--{{{-->
 
-		<!-- ux -->
+	<!-- ux -->
 
-		<xsl:choose>
-			<xsl:when test="//*:session/var/EXT_DEBUG">
-			    	<!-- <script type="text/javascript" src="/ext4/examples/ux/ux-all-debug.js"></script> -->
-			</xsl:when>
-			<xsl:otherwise>
-			    	<!-- <script type="text/javascript" src="/ext4/examples/ux/ux-all.js"></script> -->
-			</xsl:otherwise>
-		</xsl:choose>
+	<xsl:choose>
+		<xsl:when test="//*:session/var/EXT_DEBUG">
+			<!-- <script type="text/javascript" src="/ext4/examples/ux/ux-all-debug.js"></script> -->
+		</xsl:when>
+		<xsl:otherwise>
+			<!-- <script type="text/javascript" src="/ext4/examples/ux/ux-all.js"></script> -->
+		</xsl:otherwise>
+	</xsl:choose>
 
-		<script type="text/javascript" src="/ux4/xpotronix/misc.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpCellEditing.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpPagingToolbar.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpComboBox.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpProxy.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpObj.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpGrid.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpForm.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpPanel.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpStore.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpImageViewer.js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpImageToolbar.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/misc.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpCellEditing.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpPagingToolbar.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpComboBox.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpProxy.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpApp.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpObj.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpGrid.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpForm.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpPanel.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpStore.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpImageViewer.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpImageToolbar.js"/>
 
-		<script type="text/javascript" src="/ux4/xpotronix/xpThumbs.js"/>
-		<script type="text/javascript" src="/ux4/DataView/DragSelector.js"/>
-		<script type="text/javascript" src="/ux4/DataView/LabelEditor.js"/>
-	
-		<!-- DateTimeField -->
+	<script type="text/javascript" src="/ux4/xpotronix/xpThumbs.js"/>
+	<script type="text/javascript" src="/ux4/DataView/DragSelector.js"/>
+	<script type="text/javascript" src="/ux4/DataView/LabelEditor.js"/>
 
-		<!-- 
-		<script type="text/javascript" src="/ux4/form/datetime/UX_TimePickerField.js"></script>
-		<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimePicker.js"></script>
-		<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimeField.js"></script>
-		<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimeMenu.js"></script> -->
+	<!-- DateTimeField -->
 
-		<script type="text/javascript" src="/ux4/form/DateTimePicker.js"></script>
-		<script type="text/javascript" src="/ux4/form/DateTimeField.js"></script>
+	<!-- 
+	<script type="text/javascript" src="/ux4/form/datetime/UX_TimePickerField.js"></script>
+	<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimePicker.js"></script>
+	<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimeField.js"></script>
+	<script type="text/javascript" src="/ux4/form/datetime/UX_DateTimeMenu.js"></script> -->
 
-		<script type="text/javascript" src="/ux4/xpotronix/extensions.js"/>
+	<script type="text/javascript" src="/ux4/form/DateTimePicker.js"></script>
+	<script type="text/javascript" src="/ux4/form/DateTimeField.js"></script>
 
-		<!-- upload panel -->
+	<script type="text/javascript" src="/ux4/xpotronix/extensions.js"/>
 
-		<xsl:if test="count(*:model//cmp[@type='uploadpanel'])">
+	<!-- upload panel -->
 
-			<script type="text/javascript" src="/ux4/upload/data/Connection.js"></script>
-			<script type="text/javascript" src="/ux4/upload/header/AbstractFilenameEncoder.js"></script>
-			<script type="text/javascript" src="/ux4/upload/header/Base64FilenameEncoder.js"></script>
-			<script type="text/javascript" src="/ux4/upload/BrowseButton.js"></script>
-			<script type="text/javascript" src="/ux4/upload/Item.js"></script>
-			<script type="text/javascript" src="/ux4/upload/uploader/AbstractUploader.js"></script>
-			<script type="text/javascript" src="/ux4/upload/uploader/AbstractXhrUploader.js"></script>
-			<script type="text/javascript" src="/ux4/upload/uploader/LegacyExtJsUploader.js"></script>
-			<script type="text/javascript" src="/ux4/upload/uploader/ExtJsUploader.js"></script>
-			<script type="text/javascript" src="/ux4/upload/uploader/DummyUploader.js"></script>
-			<script type="text/javascript" src="/ux4/upload/uploader/FormDataUploader.js"></script>
-			<script type="text/javascript" src="/ux4/upload/Store.js"></script>
-			<script type="text/javascript" src="/ux4/upload/ItemGridPanel.js"></script>
-			<script type="text/javascript" src="/ux4/upload/Manager.js"></script>
-			<script type="text/javascript" src="/ux4/upload/StatusBar.js"></script>
-			<script type="text/javascript" src="/ux4/upload/Queue.js"></script>
-			<script type="text/javascript" src="/ux4/upload/LegacyDialog.js"></script>
-			<script type="text/javascript" src="/ux4/upload/Panel.js"></script>
-			<script type="text/javascript" src="/ux4/upload/Dialog.js"></script>
+	<!-- DEBUG: hay que pasar a loader xq al momento del cargar el modulo no sabe que tiene que cargar estos -->
+	<!-- <xsl:if test="count(*:model//cmp[@type='uploadpanel'])"> -->
 
-		</xsl:if>
+		<script type="text/javascript" src="/ux4/upload/data/Connection.js"></script>
+		<script type="text/javascript" src="/ux4/upload/header/AbstractFilenameEncoder.js"></script>
+		<script type="text/javascript" src="/ux4/upload/header/Base64FilenameEncoder.js"></script>
+		<script type="text/javascript" src="/ux4/upload/BrowseButton.js"></script>
+		<script type="text/javascript" src="/ux4/upload/Item.js"></script>
+		<script type="text/javascript" src="/ux4/upload/uploader/AbstractUploader.js"></script>
+		<script type="text/javascript" src="/ux4/upload/uploader/AbstractXhrUploader.js"></script>
+		<script type="text/javascript" src="/ux4/upload/uploader/LegacyExtJsUploader.js"></script>
+		<script type="text/javascript" src="/ux4/upload/uploader/ExtJsUploader.js"></script>
+		<script type="text/javascript" src="/ux4/upload/uploader/DummyUploader.js"></script>
+		<script type="text/javascript" src="/ux4/upload/uploader/FormDataUploader.js"></script>
+		<script type="text/javascript" src="/ux4/upload/Store.js"></script>
+		<script type="text/javascript" src="/ux4/upload/ItemGridPanel.js"></script>
+		<script type="text/javascript" src="/ux4/upload/Manager.js"></script>
+		<script type="text/javascript" src="/ux4/upload/StatusBar.js"></script>
+		<script type="text/javascript" src="/ux4/upload/Queue.js"></script>
+		<script type="text/javascript" src="/ux4/upload/LegacyDialog.js"></script>
+		<script type="text/javascript" src="/ux4/upload/Panel.js"></script>
+		<script type="text/javascript" src="/ux4/upload/Dialog.js"></script>
 
-	</xsl:template><!--}}}-->
+	<!-- </xsl:if> -->
 
-	<xsl:template match="*:document" mode="include-all-js"><!--{{{-->
+</xsl:template><!--}}}-->
 
-		<xsl:apply-templates select="." mode="include-ext-js"/>
-		<xsl:apply-templates select="." mode="include-xpotronix-js"/>
+<xsl:template match="*:document" mode="include-all-js"><!--{{{-->
 
-	</xsl:template><!--}}}-->
+	<xsl:apply-templates select="." mode="include-ext-js"/>
+	<xsl:apply-templates select="." mode="include-xpotronix-js"/>
 
-	<xsl:template match="file" mode="include-js"><!--{{{-->
-		<xsl:variable name="base_dir" select="substring-before(substring-after(//*:session/server/PHP_SELF,'/'),'/')"/>
-		<xsl:element name="script">
-			<xsl:attribute name="type" select="'text/javascript'"/>
-			<xsl:attribute name="src" select="@name"/>
-		</xsl:element>
-	</xsl:template>	<!--}}}-->
+</xsl:template><!--}}}-->
 
-	<xsl:template match="file" mode="include-array-js"><!--{{{-->
-			'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if>
-	</xsl:template>	<!--}}}-->
+<xsl:template match="file" mode="include-js"><!--{{{-->
+	<xsl:variable name="base_dir" select="substring-before(substring-after(//*:session/server/PHP_SELF,'/'),'/')"/>
+	<xsl:element name="script">
+		<xsl:attribute name="type" select="'text/javascript'"/>
+		<xsl:attribute name="src" select="@name"/>
+	</xsl:element>
+</xsl:template>	<!--}}}-->
+
+<xsl:template match="file" mode="include-array-js"><!--{{{-->
+		'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if>
+</xsl:template>	<!--}}}-->
 
 	<xsl:template match="*:document" mode="include-ext-js-old"><!--{{{-->
 

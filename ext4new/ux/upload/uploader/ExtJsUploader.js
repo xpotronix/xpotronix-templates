@@ -40,9 +40,16 @@ Ext.define('Ext.ux.upload.uploader.ExtJsUploader', {
      * 
      * @return {Ext.ux.upload.data.Connection}
      */
+
+	constructor: function( config ) {
+
+		this.callParent( arguments, config );
+
+	},
+
     initConnection : function() {
         var conn,
-            url = this.url;
+            url = this.config.url;
 
         if (this.connection instanceof Ext.data.Connection) {
             conn = this.connection;
@@ -103,7 +110,7 @@ Ext.define('Ext.ux.upload.uploader.ExtJsUploader', {
             scope : this,
             headers : this.initHeaders(item),
             rawData : file,
-	    url: 'upload.php',
+	    /* url: 'upload.php', */
 
             success : Ext.Function.bind(this.onUploadSuccess, this, [
                     item
