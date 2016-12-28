@@ -298,38 +298,39 @@
 
 <xsl:template match="*:renderer"><!--{{{-->
 <!-- <xsl:message>renderer: <xsl:copy-of select=".."/></xsl:message> -->
-<xsl:if test=".!=''"><xsl:if test="position()-1">,</xsl:if>renderer:function(value,p,record){return <xsl:value-of select="." disable-output-escaping="yes"/>}</xsl:if></xsl:template><!--}}}-->
+<xsl:if test=".!=''"><xsl:if test="position()-1">,</xsl:if>renderer:function(value,p,record){
+return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:if></xsl:template><!--}}}-->
 
 <xsl:template match="*:renderer[ancestor::*/@type='xpdecimal']"><!--{{{-->
-<xsl:if test=".!=''"><xsl:if test="position()-1">,</xsl:if>renderer: "<xsl:value-of select="." disable-output-escaping="yes"/>"</xsl:if></xsl:template><!--}}}-->
+<xsl:if test=".!=''"><xsl:if test="position()-1">,</xsl:if>renderer:"<xsl:value-of select="." disable-output-escaping="yes"/>"</xsl:if></xsl:template><!--}}}-->
 
 <xsl:template match="*:renderer[ancestor::*/@type='xpboolean']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
 <!-- <xsl:message>renderer: <xsl:sequence select="$attr"/></xsl:message> -->
 <xsl:if test="position()-1">,</xsl:if>renderer:<xsl:choose>
-	<xsl:when test=".!=''">function(value,p,record) {return <xsl:value-of select="." disable-output-escaping="yes"/>}</xsl:when>
+	<xsl:when test=".!=''">function(value,p,record) {return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 </xsl:choose></xsl:template><!---}}}-->
 
 <xsl:template match="*:renderer[ancestor::*/@type='xpentry_help']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
 <xsl:if test="position()-1">,</xsl:if>renderer:<xsl:choose>
-	<xsl:when test=".!=''">function(value,p,record) {return <xsl:value-of select="."  disable-output-escaping="yes"/>}</xsl:when>
-	<xsl:otherwise>function(value, p, record){ return record.data['<xsl:value-of select="$attr/@name"/>_label'];}</xsl:otherwise>
+	<xsl:when test=".!=''">function(value,p,record){return(<xsl:value-of select="."  disable-output-escaping="yes"/>);}</xsl:when>
+	<xsl:otherwise>function(value,p,record){return(record.data['<xsl:value-of select="$attr/@name"/>_label']);}</xsl:otherwise>
 </xsl:choose></xsl:template><!---}}}-->
 
 <xsl:template match="*:renderer[ancestor::*/@type='xpdate']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
 <xsl:if test="position()-1">,</xsl:if>renderer:<xsl:choose>
-	<xsl:when test=".!=''">function(value,p,record){return <xsl:value-of select="." disable-output-escaping="yes"/>}</xsl:when>
+	<xsl:when test=".!=''">function(value,p,record){return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:when>
 	<xsl:otherwise>Ext.util.Format.dateRenderer(App.feat.date_format)</xsl:otherwise>
 </xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="*:renderer[ancestor::*/@type='xpdatetime']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
 <xsl:if test="position()-1">,</xsl:if>renderer:<xsl:choose>
-	<xsl:when test=".!=''">function(value,p,record){return <xsl:value-of select="." disable-output-escaping="yes"/>}</xsl:when>
-	<xsl:otherwise>Ext.util.Format.dateRenderer(App.feat.date_format + ' ' + App.feat.time_format)</xsl:otherwise>
+	<xsl:when test=".!=''">function(value,p,record){return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:when>
+	<xsl:otherwise>Ext.util.Format.dateRenderer(App.feat.date_format+' '+App.feat.time_format)</xsl:otherwise>
 </xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor"><!--{{{-->
