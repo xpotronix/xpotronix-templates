@@ -1,3 +1,5 @@
+// vim: sw=4:ts=4:nu:nospell:fdc=4
+
 /**
  * @package xpotronix
  * @version 2.0 - Areco 
@@ -8,119 +10,136 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-Ext.define( 'Ux.xpotronix.xpPanel', {
 
-	extend: 'Ext.Panel',
-	alias: 'xpPanel', 
-	obj: null,
-	acl: null,
+Ext.define( 'Ux.xpotronix.xpPanel', { 
+
+	extend: 'Ext.Panel', 
+	alias: 'xpPanel',
+
+	obj: undefined,
+	acl: undefined,
+	// border: false,
+	show_buttons: true,
 	buttonAlign: 'left',
-	feat: null,
+	feat: undefined,
+	debug: false,
 
-	constructor: function(config) {
+	constructor: function(config) {/*{{{*/
 
-		Ext.apply(this, config);
-		this.acl = this.acl || this.obj.acl;
-		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+		/* agrega un panel al objeto para futura referencia */
+
+		App.obj.get(this.class_name).panels.add(this);
+
+		/* paging toolbar */
+
+		if ( this.obj.feat.paging_toolbar ) 
+
+			Ext.apply( config, { 
+
+				dockedItems: [{
+					xtype: 'xppagingtoolbar',
+					panel: this,
+					store: this.store,
+					dock: 'top',
+					displayInfo: true
+				}],
+			});
+
+		/* bottom toolbar */
+
+		if ( this.obj.feat.bottom_toolbar )
+
+		Ext.apply( config, { 
+
+			dockedItems: [{
+				xtype: 'toolbar',
+				panel: this,
+				store: this.store,
+				dock: 'bottom',
+				displayInfo: true,
+				layout: { pack: 'center' }
+			}],
+		});
+
 		this.callParent(arguments);
 
-	},
+		/* consoleDebugFn( this ); */
+		/* consoleDebugFn( this.getForm() ); */
 
-
-	initComponent:function() {/*{{{*/
-
-        	if(this.loadMask){
-	            this.loadMask = new Ext.LoadMask(this.bwrap,
-        	            Ext.apply({store:this.store}, this.loadMask));
-	        }
-
-		if ( this.obj.feat.paging_toolbar && ( this.acl.edit || this.acl.add ) ) {
-
-			var buttons = [new Ext.Spacer({ width: 145 })];
-			buttons.push( this.obj.save_button( this ) );
-			if ( this.acl.add ) 
-				buttons.push( this.obj.add_button( this ) );
-
-			this.buttons = buttons;
-		}
-
-		this.on({
-
-			render: { fn:function() {this.on_render();}, buffer: 200, scope: this }
-		});
-
-		/*
-
-		this.store.on({
-
-			// load: { fn:function(){this.loadRecord();}, scope:this },
-			// update: { fn:function( s, r, o ){ if ( o == Ext.data.Record.EDIT ) this.loadRecord(); }, buffer: 200, scope:this },
-			// datachanged: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
-			changerowindex: { fn:function() {this.loadRecord();}, buffer: 200, scope:this },
-
-			clear: { fn:function() {
-				this.getForm && this.getForm() && this.getForm().reset();
-			}, buffer: 200, scope:this }	
-		});
-
-		*/ 
-
-		/*
-		this.on('keypress', function(e) {
-                	if( e.getKey() == e.RIGHT ) 	this.store.prev();
-                	if( e.getKey() == e.LEFT ) 	this.store.next();
-         	}, this );
-		*/
-
-		Ux.xpotronix.xpPanel.superclass.initComponent.apply(this, arguments);
-
-	}, // eo function initComponent///*}}}*/
-
-	onRender: function() {//{{{
-
-		this.callParent();
-	},//}}}
-
-	on_render: function() {/*{{{*/
-
-		this.loadRecord();
+		this.addEvents( 'loadrecord' );
 
 	},/*}}}*/
 
-	loadRecord: function() {/*{{{*/
+	initComponent:function() {/*{{{*/
 
-		if ( this.items && this.items.getCount() )
-			return;
+		this.callParent();
 
-		var s = this.store;
-		var r = s.cr();
+		/* resuelve referencias */
 
-		if ( this.body ) 
-			if ( r ) 
-				this.load({ url: '?', params: Ext.apply({ m: App.feat.module, r: this.obj.class_name, v: 'card', 'f[include_dataset]': 2, 'f[transform]': 'php' }, s.get_search_key( s.get_primary_key() ))});
-			else 
-				this.update('');
+		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
+                if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
 
-	},//}}}/*}}}*/
+		this.acl = this.acl || this.obj.acl;
+		this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
-	invertSelection:function(){//{{{
+		this.on({ 
+			afterrender: { 
+				fn: this.loadRecord,
+				buffer:200 }
+		});
 
-		var sm = this.getSelectionModel();
-		var sl = sm.getSelection();
+		this.store.on({
 
-		for( var i = 0; i < this.store.getCount(); i ++ ) {
+			update: { 
+				fn: this.loadRecord, 
+				scope: this, 
+				buffer:50 
+			},
 
-			if ( sm.isSelected(i))
-				sm.deselectRow(i);
-			else
-				sm.selectRow(i, true);
-		}
-	},//}}}
+			selectionchange: {
+
+				fn: this.loadRecord, 
+				scope: this,
+				buffer:200
+			} 
+		});
+
+	}, /*}}}*/
+
+	loadRecord: function( a, b, c ) { /*{{{*/
+
+		var me = this;
+
+		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) return;
+
+		var r = me.getSelection()[0];
+
+		this.callParent(arguments);
+
+		if ( r && r.get && this.body ) 
+			this.load({ url: '?', params: 
+				Ext.apply({ 
+					m: App.feat.module, 
+					r: this.obj.class_name, 
+					v: 'card', 
+					'f[include_dataset]': 2, 
+					'f[transform]': 'php' }, 
+					s.get_search_key( s.get_primary_key() ))
+				});
+
+		me.fireEvent( 'loadrecord', me, me.store, r );
+
+	},/*}}}*/
 
 	getSelection: function() {/*{{{*/
 
-		return [ this.store.cr() ];
+		return this.store.selections;	
 
-	}/*}}}*/
-	
-}); // eo extend
+		/*
+		var cr = this.store.cr();
+		return ( cr == undefined ) ? [] : [cr];
+		*/
+
+	},/*}}}*/
+
+}); /* eo extend */

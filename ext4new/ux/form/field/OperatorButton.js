@@ -277,6 +277,9 @@ Ext.define('Ext.ux.form.field.OperatorButton', {
 		//if (oldVisible == newVisible) return;
 
 		me.task.delay(200, function() {
+
+			if ( btn.dom == undefined ) return;
+
 			var oldVisible = btn.isVisible(),
 				newVisible = me.shouldButtonBeVisible();
 
