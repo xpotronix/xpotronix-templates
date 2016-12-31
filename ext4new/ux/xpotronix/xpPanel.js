@@ -106,15 +106,19 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 	}, /*}}}*/
 
-	loadRecord: function( a, b, c ) { /*{{{*/
+	loadRecord: function() { /*{{{*/
 
 		var me = this;
 
 		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) return;
 
-		var r = me.getSelection()[0];
+		var t = me.getSelection();
 
-		this.callParent(arguments);
+		if ( t == undefined ) return;
+
+		var r = t[0];
+
+		/* DEBUG: para parametrizar un URL y cargar algun contenido 
 
 		if ( r && r.get && this.body ) 
 			this.load({ url: '?', params: 
@@ -128,6 +132,8 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 				});
 
 		me.fireEvent( 'loadrecord', me, me.store, r );
+
+		*/
 
 	},/*}}}*/
 

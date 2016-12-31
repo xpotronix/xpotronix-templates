@@ -11,7 +11,7 @@
 
 function entry_help_process( store, obj_value, attr_value, attr_constraint, fn ) {
 
-	var parent_obj = App.store.item( obj_value );
+	var parent_obj = App.store.lookup( obj_value );
 	if ( parent_obj ) {
 		var value = parent_obj.cr().get( attr_value );
 
@@ -27,7 +27,7 @@ function entry_help_process( store, obj_value, attr_value, attr_constraint, fn )
 
 function entry_help( eh_store, obj_value, attr_value, attr_constraint, fn ) {
 
-       	App.store.item( eh_store ).on('beforeload', function( store, options )  {
+       	App.store.lookup( eh_store ).on('beforeload', function( store, options )  {
 
 		Ext.apply( options.params, entry_help_process( store, obj_value, attr_value, attr_constraint, fn ) );
 
