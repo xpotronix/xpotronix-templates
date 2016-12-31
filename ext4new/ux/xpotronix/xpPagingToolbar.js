@@ -540,7 +540,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 				// DEBUG: manejar la insercion de nuevos registros, donde los pone
 
-				panel.selModel.select(0);
+				// panel.selModel.select(0);
 
 				/* se fija que sean distintos en el tipo (que o abra otra grilla del mismo objeto) */
 
