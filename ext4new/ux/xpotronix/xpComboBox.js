@@ -19,7 +19,7 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 	listeners: {/*{{{*/
 
-		change: {
+		blur: {
 
 			fn: function( me, newValue, oldValue ) {
 
