@@ -101,41 +101,47 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* cuando el se haya modificado el store y tenga un fk == parent setea la fk */
 
-		this.on('update', function(s, r, o, m) {
+		this.on({ 
 
-			console.log( 'update op: ' + o + ', class: ' + this.class_name + ', record modified: ' + JSON.stringify( r.modified ) );
+			update: { 
 
-			if ( o == Ext.data.Record.EDIT ) {
+				fn: function(s, r, o, m) {
 
-				if ( s.foreign_key.type == 'parent' ) 
-					s.set_parent_fk();
+					this.debug && console.log( 'update op: ' + o + ', class: ' + this.class_name + ', record modified: ' + JSON.stringify( r.modified ) );
 
+					if ( o == Ext.data.Record.EDIT ) {
+
+						if ( s.foreign_key.type == 'parent' ) 
+							s.set_parent_fk();
+
+					}
+				}}, 
+
+			load: {
+
+
+				fn: function(s, a, b) {
+
+					if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', this.proxy.reader.xmlData ) == 'ACC_DENIED') {
+
+						App.login();
+						return;
+					}
+
+					// this.update_model( this.proxy.reader.xmlData );
+				}},
+
+			beforeload: {
+
+				fn: this.onBeforeLoad
 			}
-
 		}); 
 
-		/* on load */
-
-		this.on('load', function(s, a, b) {
-
-
-
-			if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', this.proxy.reader.xmlData ) == 'ACC_DENIED') {
-
-				App.login();
-				return;
-			}
-
-
-			// this.update_model( this.proxy.reader.xmlData );
-
-		});
-
-		/* this.on('beforeload', this.onBeforeLoad); */
 
 		this.childs.each(function(ch) {
 
-			if (!ch.passive) ch.init();
+			if (!ch.passive) 
+				ch.init();
 
 		});
 
@@ -143,14 +149,13 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	/* events fn */
 
-	getTotalCount: function() {
+	getTotalCount: function() {/*{{{*/
 
 		if ( this.lastTotalCount )
 			this.totalCount = this.lastTotalCount;
 
 		return this.totalCount || 0;
-	},
-
+	},/*}}}*/
 
 	findByUiid: function(value, start) {/*{{{*/
 		return this.data.findIndexBy(function(rec) {
@@ -403,7 +408,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 		} else if ( me.foreign_key.type == 'eh' ) {
 
 			// data = me.get_foreign_key_record(selections, true);
-			// console.log(data);
+			// this.debug && console.log(data);
 			// me.insert(0,data);
 
 		} else {
@@ -604,7 +609,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			this.rejectChanges();
 
 		this.each(function(r) {
-			if (r.get('__new__'))
+			if ( ( ! Ext.isEmptyObject(r) ) && r.get('__new__'))
 				this.remove(r);
 		}, this);
 

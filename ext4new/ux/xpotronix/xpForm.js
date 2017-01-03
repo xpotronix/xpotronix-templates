@@ -189,11 +189,11 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) return;
 
-		var r = me.getSelection()[0];
+		var s = me.getSelection(), r;
 
-		this.callParent(arguments);
+		if ( s.length && ( ! Ext.isEmptyObject ( r = s[0] ) ) && r.get ) { 
 
-		if ( r && r.get ) { 
+			this.callParent(arguments);
 
 			var is_new = r.get('__new__');
 
