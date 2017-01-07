@@ -194,7 +194,13 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		if ( s.length && ( ! Ext.isEmptyObject ( r = s[0] ) ) && r.get ) { 
 
-			this.callParent(arguments);
+			var c;
+        		this._record = r;
+
+			if ( Ext.isEmptyObject( c = r.getChanges() ) )
+				c = r.getData(); 
+
+        		this.form.setValues(c);
 
 			var is_new = r.get('__new__');
 
