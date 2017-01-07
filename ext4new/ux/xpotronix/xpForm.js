@@ -31,7 +31,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	show_buttons: true,
 	buttonAlign: 'left',
 	feat: undefined,
-	debug: false,
+	debug: true,
 
 	constructor: function(config) {/*{{{*/
 
@@ -57,10 +57,11 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.callParent(arguments);
 
-		/* consoleDebugFn( this ); */
-		/* consoleDebugFn( this.getForm() ); */
-
 		this.addEvents( 'loadrecord' );
+
+		this.debug && consoleDebugFn( this );
+		this.debug && consoleDebugFn( this.getForm() );
+
 
 	},/*}}}*/
 
@@ -212,7 +213,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			me.disableForm();
 		}
 
-		me.fireEvent( 'loadrecord', me, me.store, r );
+		/* me.fireEvent( 'loadrecord', me, me.store, r ); */
 
 	},/*}}}*/
 
