@@ -217,7 +217,7 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 			this.disableForm();
 		}
 
-		this.fireEvent( 'loadrecord', this, this.store, r );
+		/* this.fireEvent( 'loadrecord', this, this.store, r ); */
 
 	},/*}}}*/
 
