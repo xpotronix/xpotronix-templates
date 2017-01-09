@@ -40,6 +40,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 	selModel: undefined,
 	rowIndex: undefined,
 
+	debug: true,
+
 	constructor: function(config) {/*{{{*/
 
 		this.params = config.params || {
@@ -56,6 +58,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 		Ext.apply(this.params, config.extra_param || {});
 
 		this.callParent(arguments);
+
+		this.debug && consoleDebugFn( this );
 
 		/* eventos propios */
 

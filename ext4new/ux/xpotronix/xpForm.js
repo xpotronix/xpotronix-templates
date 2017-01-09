@@ -10,15 +10,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-
-var recurse_items = function( cmp, fn, scope ) {
+var recurse_items = function( cmp, fn, scope ) {/*{{{*/
 
 	cmp.items && cmp.items.each && cmp.items.each( function( it ) {
 
 		fn.call( scope, it );
 		it.items && it.items.length && recurse_items( it, fn, scope );
 	});
-};
+
+};/*}}}*/
 
 Ext.define( 'Ux.xpotronix.xpForm', { 
 
@@ -27,25 +27,40 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	obj: undefined,
 	acl: undefined,
-	// border: false,
+	border: false,
 	show_buttons: true,
 	buttonAlign: 'left',
 	feat: undefined,
-	debug: true,
+	debug: false,
 
 	constructor: function(config) {/*{{{*/
 
+		/* agrega un panel al objeto para futura referencia */
+
 		App.obj.get(this.class_name).panels.add(this);
+
+		/* paging toolbar */
+
+		if ( config.paging_toolbar ) 
+
+			Ext.apply( config, { 
+
+				dockedItems: [{
+					xtype: 'xppagingtoolbar',
+					panel: this,
+					store: this.store,
+					dock: 'top',
+					displayInfo: true
+				}],
+			});
+
+		/* bottom toolbar */
+
+		if ( config.bottom_toolbar )
 
 		Ext.apply( config, { 
 
 			dockedItems: [{
-				xtype: 'xppagingtoolbar',
-				panel: this,
-				store: this.store,
-				dock: 'top',
-				displayInfo: true
-			},{
 				xtype: 'toolbar',
 				panel: this,
 				store: this.store,
@@ -55,13 +70,14 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			}],
 		});
 
+
+
 		this.callParent(arguments);
 
 		this.addEvents( 'loadrecord' );
 
 		this.debug && consoleDebugFn( this );
 		this.debug && consoleDebugFn( this.getForm() );
-
 
 	},/*}}}*/
 
@@ -256,6 +272,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 		return ( cr == undefined ) ? [] : [cr];
 		*/
 
-	},/*}}}*/
+	}/*}}}*/
 
 }); /* eo extend */

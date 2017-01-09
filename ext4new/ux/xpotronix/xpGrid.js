@@ -24,16 +24,9 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	multiSelect: true,
 
 	selection: [],
+	debug: false,
 
-	initComponent:function() {/*{{{*/
-
-		this.selModel = this.getSelectionModel();	
-		
-		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
-		if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
-
-		this.acl = this.acl || this.obj.acl;
-		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+	constructor: function(config) {/*{{{*/
 
 		App.obj.get(this.class_name).panels.add(this);
 
@@ -65,9 +58,25 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 			onEditorKey: function(field, e) {
 				// this place should be to add new editors key
-				this.constructor.prototype.onEditorKey.apply(this, arguments);
+				this.callParent(arguments);
 			}
 		});
+
+		this.callParent(arguments);
+
+		this.debug && consoleDebugFn( this );
+
+	},/*}}}*/
+
+	initComponent:function() {/*{{{*/
+
+		this.selModel = this.getSelectionModel();	
+		
+		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
+		if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
+
+		this.acl = this.acl || this.obj.acl;
+		this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
 		/* eventos */
 
