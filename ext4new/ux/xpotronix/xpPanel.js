@@ -18,11 +18,11 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 	obj: undefined,
 	acl: undefined,
-	// border: false,
+	border: false,
 	show_buttons: true,
 	buttonAlign: 'left',
 	feat: undefined,
-	debug: false,
+	debug: true,
 
 	constructor: function(config) {/*{{{*/
 
@@ -32,7 +32,7 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 		/* paging toolbar */
 
-		if ( this.obj.feat.paging_toolbar ) 
+		if ( config.paging_toolbar ) 
 
 			Ext.apply( config, { 
 
@@ -47,7 +47,7 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 		/* bottom toolbar */
 
-		if ( this.obj.feat.bottom_toolbar )
+		if ( config.bottom_toolbar )
 
 		Ext.apply( config, { 
 
@@ -63,10 +63,9 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 		this.callParent(arguments);
 
-		/* consoleDebugFn( this ); */
-		/* consoleDebugFn( this.getForm() ); */
-
 		this.addEvents( 'loadrecord' );
+
+		this.debug && consoleDebugFn( this );
 
 	},/*}}}*/
 
@@ -146,6 +145,6 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 		return ( cr == undefined ) ? [] : [cr];
 		*/
 
-	},/*}}}*/
+	}/*}}}*/
 
 }); /* eo extend */
