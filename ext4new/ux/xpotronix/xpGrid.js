@@ -154,6 +154,14 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this, { buffer: 0 });/*}}}*/
 
+		this.on( 'afterrender', function() {/*{{{*/
+
+			if ( this.store.getCount() ) 
+				this.selModel.select( 0 );
+
+		} );/*}}}*/
+
+
 		this.selModel.on( 'beforeselect', function() {
 
 			if ( ! Ext.isEmptyObject( this.dirty_childs() ) ) {
@@ -165,17 +173,10 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		}, this.store );
 
 
-		this.on( 'afterrender', function() {/*{{{*/
-
-			if ( this.store.getCount() ) 
-				this.selModel.select( 0 );
-
-		} );/*}}}*/
-
 		this.store.on( 'add', function() {
 
-			if ( ! this.selModel.getSelection() ) 
-				this.selModel.select( 0 );
+			/* if ( ! this.selModel.getSelection() ) 
+				this.selModel.select( 0 ); */
 
 		}, this );
 	
@@ -237,9 +238,28 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		}
 	},/*}}}*/
 
-	startEditingBlank: function() {/*{{{*/
+	startEditingBlank: function(r) {/*{{{*/
 
-		this.getPlugin().startEdit(0,0);
+		var editor = this.findFirstEditor();
+
+		Ext.isObject( editor ) && this.getPlugin().startEdit(r, editor);
+
+	},/*}}}*/
+
+	findFirstEditor: function(){/*{{{*/
+
+		var ret = null;
+
+		Ext.each( this.headerCt.getGridColumns(), function( col ) {
+
+		    if ( ! col.hidden ) {
+			ret = col;
+			return false;
+		    }
+
+		});
+
+		return ret;
 
 	},/*}}}*/
 
