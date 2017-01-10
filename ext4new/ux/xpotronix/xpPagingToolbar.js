@@ -536,13 +536,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
         	} else {
 
 
-			panel.store.add_blank({ callback: function() {
-
-				// DEBUG: manejar la insercion de nuevos registros, donde los pone
-
-				// panel.selModel.select(0);
-
-				/* se fija que sean distintos en el tipo (que o abra otra grilla del mismo objeto) */
+			panel.store.add_blank({ callback: function(r) {
 
 				if ( panel.obj.inspect.length )
 					if ( this.i_panel )
@@ -551,7 +545,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 						this.inspect_window();
 
 				else if ( panel.startEditingBlank )
-					panel.startEditingBlank();
+					panel.startEditingBlank(r);
 
 			}, scope: this });
 		}

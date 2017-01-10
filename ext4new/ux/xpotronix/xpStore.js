@@ -74,6 +74,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 		if ( tmp ) {
 
 
+			/* resuelve el parent_store */
+
 			if ( typeof this.parent_store == 'string' )
 				this.parent_store = Ext.StoreMgr.lookup( tmp ) || 
 					console.error( "no encuentro el parent_store " + tmp );
@@ -93,6 +95,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			/* carga un registro en blanco cuando la relacion es de parent */
 
 			this.foreign_key.type == 'parent' && (!this.passive) &&
+
 			this.parent_store.on({
 				loadblank: {
 					buffer: 100,
@@ -330,47 +333,40 @@ Ext.define('Ux.xpotronix.xpStore', {
 			scope: this,
 			url: this.proxy.blank_url,
 
-			callback: function(abr) {
+			callback: function(brs) {
 
 				/* resetea el lastTotalCount */
 				this.lastTotalCount = 0;
 
 				/* por cada registro recibido */
-				Ext.each(abr, function(br) {
-
-					var nr = br;
+				Ext.each(brs, function(br) {
 
 					/* marcas de dirty para campos con valores */
-					this.initRecord( nr, br );
+					this.initRecord( br );
 
 					//this.suspendEvents();
 					if ( this.parent_store ) {
 
 						if (this.foreign_key.type == 'parent')
-
 							this.set_parent_fk();
 
 						else if ( this.parent_store.selections.length )
-							this.bind(nr, this.get_foreign_key( this.parent_store.selections[0] ));
+							this.bind(br, this.get_foreign_key( this.parent_store.selections[0] ));
 
 					}
 
-					// this.resumeEvents();
-
 					/* si no lo guarda no lo considera modificado */
-					nr.dirty = false;
-
-					// DEBUG: falta parametrizar en que lugar lo pone
-
-					this.insert( 0, nr );
+					br.dirty = false;
 
 					/* callback para despues de agregar en blanco */
 					if (options.callback)
-						options.callback.call(options.scope || this, nr, this);
+						options.callback.call(options.scope || this, br, this);
 
-					this.fireEvent('loadblank', this, nr, options);
 
 				}, this);
+
+
+				this.fireEvent('loadblank', this, brs, options);
 
 				/* volver los parametros atras para hacer los load normales */
 				delete this.lastOptions.add;
