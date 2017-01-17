@@ -813,14 +813,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		var curPos;
 		this.selections = selections;
-		this.selModel = selModel;
+
+		if ( selModel )
+			this.selModel = selModel;
 
 		if ( ( curPos = this.selModel.getCurrentPosition() ) !== undefined )
 			this.rowIndex = curPos.row;
 		else
 			this.rowIndex = undefined;
 
-		this.fireEvent('selectionchange', selections, selModel );
+		this.fireEvent('selectionchange', selections, this.selModel );
 
 	},/*}}}*/
 
