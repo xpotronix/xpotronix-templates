@@ -78,24 +78,19 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
 
-		/* eventos */
-
-
-		/* solo lectura
-
-		this.on('beforerender', function() {
-
-			this.addListener( 'beforeedit', function() { return this.obj.acl.edit; } );
-
-		}, this);
-
-		*/
-
 		/* call parent */
 		this.callParent(arguments);
 
                 this.getStore().on('beforeload', this.rememberSelection, this);
                 this.getView().on('refresh', this.refreshSelection, this);
+
+		/* eventos */
+
+		this.on( 'beforeedit', function() {
+
+			return this.acl.edit;
+
+		});
 
 		this.on( 'render', function() {
 
@@ -124,7 +119,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		    	]);	
 		});
 
-		this.on('beforedestroy', function(){
+		this.on('beforedestroy', function() {
 
 			var dz = this.dz;
 
@@ -133,7 +128,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this);
 
-	 	this.on('validateedit', function(e, eOpts ){/*{{{*/
+	 	this.on('validateedit', function(e, eOpts ){
 
 			/* actualiza el _label del registro al seleccionar en el combobox */
 
@@ -144,23 +139,24 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	  			data[eOpts.field + '_label'] = field.getRawValue() ;	
        			}
 
-	 	});/*}}}*/
+	 	});
 
-		this.on('selectionchange', function(sm, selection) {/*{{{*/
+		this.on('selectionchange', function(sm, selection) {
 
 			this.store.setSelection( selection, this.selModel );
 
 			return true;
 
-		}, this, { buffer: 0 });/*}}}*/
+		}, this, { buffer: 0 });
 
-		this.on( 'afterrender', function() {/*{{{*/
+		/*
+		this.on( 'afterrender', function() {
 
 			if ( this.store.getCount() ) 
 				this.selModel.select( 0 );
 
-		} );/*}}}*/
-
+		});
+		*/
 
 		this.selModel.on( 'beforeselect', function() {
 
@@ -172,23 +168,32 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this.store );
 
+                this.store.on('selectionchange', function(s) {
 
+			if ( this.rendered && this.store.getCount() ) 
+				this.selModel.select( s );
+
+                }, this );
+
+
+		/*
 		this.store.on( 'add', function() {
 
-			/* if ( ! this.selModel.getSelection() ) 
-				this.selModel.select( 0 ); */
+			if ( ! this.selModel.getSelection() ) 
+				this.selModel.select( 0 );
 
 		}, this );
+		*/
 	
 
-                this.store.on( 'load', function() {/*{{{*/
+                this.store.on( 'load', function() {
 
 			if ( this.rendered && this.store.getCount() ) 
 				this.selModel.select( 0 );
 
-		}, this);/*}}}*/
+		}, this);
 
-	}, // eo function initComponent/*}}}*/
+	}, /*}}}*/
 
 	rememberSelection: function(selModel, selectedRecords) {/*{{{*/
 
@@ -216,14 +221,11 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	},/*}}}*/
 
-	onRender:function() {//{{{
-
-		/* DEBUG MIGRACION FALTA */
-		// this.dz = Ext.create( 'Ux.xpotronix.GridDropZone', {grid: this, ddGroup:this.ddGroup || 'GridDD'});	
+	onRender:function() {/*{{{*/
 
 		this.callParent();
 
-	}, // eo function onRender//}}}
+	},/*}}}*/
 
 	invertSelection:function() {/*{{{*/
 
