@@ -158,17 +158,14 @@ button {
 
     <div class="container">
 
-      <h1>Patioland Online</h1>
-      <p class="lead">Tu destino para todos tus placeres</p>
-
-      <h3>Special Guest: Willy D'Ambrosio</h3>
-      <p>Esta página es sólo para revisar los "Descriptions" de cada producto.</p>
+      <h1><xsl:value-of select="*:document/*:session/feat/application"/></h1>
+      <h1><xsl:value-of select="*:document/*:session/feat/page_title"/></h1>
 
       <!-- Jumbotron -->
       <div class="jumbotron">
-        <h1>Marketing stuff!</h1>
-        <p class="lead">Your #1 source for eucalyptus wood furniture FSC certified, teak wood furniture and outdoor wicker sets</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Get started today</a></p>
+        <h1>Acceso a la aplicacion</h1>
+        <p class="lead">prueba</p>
+        <p><a class="btn btn-lg btn-success" href="#" role="button">Acceda a la aplicacion</a></p>
       </div>
 
 	<xsl:apply-templates select="c_/product"/>
