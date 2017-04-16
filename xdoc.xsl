@@ -2,12 +2,110 @@
 
 	<xsl:output method="html" encoding="utf-8" indent="yes" />
 
-  <xsl:param name="delim" select="';'" />
-  <xsl:param name="quote" select="'&quot;'" />
-  <xsl:param name="break" select="'&#xA;'" />
+
+<xsl:template match="/"><!--{{{-->
+
+	<xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text><html lang="en">
+
+	<xsl:apply-templates select="/" mode="bootstrap_head"/>
+
+	<body>
+
+		<div class="container">
+
+			<h1><xsl:value-of select="*:document/*:session/feat/application"/></h1>
+			<h1><xsl:value-of select="*:document/*:session/feat/page_title"/></h1>
+
+			<!-- Jumbotron -->
+			<div class="jumbotron">
+				<h1>Acceso a la aplicacion</h1>
+				<p class="lead">prueba</p>
+				<p><a class="btn btn-lg btn-success" href="#" role="button">Acceda a la aplicacion</a></p>
+			</div>
+
+			<xsl:apply-templates/>
+
+		</div> <!-- /container -->
 
 
-	<xsl:template match="product">
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+		<!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
+
+		<xsl:apply-templates select="." mode="bootstrap-gallery"/>
+	</body>
+</html>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document"><!--{{{-->
+
+		<h1>xpotronix:document</h1>
+
+		<xsl:apply-templates/>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:session"><!--{{{-->
+
+		<h1>xpotronix:session</h1>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:model"><!--{{{-->
+
+		<h1>xpotronix:model</h1>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:metadata"><!--{{{-->
+
+		<h1>xpotronix:metadata</h1>
+
+		<xsl:apply-templates/>
+
+
+	</xsl:template><!--}}}-->
+
+
+	<xsl:template match="obj">
+
+		<h1>OBJECT name: <xsl:value-of select="@name"/></h1>
+
+		<xsl:apply-templates/>
+
+	</xsl:template>
+
+
+	<xsl:template match="primary_key">
+
+		<xsl:for-each select="*">
+
+			<p><xsl:value-of select="name()"/>: <xsl:value-of select="text()"/></p>
+
+
+
+		</xsl:for-each>
+
+
+	</xsl:template>
+
+
+	<xsl:template match="*:dataset"><!--{{{-->
+
+		<h1>xpotronix:dataset</h1>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:messages"><!--{{{-->
+
+		<h1>xpotronix:messages</h1>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="product"><!--{{{-->
 
 	<div class="row">
 			<div class="col-lg-3"><h4><xsl:value-of select="Name"/></h4></div>
@@ -30,26 +128,25 @@
 
 		</div>
 
-	</xsl:template>
+	</xsl:template><!--}}}-->
 
-	<xsl:template match="imagen">
-
-	<div class="item">
-		<img src="http://localhost/patioland/?m=imagen&amp;a=process&amp;p=thumb&amp;q=40&amp;ar=x&amp;ID={ID}" class="img-rounded" alt="{filename}"/>
-		<p><xsl:value-of select="filename"/></p>
-	</div>
-
-	</xsl:template>
-
-	<xsl:template match="product/*">
+	<xsl:template match="product/*"><!--{{{-->
 
 		<div class="row">
 			<div class="col-lg-3"><xsl:value-of select="name()"/></div>
 			<div class="col-lg-9"><xsl:value-of select="text()"/></div>
 		</div>
 
-	</xsl:template>
+	</xsl:template><!--}}}-->
 
+	<xsl:template match="imagen"><!--{{{-->
+
+	<div class="item">
+		<img src="http://localhost/patioland/?m=imagen&amp;a=process&amp;p=thumb&amp;q=40&amp;ar=x&amp;ID={ID}" class="img-rounded" alt="{filename}"/>
+		<p><xsl:value-of select="filename"/></p>
+	</div>
+
+	</xsl:template><!--}}}-->
 
 	<xsl:template match="/" mode="bootstrap_head"><!--{{{-->
 
@@ -145,43 +242,6 @@ button {
 
 
   </head>
-
-	</xsl:template><!--}}}-->
-
-  <xsl:template match="/"><!--{{{-->
-    <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
-<html lang="en">
-
-	<xsl:apply-templates select="/" mode="bootstrap_head"/>
-
-  <body>
-
-    <div class="container">
-
-      <h1><xsl:value-of select="*:document/*:session/feat/application"/></h1>
-      <h1><xsl:value-of select="*:document/*:session/feat/page_title"/></h1>
-
-      <!-- Jumbotron -->
-      <div class="jumbotron">
-        <h1>Acceso a la aplicacion</h1>
-        <p class="lead">prueba</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Acceda a la aplicacion</a></p>
-      </div>
-
-	<xsl:apply-templates select="c_/product"/>
-
-    </div> <!-- /container -->
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
-
-	<xsl:apply-templates select="." mode="bootstrap-gallery"/>
-  </body>
-</html>
 
 	</xsl:template><!--}}}-->
 
