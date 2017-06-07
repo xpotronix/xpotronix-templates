@@ -295,6 +295,18 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 		return a;
 	},
 
+  buildXpQuery: function( params ) {
+
+	var k, o = {}, cn = this.class_name;
+
+	for ( var f in params ) {
+		if ( params[f] ) {
+                	o['s['+cn+']['+f+']'] = params[f];
+		}
+	}
+	return o;
+   },
+
 
 	before_load:  function( store, options ) {/*{{{*/
 
@@ -347,7 +359,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 		// FilterRow
 		if ( this.filter && this.filter.shown ) {
 
-			Ext.apply( options.params, this.filter.getFilterDataXp() );
+			Ext.apply( options.params, this.buildXpQuery( this.filter.getFilterData() ) );
 
 		}
 

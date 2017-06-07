@@ -229,11 +229,11 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 		var display_only_fields = [];
 
 		/* foregn key */
-		Ext.apply( q_params, obj.buildXpQuery( store.get_foreign_key() ));
+		Ext.apply( q_params, store.buildXpQuery( store.get_foreign_key() ));
 
 		/* Filtros */	
 		if ( store.filter ) {
-			Ext.apply( q_params, obj.buildXpQuery( store.filter.getFilterData() ) );
+			Ext.apply( q_params, store.buildXpQuery( store.filter.getFilterData() ) );
 		}
 
 
@@ -314,18 +314,6 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
     return win;	
 
 },//}}}
-
-  buildXpQuery: function( params ) {
-
-	var k, o = {}, cn = this.class_name;
-
-	for ( var f in params ) {
-		if ( params[f] ) {
-                	o['s['+cn+']['+f+']'] = params[f];
-		}
-	}
-	return o;
-   },
 
 
 	invert_button: function( panel ) {/*{{{*/
