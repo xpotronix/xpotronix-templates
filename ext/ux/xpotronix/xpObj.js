@@ -224,11 +224,23 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 		/* scope: panel */
 
 		var store = this.store;
+		var obj = this.obj;
 		var q_params = {};
 		var display_only_fields = [];
 
 		/* foregn key */
-		Ext.apply( q_params, store.get_foreign_key() );
+		Ext.apply( q_params, obj.buildXpQuery( store.get_foreign_key() ));
+
+		/* Filtros */	
+		if ( store.filter ) {
+			Ext.apply( q_params, obj.buildXpQuery( store.filter.getFilterData() ) );
+		}
+
+
+		/* lastOptions */
+		if ( store.lastOptions )
+			Ext.apply( q_params, store.lastOptions.params );
+
 
 		/* Buscar (en todos los registros)  */
 		if ( store.baseParams.query && store.baseParams.fields ) {
@@ -241,16 +253,6 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 			Ext.apply( q_params, params );
 
 		}
-
-		/* Filtros */	
-		if ( store.filter ) {
-			Ext.apply( q_params, store.filter.getFilterDataXp() );
-		}
-
-
-		/* lastOptions */
-		if ( this.store.lastOptions )
-			Ext.apply( q_params, this.store.lastOptions.params );
 
 		/* display_only */
 		if ( this.getXType() == 'xpGrid' ) {
@@ -312,6 +314,19 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
     return win;	
 
 },//}}}
+
+  buildXpQuery: function( params ) {
+
+	var k, o = {}, cn = this.class_name;
+
+	for ( var f in params ) {
+		if ( params[f] ) {
+                	o['s['+cn+']['+f+']'] = params[f];
+		}
+	}
+	return o;
+   },
+
 
 	invert_button: function( panel ) {/*{{{*/
 
