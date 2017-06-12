@@ -410,11 +410,10 @@ Ext.define('AppExportWindow', {/*{{{*/
 
 		var win = this.up('window');
 		var store = win.toolbar.store;
-		var q_params = {};
 
-		alert( 'falta ajustar parametros' ); return;
-
-		Ext.apply( q_params, store.get_foreign_key() );
+		/* foregin keys */
+		var q_params = store.get_foreign_key( this.parent_store.selections[0] );
+		debugger;
 
 		// de xpStore.js	
 
@@ -465,8 +464,20 @@ Ext.define('AppExportWindow', {/*{{{*/
 	}]
     });/*}}}*/
 
-Ext.define('AppChangePasswordPanel', { /*{{{*/
+Ext.define('ChangePasswordWindow', {/*{{{*/
 
+	extend: 'Ext.Window',
+	/*layout:'fit',*/
+	width:300,
+	height:150,
+	constrain: true,
+	closable: false,
+	resizable: false,
+	plain: true,
+	border: false,
+	items: [{ 
+
+	alias: 'widget.passwordpanel',
 	extend: 'Ext.form.Panel',
         labelWidth:80,
         url:'?m=users&a=change_password', 
@@ -488,6 +499,7 @@ Ext.define('AppChangePasswordPanel', { /*{{{*/
             }],
  
         buttons:[{ 
+
                 text:'Cambiar',
                 formBind: true,	 
 
@@ -531,20 +543,7 @@ Ext.define('AppChangePasswordPanel', { /*{{{*/
 		handler:function(){ this.hide();}
 
 	    }] 
-    });/*}}}*/
-
-Ext.define('ChangePasswordWindow', {/*{{{*/
-
-	extend: 'Ext.Window',
-	/*layout:'fit',*/
-	width:300,
-	height:150,
-	constrain: true,
-	closable: false,
-	resizable: false,
-	plain: true,
-	border: false,
-	items: ['AppChangePasswordPanel']
+    }]
 
 });/*}}}*/
 
@@ -784,7 +783,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	},/*}}}*/
 
-	serialize: function() {//{{{
+	serialize: function() {/*{{{*/
 
 		var md = this.getStoresMods();
 
@@ -792,7 +791,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		return this.store.lookup( this.feat.root_obj ).serialize();
 
-	},//}}}
+	},/*}}}*/
 
 	save: function() {/*{{{*/
 
@@ -1031,7 +1030,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	/* user ui */
 
-	showPleaseWait: function( msg, progressText ) {//{{{
+	showPleaseWait: function( msg, progressText ) {/*{{{*/
 
 		Ext.Msg.show({
 			msg : msg,
@@ -1042,9 +1041,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 			buttons: Ext.Msg.CANCEL,
 			waitConfig : { interval :200 }
 			});
-	},//}}}
+	},/*}}}*/
 
-	showSaveChanges: function() {//{{{
+	showSaveChanges: function() {/*{{{*/
 		var me = this;
 		Ext.Msg.show({
 			msg :'Hay cambios sin guardar. Desea guardar los cambios?',
@@ -1055,17 +1054,17 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 				( btn == 'yes' ) && me.save();
 			}
 		});
-	},//}}}
+	},/*}}}*/
 
-	 hidePleaseWait: function() {//{{{
+	 hidePleaseWait: function() {/*{{{*/
 
 		Ext.Msg.hide();
 
-	},//}}}
+	},/*}}}*/
 
-	hideSaveChanges: function() {//{{{
+	hideSaveChanges: function() {/*{{{*/
 		Ext.Msg.hide();
-	},//}}}
+	},/*}}}*/
 
 	login_window: function() {/*{{{*/
 

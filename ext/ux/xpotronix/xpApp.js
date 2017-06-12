@@ -140,18 +140,18 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 		var div = document.createElement('div');
 		div.innerHTML = src;
 		this.source = div.firstChild.nodeValue;
-	}/*}}}*/
+	},/*}}}*/
 
-	, get_source: function() {/*{{{*/
+	get_source: function() {/*{{{*/
 
 		if ( ! this.source )
 			this.source = window.location.search.substring(1);
 
 		return this.source;
 
-	}/*}}}*/
+	},/*}}}*/
 
-	, reconfigure: function( config ) {/*{{{*/
+	reconfigure: function( config ) {/*{{{*/
 
 		config && Ext.apply( this, config );
 	},/*}}}*/
@@ -188,7 +188,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 	
 	},/*}}}*/ 
 
-	accessible: function( arr ) {
+	accessible: function( arr ) {/*{{{*/
 
 		var ret = [];
 
@@ -200,7 +200,7 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 		}, this );
 
 		return ret;
-	},
+	},/*}}}*/
 
 	getModifiedStores: function() {/*{{{ */
 

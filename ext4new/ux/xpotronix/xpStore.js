@@ -238,6 +238,18 @@ Ext.define('Ux.xpotronix.xpStore', {
 		return a;
 	},/*}}}*/
 
+  buildXpQuery: function( params ) {/*{{{*/
+
+	var k, o = {}, cn = this.class_name;
+
+	for ( var f in params ) {
+		if ( params[f] ) {
+                	o['s['+cn+']['+f+']'] = params[f];
+		}
+	}
+	return o;
+   },/*}}}*/
+
 	onBeforeLoad: function(store, options) { /*{{{*/
 
 		if ((!options.add) && this.dirty && (!Ext.isEmptyObject(this.dirty()) || !Ext.isEmptyObject(this.dirty_childs()))) {
@@ -282,7 +294,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 		// FilterRow
 		if (this.filter && this.filter.shown) {
 
-			Ext.apply(options.filters, this.filter.getFilterDataXp());
+			Ext.apply(options.filters, this.buildXpQuery( this.filter.getFilterData()) );
 
 		}
 
@@ -658,7 +670,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		var keys = [];
 
-		selections || ( selections = this.store.selections );
+		selections || ( selections = this.selections );
 
 		if ( selections.length > 0 ) {
 

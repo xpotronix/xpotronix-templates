@@ -211,16 +211,6 @@ Ux.xpotronix.xpFilterRow = Ext.extend(Ext.ux.grid.FilterRow, {
     this.eachFilterColumn(function(col) {
       col.filter.field.setValue( null );
     });
-  },
-
-  getFilterDataXp: function() {
-	var k, o = {}, data = this.getFilterData();
-	for ( var f in data ) {
-                k = [ 's[', this.grid.store.class_name, '][', f, ']'].join('');
-			if ( data[f] )
-       				o[k] = data[f];
-	}
-	return o;
-   }
+  }
 
 });
