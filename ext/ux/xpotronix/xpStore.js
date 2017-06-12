@@ -295,7 +295,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 		return a;
 	},
 
-  buildXpQuery: function( params ) {
+  buildXpQuery: function( params ) {/*{{{*/
 
 	var k, o = {}, cn = this.class_name;
 
@@ -305,8 +305,7 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 		}
 	}
 	return o;
-   },
-
+   },/*}}}*/
 
 	before_load:  function( store, options ) {/*{{{*/
 
