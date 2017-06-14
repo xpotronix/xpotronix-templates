@@ -42,15 +42,19 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 	buttonAlign: 'left',
 	feat: null,
 	export_w: null,
+	first_enabled_item: null,
 
 
     initEvents : function(){
+
         Ext.form.FormPanel.superclass.initEvents.call(this);
 
         if(this.loadMask){
             this.loadMask = new Ext.LoadMask(this.bwrap,
                     Ext.apply({store:this.store}, this.loadMask));
         }
+
+
     },
 
 
@@ -79,16 +83,20 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 		this.on({ 
 
-			afterrender: { fn: function() { this.loadRecord() }, scope: this, buffer:200 }
+			afterrender: { fn: function() { 
+
+				this.loadRecord();
+				this.first_enabled_item.focus(true,100);
+
+			}, scope: this, buffer:200 }
 		});
 
 	}, /*}}}*/
 
 	onRender: function() { /*{{{*/
 
-		// call parent
+		/* call parent */
 		Ext.ux.xpotronix.xpForm.superclass.onRender.apply(this, arguments);
-
 
 		this.obj && this.obj.set_toolbar( this );
 
@@ -96,9 +104,19 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 		recurse_items( this.getForm(), function(i) {
 
+			var en;
+
+			if ( this.first_enabled_item == null && i.xtype && i.xtype != 'checkbox' && ( !i.initialConfig.disabled ) ) {
+
+				/* el primer item habilitado */
+				this.first_enabled_item = i;
+
+			}
+
 			switch( i.xtype ) {
 
-				case 'checkbox': en = 'check';  break;
+				case 'checkbox': 
+					en = 'check';  break;
 
 				case 'combo': 
 
@@ -216,6 +234,8 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 			f.reset();
 			this.disableForm();
 		}
+
+		
 
 		/* this.fireEvent( 'loadrecord', this, this.store, r ); */
 
