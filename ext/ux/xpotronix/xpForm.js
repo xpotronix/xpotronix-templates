@@ -86,7 +86,7 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 			afterrender: { fn: function() { 
 
 				this.loadRecord();
-				this.first_enabled_item.focus(true,100);
+				this.first_enabled_item && this.first_enabled_item.focus(true,100);
 
 			}, scope: this, buffer:200 }
 		});
