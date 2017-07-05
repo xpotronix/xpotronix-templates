@@ -42,8 +42,7 @@ Ext.ux.xpotronix.xpThumbs = function(config) {
 		prepareData: function(data){
 
 			data.image_url = App.feat.uri_thumb + 
-				data.dirname + '/' +
-				data.basename +
+				data.ID +
 				'&wp=100&hl=100&ar=x';
 				data.full_path = data.imagen || data.dirname + '/' + data.basename;
 				// data.thumb_image = data.dirname + '/' + data.basename;
