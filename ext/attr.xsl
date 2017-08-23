@@ -559,6 +559,15 @@
 <xsl:template match="minChars"><!--{{{-->
 <xsl:if test="position()-1">,</xsl:if>minChars:<xsl:value-of select="."/></xsl:template><!--}}}-->
 
+<xsl:template match="useNull"><!--{{{-->
+<xsl:if test="position()-1">,</xsl:if>useNull:<xsl:value-of select="."/></xsl:template><!--}}}-->
+
+<xsl:template match="defaultValue"><!--{{{-->
+<xsl:if test="position()-1">,</xsl:if>defaultValue:<xsl:value-of select="."/></xsl:template><!--}}}-->
+
+<xsl:template match="allowNull"><!--{{{-->
+<xsl:if test="position()-1">,</xsl:if>allowNull:<xsl:value-of select="."/></xsl:template><!--}}}-->
+
 <xsl:template match="*" mode="translate"><!--{{{-->
 	<xsl:choose>
 		<xsl:when test="@translate!=''">

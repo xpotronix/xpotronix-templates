@@ -222,12 +222,11 @@ Ext.extend( Ext.ux.xpotronix.xpForm, Ext.form.FormPanel, {
 
 			var enabled = ( this.store.acl.edit && !is_new ) || ( this.store.acl.add && is_new );
 
+			this.disableForm();
+
 			if ( enabled )
 
 				this.enableForm();
-
-			else 	this.disableForm();
-
 
 		} else {
 
