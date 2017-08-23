@@ -68,7 +68,8 @@ eduardo spotorno, julio 2007
 
 	<xsl:template match="*:document" mode="title"><!--{{{-->
 <xsl:element name="title">
-<xsl:value-of select="//config/application[1]"/> :: <xsl:value-of select="//feat/generator[1]"/><xsl:if test="//feat/page_title[1]"> :: <xsl:value-of select="//feat/page_title[1]"/>
+<!-- <xsl:value-of select="//config/application[1]"/> :: <xsl:value-of select="//feat/generator[1]"/><xsl:if test="//feat/page_title[1]"> :: <xsl:value-of select="//feat/page_title[1]"/> -->
+<xsl:value-of select="//config/application[1]"/> <xsl:if test="//feat/page_title[1]"> <xsl:value-of select="//feat/page_title[1]"/>
 </xsl:if>
 </xsl:element>
 	</xsl:template><!--}}}-->

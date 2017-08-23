@@ -125,6 +125,9 @@
 	<field type="xpint"><!--{{{-->
 		<xtype>numberfield</xtype>
 		<style>text-align:right;</style>
+		<useNull>true</useNull>
+		<defaultValue>null</defaultValue>
+		<allowNull>true</allowNull>
 	</field><!--}}}-->
 
 	<field type="xpboolean"><!--{{{-->
