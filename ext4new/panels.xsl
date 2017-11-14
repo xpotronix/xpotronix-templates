@@ -25,13 +25,20 @@
 		<xsl:variable name="panel_class" select="concat($application_name,'.view.',$panel_id)"/>
 		/* PANEL type: xpGrid, panel_class: <xsl:value-of select="$panel_class"/> */
 		Ext.define('<xsl:value-of select="$panel_class"/>',
-		Ext.apply(<xsl:apply-templates select="." mode="panel_config"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>,
-		<xsl:apply-templates select="." mode="panel_config_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>)); /* PANEL ENDS */
+		Ext.apply(<xsl:apply-templates select="." mode="panel_config">
+			<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
+			</xsl:apply-templates>,
+		<xsl:apply-templates select="." mode="panel_config_override">
+			<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
+			</xsl:apply-templates>)); /* PANEL ENDS */
 
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="panel" mode="panel_config"><!--{{{-->
 
+		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<!-- <xsl:message terminate="yes">object: <xsl:copy-of select="$obj/@name"/></xsl:message> -->
 		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
@@ -47,7 +54,7 @@
 			<class_name><xsl:value-of select="$obj/@name"/></class_name>
 			<obj type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>')</obj>
 			<acl type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>').acl</acl>
-			<store><xsl:value-of select="$obj/@name"/></store>
+			<store><xsl:value-of select="concat($module,'.',$obj/@name)"/></store>
 			<feat type="function"><xsl:apply-templates select="$obj" mode="feats"/></feat>
 			<display_as><xsl:value-of select="@display"/></display_as>
 			<title><xsl:apply-templates select="." mode="translate"/></title>
@@ -71,6 +78,7 @@
 
 	<xsl:template match="panel" mode="panel_config_override"><!--{{{-->
 
+		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		<xsl:variable name="panel_type" select="@type"/>	
@@ -84,10 +92,14 @@
 
 				<xsl:choose>
 				<xsl:when test="config or items">
-					<xsl:apply-templates select="config|items" mode="column"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
+					<xsl:apply-templates select="config|items" mode="column">
+					<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+					<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:call-template name="default_columns"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
+					<xsl:call-template name="default_columns">
+					<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+					<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
 				</xsl:otherwise>
 				</xsl:choose>
 
@@ -96,16 +108,23 @@
 
 				<xsl:choose>
 				<xsl:when test="config or items">
-					<xsl:apply-templates select="config|items"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
+					<xsl:apply-templates select="config|items">
+					<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+					<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:call-template name="default_fields"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
+					<xsl:call-template name="default_fields">
+					<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+					<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
 				</xsl:otherwise>
 				</xsl:choose>
 
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:apply-templates select="config|items" mode="panel"><xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
+				<xsl:apply-templates select="config|items" mode="panel">
+				<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+				<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/>
+				</xsl:apply-templates>
 			</xsl:otherwise>
 		</xsl:choose>}
 
@@ -144,11 +163,13 @@
 	<!-- default items -->
 
 	<xsl:template name="default_fields"><!--{{{-->
+		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		items:[<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='disabled' or @display='password']" mode="field"/>]
 	</xsl:template><!--}}}-->
 
 	<xsl:template name="default_columns"><!--{{{-->
+		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		columns:[<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='hide' or @display='disabled' or @display='password']" mode="column"/>]
 	</xsl:template><!--}}}-->
@@ -163,6 +184,7 @@
 	<!-- cmp -->
 
 	<xsl:template match="cmp"><!--{{{-->
+		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="standalone" tunnel="yes"/>
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj/@name"/></xsl:message> -->
@@ -184,6 +206,7 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="cmp[@ref]" mode="sub"><!--{{{-->
+		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="standalone" tunnel="yes" select="false()"/>
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj"/>, type: <xsl:value-of select="@type"/></xsl:message> -->
@@ -197,6 +220,7 @@
 	<!-- misc templates -->
 
 	<xsl:template match="panel" mode="translate"><!--{{{-->
+		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<!-- <xsl:message terminate="yes">panel/object: <xsl:sequence select="$obj"/></xsl:message> -->
 		<xsl:choose>
@@ -209,6 +233,7 @@
 
  	<xsl:template match="panel" mode="get_panel_id"><!--{{{-->
 
+		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes" select=".."/>
 		<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 		<xsl:variable name="panel_id">
@@ -236,6 +261,7 @@
 
  	<xsl:template match="panel" mode="obj_metadata"><!--{{{-->
 
+		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:variable name="obj_name">
 			<xsl:choose>

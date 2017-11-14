@@ -154,6 +154,8 @@
 
 	<xsl:template match="*:model" mode="controller"><!--{{{-->
 
+	<xsl:variable name="module" select="//*:session/feat/module"/>
+
 	<xsl:variable name="items">
 		<xsl:for-each select=".//obj">
 			<xsl:element name="model">
@@ -176,9 +178,9 @@
 
 	    views: [<xsl:for-each select=".//panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
-	    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+	    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
-	    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+	    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 
 	    init: function() {
 		this.control({});
