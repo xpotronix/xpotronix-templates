@@ -26,12 +26,13 @@
 	<xsl:template match="obj" mode="model"><!--{{{-->
 
 		<xsl:variable name="obj_name" select="@name"/>
+		<xsl:variable name="module_name" select="//*:session/feat/module"/>
 
-		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',$obj_name)"/>', {
+		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',$obj_name)"/>', {
 			extend: 'Ext.data.Model'
 			,class_name: '<xsl:value-of select="@name"/>'
-			,module: '<xsl:value-of select="//*:session/feat/module"/>'
-			,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="@name"/>', module: '<xsl:value-of select="//*:session/feat/module"/>' }
+			,module: '<xsl:value-of select="$module_name"/>'
+			,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="@name"/>', module: '<xsl:value-of select="$module_name"/>' }
 			,associations:[<xsl:apply-templates select="." mode="associations"/>]
 
 			,fields: [
@@ -39,6 +40,7 @@
 				{name: '__new__', mapping: '@new', type: 'int'},
 				{name: '__acl__', mapping: '@acl', type: 'string'},
 				<xsl:apply-templates select="//*:metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
+					<xsl:with-param name="module" select="$module_name" tunnel="yes"/>
 					<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
 			]});
@@ -48,20 +50,21 @@
 	<xsl:template match="obj" mode="store"><!--{{{-->
 
 		<xsl:variable name="obj_name" select="@name"/>
+		<xsl:variable name="module_name" select="//*:session/feat/module"/>
 
-		Ext.define('<xsl:value-of select="concat($application_name,'.store.',$obj_name)"/>', Ext.apply({ 
+		Ext.define('<xsl:value-of select="concat($application_name,'.store.',$module_name,'.',$obj_name)"/>', Ext.apply({ 
 
 			extend: 'Ux.xpotronix.xpStore'
-			,model: '<xsl:value-of select="concat($application_name,'.model.',$obj_name)"/>'
-			,alias: '<xsl:value-of select="@name"/>'
+			,model: '<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',$obj_name)"/>'
+			,alias: '<xsl:value-of select="concat($module_name,'.',@name)"/>'
 			,class_name: '<xsl:value-of select="@name"/>'
-			,module: '<xsl:value-of select="//*:session/feat/module"/>'
+			,module: '<xsl:value-of select="$module_name"/>'
 			,feat: <xsl:apply-templates select="." mode="feats"/>
 			,acl: {<xsl:apply-templates select="//*:metadata/obj[@name=$obj_name]/acl"/>}
 
 			,primary_key: <xsl:apply-templates select="." mode="primary_key"/>
 			<xsl:if test="../name()='obj'">
-			,parent_store: '<xsl:value-of select="../@name"/>'
+			,parent_store: '<xsl:value-of select="concat($module_name,'.',../@name)"/>'
 			<xsl:if test="foreign_key">
 			,foreign_key: <xsl:apply-templates select="foreign_key"/>
 			</xsl:if>
@@ -93,14 +96,15 @@
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="eh_name" select="@name"/>
+	<xsl:variable name="module_name" select="//*:session/feat/module"/>
 
-	Ext.define('<xsl:value-of select="concat($application_name,'.store.',../from,'_',@name)"/>', {
+	Ext.define('<xsl:value-of select="concat($application_name,'.store.',$module_name,'.',../from,'_',@name)"/>', {
 		extend:'Ux.xpotronix.xpStore'
-		,alias:'<xsl:value-of select="concat(../from,'_',@name)"/>'
-		,model:'<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>'
+		,alias:'<xsl:value-of select="concat($module_name,'.',../from,'_',@name)"/>'
+		,model:'<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',../from,'_',@name)"/>'
 		,class_name:'<xsl:value-of select="$obj_name"/>'
-		,module:'<xsl:value-of select="//*:session/feat/module"/>'
-		,parent_store:'<xsl:value-of select="$parent_obj_name"/>'
+		,module:'<xsl:value-of select="$module_name"/>'
+		,parent_store:'<xsl:value-of select="concat($module_name,'.',$parent_obj_name)"/>'
 		,primary_key:['id'] 
 		<!-- DEBUG: aca hago piruetas para obtener el nombre del atributo que posee este eh. Hay que cambiar a fk -->
 		,foreign_key:{type:'eh',refs: [{local:'id',remote:'<xsl:value-of select="//*:metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}] }
@@ -115,12 +119,13 @@
 		<xsl:variable name="parent_obj_name" select="../../../@name"/>
 			<xsl:variable name="obj_name" select="from"/>
 			<xsl:variable name="eh_name" select="@name"/>
+			<xsl:variable name="module_name" select="//*:session/feat/module"/>
 
-			Ext.define( '<xsl:value-of select="concat($application_name,'.model.',../from,'_',@name)"/>', {
+			Ext.define( '<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',../from,'_',@name)"/>', {
 extend: 'Ext.data.Model'
 ,class_name: '<xsl:value-of select="@name"/>'
-,module: '<xsl:value-of select="//*:session/feat/module"/>'
-,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="$obj_name"/>', module: '<xsl:value-of select="//*:session/feat/module"/>', 
+,module: '<xsl:value-of select="$module_name"/>'
+,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="$obj_name"/>', module: '<xsl:value-of select="$module_name"/>', 
 extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-templates select="../../.." mode="extra_param"/>}) 
 }
 ,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
@@ -134,6 +139,7 @@ extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-temp
 		<xsl:variable name="obj_name" select="@name"/>
 
 		<xsl:variable name="assocs">
+		<xsl:variable name="module_name" select="//*:session/feat/module"/>
 
 		<xsl:if test="foreign_key">
 
@@ -151,7 +157,7 @@ extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-temp
 
 				
 			{	name:'<xsl:value-of select="$parent"/>'
-				,model:'<xsl:value-of select="concat($application_name,'.model.',$parent)"/>'
+				,model:'<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',$parent)"/>'
 				,type:'<xsl:value-of select="$assoc_type"/>'
 				/* ,autoload:true */
 				,primaryKey:'<xsl:value-of select="@local"/>'
@@ -173,7 +179,7 @@ extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-temp
 			<xsl:variable name="child" select="../../@name"/>
 			<assoc>
 			{	name:'<xsl:value-of select="$child"/>'
-				,model:'<xsl:value-of select="concat($application_name,'.model.',$child)"/>'
+				,model:'<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',$child)"/>'
 				,type:'<xsl:value-of select="$assoc_type"/>'
 				/* ,autoload: true */
 				,primaryKey:'<xsl:value-of select="@remote"/>'

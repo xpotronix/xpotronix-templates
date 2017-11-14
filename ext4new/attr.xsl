@@ -398,9 +398,11 @@ return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:if></xsl
 <xsl:if test="position()-1">,</xsl:if>store:<xsl:apply-templates select="$attr" mode="SimpleStore"/></xsl:template><!--}}}-->
 
 <xsl:template match="store[ancestor::*/@type='xpentry_help']"><!--{{{-->
+<xsl:param name="module" tunnel="yes"/>
 <xsl:param name="obj" tunnel="yes"/>
 <xsl:param name="attr" tunnel="yes"/>
-<xsl:if test="position()-1">,</xsl:if>store:'<xsl:value-of select="$obj/@name"/>_<xsl:value-of select="$attr/@eh"/>'
+<xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message>
+<xsl:if test="position()-1">,</xsl:if>store:'<xsl:value-of select="$module"/>.<xsl:value-of select="$obj/@name"/>_<xsl:value-of select="$attr/@eh"/>'
 </xsl:template><!--}}}-->
 
 <!-- vars -->
