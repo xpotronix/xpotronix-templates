@@ -401,7 +401,7 @@ return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:if></xsl
 <xsl:param name="module" tunnel="yes"/>
 <xsl:param name="obj" tunnel="yes"/>
 <xsl:param name="attr" tunnel="yes"/>
-<xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message>
+<!--<xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message>-->
 <xsl:if test="position()-1">,</xsl:if>store:'<xsl:value-of select="$module"/>.<xsl:value-of select="$obj/@name"/>_<xsl:value-of select="$attr/@eh"/>'
 </xsl:template><!--}}}-->
 
