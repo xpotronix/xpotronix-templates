@@ -363,7 +363,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 							this.set_parent_fk();
 
 						else if ( this.parent_store.selections.length )
-							this.bind(br, this.get_foreign_key( this.parent_store.selections[0] ));
+							this.bind(br, this.get_foreign_key( [this.parent_store.selections[0]] ));
 
 					}
 
@@ -779,8 +779,14 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	bind: function(record, fk) { /*{{{*/
 
+		/*
 		for (var field in fk)
 			record.set(field, fk[field]);
+		*/
+
+		Ext.each( fk, function( field ) {
+			record.set(field.property,field.value);
+		});
 
 	},
 	/*}}}*/
