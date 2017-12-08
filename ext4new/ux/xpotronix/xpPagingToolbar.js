@@ -135,7 +135,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		this.insert(pos, this.export_button(panel));
 
-		if (panel.store.foreign_key_type == 'parent')
+		if (panel.store.foreign_key.type == 'parent')
 			this.insert(pos, this.assign_button(panel));
 
 		this.insert(pos, this.invert_button(panel));
@@ -421,7 +421,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
                 	cls: 'x-btn-text-icon',
 			disabled: true,
                 	tooltip: '<b>Guardar</b><br/>Pulse aqui para guardar las modificaciones',
-			listeners:{ click:{ scope: this, fn:App.save, buffer:200 }}
+			listeners:{ click:{ scope: this.store, fn:this.store.save, buffer:200 }}
 		});
 
 		panel.store.on( 'datachanged', function( s, o ) { 

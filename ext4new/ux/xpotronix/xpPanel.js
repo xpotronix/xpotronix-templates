@@ -75,8 +75,11 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 		/* resuelve referencias */
 
-		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
-                if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
+		if ( typeof this.store == 'string' ) 
+			this.store = App.store.lookup( this.store );
+
+                if ( typeof this.obj == 'string' )
+			this.obj = App.obj.get( this.obj );
 
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
