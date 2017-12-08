@@ -718,91 +718,11 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		return ret;
 	},/*}}}*/
 
-	/* store changes handling */
-
-	getModifiedStores: function() {/*{{{ */
-
-		var list = [];
-
-		this.store.each( function( s, a, b ) {
-
-			if ( s.dirty && ! Ext.isEmptyObject( s.dirty() ) )
-
-				list.push( { store: s, records: null } );
-		}, this );
-
-
-		return list;
-
-	},/*}}}*/
-
-	getStoresMods: function() {/*{{{*/
-
-		var md = this.getModifiedStores();
-
-		if ( md.length ) {
-
-			Ext.each( md, function( o ) {
-
-				o.records = o.store.getModifiedRecords();
-
-				Ext.each( o.records, function( r ) {
-
-					o.store.markModifiedRecordChain( r, this.fake_dirty_records );
-
-				}, this );
-			
-			}, this );
-		}
-
-		return md;
-	},/*}}}*/
-
-	debug_show_changed_records: function( md ) {/*{{{*/
-
-		var message = '';
-
-		if ( md.length ) {
-
-			message = '<ul>';
-
-			Ext.each( md, function( o ){
-				message += "<li>store: " + o.store.class_name + ", records: " + o.records.length + "</li>";
-			}, this);
-
-			message += '</ul>';
-		} else
-			message = 'No hay cambios que guardar';
-
-		Ext.Msg.show({
-
-			msg: message,
-			buttons: Ext.Msg.OK,
-			width: 400
-		});
-
-	},/*}}}*/
-
-	serialize: function() {/*{{{*/
-
-		var md = this.getStoresMods();
-
-		this.debug && this.debug_show_changed_records( md );
-
-		return this.store.lookup( this.feat.root_obj ).serialize();
-
-	},/*}}}*/
-
-	save: function() {/*{{{*/
-
-		App.process_request({m:App.feat.module,a:'process',p:'store',b:'ext4',x:App.serialize()});
-
-	},/*}}}*/
-
  	process_request: function( p, callback ) {/*{{{*/
 
 		this.showPleaseWait( 'Ejecutando la acción ... Aguarde', 'Procesando ...' );
 
+		var module = p.m;
 		var url = { m: p.m, a: p.a };
 		delete( p.m );
 		delete( p.a );
@@ -812,7 +732,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 			delete( p.p );
 		}
 
-            	this.conn_process.request({ method: 'POST', url: '?' + Ext.urlEncode( url ), params: p, success: callback });
+            	this.conn_process.request({ method: 'POST', module: module, url: '?' + Ext.urlEncode( url ), params: p, success: callback });
 
 	}, /*}}}*/
 
@@ -887,9 +807,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		Ext.each( this.response.changes, function( e ) { 
 
-			var s;
+			var s, module = param.request.options.module;
 
-			if ( s = this.store.lookup( e.nodeName ) ) 
+			if ( s = this.store.lookup( module + '.' + e.nodeName ) ) 
 				ms[s.class_name] = { store: s, response: s.update_model( e ) };
 
 		}, this );
@@ -903,8 +823,10 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 			if ( Ext.isObject( ss ) && ( ss.response == 'u' || ss.response == 'i' || ss.response == 'd' ) ) {
 
 				ss.store.fireEvent( 'serverstoreupdate', ss.store );
+
 				ss.store.childs.each( function( ch ) {
-					if ( ch.foreign_key_type == 'parent' )
+
+					if ( ch.foreign_key.type == 'parent' )
 						ch.load();
 				});			
 
@@ -917,7 +839,6 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		this.hidePleaseWait();
 		this.parse_response( param ) && this.update_model( param );
-		Ext.each( this.fake_dirty_records, function( r ) { r.commit(); } );
 
 	},/*}}}*/
 

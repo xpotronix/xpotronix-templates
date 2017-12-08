@@ -95,8 +95,11 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 
 		this.selModel = this.dv.getSelectionModel();	
 
-		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
-                if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
+		if ( typeof this.store == 'string' ) 
+			this.store = App.store.lookup( this.store );
+
+                if ( typeof this.obj == 'string' )
+			this.obj = App.obj.get( this.obj );
 
 		/* this.getForm().trackResetOnLoad = true; */
 

@@ -43,7 +43,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			        	ptype: 'filterbar',
 			        	renderHidden: false,
 			        	showShowHideButton: true,
-			        	showClearAllButton: true
+			        	showClearAllButton: true 
 				}
 			],
 
@@ -72,8 +72,11 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.selModel = this.getSelectionModel();	
 		
-		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
-		if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
+		if ( typeof this.store == 'string' )
+			this.store = App.store.lookup( this.store );
+
+		if ( typeof this.obj == 'string' )
+			this.obj = App.obj.get( this.obj );
 
 		this.acl = this.acl || this.obj.acl;
 		this.processes_menu = this.processes_menu || this.obj.processes_menu;
@@ -81,10 +84,13 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		/* call parent */
 		this.callParent(arguments);
 
-                this.getStore().on('beforeload', this.rememberSelection, this);
-                this.getView().on('refresh', this.refreshSelection, this);
-
 		/* eventos */
+
+                // this.getStore().on('beforeload', this.rememberSelection, this);
+
+                // this.getView().on('refresh', this.refreshSelection, this);
+
+		this.getView().preserveScrollOnRefresh = true;
 
 		this.on( 'beforeedit', function() {
 
@@ -166,25 +172,9 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 				return false;
 			}
 
+			return true;
+
 		}, this.store );
-
-                this.store.on('selectionchange', function(s) {
-
-			if ( this.rendered && this.store.getCount() ) 
-				this.selModel.select( s );
-
-                }, this );
-
-
-		/*
-		this.store.on( 'add', function() {
-
-			if ( ! this.selModel.getSelection() ) 
-				this.selModel.select( 0 );
-
-		}, this );
-		*/
-	
 
                 this.store.on( 'load', function() {
 
@@ -193,9 +183,28 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this);
 
+                this.store.on('selectionchange', function(s) {
+
+			if ( this.rendered && this.store.getCount() ) 
+				this.selModel.select( s );
+
+                }, this );
+
+		this.store.on( 'loadblank', function() {
+
+			if ( ! this.selModel.getSelection() ) 
+				this.selModel.select( 0 );
+
+		}, this );
+	
+
 	}, /*}}}*/
 
 	rememberSelection: function(selModel, selectedRecords) {/*{{{*/
+
+		if (!this.rendered || Ext.isEmpty(this.el)) {
+			return;
+		}
 
 		this.selectedRecords = this.getSelectionModel().getSelection();
 		this.getView().saveScrollState();
@@ -204,20 +213,23 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	refreshSelection: function() {/*{{{*/
 
-		if (this.selectedRecords === undefined || 0 >= this.selectedRecords.length) {
+		if ( this.selectedRecords == undefined || this.selectedRecords.length < 1 ) {
 			return;
 		}
 
 		var newRecordsToSelect = [];
+
 		for (var i = 0; i < this.selectedRecords.length; i++) {
+
 			record = this.getStore().getById(this.selectedRecords[i].getId());
+
 			if (!Ext.isEmpty(record)) {
+
 				newRecordsToSelect.push(record);
 			}
 		}
 
 		this.getSelectionModel().select(newRecordsToSelect);
-		Ext.defer(this.el.setScrollTop, 30, this.el, [this.getView().scrollState.top]);
 
 	},/*}}}*/
 

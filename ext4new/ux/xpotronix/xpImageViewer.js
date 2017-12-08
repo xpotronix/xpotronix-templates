@@ -27,8 +27,11 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 		App.obj.get(this.class_name).panels.add(this);
 
-		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
-       	        if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
+		if ( typeof this.store == 'string' ) 
+			this.store = App.store.lookup( this.store );
+
+       	        if ( typeof this.obj == 'string' )
+			this.obj = App.obj.get( this.obj );
 
 		Ext.apply( config, { 
 
@@ -373,7 +376,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 		this.callParent(this, arguments);
 	
-		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
+		if ( typeof this.store == 'string' ) 
+			this.store = App.store.lookup( this.store );
 
 		/* this.getForm().trackResetOnLoad = true; */
 

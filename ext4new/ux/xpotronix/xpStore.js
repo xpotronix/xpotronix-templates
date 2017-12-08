@@ -30,6 +30,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	primary_key: this.primary_key || [],
 	foreign_key: this.foreign_key || {},
 	foreign_key_values: [],
+	fake_dirty_records: [],
 
 	remoteSort: this.remoteSort || true,
 	remoteFilter: this.remoteSort || true,
@@ -67,42 +68,79 @@ Ext.define('Ux.xpotronix.xpStore', {
 		this.addEvents( 'loadblank' );
 		this.addEvents( 'serverstoreupdate' ); 
 
-		var tmp = this.parent_store;
-
 		/* parent_store */
 
-		if ( tmp ) {
-
+		if ( this.parent_store ) {
 
 			/* resuelve el parent_store */
 
-			if ( typeof this.parent_store == 'string' )
-				this.parent_store = Ext.StoreMgr.lookup( tmp ) || 
-					console.error( "no encuentro el parent_store " + tmp );
+			if ( typeof this.parent_store == 'string' ) {
+
+				var parent_store_name = this.parent_store;
+
+				this.parent_store = App.store.lookup( parent_store_name ) || 
+					console.error( "no encuentro el parent_store " + parent_store_name );
+			}
 
 			this.parent_store.add_child( this );
 
 			/* cuando cambia el parent_store */
 
 			this.parent_store.on({
+
 				selectionchange: {
-					fn: this.onSelectionChange,
+					buffer: 500,
 					scope: this,
-					buffer: 500
+					fn: this.onSelectionChange
+				},
+
+				serverstoreupdate: {
+
+					buffer: 100,
+					scope: this,
+					fn: function( a, b, c ) {
+
+						var selections = this.parent_store.selections;
+
+						if ( selections.length ) {
+
+							var new_fk = this.get_foreign_key( [this.parent_store.selections[0]] );
+
+							for ( var i = 0; i < new_fk.length ; i++ ) {
+
+								if ( new_fk[i].value !== this.foreign_key_values[i] ) {
+
+									this.foreign_key_values = new_fk;
+									this.load();
+									break;
+								}
+							}
+
+						} else {
+
+							this.foreign_key_values = [];
+							this.removeAll();
+						}
+
+					}
+
 				}
 			});
 
 			/* carga un registro en blanco cuando la relacion es de parent */
 
-			this.foreign_key.type == 'parent' && (!this.passive) &&
+			if ( this.foreign_key.type == 'parent' && ( !this.passive ) ) {
 
-			this.parent_store.on({
-				loadblank: {
-					buffer: 100,
-					fn: this.add_blank,
-					scope: this
-				}
-			});
+				this.parent_store.on({
+
+					loadblank: {
+
+						buffer: 100,
+						fn: this.add_blank,
+						scope: this
+					}
+				});
+			}
 		}
 
 
@@ -125,7 +163,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 				}}, 
 
 			load: {
-
 
 				fn: function(s, a, b) {
 
@@ -152,9 +189,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		});
 
-	},/*}}}*/
+	},/*}}}*/ 
 
 	/* events fn */
+
+	lookup: function( store ) {/*{{{*/
+
+		return App.store.lookup( this.module + '.' + store );
+
+	},/*}}}*/
 
 	getTotalCount: function() {/*{{{*/
 
@@ -345,13 +388,13 @@ Ext.define('Ux.xpotronix.xpStore', {
 			scope: this,
 			url: this.proxy.blank_url,
 
-			callback: function(brs) {
+			callback: function( brs ) {
 
 				/* resetea el lastTotalCount */
 				this.lastTotalCount = 0;
 
 				/* por cada registro recibido */
-				Ext.each(brs, function(br) {
+				Ext.each( brs, function( br ) {
 
 					/* marcas de dirty para campos con valores */
 					this.initRecord( br );
@@ -375,10 +418,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 						options.callback.call(options.scope || this, br, this);
 
 
+					this.fireEvent('selectionchange', brs, this.selModel);
+					this.fireEvent('loadblank', this, brs, options);
+
 				}, this);
 
 
-				this.fireEvent('loadblank', this, brs, options);
 
 				/* volver los parametros atras para hacer los load normales */
 				delete this.lastOptions.add;
@@ -427,9 +472,17 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			me.foreign_key_values = me.get_foreign_key( selections );
 
-			Ext.each( me.foreign_key_values, function( key ) {
-				me.filter( key.property, key.value );
-			});
+			if ( me.foreign_key_values.length ) {
+
+				Ext.each( me.foreign_key_values, function( key ) {
+					me.filter( key.property, key.value );
+				});
+
+			} else {
+
+				this.removeAll();
+			}
+
 
 		}
 
@@ -492,20 +545,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 		});
 
 		return ps.getAt(index);
-
-	},
-	/*}}}*/
-
-	markModifiedRecordChain: function(r, fdr) { /*{{{*/
-
-		var pr = this.getParentRecord(r);
-
-		if (pr && !pr.dirty) {
-
-			pr.setDirty();
-			fdr.push(pr);
-			pr.store.markModifiedRecordChain(pr, fdr);
-		}
 
 	},
 	/*}}}*/
@@ -685,7 +724,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					key.property = ref.local;
 
-					if (value == undefined)
+					if (value === undefined)
 						console.error('no encuentro la clave foranea ' + ref.remote);
 					else {
 						key.value = value.dateFormat ?
@@ -844,30 +883,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	},/*}}}*/
 
-	go_to_rowKey: function() { /*{{{*/
-
-		this.debug && console.log( 'go_to_rowKey' ); return; 
-
-		if (this.rowKey === null) {
-
-			this.go_to(0, false);
-
-		} else {
-
-			// busca el rowKey para posicionar la barra en el mismo lugar
-
-			var ri = null;
-
-			if ((ri = this.find('__ID__', this.rowKey)) > -1)
-
-				this.go_to(ri);
-			else
-				this.go_to(0, false); // not found
-		}
-
-	},
-	/*}}}*/
-
 	serialize_record: function(record, fields) { /*{{{*/
 
 		// var trim = Ext.util.Format.trim;
@@ -937,7 +952,125 @@ Ext.define('Ux.xpotronix.xpStore', {
 		result += nodeList ? '>' + nodeList + '</' + element + '>' : '/>';
 
 		return result;
-	} /*}}}*/
+
+	},/*}}}*/
+
+	get_last_ancestor: function() { /*{{{*/
+
+		return  this.parent_store ? 
+			this.parent_store.get_last_ancestor():
+			this;
+
+	},/*}}}*/
+
+	/* store changes handling */
+
+	serialize_all: function() {/*{{{*/
+
+		var md = this.getStoresMods();
+
+		this.debug && this.debug_show_changed_records( md );
+
+		return this.get_last_ancestor().serialize();
+
+	},/*}}}*/
+
+	getStoresMods: function() {/*{{{*/
+
+		/* iteracion sobre los stores modificados */
+
+		var list = [];
+
+		this.getModifiedStores( list );
+
+		if ( list.length ) {
+
+			Ext.each( list, function( o ) {
+
+				o.records = o.store.getModifiedRecords();
+
+				Ext.each( o.records, function( r ) {
+
+					o.store.markModifiedRecordChain( r, this.fake_dirty_records );
+
+				}, this );
+			
+			}, this );
+		}
+
+		return list;
+
+	},/*}}}*/
+
+	getModifiedStores: function( list ) {/*{{{ */
+
+		/* recursion entre los hijos y sus modificaciones */
+
+		if( this.dirty && ! Ext.isEmptyObject( this.dirty() ) )
+
+			list.push( { store: this, records: null } );
+
+		this.childs.each( function( c ) {
+
+			c.getModifiedStores( list );
+
+		});
+
+	},/*}}}*/
+
+	markModifiedRecordChain: function(r, fdr) { /*{{{*/
+
+		/* marca los parents como 'dirty' cuando el hijo esta modificado */
+
+		var pr = this.getParentRecord(r);
+
+		if (pr && !pr.dirty) {
+
+			pr.setDirty();
+			fdr.push( pr );
+			pr.store.markModifiedRecordChain( pr, fdr );
+		}
+
+	},/*}}}*/
+
+	save: function() {/*{{{*/
+
+		/* DEBUG: fijarse si es otro el store object y si aca se hace la distincion */
+
+		var module = this.get_last_ancestor().class_name;
+
+		App.process_request( { m:module, a:'process', p:'store', b:'ext4', x:this.serialize_all() }, function( a, b, c ) {
+
+		Ext.each( this.fake_dirty_records, function( r ) { r.commit(); } );
+
+		});
+
+	},/*}}}*/
+
+	debug_show_changed_records: function( md ) {/*{{{*/
+
+		var message = '';
+
+		if ( md.length ) {
+
+			message = '<ul>';
+
+			Ext.each( md, function( o ){
+				message += "<li>store: " + o.store.class_name + ", records: " + o.records.length + "</li>";
+			}, this);
+
+			message += '</ul>';
+		} else
+			message = 'No hay cambios que guardar';
+
+		Ext.Msg.show({
+
+			msg: message,
+			buttons: Ext.Msg.OK,
+			width: 400
+		});
+
+	}/*}}}*/
 
 }); // extend
 

@@ -85,8 +85,11 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.callParent();
 
-		if ( typeof this.store == 'string' ) this.store = Ext.StoreMgr.lookup( this.store );
-                if ( typeof this.obj == 'string' ) this.obj = App.obj.get( this.obj );
+		if ( typeof this.store == 'string' )
+			this.store = App.store.lookup( this.store );
+
+                if ( typeof this.obj == 'string' ) 
+			this.obj = App.obj.get( this.obj );
 
 		/* this.getForm().trackResetOnLoad = true; */
 
@@ -199,20 +202,22 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	},/*}}}*/
 
-	loadRecord: function( a, b, c ) { /*{{{*/
-
+	loadRecord: function( r ) { /*{{{*/
 
 		var me = this;
 
-		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) return;
+		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) 
+			return;
 
-		var s = me.getSelection(), r;
+		var form = this.getForm();
+		form.reset();
 
-		if ( s.length && ( ! Ext.isEmptyObject ( r = s[0] ) ) && r.get ) { 
+		if ( ( ! Ext.isEmptyObject ( r ) ) && r.get ) { 
 
 			var c;
         		this._record = r;
 
+			
 			if ( Ext.isEmptyObject( c = r.getChanges() ) )
 				c = r.getData(); 
 
@@ -231,7 +236,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		} else {
 
-			me.getForm().reset();
 			me.disableForm();
 		}
 
