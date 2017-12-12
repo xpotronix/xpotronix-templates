@@ -46,8 +46,9 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			        	showClearAllButton: true 
 				}*/
 				,{
-					ptype:'saki-gms'
-					,filterOnEnter:false
+					ptype:'xp-gms'
+					,filterOnEnter:true
+					,iconColumn:false
 				}
 			],
 
