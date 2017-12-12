@@ -38,12 +38,16 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		        		autoCancel: false,
 					errorSummary: false 
 
-				}, 
-				{
+				} 
+				/*,{
 			        	ptype: 'filterbar',
 			        	renderHidden: false,
 			        	showShowHideButton: true,
 			        	showClearAllButton: true 
+				}*/
+				,{
+					ptype:'saki-gms'
+					,filterOnEnter:false
 				}
 			],
 
