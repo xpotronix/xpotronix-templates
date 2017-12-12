@@ -38,12 +38,16 @@
                 <link rel="stylesheet" type="text/css" href="/ux4/DataView/data-view.css" />
                 <link rel="stylesheet" type="text/css" href="/ux4/DataView/DragSelector.css" />
 
-		<!-- filterbar css -->
+		<!-- FilterBar css -->
 
+		<!--
                 <link rel="stylesheet" type="text/css" href="/ux4/resources/css/uxs.css" />
                 <link rel="stylesheet" type="text/css" href="/ux4/resources/css/overrides.css" />
                 <link rel="stylesheet" type="text/css" href="/ux4/resources/css/app.css" />
+		-->
 
+		<!-- Saki Grid Multi Search css -->
+                <link rel="stylesheet" type="text/css" href="/ux4/saki/saki-grid-multisearch-all-debug.css" />
 
 		<!-- upload.css -->
 
@@ -75,12 +79,18 @@
 
                 
 		<!-- FilterBar -->
+
+		<!--
 		<script type="text/javascript" src="/ux4/form/field/ClearButton.js"></script>
                 <script type="text/javascript" src="/ux4/form/field/OperatorButton.js"></script>
                 <script type="text/javascript" src="/ux4/grid/column/ActionPro.js"></script>
                 <script type="text/javascript" src="/ux4/grid/FilterBar.js"></script>
                 <script type="text/javascript" src="/ux4/grid/AutoResizer.js"></script>
+		-->
 
+		<!-- Saki Grid Multi Search -->
+
+                <script type="text/javascript" src="/ux4/saki/MultiSearch.js"></script>
 
 	</xsl:template><!--}}}-->
 
@@ -110,6 +120,7 @@
 	<script type="text/javascript" src="/ux4/xpotronix/xpStore.js"/>
 	<script type="text/javascript" src="/ux4/xpotronix/xpImageViewer.js"/>
 	<script type="text/javascript" src="/ux4/xpotronix/xpImageToolbar.js"/>
+	<script type="text/javascript" src="/ux4/xpotronix/xpMultiSearch.js"/>
 
 	<script type="text/javascript" src="/ux4/xpotronix/xpThumbs.js"/>
 	<script type="text/javascript" src="/ux4/DataView/DragSelector.js"/>
