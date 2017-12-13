@@ -39,9 +39,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	selections: undefined,
 	selModel: undefined,
-	rowIndex: undefined,
 
-	debug: true,
+	debug: false,
 
 	constructor: function(config) {/*{{{*/
 
@@ -852,20 +851,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	prev: function() { /*{{{*/
-
-		return this.go_to(this.rowIndex - 1);
-	},
-
-	/*}}}*/
-
-	next: function() { /*{{{*/
-
-		return this.go_to(this.rowIndex + 1);
-
-	},
-	/*}}}*/
-
 	setSelection: function( selections, selModel ) {/*{{{*/
 
 		var curPos;
@@ -1004,17 +989,21 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	getModifiedStores: function( list ) {/*{{{ */
 
+		var r_list = list || [];
+
 		/* recursion entre los hijos y sus modificaciones */
 
 		if( this.dirty && ! Ext.isEmptyObject( this.dirty() ) )
 
-			list.push( { store: this, records: null } );
+			r_list.push( { store: this, records: null } );
 
 		this.childs.each( function( c ) {
 
-			c.getModifiedStores( list );
+			c.getModifiedStores( r_list );
 
 		});
+
+		return r_list;
 
 	},/*}}}*/
 

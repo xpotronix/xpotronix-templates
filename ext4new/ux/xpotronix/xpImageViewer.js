@@ -13,6 +13,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 	,store:undefined
 	,obj:undefined
 	,acl:undefined
+	,multi_row: true
 	,debug: false
 	,resizable: false
 	,border:false

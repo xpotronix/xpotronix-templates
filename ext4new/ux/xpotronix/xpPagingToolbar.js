@@ -111,50 +111,49 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	onRender: function() {/*{{{*/
 
 		var panel = this.panel, panel_xtype = panel.getXType();
+		var me = this;
 
 		// botones
 
 		// DEBUG: hay que especificar si el panel es sigle o multiple (ej. selection type)
 
-		if ( 	panel_xtype.substr(panel_xtype.length - 6) == 'xpForm' || 
-			panel_xtype.substr(panel_xtype.length - 7) == 'xpPanel') {
+		if ( ! panel.multi_row ) {
 
-			this.insert(this.items.length - 2, this.form_left_button(panel));
-			this.insert(this.items.length - 2, this.form_right_button(panel));
+			me.insert( me.items.length - 2, me.form_left_button( panel ) );
+			me.insert( me.items.length - 2, me.form_right_button( panel ) );
 		}
 
-		var b, pos = this.items.length - 2;
+		var b, pos = me.items.length - 2;
 
-		if (panel.acl.del)
-			this.insert(pos, this.del_button(panel));
+		if ( panel.acl.del )
+			me.insert( pos, me.del_button( panel ) );
 
-		this.insert(pos, '->');
+		me.insert( pos, '->' );
 
-		if (panel.acl.edit || panel.acl.add)
-			this.insert(pos, this.discard_changes(panel));
+		if ( panel.acl.edit || panel.acl.add )
+			me.insert( pos, me.discard_changes( panel ) );
 
-		this.insert(pos, this.export_button(panel));
+		me.insert( pos, me.export_button( panel ) );
 
-		if (panel.store.foreign_key.type == 'parent')
-			this.insert(pos, this.assign_button(panel));
+		if ( panel.store.foreign_key.type == 'parent' )
+			me.insert( pos, me.assign_button( panel ) );
 
-		this.insert(pos, this.invert_button(panel));
+		if ( panel.multi_row ) 
+			me.insert( pos, me.invert_button( panel ) );
 
-		if (panel.processes_menu)
-			this.insert(pos, this.add_process_menu(panel));
+		if ( panel.processes_menu )
+			me.insert( pos, me.add_process_menu( panel ) );
 
-		if (panel.acl.edit || panel.acl.add)
-			this.insert(pos, this.save_button(panel));
+		if ( panel.acl.edit || panel.acl.add )
+			me.insert(pos, me.save_button( panel ) );
 
-		if (panel.acl.add)
-			this.insert(pos, this.add_button(panel));
+		if ( panel.acl.add )
+			me.insert( pos, me.add_button( panel ) );
 
+		if ( panel.multi_row && panel.obj.inspect.length )
+			me.insert( pos, me.inspect_button( panel ) );
 
-		if (this.panel.obj.inspect.length)
-			b = this.insert(pos, this.inspect_button(panel));
-
-
-		this.callParent();
+		me.callParent();
 
 	},/*}}}*/
 
@@ -204,7 +203,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		if ( ret ) { 
 
-			if ( App.getModifiedStores().length ) {
+			if ( this.store.getModifiedStores().length ) {
 
 		        	Ext.MessageBox.alert('Error', 'Hay datos sin guardar: salve la información antes de procesar');
 				return;
@@ -388,28 +387,49 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	},/*}}}*/
 
 	inspect_button: function( panel ) {/*{{{*/
+
 		return {
+
 	                icon: '/ux/images/application_form_magnify.png',
 			cls: 'x-btn-text-icon',
 			text: 'Ver',
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Inspeccionar</b><br/>Pulse aqui para inspeccionar el registro seleccionado',
 			handler: this.inspect_window,
-			scope:this 
+			disabled: true,
+			scope:this,
+			panel:panel,
+
+			initComponent: function() {
+
+				var me = this;
+
+				me.panel.store.on( 'selectionchange', function( sels ) {
+
+					if ( sels.length )
+						me.enable();
+					else
+						me.disable();
+				});
+
+				me.callParent(arguments);
+			}
 		};
+
 	},/*}}}*/
 
 	add_button: function( panel ) {/*{{{*/
 
 		return new Ext.Button({
+
 			icon: '/ext/resources/images/default/dd/drop-add.gif',
 			cls: 'x-btn-text-icon',
 			text: 'Agregar',
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Agregar</b><br/>Pulse aqui para agregar un nuevo registro',
 			listeners:{click:{scope:this, fn:this.addRecord, buffer:200}}
-		});
 
+		});
 
 	},/*}}}*/
 
@@ -446,12 +466,13 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	add_process_menu: function( panel ) {/*{{{*/
 
 		var menu_params = {
+
 			icon: '/ux/images/list-items.gif',
 			// cls: 'x-btn-text-icon',
 			// minWidth: 105,
 			text: 'Acciones',
 			tooltip: 'Ejecute una acción para procesar los items seleccionados',
-			menu: { items: []}
+			menu: { items: [] }
 		};
 
 		var item, pm = panel.processes_menu;

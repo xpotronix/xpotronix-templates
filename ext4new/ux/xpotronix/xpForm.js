@@ -27,11 +27,12 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	obj: undefined,
 	acl: undefined,
+	feat: undefined,
 	border: false,
 	show_buttons: true,
 	buttonAlign: 'left',
-	feat: undefined,
-	debug: false,
+	multi_row: false,
+	debug: true,
 
 	constructor: function(config) {/*{{{*/
 
@@ -39,38 +40,38 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		App.obj.get(this.class_name).panels.add(this);
 
+		config.dockedItems = config.dockedItems || [];
+
 		/* paging toolbar */
 
-		if ( config.paging_toolbar ) 
+		/* DEBUG: por ahora activos por default */
 
-			Ext.apply( config, { 
+		if ( true || config.paging_toolbar ) {
 
-				dockedItems: [{
-					xtype: 'xppagingtoolbar',
-					panel: this,
-					store: this.store,
-					dock: 'top',
-					displayInfo: true
-				}],
+			config.dockedItems.push({
+
+				xtype: 'xppagingtoolbar',
+				panel: this,
+				store: this.store,
+				dock: 'top',
+				displayInfo: true
 			});
+		}
 
 		/* bottom toolbar */
 
-		if ( config.bottom_toolbar )
+		if ( true || config.bottom_toolbar ) {
 
-		Ext.apply( config, { 
+			config.dockedItems.push({
 
-			dockedItems: [{
 				xtype: 'toolbar',
 				panel: this,
 				store: this.store,
 				dock: 'bottom',
 				displayInfo: true,
 				layout: { pack: 'center' }
-			}],
-		});
-
-
+			});
+		}
 
 		this.callParent(arguments);
 
@@ -126,25 +127,30 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.store.on({
 
-			update: { fn: function( form ) { this.loadRecord( form.getSelection()[0] ); }, scope: this, buffer:50 },
+			update: { 
 
-			selectionchange: {
+				scope: this
+				,buffer:50
+				,fn: function( form ) { 
 
-				fn: function( a, b, c ) {
+					this.loadRecord( form.getSelection()[0] ); 
+				}}
 
-					var form = this;
-	
-					var r = form.getSelection();
+			,selectionchange: {
 
-					if ( r && r.length )
-						form.loadRecord( r[0] );
+				scope: this
+				,buffer:200
+				,fn: function( sels, selMode, e ) {
+
+					var me = this;
+
+					if ( sels && sels.length )
+						me.loadRecord( sels[0] );
 					else
-						form.getForm().reset();
+						me.getForm().reset();
 				
 
-				}, 
-				scope: this,
-				buffer:200
+				} 
 			} 
 		});
 
@@ -154,7 +160,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		this.callParent();
 
-		if ( ! this.store ) return;
+		if ( ! this.store ) 
+			return;
 
 		var field_names = [];
 
@@ -210,13 +217,13 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			return;
 
 		var form = this.getForm();
-		form.reset();
+
+		/* form.reset(); */
 
 		if ( ( ! Ext.isEmptyObject ( r ) ) && r.get ) { 
 
 			var c;
         		this._record = r;
-
 			
 			if ( Ext.isEmptyObject( c = r.getChanges() ) )
 				c = r.getData(); 

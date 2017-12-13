@@ -26,6 +26,7 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 	dv: null,
 	items: null,
 	feat: null,
+	multi_row: true,
 	loadingText: 'Cargando ...',
 
 
