@@ -147,7 +147,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 	,lastSelection: null
 
-	,debug: true
+	,debug: false 
 
 	,listeners: {
 
@@ -681,6 +681,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 	},/*}}}*/
 
 	start: function() {/*{{{*/
+
 
 	},/*}}}*/ 
 

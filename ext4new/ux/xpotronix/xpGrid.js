@@ -22,9 +22,10 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	feat: null,
 	loadMask: true,
 	multiSelect: true,
+	multi_row: true,
 
 	selection: [],
-	debug: false,
+	debug: true,
 
 	constructor: function(config) {/*{{{*/
 
@@ -100,6 +101,14 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		this.on( 'beforeedit', function() {
 
 			return this.acl.edit;
+
+		});
+
+		this.on( 'viewready', function() {
+
+			if ( this.store ) 
+				if ( this.store.feat.auto_load !== false && ( ! this.store.parent_store ) )
+					this.store.load();
 
 		});
 

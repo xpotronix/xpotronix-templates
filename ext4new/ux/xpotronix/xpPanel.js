@@ -22,6 +22,7 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 	show_buttons: true,
 	buttonAlign: 'left',
 	feat: undefined,
+	multi_row: false,
 	debug: true,
 
 	constructor: function(config) {/*{{{*/
