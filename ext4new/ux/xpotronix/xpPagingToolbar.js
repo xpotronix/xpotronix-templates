@@ -221,9 +221,8 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		var me = this;
 
-		return new Ext.Button({
+		return {
 
-			// id: 'leftButton',
 			text: 'Atras',
 	               	menuAlign: 'tr?',
 			disabled: true,
@@ -233,23 +232,25 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 					scope:me.store,
 					buffer:200,
 					fn:function() { 
-						me.selModel.selectPrevious(); 
+						this.selModel.selectPrevious(); 
+					}
+				}
+				,render: {
+
+					fn:function() {
+						this.setDisabled( !me.store.rowIndex );
 					}
 				}
 			}
 			,initComponent: function() {
-
-				this.setDisabled( !me.store.rowIndex );
 
 				me.store.on( 'selectionchange', function( selection, selModel ) { 
 					this.setDisabled( !selModel.store.rowIndex );
 				}, this);
 
 				this.callParent();
-
-
 			}
-		});
+		};
 
 	},/*}}}*/
 
@@ -257,7 +258,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		var me = this;
 
-		return new Ext.Button({
+		return {
 
 			text: 'Adelante',
 	               	menuAlign: 'tr?',
@@ -265,16 +266,20 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	               	tooltip: 'Ir hacia el proximo elemento',
 			listeners:{
 				click:{
-					scope:this.store
+					scope:me.store
 					,buffer:200
 					,fn:function(){ 
 						this.selModel.selectNext(); 
 					}
 				}
+				,render: {
+
+					fn:function() {
+						this.setDisabled( ! ( me.store.rowIndex < ( me.store.getCount() - 1 ) ) );
+					}
+				}
 			}
 			,initComponent: function() {
-
-				this.setDisabled( ! ( me.store.rowIndex < ( me.store.getCount() - 1 ) ) );
 
 				me.store.on( 'selectionchange', function( selection, selModel ) { 
 					this.setDisabled( ! ( selModel.store.rowIndex < ( selModel.store.getCount() - 1 ) ) );
@@ -282,7 +287,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 				this.callParent();
 			}
-		});
+		};
 
 	},/*}}}*/
 
@@ -305,7 +310,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 					buffer:200,
 					fn:function(){
 
-	                        		me.export_w = me.export_w || Ext.create( 'AppExportWindow', { toolbar: me } ) );
+	                        		me.export_w = me.export_w || Ext.create( 'AppExportWindow', { toolbar: me, ref_panel: panel } );
 						me.export_w.show();
 					}
 				}
@@ -341,72 +346,53 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	discard_changes: function( panel ) {/*{{{*/
 
-		var me = this;
-
-		return new Ext.Button({
-
+		var tb = new Ext.Button( {
 	                // icon: '/ext/resources/images/default/layout/stuck.gif',
 	                icon: '/ux/images/cross.png',
 	                cls: 'x-btn-text-icon',
 			text: 'Descartar',
 	                tooltip: '<b>Descartar Cambios</b><br/>ignorar las modificaciones realizadas',
 			disabled: true,
-	                listeners: { 
-				click: { 
-					scope:panel,
-					buffer:200,
-					fn:function() {
+	                listeners: { click: { scope:panel, fn:function() {
 
-						Ext.Msg.show({
+				Ext.Msg.show({
 
-							msg:'Realmente desea descartar los cambios realizados?',
-							width:300,
-							buttons: Ext.Msg.YESNOCANCEL,
-							fn: function(btn) { 
-								if ( btn == 'yes' ) 
-									me.store.revert_changes();
-							},
-							scope: panel
-						});
-					}
-				} 
-			}
-			,initComponet: function() {
+					msg :'Realmente desea descartar los cambios realizados?',
+					width :300,
+					buttons: Ext.Msg.YESNOCANCEL,
+					fn: function(btn) { 
 
-				this.callParent();
-				me.store.on( 'update', function( s, r, o ) { 
+						if ( btn == 'yes' ) 
+							this.store.revert_changes();
+					},
+					scope: panel
+				});
 
-					if ( this.el && this.el.dom ) 
-						( o == Ext.data.Record.EDIT ) ? 
-							this.enable():
-							this.disable();
-				}, this );
-			}
+				}, buffer:200 } 
+			} 
 		});
+
+		this.store.on( 'update', function( s, r, o ) { 
+			if ( this.el && this.el.dom ) 
+				( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
+		}, tb );
+
+
+		return tb;
 
 	},/*}}}*/
 
 	del_button: function( panel ) {/*{{{*/
 
-		var me = this;
-
-		return {
-		
-	                icon: '/ext/resources/images/default/dd/drop-no.gif',
-        	       	cls: 'x-btn-text-icon',
-			text: 'Borrar',
-	               	tooltip: '<b>Borrar</b><br/>Pulse aqui para borrar la seleccion',
-			listeners:{
-
-				click:{
-					scope:me,
-					buffer:200,
-					fn:function(){
-						this.delete_confirm( panel );
-					}
-				}
-			}
-		};
+		return new Ext.Button({
+	        	        icon: '/ext/resources/images/default/dd/drop-no.gif',
+        	        	cls: 'x-btn-text-icon',
+				text: 'Borrar',
+	                	tooltip: '<b>Borrar</b><br/>Pulse aqui para borrar la seleccion',
+				listeners:{click:{scope:this, fn: function(){
+					this.delete_confirm( panel );
+				}, buffer:200}}
+		});
 
 	},/*}}}*/
 
