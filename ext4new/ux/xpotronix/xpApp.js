@@ -409,40 +409,28 @@ Ext.define('AppExportWindow', {/*{{{*/
 	    listeners: { click: { fn: function() {  
 
 		var win = this.up('window');
+		var toolbar = win.toolbar;
+		var panel = toolbar.panel;
+
 		var store = win.toolbar.store;
 
 		/* foregin keys */
-		var q_params = store.get_foreign_key( this.parent_store.selections[0] );
-		debugger;
-
-		// de xpStore.js	
-
-		// Search (global search)
-		if ( store.baseParams.query && store.baseParams.fields ) {
-
-			var vars = eval(store.baseParams.fields).join(App.feat.key_delimiter);
-
-			var params = {};
-			params['s[' + store.class_name +']['+ vars +']'] = store.baseParams.query;
-
-			Ext.apply( q_params, params );
-
-		}
-
-		if ( store.lastOptions )
-			Ext.apply( q_params, store.lastOptions.params );
+		var q_params = store.get_foreign_key();
 
 		var display_only_fields = [];
 
-		Ext.each( getColumnModel().config, function( f ) {
+		Ext.each( panel.columns, function( f ) {
 
 			f.hidden || display_only_fields.push( f.name );
 		});
 
 		var limit = win.down('form').getForm().findField('max_records').getValue();
 
-		Ext.apply( q_params, { m: this.class_name, 
-			v: 'csv', 
+		Ext.apply( q_params, { 
+			m: panel.store.module,
+			r: panel.store.class_name, 
+			a: 'csv',
+			b: 'ext4', 
 			'f[ignore_null_fields]': 0, 
 			'f[include_dataset]': 2, // DS_NORMALIZED
 			'g[start]': 0,
