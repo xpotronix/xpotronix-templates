@@ -25,7 +25,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	multi_row: true,
 
 	selection: [],
-	debug: true,
+	debug: false,
 
 	constructor: function(config) {/*{{{*/
 

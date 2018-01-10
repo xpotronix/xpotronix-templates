@@ -298,7 +298,7 @@ Ext.define('AppTabMenu', {/*{{{*/
 
 	// xtype: 'tabmenu',
 
-	,debug: true
+	,debug: false
 
 	,listeners: {
 
