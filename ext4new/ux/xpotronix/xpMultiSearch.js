@@ -17,7 +17,7 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 	menu: null,
 	height: 21,
 
-	debug: true,
+	debug: false,
 
 	alternateClassName: [
 		'xpmultisearch'

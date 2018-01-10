@@ -32,7 +32,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	show_buttons: true,
 	buttonAlign: 'left',
 	multi_row: false,
-	debug: true,
+	debug: false,
 
 	constructor: function(config) {/*{{{*/
 
