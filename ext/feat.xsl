@@ -30,6 +30,16 @@
 		{<xsl:for-each select="//xpotronix:session/feat/*"><xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
 	</xsl:template>
 
+	<xsl:template match="*" mode="json-hash">
+		<xsl:for-each select=".">
+			<xsl:value-of select="name()"/>:
+			<xsl:choose>
+				<xsl:when test="count(*)">{<xsl:apply-templates select="*" mode="json-hash"/>}</xsl:when>
+				<xsl:otherwise><xsl:apply-templates select="." mode="json-value"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each><xsl:if test="position()!=last()">,</xsl:if>
+	</xsl:template>
+
 	<xsl:template match="obj" mode="feats"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>{<xsl:for-each select="//xpotronix:metadata/obj[@name=$obj_name]/feat/*">
 			<xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if>

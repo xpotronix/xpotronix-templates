@@ -75,7 +75,7 @@
 	</xsl:if>
 	Ext.namespace( 'App' );
 
-	var App = new Ext.ux.xpotronix.xpApp( {state_manager:'http', feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> });
+	var App = new Ext.ux.xpotronix.xpApp( {state_manager:'http', var: {<xsl:apply-templates select="//*:session/var/*" mode="json-hash"/>}, feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> });
 
 	Ext.onReady(function() {
 
