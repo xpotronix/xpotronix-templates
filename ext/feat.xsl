@@ -32,8 +32,7 @@
 
 	<xsl:template match="*" mode="json-hash">
 		<xsl:for-each select=".">
-			<xsl:value-of select="name()"/>:
-			<xsl:choose>
+			<xsl:value-of select="name()"/>:<xsl:choose>
 				<xsl:when test="count(*)">{<xsl:apply-templates select="*" mode="json-hash"/>}</xsl:when>
 				<xsl:otherwise><xsl:apply-templates select="." mode="json-value"/></xsl:otherwise>
 			</xsl:choose>
