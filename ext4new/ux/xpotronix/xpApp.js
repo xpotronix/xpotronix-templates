@@ -169,12 +169,16 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 			if ( App.user_node == undefined && App.user.user_username && ! App.user._anon ) {
 
-				return;
+				if ( App.user_node = this.store.getRootNode().findChild('itemId', "user", true) ) {
 
-				App.user_node = this.getNodeById('user');
-				App.user_node && App.user_node.setText( App.user_node.text + ' <b>' + App.user.user_username + '</b>' );
+					App.user_node.data.text += ' <b>' + App.user.user_username + '</b>';
 
+				}
+
+				/* DEBUG: esto hay que actualizarlo a como lo hace ahora 
 				Ext.Loader.loadScript( { url:App.feat.defaultSrc + '&v=ext4new/loader' + normalized } );
+				*/
+
 			}
 		}}
 
