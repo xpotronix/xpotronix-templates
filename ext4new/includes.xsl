@@ -40,14 +40,12 @@
 
 		<!-- FilterBar css -->
 
-		<!--
                 <link rel="stylesheet" type="text/css" href="/ux4/resources/css/uxs.css" />
                 <link rel="stylesheet" type="text/css" href="/ux4/resources/css/overrides.css" />
                 <link rel="stylesheet" type="text/css" href="/ux4/resources/css/app.css" />
-		-->
 
 		<!-- Saki Grid Multi Search css -->
-                <link rel="stylesheet" type="text/css" href="/ux4/saki/saki-grid-multisearch-all-debug.css" />
+                <!-- <link rel="stylesheet" type="text/css" href="/ux4/saki/saki-grid-multisearch-all-debug.css" /> -->
 
 		<!-- upload.css -->
 
@@ -80,13 +78,11 @@
                 
 		<!-- FilterBar -->
 
-		<!--
 		<script type="text/javascript" src="/ux4/form/field/ClearButton.js"></script>
                 <script type="text/javascript" src="/ux4/form/field/OperatorButton.js"></script>
                 <script type="text/javascript" src="/ux4/grid/column/ActionPro.js"></script>
                 <script type="text/javascript" src="/ux4/grid/FilterBar.js"></script>
                 <script type="text/javascript" src="/ux4/grid/AutoResizer.js"></script>
-		-->
 
 		<!-- Saki Grid Multi Search -->
 

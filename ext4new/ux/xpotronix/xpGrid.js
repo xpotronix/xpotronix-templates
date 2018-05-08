@@ -40,17 +40,17 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 					errorSummary: false 
 
 				} 
-				/*,{
+				,{
 			        	ptype: 'filterbar',
 			        	renderHidden: false,
 			        	showShowHideButton: true,
 			        	showClearAllButton: true 
-				}*/
+				}/*
 				,{
 					ptype:'xp-gms'
 					,filterOnEnter:true
 					,iconColumn:false
-				}
+				}*/
 			],
 
 			dockedItems: [{
