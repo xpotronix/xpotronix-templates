@@ -59,19 +59,19 @@
 		<hidden/>
 		<editable/>
 		<align>left</align>
-		<filter type="function">true</filter>
+		<filterField>true</filterField>
 		<editor/>
 
 	</column><!--}}}-->
 
 	<column type="xptext"><!--{{{-->
-		<filter>true</filter>
+		<filterField>true</filterField>
 	</column><!--}}}-->
 
 	<column type="xpint"><!--{{{-->
 
 		<align>right</align>
-		<filter>true</filter>
+		<filterField>{xtype:'numberfield',fieldStyle:'text-align:right;'}</filterField>
 		<renderer/>
 
 	</column><!--}}}-->
@@ -79,68 +79,42 @@
 	<column type="xpboolean"><!--{{{-->
 
 		<renderer>formatBoolean(value,p,record)</renderer>
-		<filter>true</filter>
-		<!--
-		<filter type="function">{showFilterIcon:false,
-			field: {
-				xtype: "combo",
+		<filterField>{
+				xtype: 'combo',
 				mode: 'local',
-				store: new Ext.data.ArrayStore({
-					id: 0,
-					fields: ['value','label'],
-					data: [[null,''], ['1','si'], ['0','no']]
-				}),
+				store: new Ext.data.ArrayStore({fields:['value','label'],data: [[null,''], ['1','Si'], ['0','No']]}),
 				valueField: 'value',
 				displayField: 'label',
 				triggerAction: 'all',
-				value:null
-			},
-			fieldEvents: ['select','change']
-			}</filter>
-		-->
+				value:null,
+				fieldEvents: ['select','change']}</filterField>
 	</column><!--}}}-->
 
 	<column type="xpdecimal"><!--{{{-->
-
 		<align>right</align>
-		<!-- <filter type="function">{showFilterIcon:false,field:{fieldStyle:'text-align:right;'}}</filter> -->
-		<filter>true</filter>
-
+		<filterField>{xtype:'textfield',fieldStyle:'text-align:right;'}</filterField>
 	</column><!--}}}-->
 
 	<column type="xpdate"><!--{{{-->
-
 		<align>right</align>
-		<filter>true</filter>
+		<filterField>{xtype:'textfield',fieldStyle:'text-align:right;'}</filterField>
 		<renderer/>
-
 	</column><!--}}}-->
 
 	<column type="xpdatetime"><!--{{{-->
-
-		<align>right</align>
-		<filter>true</filter>
-		<!-- <filter type="function">{showFilterIcon:false,field:{fieldStyle:'text-align:right;'}}</filter> -->
+		<filterField>{xtype:'textfield',fieldStyle:'text-align:right;'}</filterField>
 		<renderer/>		
-		<editor>
-			<!-- <timePosition>below</timePosition>  -->
-		</editor>
-
 	</column><!--}}}-->
 
 	<column type="xpenum"><!--{{{-->
-
 		<renderer/>
-		<filter>true</filter>
-
+		<filterField>true</filterField>
 	</column><!--}}}-->
 
 	<column type="xpentry_help"><!--{{{-->
-
 		<renderer/>
-		<filter>true</filter>
-		<!-- <filter type="function">{showFilterIcon:false,nameSuffix:'_label'}</filter> -->
-
+		<!--<filterField>{nameSuffix:'_label'}</filterField> -->
+		<filterField>true</filterField>
 	</column><!--}}}-->
 
 	<!-- field -->

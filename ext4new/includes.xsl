@@ -162,6 +162,8 @@
 
 	<!-- </xsl:if> -->
 
+	<script type="text/javascript" src="/ux4/xpotronix/xpUploadPanel.js"/>
+
 </xsl:template><!--}}}-->
 
 <xsl:template match="*:document" mode="include-all-js"><!--{{{-->

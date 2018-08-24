@@ -437,6 +437,9 @@ return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:if></xsl
 <xsl:template match="allowDecimals"><!--{{{-->
 <xsl:if test="position()-1">,</xsl:if>allowDecimals:<xsl:value-of select="."/></xsl:template><!--}}}-->
 
+<xsl:template match="filterField"><!--{{{-->
+<xsl:if test="position()-1">,</xsl:if>filterField:<xsl:value-of select="."/></xsl:template><!--}}}-->
+
 <xsl:template match="decimalPrecision"><!--{{{-->
 <xsl:if test="position()-1">,</xsl:if>decimalPrecision:<xsl:value-of select="."/></xsl:template><!--}}}-->
 

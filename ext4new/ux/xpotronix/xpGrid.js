@@ -33,24 +33,26 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		Ext.apply( this, { 
 
-			plugins: [{
+			plugins: [	{
+					ptype: 'bufferedrenderer'
+					},{
 					ptype: 'xpcellediting',
         				clicksToMoveEditor: 1,
 		        		autoCancel: false,
 					errorSummary: false 
 
 				} 
-				,{
+				/*,{
 			        	ptype: 'filterbar',
 			        	renderHidden: false,
 			        	showShowHideButton: true,
 			        	showClearAllButton: true 
-				}/*
+				}*/
 				,{
 					ptype:'xp-gms'
 					,filterOnEnter:true
 					,iconColumn:false
-				}*/
+				}
 			],
 
 			dockedItems: [{
