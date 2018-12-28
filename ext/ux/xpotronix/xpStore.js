@@ -38,7 +38,7 @@ Ext.ux.xpotronix.xpStore = function( config ) {
 	this.rs = this.rs || {};
 
 	
-	this.store_proxy = new Ext.data.HttpProxy({ url: this.store_url, useAjax: true, method: 'POST' });
+	this.store_proxy = new Ext.data.HttpProxy({ url: this.store_url, useAjax: true, method: 'GET' });
 	this.blank_proxy = new Ext.data.HttpProxy({ url: this.blank_url, useAjax: true, method: 'GET' });
 
 	this.proxy = this.store_proxy;
