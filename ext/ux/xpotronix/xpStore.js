@@ -697,11 +697,16 @@ Ext.extend( Ext.ux.xpotronix.xpStore, Ext.data.Store, {
 			ps.data.items.length < ps.rowIndex ) 
 			return keys;
 
-		if ( ps.cr() == 'undefined' ) return keys;
+		var ps_cr = ps.cr();
+
+		if ( ps_cr == 'undefined' ) 
+			return keys;
+
+		keys['parent_ID'] = ps_cr.get('__ID__');
 
 		Ext.each( this.foreign_key, function( ref ) {
 
-			var value = ps.cr().get(ref.remote);
+			var value = ps_cr.get(ref.remote);
 
 			if ( value == undefined ) 
 				( typeof console != 'undefined' ) && console.error( 'no encuentro la clave foranea ' + ref.remote );
