@@ -125,7 +125,7 @@
 		<xtype>textfield</xtype>
 		<allowBlank/>
 		<fieldLabel/>
-		<inputType/>
+		<!-- <inputType/> -->
 
 	</field><!--}}}-->
 
@@ -140,7 +140,8 @@
 	<field type="xpint"><!--{{{-->
 
 		<xtype>numberfield</xtype>
-		<style>text-align:right;</style>
+		<fieldStyle>text-align:right;</fieldStyle>
+		<hideTrigger>true</hideTrigger>
 
 	</field><!--}}}-->
 
@@ -244,7 +245,6 @@
 		<deferredRender>true</deferredRender>
 		<bodyStyle>padding:5px</bodyStyle>
 		<width>100%</width>
-		<labelWidth>150</labelWidth>
 		<defaults>
 			<width>100%</width>
 		</defaults>

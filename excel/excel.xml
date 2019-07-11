@@ -1,0 +1,59 @@
+<bdiData>
+    <documentControlInfo>
+        <documentInfo>
+            <docDescription>Checks for Company X</docDescription>
+            <docID>
+                <ID>123456789</ID>
+            </docID>
+            <docModifier>My Company</docModifier>
+            <docCreateDate>2010-08-23</docCreateDate>
+            <docCreateTime>07:08:54-0700</docCreateTime>
+            <standardVersion>1.0</standardVersion>
+            <testIndicator>0</testIndicator>
+            <resendIndicator>0</resendIndicator>
+        </documentInfo>
+        <sourceInfo>
+            <sourceName>My Banking Name</sourceName>
+            <sourceID>
+                <idOther>ShortBankName</idOther>
+            </sourceID>
+        </sourceInfo>
+        <destinationInfo>
+            <destinationName>My Company</destinationName>
+            <destinationID>
+                <idOther>MYCO</idOther>
+            </destinationID>
+        </destinationInfo>
+    </documentControlInfo>
+    <checkItemCollection>
+        <collectionInfo>
+            <description>Items</description>
+            <ID>654811650</ID>
+            <Classification>
+                <classification>Items</classification>
+            </Classification>
+        </collectionInfo>
+        <checkItemBatch>
+            <checkItemBatchInfo>
+                <description>Paid Checks</description>
+                <ID>1239668334710</ID>
+                <Classification>
+                    <classification>Paid Checks</classification>
+                </Classification>
+            </checkItemBatchInfo>
+            <checkItem>
+                <checkItemType>check</checkItemType>
+                <checkAmount>2960</checkAmount>
+                <postingInfo>
+                    <date>2009-06-12</date>
+                    <RT>87654321</RT>
+                    <accountNumber>123465798</accountNumber>
+                    <seqNum>007725552898</seqNum>
+                    <trancode>001152</trancode>
+                    <amount>2960</amount>
+                    <serialNumber>55225410</serialNumber>
+                </postingInfo>
+            </checkItem>
+        </checkItemBatch>
+    </checkItemCollection>
+</bdiData>
