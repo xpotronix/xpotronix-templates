@@ -375,4 +375,11 @@
 
 	</panel><!--}}}-->
 
+	<!-- cmp -->
+
+	<cmp type="fieldcontainer">
+		<layout>hbox</layout>
+		<labelAlign>right</labelAlign>
+	</cmp>
+
 </templates>

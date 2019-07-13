@@ -23,7 +23,7 @@
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		<xsl:variable name="panel_class" select="concat($application_name,'.view.',$panel_id)"/>
-		/* PANEL type: xpGrid, panel_class: <xsl:value-of select="$panel_class"/> */
+		/* PANEL id:<xsl:value-of select="$panel_id"/>, panel_class: <xsl:value-of select="$panel_class"/> */
 		Ext.define('<xsl:value-of select="$panel_class"/>',
 		Ext.apply(<xsl:apply-templates select="." mode="panel_config">
 			<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
@@ -63,7 +63,7 @@
 			<!-- attributos por default en templates.xml -->
 			<xsl:sequence select="$templates//panel[@type=$panel_type]/*"/>
 	
-			<!-- attributos en el elemnto <panel/> -->
+			<!-- attributos en el elemento <panel/> -->
 			<xsl:for-each select="@*">
 				<xsl:element name="{name()}"><xsl:value-of select="."/></xsl:element>
 			</xsl:for-each>
@@ -184,31 +184,51 @@
 	<!-- cmp -->
 
 	<xsl:template match="cmp"><!--{{{-->
+
+		<!-- es el wrapper, llama a cmp@sub -->
+
 		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="standalone" tunnel="yes"/>
+
+		<xsl:message>[cmp] type:<xsl:value-of select="@type"/>, module:<xsl:value-of select="$module"/>, obj:<xsl:value-of select="$obj/@name"/>, standalone:<xsl:value-of select="$standalone"/></xsl:message>
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj/@name"/></xsl:message> -->
 		<xsl:if test="position()-1">,</xsl:if><xsl:apply-templates select="." mode="sub"></xsl:apply-templates>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="cmp[not(@ref)]" mode="sub"><!--{{{-->
+		<xsl:message>[cmp[not(@ref)]] type:<xsl:value-of select="@type"/></xsl:message>
 		<xsl:variable name="xtype">
 			<xsl:choose>
 				<xsl:when test="@type"><xsl:value-of select="@type"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="'panel'"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		{	xtype: '<xsl:value-of select="$xtype"/>',
-			<xsl:if test="@id">id:'<xsl:value-of select="@id"/>'<xsl:if test="config or items">,</xsl:if></xsl:if>
-			<xsl:if test="config"><xsl:value-of select="config"/><xsl:if test="items/*">,</xsl:if></xsl:if>
-			<xsl:if test="items/*">items:[<xsl:apply-templates select="items/*"></xsl:apply-templates>]</xsl:if>
-		}
+
+		<xsl:variable name="config">
+			<config>
+			<xtype><xsl:value-of select="$xtype"/></xtype>
+			<xsl:if test="@id"><id><xsl:value-of select="@id"/></id></xsl:if>
+			<!-- attributos por default en templates.xml -->
+			<xsl:sequence select="$templates//cmp[@type=$xtype]/*"/>
+			<!-- attributos en el elemento <panel/> -->
+			<xsl:for-each select="@*">
+				<xsl:element name="{name()}"><xsl:value-of select="."/></xsl:element>
+			</xsl:for-each>
+			</config>
+		</xsl:variable>
+
+		Ext.apply(<xsl:apply-templates select="$config" mode="json-object"/>,
+			<xsl:if test="config">{<xsl:value-of select="config"/>}<xsl:if test="items/*">,</xsl:if></xsl:if>
+			<xsl:if test="items/*">{items:[<xsl:apply-templates select="items/*"></xsl:apply-templates>]}</xsl:if>
+		)
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="cmp[@ref]" mode="sub"><!--{{{-->
 		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="standalone" tunnel="yes" select="false()"/>
+		<xsl:message>[cmp[@ref]] type:<xsl:value-of select="@type"/>, module:<xsl:value-of select="$module"/>, obj:<xsl:value-of select="$obj/@name"/>, standalone:<xsl:value-of select="$standalone"/></xsl:message>
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj"/>, type: <xsl:value-of select="@type"/></xsl:message> -->
 		Ext.apply({xtype:'<xsl:value-of select="@ref"/>'},{
 			<xsl:if test="@id">id:'<xsl:value-of select="@id"/>'<xsl:if test="config or items">,</xsl:if></xsl:if>
