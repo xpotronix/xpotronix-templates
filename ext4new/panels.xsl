@@ -212,11 +212,13 @@
 			<!-- attributos por default en templates.xml -->
 			<xsl:sequence select="$templates//cmp[@type=$xtype]/*"/>
 			<!-- attributos en el elemento <panel/> -->
-			<xsl:for-each select="@*">
+			<xsl:for-each select="@*[@name!='type']">
 				<xsl:element name="{name()}"><xsl:value-of select="."/></xsl:element>
 			</xsl:for-each>
 			</config>
 		</xsl:variable>
+
+		<xsl:message><xsl:copy-of select="$config"/></xsl:message>
 
 		Ext.apply(<xsl:apply-templates select="$config" mode="json-object"/>,
 			<xsl:if test="config">{<xsl:value-of select="config"/>}<xsl:if test="items/*">,</xsl:if></xsl:if>

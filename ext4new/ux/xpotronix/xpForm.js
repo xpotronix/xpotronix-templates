@@ -198,7 +198,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 				
 						return true;
 
-					}, this, { buffer: 500 });
+					}, this, { delay:0 });
 				}
 
 			}, this );
@@ -218,21 +218,29 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		var form = this.getForm();
 
-		/* form.reset(); */
+		for ( var key in r.data ) { 
+
+			var a = form.findField(key);
+
+			if ( a && a.hasFocus ) 
+				return;
+		}
+
+
+		form.reset();
 
 		if ( ( ! Ext.isEmptyObject ( r ) ) && r.get ) { 
 
 			var c;
         		this._record = r;
-			
-			if ( Ext.isEmptyObject( c = r.getChanges() ) )
+
+			var is_new = r.get('__new__');
+			var enabled = ( me.obj.acl.edit && !is_new ) || ( me.obj.acl.add && is_new );
+
+			// if ( Ext.isEmptyObject( c = r.getChanges() ) )
 				c = r.getData(); 
 
         		this.form.setValues(c);
-
-			var is_new = r.get('__new__');
-
-			var enabled = ( me.obj.acl.edit && !is_new ) || ( me.obj.acl.add && is_new );
 
 			if ( enabled )
 

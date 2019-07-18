@@ -56,7 +56,6 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			],
 
 			dockedItems: [{
-				itemId: 'pagingtoolbar',
 				xtype: 'xppagingtoolbar',
 				panel: this,
 				store: this.store,
@@ -206,10 +205,9 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
                 }, this );
 
-		this.store.on( 'loadblank', function() {
+		this.store.on( 'loadblank', function( s, r, e ) {
 
-			if ( ! this.selModel.getSelection() ) 
-				this.selModel.select( 0 );
+			this.selModel.select( r );
 
 		}, this );
 	

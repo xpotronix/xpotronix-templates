@@ -65,11 +65,15 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="process"><!--{{{-->
-		{ text:'<xsl:apply-templates select="." mode="translate"/>', 
-			value:'<xsl:value-of select="@name"/>' 
-			<xsl:if test="param">
+		{ 
+			text:'<xsl:apply-templates select="." mode="translate"/>'
+			<xsl:if test="@icon">,icon:'<xsl:value-of select="@icon"/>'</xsl:if>
+			<xsl:if test="@cls">,cls:'<xsl:value-of select="@cls"/>'</xsl:if>
+			,value:'<xsl:value-of select="@name"/>'
+
+		<xsl:if test="param">
 			,param:{<xsl:apply-templates select="." mode="param"/>}
-			</xsl:if>
+		</xsl:if>
 
 		<xsl:if test="dialog/*"><xsl:apply-templates select="dialog"/></xsl:if>
 

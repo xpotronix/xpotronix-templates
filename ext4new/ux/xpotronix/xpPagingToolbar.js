@@ -82,8 +82,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		me.callParent();
 
-		
-
 		// saveParamsOnLoad just fixates the params in the extraParams, before the load
 		if (me.saveParamsOnLoad) {
 			var store = me.store;
@@ -113,9 +111,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		var panel = this.panel, panel_xtype = panel.getXType();
 		var me = this;
 
-		// botones
-
-		// DEBUG: hay que especificar si el panel es sigle o multiple (ej. selection type)
+		/* botones */
 
 		if ( ! panel.multi_row ) {
 
@@ -152,6 +148,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		if ( panel.multi_row && panel.obj.inspect.length )
 			me.insert( pos, me.inspect_button( panel ) );
+
 
 		me.callParent();
 
@@ -242,6 +239,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 					}
 				}
 			}
+
 			,initComponent: function() {
 
 				me.store.on( 'selectionchange', function( selection, selModel ) { 
@@ -284,8 +282,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 				me.store.on( 'selectionchange', function( selection, selModel ) { 
 					this.setDisabled( ! ( selModel.store.rowIndex < ( selModel.store.getCount() - 1 ) ) );
 				}, this );
-
-				this.callParent();
 			}
 		};
 
@@ -319,12 +315,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	},/*}}}*/
 
-	export_dialog: function( panel ) {/*{{{*/
-
-		return new Ext.Window();
-
-	},/*}}}*/
-
 	invert_button: function( panel ) {/*{{{*/
 
 		return {
@@ -346,13 +336,31 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	discard_changes: function( panel ) {/*{{{*/
 
-		var tb = new Ext.Button( {
+		var me = this;
+
+		return {
+
 	                // icon: '/ext/resources/images/default/layout/stuck.gif',
 	                icon: '/ux/images/cross.png',
 	                cls: 'x-btn-text-icon',
 			text: 'Descartar',
 	                tooltip: '<b>Descartar Cambios</b><br/>ignorar las modificaciones realizadas',
 			disabled: true,
+
+			initComponent: function() {
+
+				var me = this;
+			
+				panel.store.on( 'update', function( s, r, o ) { 
+
+					if ( me.isVisible() ) 
+						( o == Ext.data.Record.EDIT ) ? me.enable(): me.disable();
+					});
+
+
+				this.callParent();
+			},
+
 	                listeners: { click: { scope:panel, fn:function() {
 
 				Ext.Msg.show({
@@ -361,38 +369,31 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 					width :300,
 					buttons: Ext.Msg.YESNOCANCEL,
 					fn: function(btn) { 
-
 						if ( btn == 'yes' ) 
-							this.store.revert_changes();
-					},
-					scope: panel
+							panel.store.revert_changes();
+					}
 				});
 
 				}, buffer:200 } 
 			} 
-		});
+		};
 
-		this.store.on( 'update', function( s, r, o ) { 
-			if ( this.el && this.el.dom ) 
-				( o == Ext.data.Record.EDIT ) ? this.enable(): this.disable();
-		}, tb );
-
-
-		return tb;
 
 	},/*}}}*/
 
 	del_button: function( panel ) {/*{{{*/
 
-		return new Ext.Button({
+		var me = this;
+
+		return {
 	        	        icon: '/ext/resources/images/default/dd/drop-no.gif',
         	        	cls: 'x-btn-text-icon',
 				text: 'Borrar',
 	                	tooltip: '<b>Borrar</b><br/>Pulse aqui para borrar la seleccion',
-				listeners:{click:{scope:this, fn: function(){
-					this.delete_confirm( panel );
+				listeners:{click:{scope:me, fn: function(){
+					me.delete_confirm( panel );
 				}, buffer:200}}
-		});
+		};
 
 	},/*}}}*/
 
@@ -424,35 +425,46 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		var me = this;
 
-		if ( ! me.i_panel ) {
+		var xtype = me.panel.obj.inspect[0];
 
-			me.i_panel = Ext.create('widget.window', {
+		if ( xtype == me.panel.xtype ) {
 
-				width: 600,
-				minWidth: 300,
-				height:400,
-				minHeight: 200,
-				closable: true,
-				closeAction : 'hide',
-				maximizable: true,
-				layout: 'border',
-				plain:true,
-				border:false,
-				buttonAlign:'center',
-				items:[
-					{
-						xtype:me.panel.obj.inspect[0],
-						region:'center'
-					}
-				]
-			});
+			me.show();
+		
+		} else {
+
+			if ( ! me.i_panel ) {
+
+				me.i_panel = Ext.create('widget.window', {
+
+					width: 600,
+					minWidth: 300,
+					height:400,
+					minHeight: 200,
+					closable: true,
+					closeAction : 'hide',
+					maximizable: true,
+					layout: 'border',
+					plain:true,
+					border:false,
+					buttonAlign:'center',
+					items:[
+						{
+							xtype:xtype,
+							region:'center'
+						}
+					]
+				});
+			}
+
+			me.i_panel.show();
 		}
-
-		me.i_panel.show();
 
 	},/*}}}*/
 
 	inspect_button: function( panel ) {/*{{{*/
+
+		var me = this;
 
 		return {
 
@@ -461,9 +473,9 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			text: 'Ver',
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Inspeccionar</b><br/>Pulse aqui para inspeccionar el registro seleccionado',
-			handler: this.inspect_window,
+			listeners:{click:{scope:me, fn:me.inspect_window, buffer:200}},
 			disabled: true,
-			scope:this,
+			scope:panel,
 			panel:panel,
 
 			initComponent: function() {
@@ -472,10 +484,14 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 				me.panel.store.on( 'selectionchange', function( sels ) {
 
-					if ( sels.length )
-						me.enable();
-					else
-						me.disable();
+					if ( me.isVisible() ) {
+
+						if ( sels.length )
+							me.enable();
+						else
+							me.disable();
+					}
+
 				});
 
 				me.callParent(arguments);
@@ -486,73 +502,83 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	add_button: function( panel ) {/*{{{*/
 
-		return new Ext.Button({
+		var me = this;
+
+		return {
 
 			icon: '/ext/resources/images/default/dd/drop-add.gif',
 			cls: 'x-btn-text-icon',
 			text: 'Agregar',
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Agregar</b><br/>Pulse aqui para agregar un nuevo registro',
-			listeners:{click:{scope:this, fn:this.addRecord, buffer:200}}
+			listeners:{click:{scope:me, fn:me.addRecord, buffer:200}}
 
-		});
+		};
 
 	},/*}}}*/
 
 	save_button: function( panel ) {/*{{{*/
 
-        	var tb = new Ext.Button({
+		var me = this;
+
+        	return {
        	        	icon: '/ext/resources/images/default/dd/drop-yes.gif',
 			text: 'Guardar',
                 	cls: 'x-btn-text-icon',
 			disabled: true,
                 	tooltip: '<b>Guardar</b><br/>Pulse aqui para guardar las modificaciones',
-			listeners:{ click:{ scope: this.store, fn:this.store.save, buffer:200 }}
-		});
+			listeners:{ click:{ scope: me.store, fn:me.store.save, buffer:200 }},
 
-		panel.store.on( 'datachanged', function( s, o ) { 
+			initComponent:function() {
 
-			if ( s.isDirty() )
-				this.enable();
-			else
-				this.disable();
-		}, tb );
+				var me = this;
+			
+				panel.store.on( 'datachanged', function( s, o ) { 
 
-		panel.store.on( 'update', function( s, r, o ) { 
-			if ( this.el && this.el.dom ) 
-				( o == Ext.data.Record.EDIT ) ? 
-					this.enable():
-					this.disable();
-		}, tb );
+					if ( me.isVisible() ) {
+						if ( s.isDirty() )
+							me.enable();
+						else
+							me.disable();
+					}
+				});
 
-		return tb;
+				panel.store.on( 'update', function( s, r, o ) { 
+
+					if ( me.isVisible() ) {
+						( o == Ext.data.Record.EDIT ) ? 
+							me.enable():
+							me.disable();
+					}
+				});
+
+				me.callParent();
+			}
+
+		};
+
 
 	},/*}}}*/
 
 	add_process_menu: function( panel ) {/*{{{*/
 
-		var menu_params = {
+		var me = this, items = [];
 
+		Ext.each( panel.processes_menu, function( pm ) {
+
+			items.push( Ext.apply( pm, 
+				{ listeners: { click: { fn:function( it ) { me.process_selections( panel, it, panel.obj ) }, scope: me } } }
+			));
+		}); 
+
+		return {
 			icon: '/ux/images/list-items.gif',
 			// cls: 'x-btn-text-icon',
 			// minWidth: 105,
 			text: 'Acciones',
 			tooltip: 'Ejecute una acción para procesar los items seleccionados',
-			menu: { items: [] }
+			menu: { items: items }
 		};
-
-		var item, pm = panel.processes_menu;
-
-                for ( i = 0; i < pm.length; i ++ ) {
-
-			item = new Ext.menu.Item( pm[i] );
-			item.on( 'click', function( it ) { 
-				this.process_selections( panel, it, panel.obj) 
-			}, this );
-			menu_params.menu.items[i] = item;
-                }
-
-		return new Ext.Button( menu_params );
 
         },/*}}}*/
 
@@ -561,19 +587,20 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		var m = panel.getSelection();
 
         	if ( m.length ) {
-                		Ext.MessageBox.confirm('Message', 
-					'Realmente deseas eliminar ' + m.length + ' elementos?', 
-					function( b ) { 
-						( b == 'yes' ) && this.delete_selections( panel ); 
-					}, 
-					this );
-				/* DEBUG: no puedo setear el boton por default para que no borre !!
-				Ext.MessageBox.getDialog().buttons[0].focus();
-				*/
-			}
-		else
-                	Ext.MessageBox.alert('Error', 
-				'Para borrar, debes seleccionar algun(os) elemento(s)');
+
+                	Ext.MessageBox.confirm('Message', 
+				'Realmente deseas eliminar ' + m.length + ' elementos?', 
+				function( b ) { 
+					( b == 'yes' ) && this.delete_selections( panel ); 
+				}, 
+				this );
+			/* DEBUG: no puedo setear el boton por default para que no borre !!
+			Ext.MessageBox.getDialog().buttons[0].focus();
+			*/
+
+		} else {
+                	Ext.MessageBox.alert('Error', 'Para borrar, debes seleccionar algun(os) elemento(s)');
+		}
 
     	}, /*}}}*/
 

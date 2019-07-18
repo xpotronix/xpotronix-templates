@@ -310,6 +310,7 @@ Ext.define('AppTabMenu', {/*{{{*/
 
 			fn: function(tabPanel, newTab, oldTab, eOpts) {
 
+				/* ajusta la seleccion del menu cuando se hace clik en los tabs */
 
 				var tm = tabPanel.up('viewport').down('treemenu'),
 				record = tm.store.getRootNode().findChild('itemId',newTab.itemId,true),

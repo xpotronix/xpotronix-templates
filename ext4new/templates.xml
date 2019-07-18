@@ -125,6 +125,7 @@
 		<xtype>textfield</xtype>
 		<allowBlank/>
 		<fieldLabel/>
+		<labelStyle>padding-left:10px;padding-right:0px</labelStyle>
 		<!-- <inputType/> -->
 
 	</field><!--}}}-->
@@ -134,6 +135,7 @@
 		<xtype>textarea</xtype>
 		<grow>true</grow>
 		<allowBlank/>
+
 
 	</field><!--}}}-->
 
@@ -379,7 +381,7 @@
 
 	<cmp type="fieldcontainer">
 		<layout>hbox</layout>
-		<labelAlign>right</labelAlign>
+		<labelStyle>padding-left:20px</labelStyle>
 	</cmp>
 
 </templates>

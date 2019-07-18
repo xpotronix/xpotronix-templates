@@ -294,10 +294,22 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	onBeforeLoad: function(store, options) { /*{{{*/
 
+		/* control de carga de los registros nuevos */
+
 		if ((!options.add) && this.dirty && (!Ext.isEmptyObject(this.dirty()) || !Ext.isEmptyObject(this.dirty_childs()))) {
 
-			Ext.Msg.alert('Atención', 'Hubo modificaciones: guarde o descarte los cambios');
-			return false;
+			var url = store.lastOptions.url;
+
+			if ( url && getQueryParams(url).a == 'blank' ) {
+
+				/* esta cargando un registro en blanco y agrega al store */
+				return true;
+
+			} else {
+
+				Ext.Msg.alert('Atención', 'Hubo modificaciones: guarde o descarte los cambios');
+				return false;
+			}
 
 		}
 
@@ -392,6 +404,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 				/* resetea el lastTotalCount */
 				this.lastTotalCount = 0;
 
+				this.suspendEvents();
+
 				/* por cada registro recibido */
 				Ext.each( brs, function( br ) {
 
@@ -417,12 +431,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 						options.callback.call(options.scope || this, br, this);
 
 
-					this.fireEvent('selectionchange', brs, this.selModel);
-					this.fireEvent('loadblank', this, brs, options);
-
 				}, this);
 
+				this.resumeEvents();
 
+				// this.fireEvent('selectionchange', brs, this.selModel);
+				this.fireEvent('loadblank', this, brs, options);
 
 				/* volver los parametros atras para hacer los load normales */
 				delete this.lastOptions.add;
