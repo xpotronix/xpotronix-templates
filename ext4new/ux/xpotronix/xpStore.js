@@ -446,6 +446,66 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
+    loadRecords: function(records, options) {//{{{
+
+	    /* redefinicion de loadRecords para poder
+	     * insertar registros al principio */
+
+        var me     = this,
+            i      = 0,
+            length = records.length,
+            start,
+            addRecords,
+            snapshot = me.snapshot;
+
+        if (options) {
+            start = options.start;
+            addRecords = options.addRecords;
+        }
+
+        if (!addRecords) {
+            delete me.snapshot;
+            me.clearData(true);
+        } else if (snapshot) {
+            snapshot.addAll(records);
+        }
+
+        me.data.insert(0, records);
+
+        if (start !== undefined) {
+            for (; i < length; i++) {
+                records[i].index = start + i;
+                records[i].join(me);
+            }
+        } else {
+            for (; i < length; i++) {
+                records[i].join(me);
+            }
+        }
+
+        /*
+         * this rather inelegant suspension and resumption of events is required because both the filter and sort functions
+         * fire an additional datachanged event, which is not wanted. Ideally we would do this a different way. The first
+         * datachanged event is fired by the call to this.add, above.
+         */
+        me.suspendEvents();
+
+        if (me.filterOnLoad && !me.remoteFilter) {
+            me.filter();
+        }
+
+        if (me.sortOnLoad && !me.remoteSort) {
+            me.sort(undefined, undefined, undefined, true);
+        }
+
+        me.resumeEvents();
+        if (me.isGrouped()) {
+            me.constructGroups();
+        }
+        me.fireEvent('datachanged', me);
+        me.fireEvent('refresh', me);
+    },//}}}
+
 	initRecord: function( nr, br ) {/*{{{*/
 
 		if ( br == undefined ) br = nr;
