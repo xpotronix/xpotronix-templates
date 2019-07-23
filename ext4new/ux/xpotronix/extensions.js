@@ -61,6 +61,7 @@ consoleDebugFn = function( e ) {
 		console.log(evname, arguments);
 	});
 
+	return true;
 };
 
 

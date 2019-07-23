@@ -71,7 +71,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.callParent(arguments);
 
-		this.debug && consoleDebugFn( this );
+		// this.debug && consoleDebugFn( this );
+		this.debug && consoleDebugFn( this.getView() );
 
 	},/*}}}*/
 
@@ -107,9 +108,15 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.on( 'viewready', function() {
 
+			var grid = this;
+
 			if ( this.store ) 
 				if ( this.store.feat.auto_load !== false && ( ! this.store.parent_store ) )
-					this.store.load();
+					this.store.load({ callback:function(a,b,c){ 
+
+						grid.selModel.select(0);
+
+					}});
 
 		});
 
@@ -193,12 +200,17 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
                 this.store.on( 'load', function() {
 
-			if ( this.rendered && this.store.getCount() ) 
+			if ( this.rendered && this.store.getCount() ) {
+		
+				this.selModel.preventFocus = true;
 				this.selModel.select( 0 );
+				this.selModel.preventFocus = false;
+				//this.selModel.select( 0, true, true );
+			}
 
 		}, this);
 
-                this.store.on('selectionchange', function(s) {
+                this.store.on( 'selectionchange', function(s) {
 
 			if ( this.rendered && this.store.getCount() ) 
 				this.selModel.select( s );
