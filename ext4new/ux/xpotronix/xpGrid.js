@@ -25,7 +25,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	multi_row: true,
 
 	selection: [],
-	debug: false,
+	debug: true,
 
 	constructor: function(config) {/*{{{*/
 
@@ -131,10 +131,12 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			            fn: function( k, e ) {
 					if ( this.acl.del ) 
 
-						if ( e.getTarget().nodeName == 'INPUT' )
+						if ( e.getTarget().nodeName == 'INPUT' ) {
 							return true;
-						else
-							this.obj.delete_confirm( this );
+						}
+						else {
+							this.getTopToolbar().delete_confirm( this );
+						}
 		            }
 		        },
 			        {

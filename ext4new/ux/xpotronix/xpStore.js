@@ -248,7 +248,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			this.proxy.reader.record = prev_record;
 			this.proxy.reader.root = prev_root;
 
-			/* ajusta el totalRecords al totalLength anterior */
+			/* ajusta el totalRecords al totalCount anterior */
 			rs.totalRecords = this.totalCount;
 
 			var rid = this.findByUiid(uiid);
@@ -269,7 +269,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 		} else if (a == 'd') {
 
 			this.remove(this.getAt(this.findByUiid(uiid)));
-			this.totalLength--;
+			this.totalCount--;
 
 		} else {
 

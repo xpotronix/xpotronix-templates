@@ -99,3 +99,18 @@ Ext.util.Format.escapeXml = function(str) {
 	return String(str).replace(/[<>&"']/g, replaceChars);
 };
 
+/* DEBUG: no anda
+
+Ext.define('Ux.xpotronix.StoreManager', {
+
+	extend: 'Ext.data.StoreManager',
+	alternateClassName: ['Ux.xpotronix.StoreMgr'],
+	singleton: true,
+
+	lookup: function( store ) {
+		return this.callParent(arguments);
+	}
+
+});
+
+*/

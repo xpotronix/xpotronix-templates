@@ -575,7 +575,8 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		this.obj = new Ext.util.MixedCollection(false);
 		this.obj.getKey = function(o){ return o.class_name; }
 
-		this.store = Ext.StoreMgr;
+		this.store = Ext.data.StoreManager;
+		// this.store = Ux.xpotronix.StoreManager;
 
 		this.conn_process   = new Ext.data.Connection();
 		this.conn_process.on( 'requestcomplete', this.on_complete, this );
@@ -801,7 +802,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		Ext.each( this.response.changes, function( e ) { 
 
-			var s, module = param.request.options.module;
+			var s, module = this.feat.module;
 
 			if ( s = this.store.lookup( module + '.' + e.nodeName ) ) 
 				ms[s.class_name] = { store: s, response: s.update_model( e ) };

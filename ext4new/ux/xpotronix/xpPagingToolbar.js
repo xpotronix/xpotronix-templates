@@ -383,7 +383,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
         	        	cls: 'x-btn-text-icon',
 				text: 'Borrar',
 	                	tooltip: '<b>Borrar</b><br/>Pulse aqui para borrar la seleccion',
-				handler: me.delete_confirm 
+				handler: function() { me.delete_confirm( panel ); }
 		};
 
 	},/*}}}*/
@@ -584,10 +584,8 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	 delete_confirm: function ( panel ) {/*{{{*/
 
-		var tb = this.up('toolbar'),
-			 panel = tb.panel;
-
-		var m = panel.getSelection();
+		var tb = panel.getDockedItems('toolbar[dock=top]')[0],
+		m = panel.getSelection();
 
         	if ( m.length ) {
 
@@ -609,17 +607,18 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
    	delete_selections: function( panel ) {/*{{{*/
 
 		// DEBUG: esto estaba en xpGrid, hay que ver si aplica para todos
-
-		var saved = 0;
+		//
+		var saved = 0,
+		index = panel.store.cr().index,
+		me = this;
 
 		Ext.each( panel.getSelection(), function( r ) {
 
 			if ( r.get('__new__') ) 
-				this.remove( r );
+				panel.store.remove( r );
 			else
 				saved++;
-
-		}, panel.store );
+		});
 
 		if ( saved ) App.process_request({
 
@@ -632,10 +631,11 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
                 }, function() { 
 
 			panel.getView &&
-			panel.getView().focusRow( panel.store.rowIndex );
+			panel.selModel.select( index );
+			me.doRefresh();
 		});
 
-		else panel.store.go_to( panel.store.rowIndex, false );
+		else panel.selModel.select( index );
 
    	},  /*}}}*/
 
