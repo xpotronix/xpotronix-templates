@@ -641,9 +641,17 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	addRecord:function( panel ) {//{{{
 
-		var toolbar = this.up('toolbar');
+		var toolbar;
 
-		var panel = toolbar.panel;
+		if ( panel ) {
+
+			toolbar = panel.getTopToolbar();
+		
+		} else {
+		
+			toolbar = this.up('toolbar');
+			panel = toolbar.panel;
+		}
 
 		if ( ! panel.acl.add ) return;
 

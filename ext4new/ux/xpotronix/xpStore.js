@@ -77,68 +77,77 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				var parent_store_name = this.parent_store;
 
-				this.parent_store = App.store.lookup( parent_store_name ) || 
-					console.error( "no encuentro el parent_store " + parent_store_name );
+
 			}
 
-			this.parent_store.add_child( this );
+			this.parent_store = App.store.lookup( parent_store_name );
 
-			/* cuando cambia el parent_store */
+			if ( this.parent_store == undefined ) {
+			
+				console.error( "no encuentro el parent_store " + parent_store_name );
 
-			this.parent_store.on({
+			} else {
 
-				selectionchange: {
-					buffer: 500,
-					scope: this,
-					fn: this.onSelectionChange
-				},
+				this.parent_store.add_child( this );
 
-				serverstoreupdate: {
-
-					buffer: 100,
-					scope: this,
-					fn: function( a, b, c ) {
-
-						var selections = this.parent_store.selections;
-
-						if ( selections.length ) {
-
-							var new_fk = this.get_foreign_key( [this.parent_store.selections[0]] );
-
-							for ( var i = 0; i < new_fk.length ; i++ ) {
-
-								if ( new_fk[i].value !== this.foreign_key_values[i] ) {
-
-									this.foreign_key_values = new_fk;
-									this.load();
-									break;
-								}
-							}
-
-						} else {
-
-							this.foreign_key_values = [];
-							this.removeAll();
-						}
-
-					}
-
-				}
-			});
-
-			/* carga un registro en blanco cuando la relacion es de parent */
-
-			if ( this.foreign_key.type == 'parent' && ( !this.passive ) ) {
+				/* cuando cambia el parent_store */
 
 				this.parent_store.on({
 
-					loadblank: {
+					selectionchange: {
+						buffer: 500,
+						scope: this,
+						fn: this.onSelectionChange
+					},
+
+					serverstoreupdate: {
 
 						buffer: 100,
-						fn: this.add_blank,
-						scope: this
+						scope: this,
+						fn: function( a, b, c ) {
+
+							var selections = this.parent_store.selections;
+
+							if ( selections.length ) {
+
+								var new_fk = this.get_foreign_key( [this.parent_store.selections[0]] );
+
+								for ( var i = 0; i < new_fk.length ; i++ ) {
+
+									if ( new_fk[i].value !== this.foreign_key_values[i] ) {
+
+										this.foreign_key_values = new_fk;
+										this.load();
+										break;
+									}
+								}
+
+							} else {
+
+								this.foreign_key_values = [];
+								this.removeAll();
+							}
+
+						}
+
 					}
 				});
+
+				/* carga un registro en blanco cuando la relacion es de parent */
+
+				if ( this.foreign_key.type == 'parent' && ( !this.passive ) ) {
+
+					this.parent_store.on({
+
+						loadblank: {
+
+							buffer: 100,
+							fn: this.add_blank,
+							scope: this
+						}
+					});
+				}
+
 			}
 		}
 

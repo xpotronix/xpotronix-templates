@@ -25,7 +25,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	multi_row: true,
 
 	selection: [],
-	debug: true,
+	debug: false,
 
 	constructor: function(config) {/*{{{*/
 
@@ -110,14 +110,17 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 			var grid = this;
 
-			if ( this.store ) 
-				if ( this.store.feat.auto_load !== false && ( ! this.store.parent_store ) )
+			if ( this.store ) {
+				if ( this.store.feat.auto_load !== false && ( ! this.store.parent_store ) ) {
 					this.store.load({ callback:function(a,b,c){ 
-
 						grid.selModel.select(0);
-
 					}});
 
+				} else {
+					grid.selModel.select(0);
+				}
+
+			}
 		});
 
 		this.on( 'render', function() {
@@ -137,14 +140,24 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 						else {
 							this.getTopToolbar().delete_confirm( this );
 						}
-		            }
-		        },
+		            		}
+		        	},
 			        {
 			            key: Ext.EventObject.INSERT,
 				    scope: this,
 			            shift: false,
 			            ctrl: false,
-			            fn: this.obj.addRecord
+			            fn: function( k, e ) {
+					if ( this.acl.add ) 
+
+						if ( e.getTarget().nodeName == 'INPUT' ) {
+							return true;
+						}
+						else {
+							this.getTopToolbar().addRecord( this );
+						}
+		            		}
+
 		        	}
 		    	]);	
 		});
