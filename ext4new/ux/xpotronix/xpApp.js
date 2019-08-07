@@ -995,8 +995,8 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 			form.submit({ 
 				method:'POST', 
-				waitTitle:'Conectando', 
-				waitMsg:'Enviando datos, aguarde ...',
+				waitTitle:'Ingresando', 
+				waitMsg:'Aguarde por favor ...',
 				scope: me,
 				success: me.handle_login,
 				failure: me.handle_login
@@ -1007,13 +1007,14 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		var login = new Ext.FormPanel({ 
 		
-			labelWidth:80,
+			defaults: {labelWidth:50},
 			url: base_url + '?m=users&amp;a=login&amp;v=json', 
 			frame:true, 
-			title:'Ingreso a '+ this.feat.page_title, 
 			defaultType:'textfield',
 			monitorValid:true,
 			id: 'loginFormPanel',
+			layout:'anchor',
+			bodyStyle: 'padding:6px',
 			// buttonAlign: 'center',
 		
 			items:[{ 
@@ -1052,10 +1053,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		
 		var win = new Ext.Window({
 			/*layout:'fit',*/
-			width:400,
-			height:150,
 			constrain: true,
 			closable: false,
+			title:'Ingreso a '+ this.feat.page_title, 
 			resizable: false,
 			plain: true,
 			border: false,
