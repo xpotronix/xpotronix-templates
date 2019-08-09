@@ -297,7 +297,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		var editor = this.findFirstEditor();
 
-		Ext.isObject( editor ) && this.getPlugin().startEdit(r, editor);
+		Ext.isObject( editor ) && this.editingPlugin.startEdit(r, editor);
 
 	},/*}}}*/
 

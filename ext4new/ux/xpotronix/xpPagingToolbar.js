@@ -505,6 +505,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			text: 'Agregar',
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Agregar</b><br/>Pulse aqui para agregar un nuevo registro',
+			scope: me,
 			handler:me.addRecord
 
 		};
@@ -643,17 +644,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	addRecord:function( panel ) {//{{{
 
-		var toolbar;
-
-		if ( panel ) {
-
-			toolbar = panel.getTopToolbar();
-		
-		} else {
-		
-			toolbar = this.up('toolbar');
-			panel = toolbar.panel;
-		}
+		var toolbar = this, panel = toolbar.panel;
 
 		if ( ! panel.acl.add ) return;
 

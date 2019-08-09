@@ -32,7 +32,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	show_buttons: true,
 	buttonAlign: 'left',
 	multi_row: false,
-	debug: false,
+	debug: true,
 
 	constructor: function(config) {/*{{{*/
 
@@ -177,9 +177,12 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 					/* DEBUG: hay que ver si aca es el evento correcto para cuando cambia un valir, tal vez validateedit */
 
-					var event_name = (i.xtype == 'checkbox') ? 'check' : 'blur';
+					// var event_name = (i.xtype == 'checkbox') ? 'check' : 'blur';
+					var event_name = 'blur';
 
 					this.debug && console.log( 'class: ' + i.$className + ', name: ' + i.name );
+
+					this.debug && consoleDebugFn( i );
 
 					i.on( event_name, function( me, a, b ) {
 

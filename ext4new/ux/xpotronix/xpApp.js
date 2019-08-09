@@ -800,12 +800,17 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		var ms = [];
 
+		var module = param.request.options.module; 
+
 		Ext.each( this.response.changes, function( e ) { 
 
-			var s, module = this.feat.module;
+			var s;
 
 			if ( s = this.store.lookup( module + '.' + e.nodeName ) ) 
-				ms[s.class_name] = { store: s, response: s.update_model( e ) };
+				ms[s.class_name] = { 
+					store: s, 
+					response: s.update_model( e ) 
+				};
 
 		}, this );
 

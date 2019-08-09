@@ -1113,7 +1113,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		App.process_request( { m:module, a:'process', p:'store', b:'ext4', x:this.serialize_all() }, function( a, b, c ) {
 
-		Ext.each( this.fake_dirty_records, function( r ) { r.commit(); } );
+		Ext.each( this.fake_dirty_records, function( r ) { 
+			r.commit(); 
+		} );
 
 		});
 
