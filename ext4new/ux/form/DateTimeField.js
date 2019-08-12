@@ -36,9 +36,12 @@ Ext.define('Ext.ux.DateTimeField', {
         }
     },
 
+
+	/*
     triggerBlur: function() {
-        return false;
+        return true;
     },
+    */
 
     collapseIf: function(e) {
         var me = this,
@@ -52,11 +55,17 @@ Ext.define('Ext.ux.DateTimeField', {
     createPicker: function() {
         var me = this,
             parentPicker = this.callParent(),
-            config = Ext.merge(me.initialConfig, parentPicker.initialConfig);
+            config = Ext.clone(Ext.merge(me.initialConfig, parentPicker.initialConfig)),
+            excludes = ['renderTo', 'width', 'height', 'id', 'itemId'];
 
-            if (config.renderTo) {
-                delete config.renderTo;
+        // Avoiding duplicate ids error
+        parentPicker.destroy();
+        
+        for (var i=0; i < excludes.length; i++) {
+            if (config.hasOwnProperty([excludes[i]])) {
+                delete config[excludes[i]];
             }
+        }
         
         return Ext.create('Ext.ux.DateTimePicker', config);
     },
