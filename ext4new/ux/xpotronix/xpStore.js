@@ -106,6 +106,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 						scope: this,
 						fn: function( a, b, c ) {
 
+							/* si es un eh lo ignora */
+
+							if ( this.foreign_key.type == 'eh' ) return;
+
 							var selections = this.parent_store.selections;
 
 							if ( selections.length ) {
@@ -114,7 +118,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 								for ( var i = 0; i < new_fk.length ; i++ ) {
 
-									if ( new_fk[i].value !== this.foreign_key_values[i] ) {
+									if ( new_fk[i].value !== this.foreign_key_values[i].value ) {
 
 										this.foreign_key_values = new_fk;
 										this.load();

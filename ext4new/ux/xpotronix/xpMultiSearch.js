@@ -64,4 +64,36 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 
 	}/*}}}*/
 
+
+	/* override de las siguientes dos funciones
+	 * para que no borre la busqueda del filtro
+	 */
+
+    ,getFilterFromField:function(field) {//{{{
+        var  me = this
+            ,value = field.getSubmitValue()
+            ,filter
+	    ,ns = field.initialConfig.nameSuffix;
+        ;
+        if(value) {
+            filter = me.parseUserValue(value);
+
+		if ( ns )  
+            		filter.property = field.getItemId() + field.initialConfig.nameSuffix;
+		else
+            		filter.property = field.getItemId();
+            return filter;
+        }
+        return null;
+
+    }//}}}
+
+    ,onStoreFilterChange:function() {//{{{
+        var me = this;
+        if(!me.filtering) {
+            // me.setValuesFromStore();
+        }
+    }//}}}
+
+
 });

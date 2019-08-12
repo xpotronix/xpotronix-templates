@@ -113,8 +113,7 @@
 
 	<column type="xpentry_help"><!--{{{-->
 		<renderer/>
-		<!--<filterField>{nameSuffix:'_label'}</filterField> -->
-		<filterField>true</filterField>
+		<filterField>{xtype: 'textfield', nameSuffix:'_label'}</filterField>
 	</column><!--}}}-->
 
 	<!-- field -->

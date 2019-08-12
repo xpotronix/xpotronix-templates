@@ -32,7 +32,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	show_buttons: true,
 	buttonAlign: 'left',
 	multi_row: false,
-	debug: true,
+	debug: false,
 
 	constructor: function(config) {/*{{{*/
 
@@ -104,9 +104,9 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 			if ( tbar && bbar ) {
 
-				this.acl.add && bbar.add( tbar.add_button( this ) );
-				bbar.add('-');
 				bbar.add( tbar.save_button( this ));
+				bbar.add('-');
+				this.acl.add && bbar.add( tbar.add_button( this ) );
 			}
 		}
 
