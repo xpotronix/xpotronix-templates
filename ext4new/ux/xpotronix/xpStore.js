@@ -330,43 +330,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 		if (this.passive)
 			return;
 
-		/* DEBUG: baseParams no va en extjs4
-
-		// Search (global search)
-		if ( this.baseParams.query && this.baseParams.fields ) {
-
-			var server_vars = [];
-			var bpf = eval(this.baseParams.fields);
-			var keys = this.rs.prototype.fields.keys;
-
-			// busca el campo con _label para buscar sobre el
-
-			for ( var i = 0; i < bpf.length ; i ++ ) {
-
-				var io = keys.indexOf( bpf[i] + '_label' );
-				server_vars.push( ( io == -1 ) ? bpf[i] : keys[io] );
-
-			}
-
-			var vars = server_vars.join(App.feat.key_delimiter);
-                        var params = {};
-
-                        params['s[' + this.class_name +']['+ vars +']'] = this.baseParams.query;
-
-			Ext.apply( options.filters, params );
-
-		}
-
-
-		// FilterRow
-		if (this.filter && this.filter.shown) {
-
-			Ext.apply(options.filters, this.buildXpQuery( this.filter.getFilterData()) );
-
-		}
-
-		*/
-
 		/* resuelve el foreign key */
 
 		if (this.parent_store) {
@@ -377,16 +340,23 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			if (this.parent_store.getCount()) {
 
+
+				/* filter de clave foranea */
+
+
+
+
+
 				/* DEBUG: esto estaba para limitar que cuando hay una clave vacia no cargue todos los registros
 				   pero ahora lo resuelve bien xpdataobject
 
-				if ( this.foreign_key_values.length == 0 ) {
+				if ( this..length == 0 ) {
 					if ( this.foreign_key.type != 'parent' ) 
 						return false;
 				}
 				else 
 				*/
-				/* Ext.apply( options.filters, this.foreign_key_values ); */
+				/* Ext.apply( options.filters, this. ); */
 
 			} else if (this.foreign_key.type == 'parent')
 				return;
@@ -542,7 +512,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.selections = selections;
 
-		me.clearFilter(true);
+		// me.clearFilter(true);
 
 		if ( me.foreign_key.type == 'parent') {
 
@@ -550,9 +520,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		} else if ( me.foreign_key.type == 'eh' ) {
 
+			/* DEBUG */
+
 			// data = me.get_foreign_key_record(selections, true);
 			// this.debug && console.log(data);
 			// me.insert(0,data);
+
 
 		} else {
 
@@ -560,8 +533,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			if ( me.foreign_key_values.length ) {
 
-				Ext.each( me.foreign_key_values, function( key ) {
-					me.filter( key.property, key.value );
+				Ext.each( me.foreign_key_values, function( filter ) {
+					me.filter( filter );
 				});
 
 			} else {
