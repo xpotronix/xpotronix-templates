@@ -593,8 +593,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				var value = pr.get(ref.remote);
 
-				if (value.dateFormat)
-					value = value.dateFormat(App.feat.date_long_format);
+				if (value.toLocaleDateString)
+					value = value.toLocaleDateString();
 
 				if (value != ref.value)
 					retval = false;
@@ -758,7 +758,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			keys.push({
 				key: key,
-				value: (value.dateFormat ? value.dateFormat(App.feat.date_long_format) : value)
+				value: (value.toLocaleDateString ? value.toLocaleDateString() : value)
 			});
 
 		}, this);
@@ -789,9 +789,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 					if (value === undefined)
 						console.error('no encuentro la clave foranea ' + ref.remote);
 					else {
-						key.value = value.dateFormat ?
-						value.dateFormat(App.feat.date_long_format) :
-						value;
+
+						if ( value.toLocaleDateString ) 
+							key.value = value.toLocaleDateString();
+						else
+							key.value = value;
 					}
 
 				}, this);
@@ -806,6 +808,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	},
 	/*}}}*/
+
+	get_field_metadata( field_name ) {/*{{{*/
+	
+		return this.model.getFields().find( o => o.name === field_name );
+	
+	},/*}}}*/
 
 	get_foreign_key_record: function( selections, label ) { /*{{{*/
 
@@ -830,8 +838,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 					if (value === undefined)
 						console.error('no encuentro la clave foranea ' + ref.remote);
 					else {
-						value = value.dateFormat ?
-						value.dateFormat(App.feat.date_long_format) :
+						value = value.toLocaleDateString ?
+						value.toLocaleDateString :
 						value;
 					}
 
@@ -902,8 +910,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			var value = this.getAt(ri).get(ref.remote);
 
-			if (value.dateFormat)
-				value = value.dateFormat(App.feat.date_long_format);
+			if (value.toLocaleDateString)
+				value = value.toLocaleDateString();
 
 			if (value != ch.foreign_key_values[ref.local])
 				return false;

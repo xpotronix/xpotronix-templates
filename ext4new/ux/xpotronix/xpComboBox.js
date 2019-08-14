@@ -19,6 +19,19 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 	listeners: {/*{{{*/
 
+		beforequery: {
+
+			fn: function( queryPlan ) { 
+
+				var value = this.getRawValue();
+				this.store.clearFilter(true);
+
+				if ( value ) 
+					this.store.addFilter({property:'_label',value:this.getRawValue()}, false);
+			}
+		
+		},
+
 		blur: {
 
 			fn: function( me, newValue, oldValue ) {
