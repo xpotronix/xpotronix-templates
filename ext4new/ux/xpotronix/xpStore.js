@@ -40,7 +40,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	selections: undefined,
 	selModel: undefined,
 
-	debug: false,
+	debug: true,
 
 	constructor: function(config) {/*{{{*/
 
@@ -172,7 +172,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 							s.set_parent_fk();
 
 					}
-				}}, 
+				}
+			}, 
 
 			load: {
 
@@ -183,9 +184,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 						App.login();
 						return;
 					}
-
-					// this.update_model( this.proxy.reader.xmlData );
-				}},
+				}
+			},
 
 			beforeload: {
 
@@ -309,7 +309,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* control de carga de los registros nuevos */
 
-		if ((!options.add) && this.dirty && (!Ext.isEmptyObject(this.dirty()) || !Ext.isEmptyObject(this.dirty_childs()))) {
+		if ((!options.add) && this.isDirty() && (!Ext.isEmptyObject(this.dirty()) || !Ext.isEmptyObject(this.dirty_childs()))) {
 
 			var url = store.lastOptions.url;
 
@@ -668,11 +668,14 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	isDirty: function() {/*{{{*/
 
-		this.debug && console.log( 'isDirty' );
 
-		return (this.getNewRecords().length > 0 || 
+		var retval = (this.getNewRecords().length > 0 || 
 			this.getUpdatedRecords().length > 0 || 
 			this.getRemovedRecords().length > 0);
+
+		this.debug && console.log( this.storeId + '.isDirty(): ' + retval );
+		return retval;
+
 	},/*}}}*/
 
 	dirty: function(check_childs) { /*{{{*/

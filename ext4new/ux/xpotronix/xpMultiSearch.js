@@ -95,19 +95,20 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
         }
     }//}}}
 
-    /**
-     * specialkey hander. Used only if {@link #filterOnEnter filterOnEnter:true}
-     * @private
-     * @param {Ext.form.field.Field} field
-     * @param {Ext.EventObject} e
-     */
-    ,onSpecialKey:function(field, e) {
-        var  me = this;
-        if(Ext.EventObject.ENTER === e.getKey()) {
-		var allFilters = Ext.Array.merge( this.store.get_foreign_key(), this.getFilters() );
-            me.store.filter(allFilters);
-        }
-    } // eo function onSpecialKey
+	/**
+	* specialkey hander. Used only if {@link #filterOnEnter filterOnEnter:true}
+	* @private
+	* @param {Ext.form.field.Field} field
+	* @param {Ext.EventObject} e
+	*/
+	,onSpecialKey:function(field, e) {
+		var  me = this;
+		if(Ext.EventObject.ENTER === e.getKey()) {
+			var allFilters = Ext.Array.merge( this.store.foreign_key_values, this.getFilters() );
+			me.store.clearFilter(true);
+			me.store.filter(allFilters);
+		}
+	} // eo function onSpecialKey
 
 
 

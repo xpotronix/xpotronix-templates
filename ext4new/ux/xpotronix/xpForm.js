@@ -32,7 +32,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	show_buttons: true,
 	buttonAlign: 'left',
 	multi_row: false,
-	debug: false,
+	debug: true,
 
 	constructor: function(config) {/*{{{*/
 
@@ -84,72 +84,81 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	initComponent:function() {/*{{{*/
 
-		this.callParent();
+		var me = this;
 
-		if ( typeof this.store == 'string' )
-			this.store = App.store.lookup( this.store );
+		me.callParent();
 
-                if ( typeof this.obj == 'string' ) 
-			this.obj = App.obj.get( this.obj );
+		if ( typeof me.store == 'string' )
+			me.store = App.store.lookup( me.store );
 
-		/* this.getForm().trackResetOnLoad = true; */
+                if ( typeof me.obj == 'string' ) 
+			me.obj = App.obj.get( me.obj );
 
-		this.acl = this.acl || this.obj.acl;
-		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+		/* me.getForm().trackResetOnLoad = true; */
 
-		if ( this.show_buttons && ( this.acl.edit || this.acl.add ) ) {
+		me.acl = me.acl || me.obj.acl;
+		me.processes_menu = me.processes_menu || me.obj.processes_menu;
 
-			var tbar = this.getDockedItems('toolbar[dock=top]')[0];
-			var bbar = this.getDockedItems('toolbar[dock=bottom]')[0];
+		if ( me.show_buttons && ( me.acl.edit || me.acl.add ) ) {
+
+			var tbar = me.getDockedItems('toolbar[dock=top]')[0];
+			var bbar = me.getDockedItems('toolbar[dock=bottom]')[0];
 
 			if ( tbar && bbar ) {
 
-				bbar.add( tbar.save_button( this ));
+				bbar.add( tbar.save_button( me ));
 				bbar.add('-');
-				this.acl.add && bbar.add( tbar.add_button( this ) );
+				me.acl.add && bbar.add( tbar.add_button( me ) );
 			}
 		}
 
-		this.on({ 
+		me.on({ 
 
 			afterrender: { 
 				fn: function( form ) {
 
 					var r = form.getSelection();
 
-					if ( r && r.length )
+					if ( r && r.length ) {
+
+						me.enable();
 						form.loadRecord( r[0] );
-					else
+					}
+					else {
 						form.getForm().reset();
-				}, 
+						me.disable();	
+					}
+				},
 				buffer:200 }
 		});
 
-		this.store.on({
+		me.store.on({
 
 			update: { 
 
-				scope: this
+				scope:me
 				,buffer:50
 				,fn: function( form ) { 
 
-					this.loadRecord( form.getSelection()[0] ); 
+					me.loadRecord( form.getSelection()[0] ); 
 				}}
 
 			,selectionchange: {
 
-				scope: this
+				scope:me 
 				,buffer:200
 				,fn: function( sels, selMode, e ) {
 
-					var me = this;
+					if ( sels && sels.length ) {
 
-					if ( sels && sels.length )
+						me.enable();
 						me.loadRecord( sels[0] );
-					else
-						me.getForm().reset();
-				
 
+					} else {
+
+						me.getForm().reset();
+						me.disable();	
+					}
 				} 
 			} 
 		});
@@ -158,18 +167,20 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	onRender: function() { /*{{{*/
 
-		this.callParent();
+		var me = this;
 
-		if ( ! this.store ) 
+		me.callParent();
+
+		if ( ! me.store ) 
 			return;
 
 		var field_names = [];
 
-		Ext.each( this.store.model.getFields(), function( i ) { field_names.push( i.name ) } );
+		Ext.each( me.store.model.getFields(), function( i ) { field_names.push( i.name ) } );
 
-		if ( this.store ) {
+		if ( me.store ) {
 
-			recurse_items( this, function(i) {
+			recurse_items( me, function(i) {
 
 				/* consoleDebugFn( i ); return; */
 
@@ -180,35 +191,35 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 					// var event_name = (i.xtype == 'checkbox') ? 'check' : 'blur';
 					var event_name = 'blur';
 
-					this.debug && console.log( 'class: ' + i.$className + ', name: ' + i.name );
+					me.debug && console.log( 'class: ' + i.$className + ', name: ' + i.name );
 
-					this.debug && consoleDebugFn( i );
+					me.debug && consoleDebugFn( i );
 
-					i.on( event_name, function( me, a, b ) {
+					i.on( event_name, function( field ) {
 
 						/* mantiene sincronizado el form con el controlador (grid) */
 
-						var record = this.getSelection()[0];
+						var record = me.getSelection()[0];
 
 						if ( record ) {
 
-							if ( ! me.isEqual( me.getValue(), record.get( me.name ) ) ) {
+							if ( ! field.isEqual( field.getValue(), record.get( field.name ) ) ) {
 
-								this.debug && console.log( me.name + ': ' + me.lastValue + ' << ' + me.getValue() );
-								record.set( me.name, me.getValue() );
+								me.debug && console.log( field.name + ': ' + field.lastValue + ' << ' + field.getValue() );
+								record.set( field.name, field.getValue() );
 							}
 						}
 				
 						return true;
 
-					}, this, { delay:0 });
+					}, me, { delay:0 });
 				}
 
-			}, this );
+			}, me );
 
 		}
 
-		// this.loadRecord();
+		// me.loadRecord();
 
 	},/*}}}*/
 
@@ -219,7 +230,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) 
 			return;
 
-		var form = this.getForm();
+		var form = me.getForm();
 
 		for ( var key in r.data ) { 
 
@@ -234,21 +245,19 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		if ( ( ! Ext.isEmptyObject ( r ) ) && r.get ) { 
 
-			var c;
-        		this._record = r;
+        		me._record = r;
 
-			var is_new = r.get('__new__');
-			var enabled = ( me.obj.acl.edit && !is_new ) || ( me.obj.acl.add && is_new );
+			var c,
+			is_new = r.get('__new__'),
+			enabled = ( me.obj.acl.edit && !is_new ) || ( me.obj.acl.add && is_new );
 
 			// if ( Ext.isEmptyObject( c = r.getChanges() ) )
-				c = r.getData(); 
+			c = r.getData(); 
 
-        		this.form.setValues(c);
+        		me.form.setValues(c);
 
 			if ( enabled )
-
 				me.enableForm();
-
 			else 	me.disableForm();
 
 
@@ -267,8 +276,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 			it.initialConfig.disabled || it.enable();
 
-			// it.setReadOnly( ! ( ! it.initialConfig.disabled ) )
-
 		}, this );
 
 
@@ -278,7 +285,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		recurse_items( this.getForm(), function( it ) {
 
-			// it.setReadOnly( true );
 			it.disable();
 
 		}, this );
@@ -288,11 +294,6 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	getSelection: function() {/*{{{*/
 
 		return this.store.selections;	
-
-		/*
-		var cr = this.store.cr();
-		return ( cr == undefined ) ? [] : [cr];
-		*/
 
 	}/*}}}*/
 
