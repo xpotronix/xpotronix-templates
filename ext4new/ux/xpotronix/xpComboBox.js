@@ -19,6 +19,15 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 	listeners: {/*{{{*/
 
+ 		change: { 
+			
+			fn:function() {
+
+				if (this.getValue() === null) {
+					this.reset();
+  			}
+		}},
+
 		beforequery: {
 
 			fn: function( queryPlan ) { 

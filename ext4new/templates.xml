@@ -219,7 +219,6 @@
 		<hideTrigger>false</hideTrigger>
 		<triggerAction>all</triggerAction>
 		<forceSelection>true</forceSelection>
-		<allowBlank/>
 		<minChars>3</minChars>
 
 	</field><!--}}}-->
