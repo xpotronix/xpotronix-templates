@@ -37,6 +37,7 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 
 		// add menu
 		me.menu = new Ext.button.Split({
+			/* iconCls: 'fa fa-compass fa-10x' */
 			icon: '/ux/images/filter.png'
 			,cls: 'x-btn-text-icon'
 			,text: 'Filtrar'
