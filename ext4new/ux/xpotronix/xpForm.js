@@ -295,6 +295,11 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		return this.store.selections;	
 
+	},/*}}}*/
+
+	getTopToolbar:  function() {/*{{{*/
+		var tb = this.getDockedItems('toolbar[dock=top]');
+		return tb.length ? tb[0] : undefined;
 	}/*}}}*/
 
 }); /* eo extend */
