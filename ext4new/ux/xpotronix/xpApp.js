@@ -137,7 +137,6 @@ Ext.define('AppTreeMenu', {/*{{{*/
 	,stateful: true
 	,height:240
 	,border:false
-	,bodyStyle:'padding:4px'
 	,title:'Ayuda'
 	,autoScroll:true
 
@@ -212,10 +211,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 						if ( parentNodeId = record.parentNode.get('itemId') )
 
 							this.showDetail( parentNodeId );
-
 					} 
-
-
 				}
 
 				var href = record.get('href');
@@ -459,85 +455,247 @@ Ext.define('AppExportWindow', {/*{{{*/
 Ext.define('ChangePasswordWindow', {/*{{{*/
 
 	extend: 'Ext.Window',
+	alias: 'widget.passwordpanel',
 	/*layout:'fit',*/
-	width:300,
-	height:150,
+        title:'Cambiar Contraseña', 
 	constrain: true,
 	closable: false,
 	resizable: false,
 	plain: true,
 	border: false,
-	items: [{ 
 
-	alias: 'widget.passwordpanel',
-	extend: 'Ext.form.Panel',
-        labelWidth:80,
-        url:'?m=users&a=change_password', 
-        frame:true, 
-        title:'Cambiar Contraseña', 
-        defaultType:'textfield',
-	monitorValid:true,
+	items:[{ 
 
-        items:[{ 
-                fieldLabel:'Nueva Clave', 
-                name:'password', 
-                inputType:'password', 
-                allowBlank:false 
-            },{ 
-                fieldLabel:'Repetir Clave', 
-                name:'password_repeat', 
-                inputType:'password', 
-                allowBlank:false 
-            }],
+		xtype: 'form',
+		labelWidth:80,
+		bodyStyle: 'padding:6px',
+		url:'?m=users&a=change_password&v=json', 
+		frame:true, 
+		defaultType:'textfield',
+		monitorValid:true,
+
+		items:[{ 
+			fieldLabel:'Nueva Clave', 
+			name:'password', 
+			inputType:'password', 
+			allowBlank:false 
+		    },{ 
+			fieldLabel:'Repetir Clave', 
+			name:'password_repeat', 
+			inputType:'password', 
+			allowBlank:false 
+		    }],
  
-        buttons:[{ 
+		buttons:[{ 
 
-                text:'Cambiar',
-                formBind: true,	 
+			text:'Cambiar',
+			formBind: true,
 
-                handler:function( a, b, c ){ 
+			handler:function(){ 
 
-                    this.getForm().submit({ 
-                        method:'POST', 
-                        waitTitle:'Conectando', 
-                        waitMsg:'Enviando datos, aguarde ...',
+				var form = this.up('form').getForm();
 
-			success:function(){ 
+				form.submit({ 
 
-				win.hide();
-		                Ext.Msg.show( {
-		                msg : 'El cambio de su clave ha sido satisfactorio',
-		                width :300,
-		                wait :true,
-		                buttons: Ext.Msg.OK,
-		                waitConfig : {
-		                        interval :200
-		                }
-	                	} );
+					method:'POST', 
+					waitTitle:'Conectando', 
+					waitMsg:'Enviando datos, aguarde ...',
 
-			},
-		
-                        failure:function(form, action){ 
-                            if(action.failureType == 'server'){ 
-                                obj = Ext.decode(action.response.responseText); 
-                                Ext.Msg.alert('Fallo la autorizacion', obj.errors.reason); 
-                            }else{ 
+					success:function( form ){ 
+
+						form.owner.up().hide();
+						Ext.Msg.show({
+							msg : 'El cambio de su clave ha sido satisfactorio',
+							width :300,
+							wait :true,
+							buttons: Ext.Msg.OK,
+							waitConfig: { interval:200 }
+						});
+					},
+
+					failure:function(form, action){ 
+
+						if ( action.failureType == 'server'){ 
+
+							var obj = Ext.decode(action.response.responseText); 
+							Ext.Msg.alert('Fallo la autorizacion', obj.errors.reason); 
+
+						} else { 
+
+							if ( ! ( reason = action.response.responseText)  ) reason = 'Servidor fuera de linea, por favor reingrese en unos minutos ...';
+							Ext.Msg.alert('Mensaje', 'No puedo conectarme con el servidor: ' + reason); 
+						}
+
+						form.reset(); 
+					} 
+				}); 
+			} 
+		    },{
+
+			text:'Cancelar',
+			handler:function(){ 
+				this.up('form').up().hide();
+			}
+
+		    }] 
+    		}]
+
+	});/*}}}*/
+
+Ext.define('LoginWindow', {/*{{{*/
+
+	extend: 'Ext.Window',
+	alias: 'widget.loginwindow',
+
+	constrain: true,
+	closable: false,
+	resizable: false,
+	plain: true,
+	border: false,
+	defaultButton: 'loginUsername', // quien recibe el foco
+	baase_url: null,
+
+	initComponent: function( config ) {
+
+		var me = this;
+
+		Ext.applyIf( me, { 
+			title: 'Ingreso a '+ App.feat.page_title,
+			base_url: (App.feat.base_url == undefined) ? '' : App.feat.base_url,
+		});
+
+		return this.callParent();
+	},
+
+	doLoginForm:function() { /*{{{*/
+
+		var form = this.down('form').getForm();
+
+		if ( !form.isValid() )
+			return;
+
+		form.submit({ 
+			url: this.base_url + '?m=users&amp;a=login&amp;v=json', 
+			method:'POST', 
+			waitTitle:'Ingresando', 
+			waitMsg:'Aguarde por favor ...',
+			success: this.handle_login,
+			failure: this.handle_login
+		}); 
+	},/*}}}*/
+
+	handle_login: function( form, action ) {/*{{{*/
+
+		var obj;
+
+		try {
+
+			obj = Ext.decode(action.response.responseText); 
+
+		} catch ( ex ) {
+
+			obj = null;
+
+		}
+
+		if ( obj == null ) {
+
+			if ( action.failureType == 'server' ){ 
+
+				obj = Ext.decode(action.response.responseText); 
+
+			} else { 
+
 				if ( ! ( reason = action.response.responseText)  ) reason = 'Servidor fuera de linea, por favor reingrese en unos minutos ...';
-                                Ext.Msg.alert('Mensaje', 'No puedo conectarme con el servidor: ' + reason); 
-                            } 
-                            this.getForm().reset(); 
-                        } 
-                    }); 
-                } 
-            },{
+				Ext.Msg.alert('Mensaje', 'No puedo conectarme con el servidor: ' + reason); 
+			} 
 
-		text:'Cancelar',
-		handler:function(){ this.hide();}
+			// login.getForm().reset(); 
 
-	    }] 
-    }]
+		} else if ( obj.success ) {
 
-});/*}}}*/
+			this.form.owner.up().hide();
+
+			if ( ! App.prevent_reload ) {
+				Ext.Msg.show({
+					id: 'win_ingresando',
+					msg : form.title,
+					progressText: 'Ingresando, aguarde por favor ...',
+					width :300,
+					wait :true,
+					buttons: Ext.Msg.CANCEL,
+					waitConfig : { interval: 200 }
+				});
+
+				App.reload_app();
+			}
+
+		} else if ( ! obj.success ) {
+
+			Ext.Msg.alert('Fallo la autorizacion', obj.errors.reason); 
+
+		} else {
+
+			Ext.Msg.alert('Respuesta del servidor inesperada. No se puede continuar, consulte con el administrador de la aplicación.'); 
+		}
+	},/*}}}*/
+
+	listeners: {
+	
+		render: function() {
+
+			var map = new Ext.util.KeyMap({
+				target: this,
+				key : [10, 13],
+				scope : this,
+				fn: this.doLoginForm
+			});
+		}
+	},
+
+	items:[{ 
+
+		xtype: 'form',
+		layout:'anchor',
+		/* labelWidth:80, */
+		defaults: {labelWidth:50},
+		bodyStyle: 'padding:6px',
+		frame:true, 
+		defaultType:'textfield',
+		monitorValid:true,
+
+			items:[{ 
+				fieldLabel:'Usuario', 
+				id:'loginUsername', 
+				name:'loginUsername', 
+				width: 280,
+				allowBlank:false 
+			},{ 
+				fieldLabel:'Clave', 
+				name:'loginPassword', 
+				inputType:'password', 
+				width: 280,
+				allowBlank:false 
+			}],
+		
+			buttons:[{ 
+				text:'Ingresar',
+				formBind: true,	 
+				handler: function() { 
+					this.up('form').up().doLoginForm();
+				}
+			},{
+				text:'Cancelar',
+				handler:function(){ 
+					this.up('form').up().hide();
+				}
+			}]
+
+ 
+    		}]
+
+	});/*}}}*/
+
 
 Ext.define( 'Ux.xpotronix.xpApp', {
 
@@ -856,65 +1014,10 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		this.prevent_reload = prevent_reload;
 
 		if ( !this.panel.login.window ) 
-			this.panel.login.window = this.login_window();
+			this.panel.login.window = Ext.create('LoginWindow');
 
 		this.panel.login.window.show();
 
-
-	},/*}}}*/
-
-	handle_login: function( form, action ) {/*{{{*/
-
-		try {
-
-			obj = Ext.decode(action.response.responseText); 
-
-		} catch ( ex ) {
-
-			obj = null;
-
-		}
-
-		if ( ! obj ) {
-
-			if ( action.failureType == 'server' ){ 
-
-				obj = Ext.decode(action.response.responseText); 
-
-			} else { 
-
-				if ( ! ( reason = action.response.responseText)  ) reason = 'Servidor fuera de linea, por favor reingrese en unos minutos ...';
-				Ext.Msg.alert('Mensaje', 'No puedo conectarme con el servidor: ' + reason); 
-			} 
-
-			// login.getForm().reset(); 
-
-		} else if ( obj.success ) {
-
-			this.panel.login.window.hide();
-
-			if ( ! this.prevent_reload ) {
-				Ext.Msg.show({
-					id: 'win_ingresando',
-					msg : form.title,
-					progressText: 'Ingresando, aguarde por favor ...',
-					width :300,
-					wait :true,
-					buttons: Ext.Msg.CANCEL,
-					waitConfig : { interval: 200 }
-				});
-
-				this.reload_app();
-			}
-
-		} else if ( ! obj.success ) {
-
-			Ext.Msg.alert('Fallo la autorizacion', obj.errors.reason); 
-
-		} else {
-
-			Ext.Msg.alert('Respuesta del servidor inesperada. No se puede continuar, consulte con el administrador de la aplicación.'); 
-		}
 	},/*}}}*/
 
 	reload_app: function() {/*{{{*/
@@ -998,91 +1101,6 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	hideSaveChanges: function() {/*{{{*/
 		Ext.Msg.hide();
-	},/*}}}*/
-
-	login_window: function() {/*{{{*/
-
-		var me = this;
-
-		var doLoginForm = function(){ 
-
-			var form = login.getForm();
-
-			if ( !form.isValid() )
-				return;
-
-			form.submit({ 
-				method:'POST', 
-				waitTitle:'Ingresando', 
-				waitMsg:'Aguarde por favor ...',
-				scope: me,
-				success: me.handle_login,
-				failure: me.handle_login
-			}); 
-		};
-
-		var base_url = (this.feat.base_url == undefined) ? '' : this.feat.base_url;
-
-		var login = new Ext.FormPanel({ 
-		
-			defaults: {labelWidth:50},
-			url: base_url + '?m=users&amp;a=login&amp;v=json', 
-			frame:true, 
-			defaultType:'textfield',
-			monitorValid:true,
-			id: 'loginFormPanel',
-			layout:'anchor',
-			bodyStyle: 'padding:6px',
-			// buttonAlign: 'center',
-		
-			items:[{ 
-				fieldLabel:'Usuario', 
-				id:'loginUsername', 
-				name:'loginUsername', 
-				width: 280,
-				allowBlank:false 
-			},{ 
-				fieldLabel:'Clave', 
-				name:'loginPassword', 
-				inputType:'password', 
-				width: 280,
-				allowBlank:false 
-			}],
-		
-			buttons:[{ 
-				text:'Ingresar',
-				formBind: true,	 
-				handler: doLoginForm
-			},{
-				text:'Cancelar',
-				handler:function(){ win.hide();}
-			}] 
-		});
-
-		login.on('render', function() {
-
-			var map = new Ext.util.KeyMap({
-				target: this,
-				key : [10, 13],
-				scope : this,
-				fn: doLoginForm
-			});
-		});
-		
-		var win = new Ext.Window({
-			/*layout:'fit',*/
-			constrain: true,
-			closable: false,
-			title:'Ingreso a '+ this.feat.page_title, 
-			resizable: false,
-			plain: true,
-			border: false,
-			defaultButton: 'loginUsername', // quien recibe el foco
-			items: [login]
-		});
-		
-		return win;
-		
 	},/*}}}*/
 
 	change_password: function() {/*{{{*/
