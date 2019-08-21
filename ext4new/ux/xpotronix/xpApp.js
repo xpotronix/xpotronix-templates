@@ -435,7 +435,6 @@ Ext.define('AppExportWindow', {/*{{{*/
 			m: panel.store.module,
 			r: panel.store.class_name, 
 			a: 'csv',
-			b: 'ext4', 
 			'f[ignore_null_fields]': 0, 
 			'f[include_dataset]': 2, // DS_NORMALIZED
 			'g[start]': 0,
@@ -443,7 +442,7 @@ Ext.define('AppExportWindow', {/*{{{*/
 			'f[display_only]': display_only_fields.join(',')
 		});
 
-		// alert( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
+		console.log( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
 
 		window.open ("?" + Ext.urlEncode( q_params ), "BrowserExportWindow" ); 
 		win.hide(); 
@@ -950,6 +949,20 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 	},/*}}}*/
 
 	/* user ui */
+
+	accessible: function( arr ) {/*{{{*/
+
+		var ret = [];
+
+		Ext.each( arr, function( a ) { 
+
+			// DEBUG: poner accesos en acl en juscaba2
+			( a.acl.access || this.feat.application == 'juscaba2' ) && 
+				ret.push( a ); 
+		}, this );
+
+		return ret;
+	},/*}}}*/
 
 	showPleaseWait: function( msg, progressText ) {/*{{{*/
 

@@ -307,6 +307,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	onBeforeLoad: function(store, options) { /*{{{*/
 
+		/* check del acl */
+
+		if ( this.acl.access == false || this.acl.list == false || this.acl.view == false )
+			return false;
+
 		/* control de carga de los registros nuevos */
 
 		if ((!options.add) && this.isDirty() && (!Ext.isEmptyObject(this.dirty()) || !Ext.isEmptyObject(this.dirty_childs()))) {

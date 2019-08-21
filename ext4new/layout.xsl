@@ -104,7 +104,7 @@
 				/* collapsible: true, 
 				collapseMode:'mini',*/
 				activeTab:0,
-				items: [ <xsl:apply-templates select="$panels//*[@obj_name=$obj_name and @region='']|$panels//*[@region=$region]" mode="panel_list"/> ]
+				items: App.accessible([<xsl:apply-templates select="$panels//*[@obj_name=$obj_name and @region='']|$panels//*[@region=$region]" mode="panel_list"/> ])
 			}
 
 			<xsl:if test="count($panels//*[@obj_name!=$obj_name])">
@@ -115,7 +115,7 @@
 				layoutOnTabChange: true, 
 				collapsible: false, 
 				activeTab:0,
-				items: [<xsl:apply-templates select="$panels//*[@obj_name!=$obj_name and @region='']|$panels//*[@region='center']" mode="panel_list"/>] 
+				items: App.accessible([<xsl:apply-templates select="$panels//*[@obj_name!=$obj_name and @region='']|$panels//*[@region='center']" mode="panel_list"/>])
 			}</xsl:if>
 			<xsl:if test="$messages_panel='true'">
 			,{
@@ -170,7 +170,7 @@
                 	       <xsl:otherwise><xsl:value-of select="concat(@obj_name,'_',@type)"/></xsl:otherwise>
 	               </xsl:choose>
 		</xsl:variable>
-		{ xtype: '<xsl:value-of select="$panel_id"/>'}<xsl:if test="position()!=last()">,</xsl:if>	
+		{ xtype: '<xsl:value-of select="$panel_id"/>', acl:App.obj.get('<xsl:value-of select="@obj_name"/>').acl }<xsl:if test="position()!=last()">,</xsl:if>	
 	</xsl:template><!--}}}-->
 
 </xsl:stylesheet>
