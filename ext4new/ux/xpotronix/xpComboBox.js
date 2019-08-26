@@ -12,7 +12,7 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 	extend: 'Ext.form.field.ComboBox',
 	alias: 'widget.xpcombo',
-	debug: false,
+	debug: true,
 	panel: null,
 	alternateClassName: ['xpcombobox'],
 	requires: ['Ext.form.field.ComboBox'],
@@ -33,7 +33,9 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 			fn: function( queryPlan ) { 
 
 				var value = this.getRawValue();
-				this.store.clearFilter(true);
+
+				/* DEBUG: revisar para filtros en cascada */
+				this.store.filters.clear();
 
 				if ( value ) 
 					this.store.addFilter({property:'_label',value:this.getRawValue()}, false);
@@ -43,25 +45,22 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 		blur: {
 
-			fn: function( me, newValue, oldValue ) {
+			fn: function( me ) {
 
-				if ( newValue !== oldValue ) {
+				var p = this.panel,
+				me = this,
+				record = p.store.selections[0];
 
-					var p = this.panel,
-					me = this,
-					record = p.store.selections[0];
+				/* cambia el valor del _label correspondiente a este field en el record */
 
-					/* cambia el valor del _label correspondiente a este field en el record */
+				if ( record ) {
 
-					if ( record ) {
+					if ( me.isEqual( me.getValue(), record.get( me.name ) ) )
+						return true;
 
-						if ( me.isEqual( me.getValue(), record.get( me.name ) ) )
-							return true;
-
-						this.debug && console.log( me.name + ': ' + me.lastValue + ' << ' + me.getValue() );
-						record.set(me.name, me.getValue());
-						record.set(me.name+'_label', me.getRawValue());
-					}
+					this.debug && console.log( me.name + ': ' + me.lastValue + ' << ' + me.getValue() );
+					record.set(me.name, me.getValue());
+					record.set(me.name+'_label', me.getRawValue());
 				}
 			}
 		}
