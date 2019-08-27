@@ -32,13 +32,18 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 			fn: function( queryPlan ) { 
 
-				var value = this.getRawValue();
+				var me = this,
+				value = this.getRawValue();
 
-				/* DEBUG: revisar para filtros en cascada */
-				this.store.filters.clear();
+				me.store.filters.each( function( filter ) {
+
+					if ( filter.property === '_label' )
+						me.store.filters.remove( filter );
+				
+				}, me );
 
 				if ( value ) 
-					this.store.addFilter({property:'_label',value:this.getRawValue()}, false);
+					me.store.addFilter({property:'_label',value:me.getRawValue()}, false);
 			}
 		
 		},
