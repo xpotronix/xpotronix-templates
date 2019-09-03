@@ -28,56 +28,61 @@
 
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 
+	<xsl:apply-templates select="." mode="defines_files"/>
+
 	<xsl:variable name="code">
 
-		<xsl:apply-templates select="." mode="loader"/>
-
-		var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
-
-		Ext.Ajax.timeout = 60000;
 		var App;
 
-		if ( App !== undefined ) {
+		(function() {
 
-			App.reconfigure( config_App );
+			<xsl:apply-templates select="." mode="loader"/>
 
-		} else {
+			Ext.onReady(function() {
 
-			Ext.namespace('App');
-			App = Ext.create( 'Ux.xpotronix.xpApp', config_App );
-		}
+			Ext.isDefined( 'app' ) || Ext.namespace('app', 'app.model', 'app.controller', 'app.store', 'app.view');
 
-		App.feat.root_obj = '<xsl:value-of select="$root_obj/@name"/>';
+			var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
 
-		document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
+			/* Ext.Ajax.timeout = 60000; */
 
-		<xsl:if test="*:session/feat/theme">
-		/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
-		</xsl:if>
+			if ( App !== undefined ) {
 
-		<xsl:apply-templates select="." mode="defines"/>
+				App.reconfigure( config_App );
 
-		Ext.onReady(function() {
+			} else {
 
-			/* application/viewport */
+				App = Ext.create( 'Ux.xpotronix.xpApp', config_App );
+			}
 
-			Ext.application({
+			App.feat.root_obj = '<xsl:value-of select="$root_obj/@name"/>';
 
-			    requires: ['Ext.container.Viewport'],
+			document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
 
-			    name: '<xsl:value-of select="$application_name"/>',
+			<xsl:if test="*:session/feat/theme">
+			/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
+			</xsl:if>
 
-			    controllers: [
-				'<xsl:value-of select="*:session/feat/module"/>'
-			    ],
+			<xsl:apply-templates select="*:metadata/obj" mode="config"/>
 
-			    launch: function() {
+			<!-- <xsl:apply-templates select="." mode="defines"/> -->
 
-				<xsl:apply-templates select="." mode="viewport"/>
-		    }
-		});
 
-	}); /* onReady ends */
+				/* application/viewport */
+
+				Ext.application({
+
+					requires: ['Ext.container.Viewport'],
+					name: '<xsl:value-of select="$application_name"/>',
+					controllers: ['<xsl:value-of select="*:session/feat/module"/>'],
+					launch: function() {
+					<xsl:apply-templates select="." mode="viewport"/>
+					}
+				});
+
+			}); /* Ext.onReady ends */
+
+		})(); /* function() ends */
 
 
 	</xsl:variable>
@@ -94,46 +99,91 @@
 	</xsl:choose>
 	</script>
 
+	<script type="text/javascript" src="/ux4/xpotronix/extensions.js"/>
+
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document" mode="defines"><!--{{{-->
 
 		<!-- objects -->
-
-		<xsl:apply-templates select="*:metadata/obj" mode="config"/>
-
+		<!-- <xsl:apply-templates select="*:metadata/obj" mode="config"/> -->
 
 		<!-- model -->
-
 		<xsl:for-each select="*:model//obj">
-
 			<xsl:apply-templates select="." mode="model"/>
-
 			<!-- model_eh -->
-
 			<xsl:for-each select="queries/query/query">
-
 				<xsl:apply-templates select="." mode="model_eh"/>
-
 			</xsl:for-each>
-
 		</xsl:for-each>
 
 		<!-- store -->
+		<xsl:for-each select="*:model//obj">
+			<xsl:apply-templates select="." mode="store"/>
+			<!-- store_eh -->
+			<xsl:for-each select="queries/query/query">
+				<xsl:apply-templates select="." mode="store_eh"/>
+			</xsl:for-each>
+		</xsl:for-each>
+
+		<!-- panel -->
+		<xsl:for-each select="*:model//panel">
+			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+			<xsl:apply-templates select="." mode="define"/>
+		</xsl:for-each>
+
+		<!-- controller -->
+		<xsl:apply-templates select="*:model" mode="controller"/>
+
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="defines_files"><!--{{{-->
+
+		<!-- model & store -->
 
 		<xsl:for-each select="*:model//obj">
 
+			<xsl:result-document method="text"
+			encoding="utf-8"
+			href="{concat($application_path,'/',$application_name,'/model/',@name,'.js')}">
+
+			<xsl:apply-templates select="." mode="model"/>
+
+			</xsl:result-document>
+
+
+			<xsl:result-document method="text"
+			encoding="utf-8"
+			href="{concat($application_path,'/',$application_name,'/store/',@name,'.js')}">
+
 			<xsl:apply-templates select="." mode="store"/>
 
-			<!-- store_eh -->
-
-			<xsl:for-each select="queries/query/query">
-
-				<xsl:apply-templates select="." mode="store_eh"/>
-
-			</xsl:for-each>
+			</xsl:result-document>
 
 		</xsl:for-each>
+
+		<!-- model & store eh -->
+
+		<xsl:for-each-group select="*:model//queries/query/query" group-by="concat(../from,'_',@name)">
+
+			<xsl:result-document method="text"
+			encoding="utf-8"
+			href="{concat($application_path,'/',$application_name,'/model/',../from,'_',@name,'.js')}">
+
+			<xsl:apply-templates select="." mode="model_eh"/>
+
+			</xsl:result-document>
+
+			<xsl:result-document method="text"
+			encoding="utf-8"
+			href="{concat($application_path,'/',$application_name,'/store/',../from,'_',@name,'.js')}">
+
+			<xsl:apply-templates select="." mode="store_eh"/>
+
+			</xsl:result-document>
+
+		</xsl:for-each-group>
 
 		<!-- panel -->
 
@@ -141,53 +191,68 @@
 
 			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 
+			<xsl:message>****** PANEL_ID: <xsl:value-of select="$panel_id"/></xsl:message>
+
+			<xsl:result-document method="text"
+			encoding="utf-8"
+			href="{concat($application_path,'/',$application_name,'/view/',$panel_id,'.js')}">
+
 				<xsl:apply-templates select="." mode="define"/>
+
+			</xsl:result-document>
 
 		</xsl:for-each>
 
 		<!-- controller -->
 
-		<xsl:apply-templates select="*:model" mode="controller"/>
+		<xsl:result-document method="text"
+		encoding="utf-8"
+		href="{concat($application_path,'/',$application_name,'/controller/',*:session/feat/module,'.js')}">
+	
+			<xsl:apply-templates select="*:model" mode="controller"/>
+
+		</xsl:result-document>
 
 
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:model" mode="controller"><!--{{{-->
 
-	<xsl:variable name="module" select="//*:session/feat/module"/>
+		<xsl:variable name="module" select="//*:session/feat/module"/>
 
-	<xsl:variable name="items">
-		<xsl:for-each select=".//obj">
-			<xsl:element name="model">
-				<xsl:attribute name="name" select="@name"/>
-			</xsl:element>
-			<xsl:for-each select="queries/query/query">
+		<xsl:variable name="items">
+			<xsl:for-each select=".//obj">
 				<xsl:element name="model">
-					<xsl:attribute name="name" select="concat(../from,'_',@name)"/>
+					<xsl:attribute name="name" select="@name"/>
 				</xsl:element>
+				<xsl:for-each select="queries/query/query">
+					<xsl:element name="model">
+						<xsl:attribute name="name" select="concat(../from,'_',@name)"/>
+					</xsl:element>
+				</xsl:for-each>
 			</xsl:for-each>
-		</xsl:for-each>
-	</xsl:variable>
+		</xsl:variable>
 
-/* controller */
+		<xsl:variable name="module_name" select="//*:session/feat/module"/>
+		<xsl:variable name="class_name" select="concat($application_name,'.controller.',$module_name)"/>
+		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
-	
-	Ext.define('<xsl:value-of select="concat($application_name,'.controller.',../*:session/feat/module)"/>', {/*{{{*/
+		<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
 
-	    extend: 'Ext.app.Controller',
+		Ext.define('<xsl:value-of select="$class_name"/>', {
 
-	    views: [<xsl:for-each select=".//panel">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+		    extend: 'Ext.app.Controller',
+		    views: [<xsl:for-each select=".//panel">'<xsl:value-of select="$module_name"/>.<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+		    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+		    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+		    init: function() {
+			this.control({});
+		    }
 
-	    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+		});
 
-	    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
-
-	    init: function() {
-		this.control({});
-	    }
-
-
-	});/*}}}*/
+		</xsl:result-document>
 
 
 	</xsl:template><!--}}}-->
@@ -244,120 +309,27 @@ Ext.onReady(function(){
 
 	<xsl:template match="*:document" mode="loader"><!--{{{-->
 
-	Ext.Loader.setConfig({
+			Ext.Loader.setConfig({
 
-		enabled: false,
-		disableCaching: false,
-		paths: {
-			'Ux.xpotronix': '/ux4/xpotronix',
-			'Ext.ux': '/ux4',
-			'Ext': '/ext4'
-		}
-	});
+				enabled: true,
+				disableCaching: true,
+				paths: {
+					'Ux.xpotronix': '/ux4/xpotronix',
+					'Ext.ux': '/ux4',
+					'Ext': '/ext4/src'
+				}
+			});
 
-	Ext.require([ 
+			Ext.require([ 
 
-		'Ext.tip.*', 
-		'Ext.Window.*', 
-		'Ext.grid.*', 
-		'Ext.data.*', 
-		'Ext.dd.*' 
-	]);
-
-	</xsl:template><!--}}}-->
-
-<!-- extra -->
-
-	<xsl:template match="*:document" mode="defines_files"><!--{{{-->
-
-		<!-- objects -->
-
-		<xsl:apply-templates select="*:metadata/obj" mode="config"/>
-
-		<!-- model -->
-
-		<xsl:for-each select="*:model//obj">
-
-			<xsl:result-document method="text"
-			encoding="utf-8"
-			href="{concat($application_path,'/',$application_name,'/model/',@name,'.js')}">
-
-			<xsl:apply-templates select="." mode="model"/>
-
-			</xsl:result-document>
-
-			<!-- model_eh -->
-
-			<xsl:for-each select="queries/query/query">
-
-				<xsl:result-document method="text"
-				encoding="utf-8"
-				href="{concat($application_path,'/',$application_name,'/model/',../from,'_',@name,'.js')}">
-
-				<xsl:apply-templates select="." mode="model_eh"/>
-
-				</xsl:result-document>
-
-			</xsl:for-each>
-
-		</xsl:for-each>
-
-		<!-- store -->
-
-		<xsl:for-each select="*:model//obj">
-
-			<xsl:result-document method="text"
-			encoding="utf-8"
-			href="{concat($application_path,'/',$application_name,'/store/',@name,'.js')}">
-
-			<xsl:apply-templates select="." mode="store"/>
-
-			</xsl:result-document>
-
-			<!-- store_eh -->
-
-			<xsl:for-each select="queries/query/query">
-
-				<xsl:result-document method="text"
-				encoding="utf-8"
-				href="{concat($application_path,'/',$application_name,'/store/',../from,'_',@name,'.js')}">
-
-				<xsl:apply-templates select="." mode="store_eh"/>
-
-				</xsl:result-document>
-
-			</xsl:for-each>
-
-		</xsl:for-each>
-
-		<!-- panel -->
-
-		<xsl:for-each select="*:model//panel">
-
-			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-
-			<xsl:message>****** PANEL_ID: <xsl:value-of select="$panel_id"/></xsl:message>
-
-			<xsl:result-document method="text"
-			encoding="utf-8"
-			href="{concat($application_path,'/',$application_name,'/view/',$panel_id,'.js')}">
-
-				<xsl:apply-templates select="." mode="define"/>
-
-			</xsl:result-document>
-
-		</xsl:for-each>
-
-		<!-- controller -->
-
-		<xsl:result-document method="text"
-		encoding="utf-8"
-		href="{concat($application_path,'/',$application_name,'/controller/',*:session/feat/module,'.js')}">
-	
-			<xsl:apply-templates select="*:model" mode="controller"/>
-
-		</xsl:result-document>
-
+				'Ext.tip.*',
+				'Ext.Ajax',
+				'Ext.data.Request',
+				'Ux.xpotronix.xpProxy',
+				'Ux.xpotronix.xpPagingToolbar',
+				'Ux.xpotronix.xpImageToolbar',
+				'Ux.xpotronix.xpCellEditing'
+			]);
 
 	</xsl:template><!--}}}-->
 

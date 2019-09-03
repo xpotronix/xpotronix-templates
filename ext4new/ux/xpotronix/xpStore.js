@@ -84,7 +84,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			if ( this.parent_store == undefined ) {
 			
-				console.error( "no encuentro el parent_store " + parent_store_name );
+				console.log( "no encuentro el parent_store " + parent_store_name );
 
 			} else {
 
@@ -792,7 +792,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 					key.property = ref.local;
 
 					if (value === undefined)
-						console.error('no encuentro la clave foranea ' + ref.remote);
+						console.log('no encuentro la clave foranea ' + ref.remote);
 					else {
 
 						if ( value.toLocaleDateString ) 
@@ -841,7 +841,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 					value = s.data[r];
 
 					if (value === undefined)
-						console.error('no encuentro la clave foranea ' + ref.remote);
+						console.log('no encuentro la clave foranea ' + ref.remote);
 					else {
 						value = value.toLocaleDateString ?
 						value.toLocaleDateString :

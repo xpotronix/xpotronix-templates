@@ -374,9 +374,9 @@ Ext.define('AppExportWindow', {/*{{{*/
 
 		    xtype: 'combo',
 		    fieldLabel: 'Cantidad Máxima',
-		    store: new Ext.data.SimpleStore({
+		    store: { xtype: 'store.array',
 				fields: ['id', 'label'],
-				data : [ [1000,'1000'], [10000,'10000']]}),
+				data : [ [1000,'1000'], [10000,'10000']]},
 		    name: 'max_records',
 		    anchor:'100%',
 		    displayField: 'label',
@@ -721,7 +721,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		Ext.SSL_SECURE_URL = '/ext/resources/images/vista/s.gif';
 		Ext.BLANK_IMAGE_URL = '/ext/resources/images/vista/s.gif';
 
-		Ext.tip.QuickTipManager.init();
+		// Ext.tip.QuickTipManager.init();
 
 		this.init_state_manager();
  
@@ -780,7 +780,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		if ( this.state_manager == 'http' ) {
 
-			Ext.state.Manager.setProvider(new Ext.ux.state.HttpProvider({
+			Ext.state.Manager.setProvider(Ext.create('Ext.ux.state.HttpProvider', {
 				url:'?m=user_preferences'
 				,user:'649254989'
 				,session:'session'
@@ -804,7 +804,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		} else
 
-			Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+			Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider',{}));
 
 	},/*}}}*/
 

@@ -2,6 +2,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 	extend: 'Ext.Panel'
 	,alias: 'xpImageViewer'
+	,require: ['Ux.xpotronix.xpImageToolbar']
+
 
 	,cursorOverClass: 'cursor-open-hand'
 	,cursorDownClass: 'cursor-closed-hand'

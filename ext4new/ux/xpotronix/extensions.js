@@ -1,3 +1,7 @@
+Ext.onReady(function() { 
+
+/*
+
 Ext.override(Ext.grid.ViewDropZone, {
 
     handleNodeDrop: function (data, record, position) {
@@ -42,7 +46,7 @@ Ext.override(Ext.grid.ViewDropZone, {
  
 });
 
-
+*/
 
 /* bugfix para las versiones nuevas del chrome */
 
@@ -114,3 +118,5 @@ Ext.define('Ux.xpotronix.StoreManager', {
 });
 
 */
+
+});

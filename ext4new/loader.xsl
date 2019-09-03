@@ -46,7 +46,7 @@
 	<xsl:param name="application_path" select="'/var/www/sites/xpotronix/xpay'"/>
 
 	<xsl:variable name="session" select="//*:session"/>
-	<!-- <xsl:variable name="application_name" select="upper-case(//*:session/feat/application)"/> -->
+	<!--<xsl:variable name="application_name" select="upper-case(//*:session/feat/application)"/> -->
 	<xsl:variable name="application_name" select="'app'"/>
 
 	<xsl:template match="/"><!--{{{-->
@@ -54,12 +54,16 @@
 		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
 		<!-- <xsl:message terminate="yes"><xsl:value-of select="//*:metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
 
+	<xsl:apply-templates mode="defines_files"/>
+
 	<xsl:variable name="code">
 		/* module: <xsl:value-of select="//*:session/feat/module"/> */
 
+		<xsl:apply-templates select="//*:metadata/obj" mode="config"/>
+
 		Ext.onReady(function() {
 
-			<xsl:apply-templates mode="defines"/>
+
 			app.getApplication().getController('<xsl:value-of select="//*:session/feat/module"/>').init();
 			var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>
 			var tp = Ext.getCmp('mainAppTabPanel');

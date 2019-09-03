@@ -588,7 +588,7 @@ return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:if></xsl
 </xsl:template><!--}}}-->
 
 <xsl:template  match="attr" mode="SimpleStore"><!--{{{-->
-new Ext.data.SimpleStore({fields:['<xsl:value-of select="@name"/>'],data:[<xsl:apply-templates select="." mode="enum_values"/>]})</xsl:template><!--}}}-->
+[<xsl:apply-templates select="." mode="enum_values"/>]</xsl:template><!--}}}-->
 
 <xsl:template match="attr" mode="enum_values"><!--{{{-->
 
@@ -599,11 +599,11 @@ new Ext.data.SimpleStore({fields:['<xsl:value-of select="@name"/>'],data:[<xsl:a
 	<xsl:call-template name="string-replace-all">
 		   <xsl:with-param name="text" select="@enums"/>
 		   <xsl:with-param name="replace" select="','"/>
-		   <xsl:with-param name="by" select="'],['"/>
+		   <xsl:with-param name="by" select="','"/>
     		</xsl:call-template>
 	</xsl:variable>
 	<!-- <xsl:message><xsl:value-of select="$tokens"/></xsl:message> -->
-	<xsl:value-of select="concat( '[',$tokens,']')"/></xsl:template><!--}}}-->
+	<xsl:value-of select="$tokens"/></xsl:template><!--}}}-->
 
 <xsl:template name="string-replace-all"><!--{{{-->
 	<xsl:param name="text"/>

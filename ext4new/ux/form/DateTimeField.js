@@ -4,10 +4,10 @@
  * This file requires use of the Ext JS library, under independent license.
  * This is part of the UX for DateTimeField developed by Guilherme Portela
  */
-Ext.define('Ext.ux.DateTimeField', {
+Ext.define('Ext.ux.form.DateTimeField', {
     extend: 'Ext.form.field.Date',
     alias: 'widget.datetimefield',
-    requires: ['Ext.ux.DateTimePicker'],
+    requires: ['Ext.ux.form.DateTimePicker'],
 
     //<locale>
     /**
@@ -67,7 +67,7 @@ Ext.define('Ext.ux.DateTimeField', {
             }
         }
         
-        return Ext.create('Ext.ux.DateTimePicker', config);
+        return Ext.create('Ext.ux.form.DateTimePicker', config);
     },
 
     getErrors: function(value) {

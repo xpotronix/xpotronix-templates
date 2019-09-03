@@ -27,6 +27,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	selection: [],
 	debug: false,
 
+	requires: [ 'Ux.xpotronix.xpComboBox', 'Ux.xpotronix.xpMultiSearch', 'Ext.ux.form.DateTimeField' ],
+
 	constructor: function(config) {/*{{{*/
 
 		App.obj.get(this.class_name).panels.add(this);

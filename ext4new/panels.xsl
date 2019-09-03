@@ -21,9 +21,15 @@
 	<xsl:template match="panel" mode="define"><!--{{{-->
 
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
+		<xsl:variable name="module_name" select="//*:session/feat/module"/>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-		<xsl:variable name="panel_class" select="concat($application_name,'.view.',$panel_id)"/>
-		/* PANEL id:<xsl:value-of select="$panel_id"/>, panel_class: <xsl:value-of select="$panel_class"/> */
+		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+		<xsl:variable name="panel_class" select="concat($application_name,'.view.',$module_name,'.',$panel_id)"/>
+		<xsl:variable name="class_path" select="concat($base_path,'/',replace($panel_class,'\.','/'),'.js')"/>
+
+		<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+
+		/* path: <xsl:value-of select="$class_path"/> */
 		Ext.define('<xsl:value-of select="$panel_class"/>',
 		Ext.apply(<xsl:apply-templates select="." mode="panel_config">
 			<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
@@ -33,6 +39,8 @@
 			<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
 			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
 			</xsl:apply-templates>)); /* PANEL ENDS */
+
+		</xsl:result-document>
 
 	</xsl:template><!--}}}-->
 

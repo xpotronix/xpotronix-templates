@@ -82,7 +82,7 @@
 		<filterField>{
 				xtype: 'combo',
 				mode: 'local',
-				store: new Ext.data.ArrayStore({fields:['value','label'],data: [[null,''], ['1','Si'], ['0','No']]}),
+				store: {fields:['value','label'],data: [{value:'""',label:'(vacío)'}, {value:'1',label:'Si'}, {value:'0',label:'No'}]},
 				valueField: 'value',
 				displayField: 'label',
 				triggerAction: 'all',

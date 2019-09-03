@@ -5,7 +5,7 @@
  * This is part of the UX for DateTimeField developed by Guilherme Portela
  */
  
-Ext.define('Ext.ux.DateTimePicker', {
+Ext.define('Ext.ux.form.DateTimePicker', {
     extend: 'Ext.picker.Date',
     alias: 'widget.datetimepicker',
     requires: [

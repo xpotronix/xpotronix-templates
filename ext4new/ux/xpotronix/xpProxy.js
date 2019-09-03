@@ -12,7 +12,7 @@ Ext.ns('Ux.xpotronix');
 Ext.define('Ux.xpotronix.xpProxy', {
 
 	extend: 'Ext.data.proxy.Ajax',
-	alias: 'proxy.xpproxy',
+	alias: 'proxy.xpProxy',
 
 	class_name: null, module: null, blank_url: null,
 

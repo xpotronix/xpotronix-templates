@@ -25,6 +25,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	extend: 'Ext.form.FormPanel', 
 	alias: 'xpForm',
 
+	require: ['Ux.xpotronix.xpComboBox','Ext.ux.form.DateTimeField'],
+
 	obj: undefined,
 	acl: undefined,
 	feat: undefined,

@@ -27,12 +27,17 @@
 
 		<xsl:variable name="obj_name" select="@name"/>
 		<xsl:variable name="module_name" select="//*:session/feat/module"/>
+		<xsl:variable name="class_name" select="concat($application_name,'.model.',$module_name,'.',$obj_name)"/>
+		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
-		Ext.define( '<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',$obj_name)"/>', {
+		<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+		/* path: <xsl:value-of select="$class_path"/> */
+		Ext.define( '<xsl:value-of select="$class_name"/>', {
 			extend: 'Ext.data.Model'
 			,class_name: '<xsl:value-of select="@name"/>'
 			,module: '<xsl:value-of select="$module_name"/>'
-			,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="@name"/>', module: '<xsl:value-of select="$module_name"/>' }
+			,proxy: { type: 'xpProxy', class_name: '<xsl:value-of select="@name"/>', module: '<xsl:value-of select="$module_name"/>' }
 			,associations:[<xsl:apply-templates select="." mode="associations"/>]
 
 			,fields: [
@@ -44,6 +49,7 @@
 					<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
 			]});
+		</xsl:result-document>
 
 	</xsl:template><!--}}}-->
 
@@ -51,8 +57,13 @@
 
 		<xsl:variable name="obj_name" select="@name"/>
 		<xsl:variable name="module_name" select="//*:session/feat/module"/>
+		<xsl:variable name="class_name" select="concat($application_name,'.store.',$module_name,'.',$obj_name)"/>
+		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
-		Ext.define('<xsl:value-of select="concat($application_name,'.store.',$module_name,'.',$obj_name)"/>', Ext.apply({ 
+		<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+		/* path: <xsl:value-of select="$class_path"/> */
+		Ext.define('<xsl:value-of select="$class_name"/>', Ext.apply({ 
 
 			extend: 'Ux.xpotronix.xpStore'
 			,model: '<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',$obj_name)"/>'
@@ -73,6 +84,7 @@
 			,pageSize: <xsl:value-of select="xp:get_feat(.,'page_rows')"/>
 			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>}
 			,{<xsl:value-of select="config"/>}));
+		</xsl:result-document>
 
 	</xsl:template><!--}}}-->
 
@@ -97,8 +109,13 @@
 	</xsl:variable>
 	<xsl:variable name="eh_name" select="@name"/>
 	<xsl:variable name="module_name" select="//*:session/feat/module"/>
+	<xsl:variable name="class_name" select="concat($application_name,'.store.',$module_name,'.',../from,'_',@name)"/>
+	<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+	<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
-	Ext.define('<xsl:value-of select="concat($application_name,'.store.',$module_name,'.',../from,'_',@name)"/>', {
+	<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+	/* path: <xsl:value-of select="$class_path"/> */
+	Ext.define('<xsl:value-of select="$class_name"/>', {
 		extend:'Ux.xpotronix.xpStore'
 		,alias:'<xsl:value-of select="concat($module_name,'.',../from,'_',@name)"/>'
 		,model:'<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',../from,'_',@name)"/>'
@@ -112,6 +129,7 @@
 		,pageSize:20
 		,passive:true
         	});
+	</xsl:result-document>
         </xsl:template><!--}}}-->
 
 	<xsl:template match="query" mode="model_eh"><!--{{{-->
@@ -120,15 +138,22 @@
 			<xsl:variable name="obj_name" select="from"/>
 			<xsl:variable name="eh_name" select="@name"/>
 			<xsl:variable name="module_name" select="//*:session/feat/module"/>
+			<xsl:variable name="class_name" select="concat($application_name,'.model.',$module_name,'.',../from,'_',@name)"/>
+			<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+			<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
+		
+			<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+			/* path: <xsl:value-of select="$class_path"/> */
+			Ext.define( '<xsl:value-of select="$class_name"/>', {
+			extend: 'Ext.data.Model'
+			,class_name: '<xsl:value-of select="@name"/>'
+			,module: '<xsl:value-of select="$module_name"/>'
+			,proxy: { type: 'xpProxy', class_name: '<xsl:value-of select="$obj_name"/>', module: '<xsl:value-of select="$module_name"/>', 
+			extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-templates select="../../.." mode="extra_param"/>}) 
+			}
+			,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
+			</xsl:result-document>
 
-			Ext.define( '<xsl:value-of select="concat($application_name,'.model.',$module_name,'.',../from,'_',@name)"/>', {
-extend: 'Ext.data.Model'
-,class_name: '<xsl:value-of select="@name"/>'
-,module: '<xsl:value-of select="$module_name"/>'
-,proxy: { type: 'xpproxy', class_name: '<xsl:value-of select="$obj_name"/>', module: '<xsl:value-of select="$module_name"/>', 
-extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-templates select="../../.." mode="extra_param"/>}) 
-}
-,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
 
 			</xsl:template><!--}}}-->
 
