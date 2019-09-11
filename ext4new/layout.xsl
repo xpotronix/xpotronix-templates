@@ -76,6 +76,7 @@
 
 			stateful: true,
 			layout: 'border',
+			border: false,
 			bodyStyle: {border:0},
 
 			items:[

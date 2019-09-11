@@ -24,7 +24,8 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 	],
 
 	requires: [
-		'Ext.saki.grid.MultiSearch'
+		/* 'Ext.saki.grid.MultiSearch' */
+		'Ext.ux.grid.MultiSearch'
 	],
 
 	init: function( grid ) {/*{{{*/

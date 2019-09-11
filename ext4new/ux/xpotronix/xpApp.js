@@ -248,6 +248,8 @@ Ext.define('AppTreeMenu', {/*{{{*/
 								scope:tp,
 								url: href + '&v=ext4new/loader&UNNORMALIZED', 
 								onLoad:function() {
+								   
+								   	console.log('cargado modulo xxx');
 
 									/* debugger; */
 								},
