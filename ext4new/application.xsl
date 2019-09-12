@@ -105,36 +105,36 @@
 
 	<xsl:template match="*:document" mode="defines"><!--{{{-->
 
-		<!-- objects -->
-		<!-- <xsl:apply-templates select="*:metadata/obj" mode="config"/> -->
+		<!-- model & store -->
 
-		<!-- model -->
 		<xsl:for-each select="*:model//obj">
+
 			<xsl:apply-templates select="." mode="model"/>
-			<!-- model_eh -->
-			<xsl:for-each select="queries/query/query">
-				<xsl:apply-templates select="." mode="model_eh"/>
-			</xsl:for-each>
+			<xsl:apply-templates select="." mode="store"/>
+
 		</xsl:for-each>
 
-		<!-- store -->
-		<xsl:for-each select="*:model//obj">
-			<xsl:apply-templates select="." mode="store"/>
-			<!-- store_eh -->
-			<xsl:for-each select="queries/query/query">
-				<xsl:apply-templates select="." mode="store_eh"/>
-			</xsl:for-each>
-		</xsl:for-each>
+		<!-- model & store eh -->
+
+		<xsl:for-each-group select="*:model//queries/query/query" group-by="concat(../from,'_',@name)">
+
+			<xsl:apply-templates select="." mode="model_eh"/>
+			<xsl:apply-templates select="." mode="store_eh"/>
+
+		</xsl:for-each-group>
 
 		<!-- panel -->
+
 		<xsl:for-each select="*:model//panel">
+
 			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 			<xsl:apply-templates select="." mode="define"/>
+
 		</xsl:for-each>
 
 		<!-- controller -->
-		<xsl:apply-templates select="*:model" mode="controller"/>
 
+		<xsl:apply-templates select="*:model" mode="controller"/>
 
 	</xsl:template><!--}}}-->
 
