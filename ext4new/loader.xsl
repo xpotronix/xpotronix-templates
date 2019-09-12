@@ -63,15 +63,15 @@
 
 		Ext.onReady(function() {
 
-
 			app.getApplication().getController('<xsl:value-of select="//*:session/feat/module"/>').init();
 			var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>
 			var tp = Ext.getCmp('mainAppTabPanel');
-			tp.add(Ext.apply(tmp, 
+			tp.add( Ext.apply(tmp, 
 				{itemId:tp.lastSelection.get('itemId'),
 				title:tp.lastSelection.get('text'),
 				closable:true
 			})).show();
+
 		});
 	</xsl:variable>
 

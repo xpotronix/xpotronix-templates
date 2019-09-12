@@ -187,6 +187,8 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 			fn:function( panel, record, item, index, e, eOpts ) {
 
+				/* alerta de modificaciones */
+
 				if ( App.getModifiedStores && App.getModifiedStores().length ) {
 
 					App.showSaveChanges();
@@ -195,78 +197,92 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 				e.stopEvent();
 
-				// handle detail
+				/* no es hoja, expande */
 
-				var itemId = record.get('itemId');
-
-				if( itemId && Ext.fly( 'detail-' + itemId ) ) {
-
-					this.showDetail(itemId);
-
-				} else {
-					if ( record.parentNode ) {
-
-						var parentNodeId;
-
-						if ( parentNodeId = record.parentNode.get('itemId') )
-
-							this.showDetail( parentNodeId );
-					} 
+				if ( ! record.isLeaf() ) {
+					record.expand();
+					return;
 				}
 
-				var href = record.get('href');
+				var n = record.getData();
 
-				if( href ) {
+				/* Id del nodo */
 
-					if ( href.substring(0,11) == 'javascript:' ) {
+				if( n.itemId ) {
 
-						eval( href );
+					Ext.fly( 'detail-' + n.itemId ) &&
+					this.showDetail(n.itemId);
+
+				} else {
+
+					/* despliega parent */
+					if ( record.parentNode ) {
+						var parentNodeId;
+						if ( parentNodeId = record.parentNode.get('itemId') )
+							this.showDetail( parentNodeId );
+					}
+
+					if ( n.href ) {
+
+						/* hot fix para los items que no tengan definido m= */
+						n.itemId = n.href.substring(3);
+						console.log( 'item sin parametro "m" definido' );
 
 					} else {
 
-						var tp = this.up('viewport').down('tabpanel');
+						console.error( 'faltan atributos validos para el item' );
+					}
 
-						found = false;
+					console.log( n );
+				}
 
-						var key = itemId;
+				if( n.href ) {
 
-						tp.items.each( function( panel ) {
+					if ( n.href.substring(0,11) == 'javascript:' ) {
+						eval( n.href );
 
-							if ( panel.itemId == key ) {
+					} else {
 
-								found = true;
-								tp.setActiveTab( panel );
-								return;
-							}
-						});
+						/* busca entre los paneles del tab */
 
-						if ( ! found ) {
+						var tabPanel = this.up('viewport').down('tabpanel'),
+						panel;
 
-							tp.lastSelection = record;
-
-							Ext.Loader.loadScript({ 
-								scope:tp,
-								url: href + '&v=ext4new/loader&UNNORMALIZED', 
-								onLoad:function() {
-								   
-								   	console.log('cargado modulo xxx');
-
-									/* debugger; */
-								},
-								onError:function(a,b,c){
-
-									alert( 'hubo un error al procesar el requerimiento' );
-
-								}
-							});
+						if ( panel = tabPanel.getComponent( n.itemId ) ) {
+							tabPanel.setActiveTab( panel );
+						
+						} else {
+						
+							/* si no lo encuentra carga el panel */
+							this.loadModule( record, n.href, tabPanel );
+					
 						}
 					}
 				}
-
-				// handle text click (toggle collapsed)
-				record.isLeaf() || record.expand();
 			}
 		}
+	}
+
+	,loadModule:function( record, href, tabPanel ) {
+	
+		/* marca la seleccion al record actual */
+
+		tabPanel.lastSelection = record;
+
+		var url = href + '&v=ext4new/loader&UNNORMALIZED';
+
+		Ext.Loader.loadScript({ 
+			scope:tabPanel,
+			url: url, 
+			onLoad:function() {
+				console.log('cargado modulo desde URL: ' + url );
+			},
+			onError:function(a,b,c){
+
+				alert( 'hubo un error al procesar el requerimiento' );
+
+			}
+		});
 	}
 
 	,showDetail:function(ex) {
