@@ -54,7 +54,7 @@
 		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
 		<!-- <xsl:message terminate="yes"><xsl:value-of select="//*:metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
 
-	<xsl:apply-templates mode="defines_files"/>
+	<xsl:apply-templates mode="defines_all_files"/>
 
 	<xsl:variable name="code">
 		/* module: <xsl:value-of select="//*:session/feat/module"/> */

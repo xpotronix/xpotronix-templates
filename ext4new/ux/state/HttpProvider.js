@@ -10,7 +10,6 @@
  * @copyright (c) 2008, Ing. Jozef Sakáloš
  * @version   1.2
  * @revision  $Id: Ext.ux.state.HttpProvider.js 728 2009-06-16 16:31:16Z jozo $
- * @depends   Ext.ux.util
  *
  * @license Ext.ux.state.HttpProvider is licensed under the terms of
  * the Open Source LGPL 3.0 license.  Commercial use is permitted to the extent
@@ -32,96 +31,74 @@
  * <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
  * </form>
  */
-
-Ext.ns('Ext.ux.state');
-
-/**
- * Creates new HttpProvider
- * @constructor
- * @param {Object} config Configuration object
- */
-// {{{
-Ext.ux.state.HttpProvider = function(config) {
-
-    this.addEvents(
-        /**
-         * @event readsuccess
-         * Fires after state has been successfully received from server and restored
-         * @param {HttpProvider} this
-         */
-         'readsuccess'
-        /**
-         * @event readfailure
-         * Fires in the case of an error when attempting to read state from server
-         * @param {HttpProvider} this
-         */
-        ,'readfailure'
-        /**
-         * @event savesuccess
-         * Fires after the state has been successfully saved to server
-         * @param {HttpProvider} this
-         */
-        ,'savesuccess'
-        /**
-         * @event savefailure
-         * Fires in the case of an error when attempting to save state to the server
-         * @param {HttpProvider} this
-         */
-        ,'savefailure'
-    );
-
-    // call parent 
-    Ext.ux.state.HttpProvider.superclass.constructor.call(this);
-
-    Ext.apply(this, config, {
-        // defaults
-         delay:750 // buffer changes for 750 ms
-        ,dirty:false
-        ,started:false
-        ,autoStart:true
-        ,autoRead:true
-        ,user:'user'
-        ,id:1
-        ,session:'session'
-        ,logFailure:false
-        ,logSuccess:false
-        ,queue:[]
-        ,url:'.'
-        ,readUrl:undefined
-        ,saveUrl:undefined
-        ,method:'post'
-        ,saveBaseParams:{}
-        ,readBaseParams:{}
-        ,paramNames:{
-             id:'id'
-            ,name:'name'
-            ,value:'value'
-            ,user:'user'
-            ,session:'session'
-            ,data:'data'
-        }
-    }); // eo apply
-
-    if(this.autoRead) {
-        this.readState();
-    }
-
-    this.dt = new Ext.util.DelayedTask(this.submitState, this);
-    if(this.autoStart) {
-        this.start();
-    }
-}; // eo constructor
-// }}}
-
-Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
-
+Ext.define('Ext.ux.state.HttpProvider', {
+    extend: 'Ext.state.Provider'
+    
+    /**
+     * @cfg {Boolean} async
+     * Force the request to be syncronous by setting to false.
+     * Default is true.
+     */
+    ,async: true
+    /**
+     * @cfg {Boolean} flushCache 
+     * Indicates if the state data should be flushed before loading new records.
+     * False indicates that new records returned from a read request will be appended to the cache.
+     * Defaults to false.
+     */
+    ,flushCache: false
     // localizable texts
-     saveSuccessText:'Save Success'
+    ,saveSuccessText:'Save Success'
     ,saveFailureText:'Save Failure'
     ,readSuccessText:'Read Success'
     ,readFailureText:'Read Failure'
     ,dataErrorText:'Data Error'
 
+    //private
+    ,constructor: function(config){
+
+        this.callParent(arguments);
+
+        Ext.apply(this, config, {
+            // defaults
+             delay:750 // buffer changes for 750 ms
+            ,dirty:false
+            ,started:false
+            ,autoStart:true
+            ,autoRead:true
+            ,user:'user'
+            ,id:1
+            ,session:'session'
+            ,logFailure:false
+            ,logSuccess:false
+            ,queue:[]
+            ,url:'.'
+            ,readUrl:undefined
+            ,saveUrl:undefined
+            ,method:'POST'
+            ,saveBaseParams:{}
+            ,readBaseParams:{}
+            ,paramNames:{
+                 id:'id'
+                ,name:'name'
+                ,value:'value'
+                ,user:'user'
+                ,session:'session'
+                ,data:'data'
+            }
+        }); // eo apply
+    
+        if(this.autoRead) {
+            this.readState();
+        }
+    
+        this.dt = Ext.create('Ext.util.DelayedTask',this.submitState, this);
+        if(this.autoStart) {
+            this.start();
+        }
+    }//eof constructor
+    
+    
     // {{{
     /**
      * Initializes state from the passed state object or array.
@@ -147,12 +124,10 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
      * @param {Mixed} value Value of the state variable
      */
     ,set:function(name, value) {
-        if(!name) {
-            return;
-        }
+        if(!name) { return; }
 
+        
         this.queueChange(name, value);
-
     } // eo function set
     // }}}
     // {{{
@@ -175,25 +150,30 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
     // }}}
     // {{{
     /**
-     * private, queues the state change if state has changed
+     * private, queues the state change if the value has changed
      */
     ,queueChange:function(name, value) {
-        var o = {};
-        var i;
-        var found = false;
-
-        // see http://extjs.com/forum/showthread.php?p=344233
-        var lastValue = this.state[name];
-        for(i = 0; i < this.queue.length; i++) {
+        var o = {}
+            ,i = 0
+            ,found = false
+            // see http://extjs.com/forum/showthread.php?p=344233
+            ,oldValue = this.state[name]
+            ,newValue
+            ,changed;
+            
+        for(; i < this.queue.length; i++) {
             if(this.queue[i].name === name) {
-                lastValue = this.decodeValue(this.queue[i].value);
+                oldValue = this.decodeValue(this.queue[i].value);
             }
         }
-        var changed = undefined === lastValue || lastValue !== value;
+        //changed = undefined === oldValue || oldValue !== value;
+        //http://www.sencha.com/forum/showthread.php?24970-Buffering-Http-State-Provider&p=581091&viewfull=1#post581091
+        changed = undefined === oldValue || this.encodeValue(oldValue) !== this.encodeValue(value);
 
         if(changed) {
+            newValue = this.encodeValue(value);
             o[this.paramNames.name] = name;
-            o[this.paramNames.value] = this.encodeValue(value);
+            o[this.paramNames.value] = newValue;
             for(i = 0; i < this.queue.length; i++) {
                 if(this.queue[i].name === o.name) {
                     this.queue[i] = o;
@@ -216,7 +196,7 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
      * private, submits state to server by asynchronous Ajax request
      */
     ,submitState:function() {
-        if(!this.dirty) {
+        if(!this.dirty || Ext.isEmpty(this.queue)) {
             this.dt.delay(this.delay);
             return;
         }
@@ -228,7 +208,8 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
             ,scope:this
             ,success:this.onSaveSuccess
             ,failure:this.onSaveFailure
-            ,queue:Ext.ux.util.clone(this.queue)
+            //,queue:Ext.ux.util.clone(this.queue)
+            ,queueCopy: Ext.Array.clone(this.queue) //don't use 'queue', conflicts with ext-basex QueueManager 
             ,params:{}
         };
 
@@ -236,7 +217,7 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
         params[this.paramNames.id] = this.id;
         params[this.paramNames.user] = this.user;
         params[this.paramNames.session] = this.session;
-        params[this.paramNames.data] = Ext.encode(o.queue);
+        params[this.paramNames.data] = Ext.encode(o.queueCopy);
 
         Ext.apply(o.params, params);
 
@@ -276,7 +257,7 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
             this.dirty = true;
         }
         else {
-            Ext.each(options.queue, function(item) {
+            Ext.each(options.queueCopy, function(item) {
                 if(!item) {
                     return;
                 }
@@ -296,16 +277,16 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
             }
             else {
                 var i, j, found;
-                for(i = 0; i < options.queue.length; i++) {
+                for(i = 0; i < options.queueCopy.length; i++) {
                     found = false;
                     for(j = 0; j < this.queue.length; j++) {
-                        if(options.queue[i].name === this.queue[j].name) {
+                        if(options.queueCopy[i].name === this.queue[j].name) {
                             found = true;
                             break;
                         }
                     }
-                    if(true === found && this.encodeValue(options.queue[i].value) === this.encodeValue(this.queue[j].value)) {
-                        this.queue.remove(this.queue[j]);
+                    if(true === found && this.encodeValue(options.queueCopy[i].value) === this.encodeValue(this.queue[j].value)) {
+                        Ext.Array.remove(this.queue,this.queue[j]);
                     }
                 }
             }
@@ -364,6 +345,10 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
                 this.log(this.dataErrorText, data, response);
                 return;
             }
+            //flush cache if not appending
+            if (this.flushCache){
+                this.state = {};
+            }
             Ext.each(data, function(item) {
                 this.state[item[this.paramNames.name]] = this.decodeValue(item[this.paramNames.value]);
             }, this);
@@ -388,6 +373,7 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
             ,success:this.onReadSuccess
             ,failure:this.onReadFailure
             ,params:{}
+            ,async: this.async
         };
 
         var params = Ext.apply({}, this.readBaseParams);
@@ -412,4 +398,4 @@ Ext.extend(Ext.ux.state.HttpProvider, Ext.state.Provider, {
 
 }); // eo extend
 
-// eof  
+// eof

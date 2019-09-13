@@ -60,7 +60,7 @@
 </xsl:text>
 <html>
 	<xsl:apply-templates select="." mode="head"/>
-	<xsl:message>** CURRENT_USER: <xsl:value-of select="$current_user"/></xsl:message>
+	<!--<xsl:message>** CURRENT_USER: <xsl:value-of select="$current_user"/></xsl:message> -->
 	<xsl:choose>
 		<xsl:when test="($login_window='true') and ($anon_user='1' or $current_user='')">
 			<xsl:apply-templates select="." mode="body_login"/>

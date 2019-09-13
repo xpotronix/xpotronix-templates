@@ -30,11 +30,69 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 
 	init: function( grid ) {/*{{{*/
 
-		var me = this;
+		var me = this
+            ,headerCt = grid.getView().getHeaderCt()
+            ,extVersion = Ext.versions.extjs.major;
+
 		me.originalHeight = me.height;	
 		me.height = 0;
 
-		me.callParent(arguments);
+		// safety check (mainly) for Architect who does not have RegExp type, only string
+		if(Ext.isString(me.operatorRe)) {
+		    me.operatorRe = new RegExp(me.operatorRe.replace(/(^\/|\/$)/g,''));
+		}
+
+		// save some vars in the instance
+		Ext.apply(me, {
+		     grid:grid
+		    ,headerCt:headerCt
+		    ,extVersion:extVersion
+		});
+
+		// install listeners on headerCt to sync sizes and positions
+		headerCt.on({
+		    afterlayout:{
+			 fn:me.afterHdLayout
+			,scope:me
+			,delay:0
+			    ,buffer:900
+		    }
+		    ,afterrender:{
+			 fn:me.afterHdRender
+			,scope:me
+			,single:true
+		    }
+		    ,columnmove:{
+			 fn:me.onColumnMove
+			,scope:me
+		    }
+		});
+
+		grid.on({
+		     scope:me
+		    ,reconfigure:me.onReconfigure
+		});
+
+		me.on({
+		     afterrender:{
+			  fn:me.onAfterRender
+			 ,scope:me
+			 ,single:true
+		     }
+		});
+
+		me.onReconfigure(grid, grid.store, grid.columns);
+
+		// install convenience method(s) on the grid
+		/**
+		 * MultiSearch plugin getter
+		 * @member Ext.grid.Panel
+		 * @returns {Ext.saki.grid.MultiSearch}
+		 */
+		grid.getFilter = function() {
+		    return me;
+		};
+
 
 		// add menu
 		me.menu = Ext.create('Ext.button.Split',{
@@ -67,9 +125,26 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 	}/*}}}*/
 
 
-	/* override de las siguientes dos funciones
-	 * para que no borre la busqueda del filtro
-	 */
+	    /**
+	     * Synchronizes columns and other UI features
+	     * whenever the header changes layout
+	     * @private
+	     */
+	    ,afterHdLayout:function() {
+		var me = this;
+		    this.debug && console.log('afterHdLayout start ' + me.grid.xtype);
+		if(!me.grid.reconfiguring) {
+		    me.syncCols();
+		    me.syncUi();
+		}
+	    	this.debug && console.log('afterHdLayout stop');
+	    } // eo function afterHdLayout
+
+
+
+		/* override de las siguientes dos funciones
+		 * para que no borre la busqueda del filtro
+		 */
 
     ,getFilterFromField:function(field) {//{{{
         var  me = this

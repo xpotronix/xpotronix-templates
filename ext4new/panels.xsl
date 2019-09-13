@@ -199,13 +199,13 @@
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="standalone" tunnel="yes"/>
 
-		<xsl:message>[cmp] type:<xsl:value-of select="@type"/>, module:<xsl:value-of select="$module"/>, obj:<xsl:value-of select="$obj/@name"/>, standalone:<xsl:value-of select="$standalone"/></xsl:message>
+		<!--<xsl:message>[cmp] type:<xsl:value-of select="@type"/>, module:<xsl:value-of select="$module"/>, obj:<xsl:value-of select="$obj/@name"/>, standalone:<xsl:value-of select="$standalone"/></xsl:message>-->
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj/@name"/></xsl:message> -->
 		<xsl:if test="position()-1">,</xsl:if><xsl:apply-templates select="." mode="sub"></xsl:apply-templates>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="cmp[not(@ref)]" mode="sub"><!--{{{-->
-		<xsl:message>[cmp[not(@ref)]] type:<xsl:value-of select="@type"/></xsl:message>
+		<!-- <xsl:message>[cmp[not(@ref)]] type:<xsl:value-of select="@type"/></xsl:message> -->
 		<xsl:variable name="xtype">
 			<xsl:choose>
 				<xsl:when test="@type"><xsl:value-of select="@type"/></xsl:when>
@@ -220,13 +220,13 @@
 			<!-- attributos por default en templates.xml -->
 			<xsl:sequence select="$templates//cmp[@type=$xtype]/*"/>
 			<!-- attributos en el elemento <panel/> -->
-			<xsl:for-each select="@*[@name!='type']">
+			<xsl:for-each select="@*[.!='type']">
 				<xsl:element name="{name()}"><xsl:value-of select="."/></xsl:element>
 			</xsl:for-each>
 			</config>
 		</xsl:variable>
 
-		<xsl:message><xsl:copy-of select="$config"/></xsl:message>
+		<!--<xsl:message><xsl:copy-of select="$config"/></xsl:message> -->
 
 		Ext.apply(<xsl:apply-templates select="$config" mode="json-object"/>,
 			<xsl:if test="config">{<xsl:value-of select="config"/>}<xsl:if test="items/*">,</xsl:if></xsl:if>
@@ -238,7 +238,7 @@
 		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="standalone" tunnel="yes" select="false()"/>
-		<xsl:message>[cmp[@ref]] type:<xsl:value-of select="@type"/>, module:<xsl:value-of select="$module"/>, obj:<xsl:value-of select="$obj/@name"/>, standalone:<xsl:value-of select="$standalone"/></xsl:message>
+		<!--<xsl:message>[cmp[@ref]] type:<xsl:value-of select="@type"/>, module:<xsl:value-of select="$module"/>, obj:<xsl:value-of select="$obj/@name"/>, standalone:<xsl:value-of select="$standalone"/></xsl:message>-->
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj"/>, type: <xsl:value-of select="@type"/></xsl:message> -->
 		Ext.apply({xtype:'<xsl:value-of select="@ref"/>'},{
 			<xsl:if test="@id">id:'<xsl:value-of select="@id"/>'<xsl:if test="config or items">,</xsl:if></xsl:if>

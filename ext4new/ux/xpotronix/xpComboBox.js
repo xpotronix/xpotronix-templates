@@ -12,7 +12,7 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 	extend: 'Ext.form.field.ComboBox',
 	alias: 'widget.xpcombo',
-	debug: true,
+	debug: false,
 	panel: null,
 	alternateClassName: ['xpcombobox'],
 	requires: ['Ext.form.field.ComboBox'],

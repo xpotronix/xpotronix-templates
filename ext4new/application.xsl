@@ -28,7 +28,7 @@
 
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 
-	<xsl:apply-templates select="." mode="defines_files"/>
+	<xsl:apply-templates select="." mode="defines_all_files"/>
 
 	<xsl:variable name="code">
 
@@ -103,38 +103,20 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="*:document" mode="defines"><!--{{{-->
+	<xsl:template match="*:document" mode="defines_all_files"><!--{{{-->
+
+		<xsl:variable name="result_path" select="concat($application_path,'/',$application_name,'/',*:session/feat/module,'.js')"/>
+		<xsl:message><xsl:value-of select="$result_path"/></xsl:message>
 
 		<!-- model & store -->
 
-		<xsl:for-each select="*:model//obj">
+		<xsl:result-document method="text"
+		encoding="utf-8"
+		href="{$result_path}">
 
-			<xsl:apply-templates select="." mode="model"/>
-			<xsl:apply-templates select="." mode="store"/>
+		<xsl:apply-templates select="." mode="defines_code"/>
 
-		</xsl:for-each>
-
-		<!-- model & store eh -->
-
-		<xsl:for-each-group select="*:model//queries/query/query" group-by="concat(../from,'_',@name)">
-
-			<xsl:apply-templates select="." mode="model_eh"/>
-			<xsl:apply-templates select="." mode="store_eh"/>
-
-		</xsl:for-each-group>
-
-		<!-- panel -->
-
-		<xsl:for-each select="*:model//panel">
-
-			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-			<xsl:apply-templates select="." mode="define"/>
-
-		</xsl:for-each>
-
-		<!-- controller -->
-
-		<xsl:apply-templates select="*:model" mode="controller"/>
+		</xsl:result-document>
 
 	</xsl:template><!--}}}-->
 
@@ -213,6 +195,41 @@
 
 		</xsl:result-document>
 
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:document" mode="defines_code"><!--{{{-->
+
+		<!-- model & store -->
+
+		<xsl:for-each select="*:model//obj">
+
+			<xsl:apply-templates select="." mode="model"/>
+			<xsl:apply-templates select="." mode="store"/>
+
+		</xsl:for-each>
+
+		<!-- model & store eh -->
+
+		<xsl:for-each-group select="*:model//queries/query/query" group-by="concat(../from,'_',@name)">
+
+			<xsl:apply-templates select="." mode="model_eh"/>
+			<xsl:apply-templates select="." mode="store_eh"/>
+
+		</xsl:for-each-group>
+
+		<!-- panel -->
+
+		<xsl:for-each select="*:model//panel">
+
+			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+			<xsl:apply-templates select="." mode="define"/>
+
+		</xsl:for-each>
+
+		<!-- controller -->
+
+		<xsl:apply-templates select="*:model" mode="controller"/>
 
 	</xsl:template><!--}}}-->
 
