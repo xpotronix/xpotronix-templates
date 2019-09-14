@@ -814,7 +814,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	},
 	/*}}}*/
 
-	get_field_metadata( field_name ) {/*{{{*/
+	get_field_metadata: function( field_name ) {/*{{{*/
 	
 		return this.model.getFields().find( o => o.name === field_name );
 	
