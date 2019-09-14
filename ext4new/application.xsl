@@ -28,8 +28,6 @@
 
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 
-	<xsl:apply-templates select="." mode="defines_all_files"/>
-
 	<xsl:variable name="code">
 
 		var App;
@@ -65,8 +63,7 @@
 
 			<xsl:apply-templates select="*:metadata/obj" mode="config"/>
 
-			<!-- <xsl:apply-templates select="." mode="defines"/> -->
-
+			<xsl:apply-templates select="." mode="defines_code"/>
 
 				/* application/viewport */
 
@@ -94,7 +91,7 @@
 			<xsl:value-of select="$code" disable-output-escaping="yes"/>
 		</xsl:when>
 		<xsl:otherwise>
-			<xsl:value-of select="normalize-space($code)" disable-output-escaping="yes"/>
+			<xsl:value-of select="replace(normalize-space($code),'/\*.*?\*/','')" disable-output-escaping="yes"/>
 		</xsl:otherwise>
 	</xsl:choose>
 	</script>
@@ -120,84 +117,6 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="*:document" mode="defines_files"><!--{{{-->
-
-		<!-- model & store -->
-
-		<xsl:for-each select="*:model//obj">
-
-			<xsl:result-document method="text"
-			encoding="utf-8"
-			href="{concat($application_path,'/',$application_name,'/model/',@name,'.js')}">
-
-			<xsl:apply-templates select="." mode="model"/>
-
-			</xsl:result-document>
-
-
-			<xsl:result-document method="text"
-			encoding="utf-8"
-			href="{concat($application_path,'/',$application_name,'/store/',@name,'.js')}">
-
-			<xsl:apply-templates select="." mode="store"/>
-
-			</xsl:result-document>
-
-		</xsl:for-each>
-
-		<!-- model & store eh -->
-
-		<xsl:for-each-group select="*:model//queries/query/query" group-by="concat(../from,'_',@name)">
-
-			<xsl:result-document method="text"
-			encoding="utf-8"
-			href="{concat($application_path,'/',$application_name,'/model/',../from,'_',@name,'.js')}">
-
-			<xsl:apply-templates select="." mode="model_eh"/>
-
-			</xsl:result-document>
-
-			<xsl:result-document method="text"
-			encoding="utf-8"
-			href="{concat($application_path,'/',$application_name,'/store/',../from,'_',@name,'.js')}">
-
-			<xsl:apply-templates select="." mode="store_eh"/>
-
-			</xsl:result-document>
-
-		</xsl:for-each-group>
-
-		<!-- panel -->
-
-		<xsl:for-each select="*:model//panel">
-
-			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-
-			<xsl:message>****** PANEL_ID: <xsl:value-of select="$panel_id"/></xsl:message>
-
-			<xsl:result-document method="text"
-			encoding="utf-8"
-			href="{concat($application_path,'/',$application_name,'/view/',$panel_id,'.js')}">
-
-				<xsl:apply-templates select="." mode="define"/>
-
-			</xsl:result-document>
-
-		</xsl:for-each>
-
-		<!-- controller -->
-
-		<xsl:result-document method="text"
-		encoding="utf-8"
-		href="{concat($application_path,'/',$application_name,'/controller/',*:session/feat/module,'.js')}">
-	
-			<xsl:apply-templates select="*:model" mode="controller"/>
-
-		</xsl:result-document>
-
-
-	</xsl:template><!--}}}-->
-
 	<xsl:template match="*:document" mode="defines_code"><!--{{{-->
 
 		<!-- model & store -->
@@ -213,8 +132,8 @@
 
 		<xsl:for-each-group select="*:model//queries/query/query" group-by="concat(../from,'_',@name)">
 
-			<xsl:apply-templates select="." mode="model_eh"/>
-			<xsl:apply-templates select="." mode="store_eh"/>
+			<xsl:apply-templates select="." mode="model"/>
+			<xsl:apply-templates select="." mode="store"/>
 
 		</xsl:for-each-group>
 
@@ -230,6 +149,35 @@
 		<!-- controller -->
 
 		<xsl:apply-templates select="*:model" mode="controller"/>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template name="output"><!--{{{-->
+
+		<xsl:param name="code"/>
+		<xsl:param name="class_path"/>
+		<xsl:param name="to_file" select="false()" tunnel="yes"/>
+		<xsl:param name="normalized" select="false()" tunnel="yes"/>
+
+		<xsl:message>output: class_path: <xsl:value-of select="$class_path"/> to_file: <xsl:value-of select="$to_file"/>, normalize: <xsl:value-of select="$normalized"/></xsl:message>
+
+		<xsl:variable name="code2">
+			<xsl:choose>
+				<xsl:when test="$normalized">
+					<xsl:value-of select="normalize-space($code)"/>
+				</xsl:when>
+				<xsl:otherwise><xsl:value-of select="$code"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:choose>
+			<xsl:when test="$to_file">
+				<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+					<xsl:value-of select="$code2"/>
+				</xsl:result-document>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$code2"/></xsl:otherwise>
+		</xsl:choose>
 
 	</xsl:template><!--}}}-->
 
@@ -255,8 +203,7 @@
 		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
-		<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
-
+		<xsl:variable name="code">
 		Ext.define('<xsl:value-of select="$class_name"/>', {
 
 		    extend: 'Ext.app.Controller',
@@ -269,8 +216,12 @@
 
 		});
 
-		</xsl:result-document>
+		</xsl:variable>
 
+		<xsl:call-template name="output">
+			<xsl:with-param name="class_path" select="$class_path"/>
+			<xsl:with-param name="code" select="$code"/>
+		</xsl:call-template>
 
 	</xsl:template><!--}}}-->
 

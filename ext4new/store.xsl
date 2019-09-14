@@ -31,7 +31,7 @@
 		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
-		<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+		<xsl:variable name="code">
 		/* path: <xsl:value-of select="$class_path"/> */
 		Ext.ClassManager.isCreated( '<xsl:value-of select="$class_name"/>' ) || Ext.define( '<xsl:value-of select="$class_name"/>', {
 			extend: 'Ext.data.Model'
@@ -49,7 +49,12 @@
 					<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
 			]});
-		</xsl:result-document>
+		</xsl:variable>
+
+		<xsl:call-template name="output">
+			<xsl:with-param name="class_path" select="$class_path"/>
+			<xsl:with-param name="code" select="$code"/>
+		</xsl:call-template>
 
 	</xsl:template><!--}}}-->
 
@@ -61,7 +66,7 @@
 		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
-		<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+		<xsl:variable name="code">
 		/* path: <xsl:value-of select="$class_path"/> */
 		Ext.ClassManager.isCreated( '<xsl:value-of select="$class_name"/>' ) || Ext.define('<xsl:value-of select="$class_name"/>', Ext.apply({ 
 
@@ -84,17 +89,16 @@
 			,pageSize: <xsl:value-of select="xp:get_feat(.,'page_rows')"/>
 			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>}
 			,{<xsl:value-of select="config"/>}));
-		</xsl:result-document>
+		</xsl:variable>
+
+		<xsl:call-template name="output">
+			<xsl:with-param name="class_path" select="$class_path"/>
+			<xsl:with-param name="code" select="$code"/>
+		</xsl:call-template>
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="foreign_key"><!--{{{-->{type:'<xsl:value-of select="@type"/>',<xsl:if test="@passive">passive: <xsl:value-of select="@passive"/>,</xsl:if>refs:[<xsl:apply-templates select="ref"/>]} 
-	</xsl:template><!--}}}-->
-
-	<xsl:template match="ref"><!--{{{-->{local:'<xsl:value-of select="@local"/>',remote:'<xsl:value-of select="@remote"/>'}<xsl:if test="position()!=last()">,</xsl:if>
-	</xsl:template><!--}}}-->
-
-        <xsl:template match="query" mode="store_eh"><!--{{{-->
+        <xsl:template match="query" mode="store"><!--{{{-->
 
 	<xsl:variable name="parent_obj_name" select="../../../@name"/>
 	<xsl:variable name="obj_name">
@@ -113,7 +117,7 @@
 	<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
 	<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
-	<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+	<xsl:variable name="code">
 	/* path: <xsl:value-of select="$class_path"/> */
 	Ext.ClassManager.isCreated( '<xsl:value-of select="$class_name"/>' ) || Ext.define('<xsl:value-of select="$class_name"/>', {
 		extend:'Ux.xpotronix.xpStore'
@@ -129,10 +133,16 @@
 		,pageSize:20
 		,passive:true
         	});
-	</xsl:result-document>
+	</xsl:variable>
+
+		<xsl:call-template name="output">
+			<xsl:with-param name="class_path" select="$class_path"/>
+			<xsl:with-param name="code" select="$code"/>
+		</xsl:call-template>
+
         </xsl:template><!--}}}-->
 
-	<xsl:template match="query" mode="model_eh"><!--{{{-->
+	<xsl:template match="query" mode="model"><!--{{{-->
 
 		<xsl:variable name="parent_obj_name" select="../../../@name"/>
 		<xsl:variable name="obj_name" select="from"/>
@@ -141,8 +151,8 @@
 		<xsl:variable name="class_name" select="concat($application_name,'.model.',$module_name,'.',../from,'_',@name)"/>
 		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
-	
-		<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
+
+		<xsl:variable name="code">	
 		/* path: <xsl:value-of select="$class_path"/> */
 		Ext.ClassManager.isCreated( '<xsl:value-of select="$class_name"/>' ) || Ext.define( '<xsl:value-of select="$class_name"/>', {
 		extend: 'Ext.data.Model'
@@ -152,8 +162,12 @@
 		extraParams: Ext.apply({q:'<xsl:value-of select="$eh_name"/>',},{<xsl:apply-templates select="../../.." mode="extra_param"/>}) 
 		}
 		,fields: ['id','_label'<xsl:for-each select="attr">,'<xsl:value-of select="@name"/>'</xsl:for-each>]});
-		</xsl:result-document>
+		</xsl:variable>
 
+		<xsl:call-template name="output">
+			<xsl:with-param name="class_path" select="$class_path"/>
+			<xsl:with-param name="code" select="$code"/>
+		</xsl:call-template>
 
 	</xsl:template><!--}}}-->
 
@@ -218,6 +232,12 @@
 
 		<xsl:for-each select="$assocs/*"><xsl:value-of select="text()"/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>
 
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="foreign_key"><!--{{{-->{type:'<xsl:value-of select="@type"/>',<xsl:if test="@passive">passive: <xsl:value-of select="@passive"/>,</xsl:if>refs:[<xsl:apply-templates select="ref"/>]} 
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="ref"><!--{{{-->{local:'<xsl:value-of select="@local"/>',remote:'<xsl:value-of select="@remote"/>'}<xsl:if test="position()!=last()">,</xsl:if>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="obj" mode="primary_key">[<xsl:for-each select="primary_key/primary">'<xsl:value-of select="@name"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>]

@@ -27,8 +27,7 @@
 		<xsl:variable name="panel_class" select="concat($application_name,'.view.',$module_name,'.',$panel_id)"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($panel_class,'\.','/'),'.js')"/>
 
-		<xsl:result-document method="text" encoding="UTF-8" indent="yes" href="{$class_path}">
-
+		<xsl:variable name="code">
 		/* path: <xsl:value-of select="$class_path"/> */
 		Ext.define('<xsl:value-of select="$panel_class"/>',
 		Ext.apply(<xsl:apply-templates select="." mode="panel_config">
@@ -39,8 +38,12 @@
 			<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
 			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
 			</xsl:apply-templates>)); /* PANEL ENDS */
+		</xsl:variable>
 
-		</xsl:result-document>
+		<xsl:call-template name="output">
+			<xsl:with-param name="code" select="$code"/>
+			<xsl:with-param name="class_path" select="$class_path"/>
+		</xsl:call-template>
 
 	</xsl:template><!--}}}-->
 

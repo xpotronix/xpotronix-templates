@@ -27,8 +27,8 @@
 	<xsl:include href="attr.xsl"/>
 	<xsl:include href="store.xsl"/>
 	<xsl:include href="layout.xsl"/>
-	<xsl:include href="panels.xsl"/>
 	<xsl:include href="object.xsl"/>
+	<xsl:include href="panels.xsl"/>
 	<xsl:include href="feat.xsl"/>
 	<xsl:include href="log.xsl"/>
 	<xsl:include href="menubar.xsl"/>
