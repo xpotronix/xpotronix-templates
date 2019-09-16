@@ -28,6 +28,11 @@
 
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 
+
+	<xsl:apply-templates select="." mode="defines_all_files">
+		<xsl:with-param name="to_file" select="true()" tunnel="yes"/>
+	</xsl:apply-templates>
+
 	<xsl:variable name="code">
 
 		var App;
@@ -36,7 +41,6 @@
 
 			<xsl:apply-templates select="." mode="loader"/>
 
-			Ext.onReady(function() {
 
 			Ext.isDefined( 'app' ) || Ext.namespace('app', 'app.model', 'app.controller', 'app.store', 'app.view');
 
@@ -61,9 +65,14 @@
 			/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
 			</xsl:if>
 
-			<xsl:apply-templates select="*:metadata/obj" mode="config"/>
 
+			console.log('defines start');
+			<xsl:apply-templates select="*:metadata/obj" mode="config"/>
 			<xsl:apply-templates select="." mode="defines_code"/>
+			console.log('defines end');
+
+
+			Ext.onReady(function() {
 
 				/* application/viewport */
 
@@ -207,9 +216,9 @@
 		Ext.define('<xsl:value-of select="$class_name"/>', {
 
 		    extend: 'Ext.app.Controller',
-		    views: [<xsl:for-each select=".//panel">'<xsl:value-of select="$module_name"/>.<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
-		    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 		    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+		    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+		    views: [<xsl:for-each select=".//panel">'<xsl:value-of select="$module_name"/>.<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 		    init: function() {
 			this.control({});
 		    }

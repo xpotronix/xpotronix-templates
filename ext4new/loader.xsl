@@ -72,7 +72,7 @@
 				closable:true
 			})).show();
 
-		});
+		}); /* Ext.onReady ends */
 	</xsl:variable>
 
 	<!-- output final del codigo -->
