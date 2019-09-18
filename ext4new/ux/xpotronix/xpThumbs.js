@@ -17,7 +17,7 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 	acl: null,
 	module: this.module,
 
-	id: 'images-view',
+	/* id: 'images-view', */
 
 	trackMouseOver:true,
 	/* layout:'fit', */

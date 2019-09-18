@@ -41,38 +41,37 @@
 
 			<xsl:apply-templates select="." mode="loader"/>
 
-
-			Ext.isDefined( 'app' ) || Ext.namespace('app', 'app.model', 'app.controller', 'app.store', 'app.view');
-
-			var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
-
-			/* Ext.Ajax.timeout = 60000; */
-
-			if ( App !== undefined ) {
-
-				App.reconfigure( config_App );
-
-			} else {
-
-				App = Ext.create( 'Ux.xpotronix.xpApp', config_App );
-			}
-
-			App.feat.root_obj = '<xsl:value-of select="$root_obj/@name"/>';
-
-			document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
-
-			<xsl:if test="*:session/feat/theme">
-			/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
-			</xsl:if>
-
-
-			console.log('defines start');
-			<xsl:apply-templates select="*:metadata/obj" mode="config"/>
-			<xsl:apply-templates select="." mode="defines_code"/>
-			console.log('defines end');
-
-
 			Ext.onReady(function() {
+
+				 Ext.isDefined( 'app' ) || Ext.namespace('app', 'app.model', 'app.controller', 'app.store', 'app.view');
+
+				 var config_App = {state_manager:'http', feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
+
+				 /* Ext.Ajax.timeout = 60000; */
+
+				 if ( App !== undefined ) {
+
+					 App.reconfigure( config_App );
+
+				 } else {
+
+					 App = Ext.create( 'Ux.xpotronix.xpApp', config_App );
+				 }
+
+				 App.feat.root_obj = '<xsl:value-of select="$root_obj/@name"/>';
+
+				 document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
+
+				 <xsl:if test="*:session/feat/theme">
+				 /* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
+				 </xsl:if>
+
+
+				 console.log('defines start');
+				 <xsl:apply-templates select="*:metadata/obj" mode="config"/>
+				 <xsl:apply-templates select="." mode="defines_code"/>
+				 console.log('defines end');
+
 
 				/* application/viewport */
 
@@ -130,6 +129,8 @@
 
 		<!-- model & store -->
 
+		console.log('model store');
+
 		<xsl:for-each select="*:model//obj">
 
 			<xsl:apply-templates select="." mode="model"/>
@@ -139,6 +140,7 @@
 
 		<!-- model & store eh -->
 
+		console.log('model store eh');
 		<xsl:for-each-group select="*:model//queries/query/query" group-by="concat(../from,'_',@name)">
 
 			<xsl:apply-templates select="." mode="model"/>
@@ -148,6 +150,7 @@
 
 		<!-- panel -->
 
+		console.log('panel');
 		<xsl:for-each select="*:model//panel">
 
 			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
@@ -155,8 +158,9 @@
 
 		</xsl:for-each>
 
+		debugger;
 		<!-- controller -->
-
+		console.log('controller');
 		<xsl:apply-templates select="*:model" mode="controller"/>
 
 	</xsl:template><!--}}}-->
