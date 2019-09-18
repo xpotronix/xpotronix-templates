@@ -56,12 +56,13 @@
 
 
 	<xsl:variable name="code">
-		/* module: <xsl:value-of select="//*:session/feat/module"/> */
-
-		<xsl:apply-templates select="//*:metadata/obj" mode="config"/>
-		<xsl:apply-templates mode="defines_code"/>
 
 		Ext.onReady(function() {
+
+			/* module: <xsl:value-of select="//*:session/feat/module"/> */
+
+			<xsl:apply-templates select="//*:metadata/obj" mode="config"/>
+			<xsl:apply-templates mode="defines_code"/>
 
 			app.getApplication().getController('<xsl:value-of select="//*:session/feat/module"/>').init();
 			var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>

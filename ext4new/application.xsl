@@ -158,7 +158,6 @@
 
 		</xsl:for-each>
 
-		debugger;
 		<!-- controller -->
 		console.log('controller');
 		<xsl:apply-templates select="*:model" mode="controller"/>
