@@ -300,7 +300,6 @@ Ext.onReady(function(){
 				}
 			});
 
-			/*
 			Ext.require([ 
 
 				'Ext.tip.*',
@@ -311,7 +310,6 @@ Ext.onReady(function(){
 				'Ux.xpotronix.xpImageToolbar',
 				'Ux.xpotronix.xpCellEditing'
 			]);
-			*/
 
 	</xsl:template><!--}}}-->
 
