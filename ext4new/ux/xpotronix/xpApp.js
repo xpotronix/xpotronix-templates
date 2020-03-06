@@ -189,11 +189,15 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 				/* alerta de modificaciones */
 
+				if ( record.raw.disabled ) return;
+
 				if ( App.getModifiedStores && App.getModifiedStores().length ) {
 
 					App.showSaveChanges();
 					return;
 				}
+
+				record.raw.disabled = true;
 
 				e.stopEvent();
 
@@ -276,10 +280,12 @@ Ext.define('AppTreeMenu', {/*{{{*/
 			url: url, 
 			onLoad:function() {
 				console.log('cargado modulo desde URL: ' + url );
+				record.raw.disabled = false;
 			},
 			onError:function(a,b,c){
 
 				alert( 'hubo un error al procesar el requerimiento' );
+				record.raw.disabled = false;
 
 			}
 		});

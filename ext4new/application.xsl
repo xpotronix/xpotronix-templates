@@ -292,7 +292,7 @@ Ext.onReady(function(){
 			Ext.Loader.setConfig({
 
 				enabled: true,
-				disableCaching: true,
+				disableCaching: false,
 				paths: {
 					'Ux.xpotronix': '/ux4/xpotronix',
 					'Ext.ux': '/ux4',
@@ -300,6 +300,7 @@ Ext.onReady(function(){
 				}
 			});
 
+			/*
 			Ext.require([ 
 
 				'Ext.tip.*',
@@ -310,6 +311,7 @@ Ext.onReady(function(){
 				'Ux.xpotronix.xpImageToolbar',
 				'Ux.xpotronix.xpCellEditing'
 			]);
+			*/
 
 	</xsl:template><!--}}}-->
 
