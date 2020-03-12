@@ -67,11 +67,17 @@
 			app.getApplication().getController('<xsl:value-of select="//*:session/feat/module"/>').init();
 			var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>
 			var tp = Ext.getCmp('mainAppTabPanel');
-			tp.add( Ext.apply(tmp, 
-				{itemId:tp.lastSelection.get('itemId'),
-				title:tp.lastSelection.get('text'),
+			var ls = tp.lastSelection;
+			console.log( "tabId: " + ls.get('tabId') + ", text: " + ls.get('text') );
+			/* debugger; */
+			var tab = tp.add( Ext.apply(tmp, 
+				{
+				/* itemId:ls.get('tabId'), */
+				title:ls.get('text'),
 				closable:true
 			})).show();
+			debugger;
+			ls.set('tabId',tab.id);
 
 		}); /* Ext.onReady ends */
 	</xsl:variable>
