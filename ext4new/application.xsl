@@ -216,7 +216,7 @@
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
 		<xsl:variable name="code">
-		Ext.define('<xsl:value-of select="$class_name"/>', {
+		Ext.ClassManager.isCreated( '<xsl:value-of select="$class_name"/>' ) || Ext.define( '<xsl:value-of select="$class_name"/>', {
 
 		    extend: 'Ext.app.Controller',
 		    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
