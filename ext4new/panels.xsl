@@ -29,7 +29,7 @@
 
 		<xsl:variable name="code">
 		/* path: <xsl:value-of select="$class_path"/> */
-		Ext.define('<xsl:value-of select="$panel_class"/>',
+		Ext.ClassManager.isCreated( '<xsl:value-of select="$panel_class"/>' ) || Ext.define('<xsl:value-of select="$panel_class"/>',
 		Ext.apply(<xsl:apply-templates select="." mode="panel_config">
 			<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
 			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>

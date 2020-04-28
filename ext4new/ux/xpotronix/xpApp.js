@@ -81,7 +81,8 @@ Ext.define('AppTreeMenuModel', {/*{{{*/
 		{name: 'itemId'},
 		{name: 'text'},
 		{name: 'module'},
-		{name: 'extra'}        
+		{name: 'extra'},
+		{name: 'tabId'}
 	],
 
 	proxy: {
@@ -152,7 +153,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 		render: { fn:function() {
 
-			this.up('panel').setTitle(App.feat.page_title);
+			this.up('panel').setTitle( App.feat.page_title );
 
 			this.getRootNode().expand();
 			this.showDetail('home');
@@ -162,9 +163,11 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 		,load: { fn:function( node ) {
 
-			// consoleDebugFn( this );
+			/* carga el arbol del menu */
 
-			var normalized = this.normalized ? '': '&UNNORMALIZED';
+			/* consoleDebugFn( this ); */
+
+			/* agrega el nombre de usuario al final del menu */
 
 			if ( App.user_node == undefined && App.user.user_username && ! App.user._anon ) {
 
@@ -173,11 +176,6 @@ Ext.define('AppTreeMenu', {/*{{{*/
 					App.user_node.data.text += ' <b>' + App.user.user_username + '</b>';
 
 				}
-
-				/* DEBUG: esto hay que actualizarlo a como lo hace ahora 
-				Ext.Loader.loadScript( { url:App.feat.defaultSrc + '&v=ext4new/loader' + normalized } );
-				*/
-
 			}
 		}}
 
@@ -211,6 +209,8 @@ Ext.define('AppTreeMenu', {/*{{{*/
 				var n = record.getData();
 
 				/* Id del nodo */
+
+				/* debugger; */
 
 				if( n.itemId ) {
 
@@ -252,7 +252,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 						var tabPanel = this.up('viewport').down('tabpanel'),
 						panel;
 
-						if ( panel = tabPanel.getComponent( n.itemId ) ) {
+						if ( panel = tabPanel.getComponent( n.tabId ) ) {
 							tabPanel.setActiveTab( panel );
 						
 						} else {
