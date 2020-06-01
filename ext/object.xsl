@@ -21,7 +21,17 @@
 	<xsl:variable name="obj" select="."/>
 	<xsl:variable name="obj_name" select="@name"/>
 	<xsl:variable name="session" select="//*:session"/>
+	<xsl:variable name="roles" select="$session/roles"/>
 	<xsl:variable name="role" select="$session/roles/role/@value"/>
+
+	<xsl:variable name="processes">
+		<xsl:for-each select="processes/process[(not(@display) or @display!='hide') and acl/@action='permit'  ]">
+			<xsl:variable name="role" select="acl/@role"/>
+			<xsl:if test="acl/@role='*' or count($roles/role[@value=$role])">
+				<xsl:copy-of select="."/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:variable>
 
 	/* <xsl:value-of select="@name"/> xpObj */
 
@@ -36,11 +46,9 @@
 		,extra_param:{<xsl:apply-templates select="." mode="extra_param"/>}
 		,store:App.store.item('<xsl:value-of select="@name"/>')
 		,feat:<xsl:apply-templates select="." mode="feats"/>
-		<xsl:if test="count(processes/process[(not(@display) or @display!='hide') and acl/@action='permit' and acl/@role=$role])">
-		,processes_menu:<xsl:apply-templates select="processes">
-				<xsl:with-param name="obj" select="." tunnel="yes"/>
+		<xsl:apply-templates select="processes" mode="collection">
+				<xsl:with-param name="processes" select="$processes"/>
 				</xsl:apply-templates>
-		</xsl:if>
 	}));
 
 	</xsl:template><!--}}}-->
@@ -61,15 +69,22 @@
 	<xsl:template match="obj" mode="extra_param"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>
 		<xsl:for-each select="//xpotronix:session/var/e/*[name()=$obj_name or name()='_']/*">
-			'e[<xsl:value-of select="$obj_name"/>][<xsl:value-of select="name()"/>]':'<xsl:value-of select="text()"/>'<xsl:if test="position()!=last()">,</xsl:if>			
+			'e[<xsl:value-of select="$obj_name"/>][<xsl:value-of select="name()"/>]':'<xsl:value-of select="text()"/>'<xsl:if test="position()!=last()">,</xsl:if>
 		</xsl:for-each>
 	</xsl:template><!--}}}-->
 
 <!-- templates auxiliares -->
 
-	<xsl:template match="processes"><!--{{{-->
+	<xsl:template match="processes" mode="collection"><!--{{{-->
+
+		<xsl:param name="processes"/>
 		<xsl:variable name="role" select="//*:session/roles/role/@value"/>
-                [<xsl:apply-templates select="process[(not(@display) or @display!='hide') and acl/@action='permit' and acl/@role=$role]"/>]
+		<xsl:variable name="roles" select="//*:session/roles"/>
+
+		<xsl:if test="count($processes)">
+		,processes_menu:[<xsl:apply-templates select="$processes/process"/>]
+		</xsl:if>
+
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="process"><!--{{{-->
@@ -88,14 +103,14 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="script">
+	<xsl:template match="script"><!--{{{-->
 			,script:{ fn:function( selections, command, item ) {
 			<xsl:value-of select="."/>
 		}<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if> }
 
-	</xsl:template>
+	</xsl:template><!--}}}-->
 	
-	<xsl:template match="dialog">
+	<xsl:template match="dialog"><!--{{{-->
 		,dialog: { fn: function( selections, command, item ) {
 
 			var obj = App.obj.item('<xsl:value-of select="../../@name"/>');
@@ -113,8 +128,7 @@
 
 		}<xsl:if test="@scope">, scope:<xsl:value-of select="@scope"/></xsl:if> }
 
-	</xsl:template>
-
+	</xsl:template><!--}}}-->
 
 	<xsl:template match="process" mode="param"><!--{{{-->
 		<xsl:for-each select="param/*">
