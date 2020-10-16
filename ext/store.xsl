@@ -35,7 +35,7 @@
 			,parent_store: App.store.item( '<xsl:value-of select="../@name"/>' )
 			</xsl:if>
 			,feat: <xsl:apply-templates select="." mode="feats"/>
-			,acl: {<xsl:apply-templates select="//*:metadata/obj[@name=$obj_name]/acl"/>}
+			,acl: {<xsl:apply-templates select="$metadata/obj[@name=$obj_name]/acl"/>}
 
 			<xsl:if test="foreign_key">
 			,foreign_key: [<xsl:apply-templates select="foreign_key/ref"/>]
@@ -52,7 +52,7 @@
 				{name: '__ID__', mapping: '@ID', type: 'string'},
 				{name: '__new__', mapping: '@new', type: 'int'},
 				{name: '__acl__', mapping: '@acl', type: 'string'},
-				<xsl:apply-templates select="//xpotronix:metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
+				<xsl:apply-templates select="$metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
 					<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
 			])},{<xsl:value-of select="config"/>})
@@ -95,7 +95,7 @@
 		,primary_key: ['id'] 
 		,parent_store: App.store.item( '<xsl:value-of select="$parent_obj_name"/>' )
 		<!-- DEBUG: aca hago piruetas para obtener el nombre del atributo que posee este eh. Hay que cambiar a fk -->
-		,foreign_key: [{local:'id',remote:'<xsl:value-of select="//xpotronix:metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}]
+		,foreign_key: [{local:'id',remote:'<xsl:value-of select="$metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}]
 		,foreign_key_type: 'parent'
 		,remoteSort: true 
 		,pageSize: 20

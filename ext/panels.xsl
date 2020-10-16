@@ -13,16 +13,18 @@
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/"
+	xmlns:saxon="http://saxon.sf.net/"
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/">
 
 <!-- model_params -->
 
 	<xsl:template match="panel" mode="model_params"><!--{{{-->
+
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:variable name="panel_id">
 			<xsl:apply-templates select="." mode="get_panel_id"/>
 		</xsl:variable>
-		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
+		<!-- <xsl:message>model_params/obj: <xsl:copy-of select="$obj"/></xsl:message> -->
 		<xsl:variable name="type_name" select="@type"/>
 	{
 		id:'<xsl:value-of select="$panel_id"/>'
@@ -105,21 +107,21 @@
 	<!-- para los paneles sin items -->
 
 	<xsl:template match="config" mode="panel"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/>
+		<xsl:if test="position()>1">,</xsl:if><xsl:value-of select="."/>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="items" mode="panel"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
+		<xsl:if test="position()>1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
 	</xsl:template><!--}}}-->
 
 	<!-- para los paneles con default items -->
 
 	<xsl:template match="config"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_items"/></xsl:if>
+		<xsl:if test="position()>1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_items"/></xsl:if>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="items"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
+		<xsl:if test="position()>1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
 	</xsl:template><!--}}}-->
 
 	<xsl:template name="default_items"><!--{{{-->
@@ -130,11 +132,11 @@
 	<!-- para los paneles con column model -->
 
 	<xsl:template match="config" mode="column"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_column"/></xsl:if>
+		<xsl:if test="position()>1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_column"/></xsl:if>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="items" mode="column"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if>
+		<xsl:if test="position()>1">,</xsl:if>
 		cm:new Ext.grid.ColumnModel({
 	    	defaults:{sortable:true,menuDisabled:false,width:100}
 		,columns:[<xsl:apply-templates select="./*" mode="column"/>]})
@@ -148,23 +150,53 @@
 	</xsl:template><!--}}}-->
 
 <!-- paneles por tipo -->
+
+	<xsl:template match="panel[@include]"><!--{{{-->
+
+		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:variable name="obj_name" select="$obj/@name"/>
+
+		<!-- abre archivos de template -->
+		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext.xml')"/>
+		<!--<xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
+
+		<!-- <xsl:message terminate="yes">
+			<xsl:copy-of select="document($template_file)//table[@name=$obj_name]/panel[@id=current()/@include]"/>
+		</xsl:message>-->
+
+		<xsl:variable name="obj_metadata"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
+
+		<!-- <xsl:message><xsl:copy-of select="$obj_metadata"/></xsl:message> -->
+
+		<xsl:apply-templates select="document($template_file)//table[@name=$obj_name]/panel[@id=current()/@include]">
+			<xsl:with-param name="obj" tunnel="yes" select="$obj_metadata/obj"/>
+			<xsl:with-param name="position" select="position()"/>
+		</xsl:apply-templates>
+
+	</xsl:template><!--}}}-->
  
 	<xsl:template match="panel[@type='xpPanel']"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
 
-		<xsl:if test="position()-1">,</xsl:if>new Ext.ux.xpotronix.xpPanel(Ext.apply(
-		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
-		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
+		<xsl:param name="obj" tunnel="yes"/>
+
+		<xsl:variable name="obj_metadata"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
+
+		<xsl:if test="$position>1">,</xsl:if>new Ext.ux.xpotronix.xpPanel(Ext.apply(
+		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj_metadata/obj" tunnel="yes"/></xsl:apply-templates>
+		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj_metadata/obj" tunnel="yes"/></xsl:apply-templates>
 		,{labelWidth:150,bodyStyle:{'background-color':'white','font-size':'13px',padding:'5px'},width:'100%',autoScroll:true}))
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="panel[@type='xpForm']"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
+
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
 		<!-- <xsl:message>en panel/@xpForm, obj/@name:<xsl:value-of select="$obj/obj/@name"/>, panel/@id: <xsl:value-of select="@id"/></xsl:message> -->
-		<xsl:if test="position()-1">,</xsl:if>new Ext.ux.xpotronix.xpForm(Ext.apply(
+		<xsl:if test="$position>1">,</xsl:if> new Ext.ux.xpotronix.xpForm(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{split:true,deferredRender:true,bodyStyle:'padding:5px',width:'100%',labelWidth:150,defaults:{width:400},defaultType:'textfield',autoScroll:true}))
@@ -172,9 +204,10 @@
 
 	<xsl:template match="panel[@type='Form']"><!--{{{--> 
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
-		<xsl:if test="position()-1">,</xsl:if>new Ext.form.FormPanel(Ext.apply(
+		<xsl:if test="$position>1">,</xsl:if>new Ext.form.FormPanel(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"/>
 		,<xsl:apply-templates select="." mode="ui_override"/>
 		,{split:true,deferredRender:true,bodyStyle:'padding:5px',width:'100%',labelWidth:70,defaults:{width:400},defaultType:'textfield',autoScroll:true}))
@@ -183,10 +216,12 @@
 
 	<xsl:template match="panel[@type='xpGrid']"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
+
 		<!-- <xsl:message>en panel/@xpGrid, obj/@name:<xsl:value-of select="$obj/obj/@name"/>, panel/@id: <xsl:value-of select="@id"/></xsl:message>-->
 
-		<xsl:if test="position()-1">,</xsl:if>new Ext.ux.xpotronix.xpGrid(Ext.apply(
+		<xsl:if test="$position>1">,</xsl:if>new Ext.ux.xpotronix.xpGrid(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{layout:'fit',deferredRender:true,split:true,syncSize:true,autoScroll:true
@@ -203,9 +238,10 @@
 
 	<xsl:template match="panel[@type='xpData']"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
-		<xsl:if test="position()-1">,</xsl:if>new Ext.ux.xpotronix.xpData(Ext.apply(
+		<xsl:if test="$position>1">,</xsl:if>new Ext.ux.xpotronix.xpData(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{bodyStyle:'padding:5px 5px 0',defaults:{width:300},width:'100%',autoScroll:true}))
@@ -214,21 +250,23 @@
 
 	<xsl:template match="panel[@type='xpThumbs']"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
-		<xsl:if test="position()-1">,</xsl:if>new Ext.ux.xpotronix.xpThumbs(Ext.apply(
+		<xsl:if test="$position>1">,</xsl:if>new Ext.ux.xpotronix.xpThumbs(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{deferredRender:true,layout:'fit',syncSize:true,autoScroll:true}))
 
-	</xsl:template><!--}}}-->
+	zm</xsl:template><!--}}}-->
 
 	<xsl:template match="panel[@type='Tab']"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
 		<!-- <xsl:message>en Tab, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message> -->
-		<xsl:if test="position()-1">,</xsl:if>new Ext.TabPanel(Ext.apply(
+		<xsl:if test="$position>1">,</xsl:if>new Ext.TabPanel(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{layoutOnTabChange:true,activeTab:0,defaults:{hideMode:'offsets'}}))
@@ -236,10 +274,11 @@
 
 	<xsl:template match="panel[@type='Viewport']"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
 		<xsl:message>en Viewport, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message>
-		<xsl:if test="position()-1">,</xsl:if>new Ext.Viewport(Ext.apply(
+		<xsl:if test="$position>1">,</xsl:if>new Ext.Viewport(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{stateful:true,layout:'border',stateful: true,layout: 'border',deferredRender: true}))
@@ -247,10 +286,11 @@
 
 	<xsl:template match="panel[@type='Window']"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
 		<xsl:message>en Window, obj/@name: <xsl:value-of select="$obj/obj/@name"/></xsl:message>
-		<xsl:if test="position()-1">,</xsl:if>new Ext.Window(Ext.apply(
+		<xsl:if test="$position>1">,</xsl:if>new Ext.Window(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{
@@ -267,10 +307,10 @@
 		))
 	</xsl:template><!--}}}-->
 
-
 	<xsl:template match="panel[@type='xpUploadPanel']"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_object_local"/></xsl:variable>
+		<xsl:param name="position" select="position()"/>
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
 		<xsl:variable name="panel_id">
 			<xsl:choose>
@@ -278,7 +318,7 @@
 				<xsl:otherwise><xsl:value-of select="concat($obj/obj/@name,'_',@type)"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:if test="position()-1">,</xsl:if>new Ext.ux.xpotronix.xpUploadPanel(Ext.apply(
+		<xsl:if test="$position>1">,</xsl:if>new Ext.ux.xpotronix.xpUploadPanel(Ext.apply(
 		<xsl:apply-templates select="." mode="model_params"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{xtype:'<xsl:value-of select="@type"/>'
 		,buttonsAt:'tbar'
@@ -327,7 +367,7 @@
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="standalone" tunnel="yes"/>
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj/@name"/></xsl:message> -->
-		<xsl:if test="position()-1">,</xsl:if><xsl:apply-templates select="." mode="sub"></xsl:apply-templates>
+		<xsl:if test="position()>1">,</xsl:if><xsl:apply-templates select="." mode="sub"></xsl:apply-templates>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="cmp[not(@ref)]" mode="sub"><!--{{{-->
@@ -374,18 +414,34 @@
 		<xsl:value-of select="$panel_id"/>
 	</xsl:template><!--}}}-->
 
- 	<xsl:template match="panel" mode="get_object_local"><!--{{{-->
+	<xsl:template match="panel" mode="get_obj_metadata"><!--{{{-->
+
 		<xsl:param name="obj" tunnel="yes"/>
+		<!-- <xsl:message>OBJECT: <xsl:copy-of select="$obj/@name"/></xsl:message> -->
+
 		<xsl:variable name="obj_name">
 			<xsl:choose>
-				<xsl:when test="@obj"><xsl:value-of select="@obj"/></xsl:when>
-				<xsl:when test="$obj"><xsl:value-of select="$obj/@name"/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="parent::*[name()='obj']/@name"/></xsl:otherwise>
+				<xsl:when test="@obj">
+					<!-- <xsl:message>@obj</xsl:message> -->
+					<xsl:value-of select="@obj"/>
+				</xsl:when>
+				<xsl:when test="$obj">
+					<!-- <xsl:message>$obj</xsl:message> -->
+					<xsl:value-of select="$obj/@name"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<!-- <xsl:message>otherwise</xsl:message> -->
+					<xsl:value-of select="parent::*[name()='obj']/@name"/>
+				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<!-- <xsl:message>obj_local_name: <xsl:value-of select="$obj_name"/></xsl:message> -->
-		<xsl:copy-of select="//*:metadata/obj[@name=$obj_name][1]"/>
-		<!-- <xsl:message>obj: <xsl:copy-of select="//*:metadata/obj[@name=$obj_name]"/></xsl:message> -->
+
+		<!-- <xsl:message>get_obj_metadata: obj_name: <xsl:value-of select="$obj_name"/>, panel_type: <xsl:value-of select="@type"/>, panel_id: <xsl:value-of select="@id"/>, panel_include: <xsl:value-of select="@include"/></xsl:message> -->
+		<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
+
+		<xsl:sequence select="$metadata/obj[@name=$obj_name]"/>
+		<!-- <xsl:message>obj: <xsl:copy-of select="$metadata/obj[@name=$obj_name]"/></xsl:message> -->
+
 	</xsl:template><!--}}}-->
 
 </xsl:stylesheet>

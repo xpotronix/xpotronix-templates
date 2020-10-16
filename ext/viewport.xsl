@@ -38,16 +38,19 @@
 
 	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
 
-	<xsl:param name="root_obj" select="//*:metadata/obj[1]"/>
-	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
-	<xsl:param name="current_user" select="//*:session/users/user_username"/>
-	<xsl:param name="anon_user" select="//*:session/users/_anon"/>
-
 	<xsl:variable name="session" select="//*:session"/>
+	<xsl:variable name="metadata" select="//*:metadata"/>
+	<xsl:variable name="model" select="//*:model"/>
+
+	<xsl:param name="root_obj" select="$metadata/obj[1]"/>
+	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
+	<xsl:param name="current_user" select="$session/users/user_username"/>
+	<xsl:param name="anon_user" select="$session/users/_anon"/>
+
 
 	<xsl:template match="/"><!--{{{-->
-		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
-		<!-- <xsl:message terminate="yes"><xsl:value-of select="//*:metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
+		<!-- <xsl:message><xsl:value-of select="$session/sessions/user_id"/>:<xsl:value-of select="$session/sessions/session_id"/></xsl:message> -->
+		<!-- <xsl:message terminate="yes"><xsl:value-of select="$metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
 		<xsl:apply-templates/>
 	</xsl:template><!--}}}-->
 
@@ -82,7 +85,7 @@
 
 	<xsl:template match="*:document" mode="application_context"><!--{{{-->
 	
-		<xsl:apply-templates select="*:metadata/obj" mode="divs"/>
+		<xsl:apply-templates select="$metadata/obj" mode="divs"/>
 		<xsl:apply-templates select="." mode="application"/>
 
 	</xsl:template><!--}}}-->
@@ -92,7 +95,7 @@
 
 	<xsl:variable name="code">
 
-	<xsl:if test="//xpotronix:session/var/EVENTS_MONITOR=1">
+	<xsl:if test="$session/var/EVENTS_MONITOR=1">
 		<xsl:call-template name="events_monitor"/>
 	</xsl:if>
 
@@ -100,14 +103,14 @@
 
         var fm = Ext.form, Ed = Ext.grid.GridEditor;
 
-	<xsl:if test="//xpotronix:session/feat/theme">
-		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>");
+	<xsl:if test="$session/feat/theme">
+		Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="$session/feat/theme"/>");
 	</xsl:if>
 
 
 	Ext.Ajax.timeout = 60000;	
 
-	var config_App = {state_manager:'http',  var:{<xsl:apply-templates select="//*:session/var/*" mode="json-hash"/>}, feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
+	var config_App = {state_manager:'http',  var:{<xsl:apply-templates select="$session/var/*" mode="json-hash"/>}, feat:<xsl:call-template name="app-config"/>,user:<xsl:call-template name="user-session"/>};
 
 	if ( App ) {
 
@@ -128,7 +131,7 @@
 	wait.show();
 
 	<xsl:if test="$menu_bar='true'">
-	App.menu = new Ext.Toolbar( <xsl:apply-templates select="//xpotronix:session/menu"/> );
+	App.menu = new Ext.Toolbar( <xsl:apply-templates select="$session/menu"/> );
 	/*
 	Ext.Ajax.request({
 		url: '?a=menu&amp;v=ext/menubar',
@@ -145,16 +148,22 @@
 	*/
 	</xsl:if>
 
+	/* STORES */
 	<xsl:apply-templates select="*:model" mode="stores"/>
+	/* STORES ENDS */
 
-	<xsl:apply-templates select="*:metadata/obj" mode="config"/>
+	/* CONFIG */
+	<xsl:apply-templates select="$metadata/obj" mode="config"/>
+	/* CONFIG ENDS */
 
-	<xsl:apply-templates select="*:metadata/obj" mode="panels"/>
+	/* PANELS */
+	<xsl:apply-templates select="$metadata/obj" mode="panels"/>
+	/* PANELS ENDS */
 
 		var events_js = false;
 
-			<xsl:if test="*:metadata/obj/files/file[@type='js' and @mode='events']">	
-			Ext.Loader.load([<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>], 
+			<xsl:if test="$metadata/obj/files/file[@type='js' and @mode='events']">	
+			Ext.Loader.load([<xsl:apply-templates select="$metadata/obj/files/file[@type='js' and @mode='events']" mode="include-array-js"/>], 
 				function() {
 					App.fireEvent( 'configready' );
 				});
@@ -164,9 +173,9 @@
 		App.on( 'configready', function() {
 
 			<xsl:choose>
-				<xsl:when test="//*:model/obj/layout">
-					<xsl:apply-templates select="//*:model/obj/layout">
-						<xsl:with-param name="obj" select="//*:metadata/obj[1]" tunnel="yes"/>
+				<xsl:when test="$model/obj/layout">
+					<xsl:apply-templates select="$model/obj/layout">
+						<xsl:with-param name="obj" select="$metadata/obj[1]" tunnel="yes"/>
 						<xsl:with-param name="standalone" select="true()"/>
 					</xsl:apply-templates>
 				</xsl:when>
@@ -184,7 +193,7 @@
 		events_js || App.fireEvent( 'configready' );
 
 
-		var post_render_js = [<xsl:apply-templates select="*:metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>];
+		var post_render_js = [<xsl:apply-templates select="$metadata/obj/files/file[@type='js' and @mode='post_render']" mode="include-array-js"/>];
 
 		if ( post_render_js.length ) 
 			Ext.Loader.load( post_render_js );
@@ -198,7 +207,7 @@
 		
 	<script type="text/javascript">
 	<xsl:choose>
-		<xsl:when test="//xpotronix:session/var/UNNORMALIZED=1">
+		<xsl:when test="$session/var/UNNORMALIZED=1">
 			<xsl:value-of select="$code" disable-output-escaping="yes"/>
 		</xsl:when>
 		<xsl:otherwise>
@@ -214,7 +223,7 @@
 
 <script type="text/javascript">
 Ext.namespace( 'App' );
-var App = new Ext.ux.xpotronix.xpApp( {var:{<xsl:apply-templates select="//*:session/var/*" mode="json-hash"/>}, feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> } );
+var App = new Ext.ux.xpotronix.xpApp( {var:{<xsl:apply-templates select="$session/var/*" mode="json-hash"/>}, feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> } );
 
 Ext.onReady(function(){
 
@@ -240,6 +249,3 @@ Ext.onReady(function(){
 	</xsl:template><!--}}}-->
 
 </xsl:stylesheet>
-
-<!-- vim: foldmethod=marker sw=3 ts=8 ai: 
--->

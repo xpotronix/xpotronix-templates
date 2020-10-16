@@ -188,15 +188,24 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 	
 	},/*}}}*/ 
 
-	accessible: function( arr ) {/*{{{*/
+	accessible: function( arr = [] ) {/*{{{*/
 
-		var ret = [];
+		let ret = [],
+		me = this;
 
 		Ext.each( arr, function( a ) { 
 
-			// DEBUG: poner accesos en acl en juscaba2
-			( a.acl.access || this.feat.application == 'juscaba2' ) && 
-				ret.push( a ); 
+		   	let cmp = Ext.getCmp( a );
+
+		   	if ( !cmp ) {
+				console.error(`no encuentro el componente [${a}]`);	
+			} else {
+			
+			   // DEBUG: poner accesos en acl en juscaba2
+			   ( cmp.acl.access || me.feat.application == 'juscaba2' ) && 
+				   ret.push( a ); 
+			}
+
 		}, this );
 
 		return ret;
@@ -732,5 +741,3 @@ Ext.extend( Ext.ux.xpotronix.xpApp, Ext.util.Observable, {
 }); // extend
 
 Ext.reg('xpApp', Ext.ux.xpotronix.xpApp );
-
-// vim600: fdm=marker sw=3 ts=8 ai:

@@ -71,7 +71,7 @@
 			,id:'iframe'
 			,xtype:'panel'
 			,layout:'fit'
-			,defaultSrc:'<xsl:value-of select="//*:session/feat/defaultSrc"/>'
+			,defaultSrc:'<xsl:value-of select="$session/feat/defaultSrc"/>'
 			/*,border:true*/
 			/*,title:'&#160;'*/
 		}]
@@ -98,9 +98,8 @@
 	<xsl:variable name="obj_name" select="$panels/panel[1]/@obj_name"/>
 	<!-- <xsl:message><xsl:value-of select="$obj_name"/></xsl:message> -->
 
-
-        <xsl:variable name="menu_bar" select="xp:get_feat(//*:metadata/obj[1],'menu_bar')"/>
-	<xsl:variable name="messages_panel" select="xp:get_feat(//*:metadata/obj[1],'messages_panel')"/>
+    <xsl:variable name="menu_bar" select="xp:get_feat($metadata/obj[1],'menu_bar')"/>
+	<xsl:variable name="messages_panel" select="xp:get_feat($metadata/obj[1],'messages_panel')"/>
        
 	<xsl:variable name="top_margin">
 		<xsl:choose>
@@ -166,7 +165,10 @@
 				/* collapsible: true, 
 				collapseMode:'mini',*/
 				activeTab:0,
-                  		items: App.accessible( [ <xsl:apply-templates select="$panels//*[@obj_name=$obj_name and @region='']|$panels//*[@region=$region]" mode="panel_list"/> ] )
+				items: App.accessible( [ 
+					<xsl:apply-templates 
+						select="$panels//*[@obj_name=$obj_name and @region='']|$panels//*[@region=$region]"
+						mode="panel_list"/> ])
                 })
 
 		<xsl:if test="count($panels//*[@obj_name!=$obj_name])">
@@ -218,7 +220,7 @@
 		</xsl:choose>
 	</xsl:variable>
 
-        <xsl:variable name="menu_bar" select="xp:get_feat(//*:metadata/obj[1],'menu_bar')"/>
+        <xsl:variable name="menu_bar" select="xp:get_feat($metadata/obj[1],'menu_bar')"/>
        
 	<xsl:variable name="top_margin">
 		<xsl:choose>
@@ -321,14 +323,14 @@ var cardWizard = {
 
 	<xsl:template match="panel" mode="panel_list"><!--{{{-->
 
-		<!-- <xsl:message>panel_list: <xsl:sequence select="."/></xsl:message> -->
 		<xsl:variable name="panel_id">
 	               <xsl:choose>
+        	               <xsl:when test="@include"><xsl:value-of select="@include"/></xsl:when>
+        	               <xsl:when test="@name"><xsl:value-of select="@name"/></xsl:when>
         	               <xsl:when test="@id"><xsl:value-of select="@id"/></xsl:when>
                 	       <xsl:otherwise><xsl:value-of select="concat(@obj_name,'_',@type)"/></xsl:otherwise>
 	               </xsl:choose>
-		</xsl:variable>
-		Ext.getCmp('<xsl:value-of select="$panel_id"/>')<xsl:if test="position()!=last()">,</xsl:if>	
+		</xsl:variable>'<xsl:value-of select="$panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if>
 	</xsl:template><!--}}}-->
 
 </xsl:stylesheet>

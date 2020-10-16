@@ -94,7 +94,7 @@
 		<!-- ux -->
 
 		<xsl:choose>
-			<xsl:when test="//*:session/var/EXT_DEBUG=1">
+			<xsl:when test="$session/var/EXT_DEBUG=1">
 			    	<script type="text/javascript" src="/ext/examples/ux/ux-all-debug.js"></script>
 			</xsl:when>
 			<xsl:otherwise>
@@ -161,7 +161,7 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="file" mode="include-js"><!--{{{-->
-		<xsl:variable name="base_dir" select="substring-before(substring-after(//xpotronix:session/server/PHP_SELF,'/'),'/')"/>
+		<xsl:variable name="base_dir" select="substring-before(substring-after($session/server/PHP_SELF,'/'),'/')"/>
 		<xsl:element name="script">
 			<xsl:attribute name="type" select="'text/javascript'"/>
 			<xsl:attribute name="src" select="@name"/>

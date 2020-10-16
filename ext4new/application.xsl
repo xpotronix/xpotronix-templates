@@ -28,7 +28,6 @@
 
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 
-
 	<xsl:apply-templates select="." mode="defines_all_files">
 		<xsl:with-param name="to_file" select="true()" tunnel="yes"/>
 	</xsl:apply-templates>
@@ -315,5 +314,5 @@ Ext.onReady(function(){
 
 </xsl:stylesheet>
 
-<!-- vim: foldmethod=marker sw=3 ts=8 ai: 
+<!-- vim: foldmethod=marker sw=3 ts=4 ai: 
 -->
