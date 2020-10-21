@@ -21,6 +21,8 @@
 	<xsl:template match="panel" mode="model_params"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:param name="display" tunnel="yes" select="@display"/>
+
 		<xsl:variable name="panel_id">
 			<xsl:apply-templates select="." mode="get_panel_id"/>
 		</xsl:variable>
@@ -34,7 +36,7 @@
 		/* ,xtype:'<xsl:value-of select="@type"/>' */
 		,store:App.store.item('<xsl:value-of select="$obj/@name"/>')
 		,feat:<xsl:apply-templates select="$obj" mode="feats"/>
-		,display_as:'<xsl:value-of select="@display"/>'
+		,display_as:'<xsl:value-of select="$display"/>'
                 ,title:'<xsl:apply-templates select="." mode="translate"/>'
 	}</xsl:template><!--}}}-->
 
@@ -178,6 +180,7 @@
 				<xsl:apply-templates select="$panels">
 					<xsl:with-param name="obj" tunnel="yes" select="$obj_metadata/obj"/>
 					<xsl:with-param name="position" select="position()"/>
+					<xsl:with-param name="display" select="@display" tunnel="yes"/>
 				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>

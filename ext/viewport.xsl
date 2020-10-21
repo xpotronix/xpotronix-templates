@@ -47,6 +47,9 @@
 	<xsl:param name="current_user" select="$session/users/user_username"/>
 	<xsl:param name="anon_user" select="$session/users/_anon"/>
 
+	<!-- abre archivos de template -->
+	<xsl:variable name="template_ext_ui" select="concat($session/feat/base_path,'/templates/ext/ui.xml')"/>
+
 
 	<xsl:template match="/"><!--{{{-->
 		<!-- <xsl:message><xsl:value-of select="$session/sessions/user_id"/>:<xsl:value-of select="$session/sessions/session_id"/></xsl:message> -->
@@ -160,6 +163,11 @@
 	<xsl:apply-templates select="$metadata/obj" mode="panels"/>
 	/* PANELS ENDS */
 
+	<xsl:variable name="layout" 
+		select="document($template_ext_ui)/application/table[@name=$root_obj/@name]/layout"/>
+
+	<!-- <xsl:message terminate="yes">layout:<xsl:copy-of select="$layout"/></xsl:message> -->
+
 		var events_js = false;
 
 			<xsl:if test="$metadata/obj/files/file[@type='js' and @mode='events']">	
@@ -170,9 +178,17 @@
 			var events_js = true;
 			</xsl:if>
 
-		App.on( 'configready', function() {
+			App.on( 'configready', function() {
 
 			<xsl:choose>
+
+				<xsl:when test="$layout">
+					<xsl:apply-templates select="$layout">
+						<xsl:with-param name="obj" select="$metadata/obj[1]" tunnel="yes"/>
+						<xsl:with-param name="standalone" select="true()"/>
+					</xsl:apply-templates>
+				</xsl:when>
+
 				<xsl:when test="$model/obj/layout">
 					<xsl:apply-templates select="$model/obj/layout">
 						<xsl:with-param name="obj" select="$metadata/obj[1]" tunnel="yes"/>

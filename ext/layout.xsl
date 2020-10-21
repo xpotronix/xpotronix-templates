@@ -316,9 +316,11 @@ var cardWizard = {
 
 	<xsl:template match="layout"><!--{{{-->
 		<xsl:variable name="obj_name" select="../@name"/>
+		/* LAYOUT START */
 		<xsl:apply-templates select="*">
 			<xsl:with-param name="obj_name" select="$obj_name"/>
-		</xsl:apply-templates>;
+		</xsl:apply-templates>; 
+		/* LAYOUT ENDS */
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="panel" mode="panel_list"><!--{{{-->
