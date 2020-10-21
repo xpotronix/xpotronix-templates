@@ -157,8 +157,8 @@
 		<xsl:variable name="obj_name" select="$obj/@name"/>
 
 		<!-- abre archivos de template -->
-		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext.xml')"/>
-		<!--<xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
+		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext/ui.xml')"/>
+		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
 
 		<!-- <xsl:message terminate="yes">
 			<xsl:copy-of select="document($template_file)//table[@name=$obj_name]/panel[@id=current()/@include]"/>
@@ -166,12 +166,24 @@
 
 		<xsl:variable name="obj_metadata"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
-		<!-- <xsl:message><xsl:copy-of select="$obj_metadata"/></xsl:message> -->
+		<!-- <xsl:if test="$obj_metadata/obj/@name='_licencia'">
+			<xsl:message terminate="yes"><xsl:copy-of select="$obj_metadata"/></xsl:message>
+		</xsl:if> -->
 
-		<xsl:apply-templates select="document($template_file)//table[@name=$obj_name]/panel[@id=current()/@include]">
-			<xsl:with-param name="obj" tunnel="yes" select="$obj_metadata/obj"/>
-			<xsl:with-param name="position" select="position()"/>
-		</xsl:apply-templates>
+		<xsl:variable name="panels" 
+			select="document($template_file)/application/table[@name=$obj_name]//panel[@id=current()/@include]"/>
+
+		<xsl:choose>
+			<xsl:when test="count($panels)">
+				<xsl:apply-templates select="$panels">
+					<xsl:with-param name="obj" tunnel="yes" select="$obj_metadata/obj"/>
+					<xsl:with-param name="position" select="position()"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>no encontre paneles para include: <xsl:value-of select="@include"/></xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
 
 	</xsl:template><!--}}}-->
  
@@ -258,7 +270,7 @@
 		,<xsl:apply-templates select="." mode="ui_override"><xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/></xsl:apply-templates>
 		,{deferredRender:true,layout:'fit',syncSize:true,autoScroll:true}))
 
-	zm</xsl:template><!--}}}-->
+	</xsl:template><!--}}}-->
 
 	<xsl:template match="panel[@type='Tab']"><!--{{{-->
 
@@ -439,7 +451,38 @@
 		<!-- <xsl:message>get_obj_metadata: obj_name: <xsl:value-of select="$obj_name"/>, panel_type: <xsl:value-of select="@type"/>, panel_id: <xsl:value-of select="@id"/>, panel_include: <xsl:value-of select="@include"/></xsl:message> -->
 		<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 
-		<xsl:sequence select="$metadata/obj[@name=$obj_name]"/>
+
+		<!-- abre archivos de template -->
+		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext/ui.xml')"/>
+		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
+
+		<xsl:element name="obj" namespace="">
+
+			<xsl:copy-of select="$metadata/obj[@name=$obj_name]/@*"/>
+
+			<xsl:for-each select="$metadata/obj[@name=$obj_name]/attr">
+
+				<xsl:element name="attr" namespace="">
+					<xsl:attribute name="comment" select="'esto esta agregado'"/>
+					<xsl:copy-of select="@*"/>
+
+					<xsl:copy-of select="*"/>
+
+					<xsl:variable name="attr_ui" select="document($template_file)/application/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
+
+					<xsl:if test="$attr_ui">
+						<!-- <xsl:message>overrides ui: <xsl:copy-of select="$attr_ui"/></xsl:message>
+						<xsl:message terminate="yes"><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
+						<xsl:copy-of select="$attr_ui"/>
+					</xsl:if>
+
+
+				</xsl:element>
+
+			</xsl:for-each>
+
+		</xsl:element>
+
 		<!-- <xsl:message>obj: <xsl:copy-of select="$metadata/obj[@name=$obj_name]"/></xsl:message> -->
 
 	</xsl:template><!--}}}-->

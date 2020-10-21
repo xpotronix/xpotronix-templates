@@ -25,6 +25,14 @@
 	<xsl:template match="obj" mode="store"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>
 
+		<!-- abre archivos de template -->
+		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext/ui.xml')"/>
+
+		<xsl:variable name="config" 
+			select="document($template_file)/application/table[@name=$obj_name]/config/text()"/>
+
+		<!-- <xsl:message>$config: <xsl:copy-of select="$config"/></xsl:message> -->
+
 		App.store.add( tmp = new Ext.ux.xpotronix.xpStore( Ext.apply( 
 			{ 
 			storeId: '<xsl:value-of select="@name"/>'
@@ -48,14 +56,14 @@
 
 			,pageSize: <xsl:value-of select="xp:get_feat(.,'page_rows')"/>
 			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>
-		 	,rs:  Ext.data.Record.create([
+		 	,rs:Ext.data.Record.create([
 				{name: '__ID__', mapping: '@ID', type: 'string'},
 				{name: '__new__', mapping: '@new', type: 'int'},
 				{name: '__acl__', mapping: '@acl', type: 'string'},
 				<xsl:apply-templates select="$metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
 					<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
-			])},{<xsl:value-of select="config"/>})
+			])},{<xsl:value-of select="$config"/>})
 		));
 
 		<xsl:if test="../name()='obj'">
