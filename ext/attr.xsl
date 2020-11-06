@@ -348,6 +348,12 @@
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose>))</xsl:template><!--}}}-->
 
+<xsl:template match="editor[ancestor::*/@type='xpjson']"><!--{{{-->
+<xsl:param name="attr" tunnel="yes"/>
+<xsl:if test="position()>1">,</xsl:if>editor:new Ed(new fm.TextArea(<xsl:choose>
+	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
+	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose>))</xsl:template><!--}}}-->
+
 <xsl:template match="editor[ancestor::*/@type='xpint']"><!--{{{-->
 <xsl:if test="position()>1">,</xsl:if>editor:new Ed(new fm.NumberField(<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
