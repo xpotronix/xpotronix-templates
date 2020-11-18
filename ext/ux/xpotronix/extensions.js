@@ -4,6 +4,45 @@ var MD5 = function(s){function L(k,d){return(k<<d)|(k>>>(32-d))}function K(G,k){
 
 
 
+/* funciones complementarias */
+
+/* String.compose para templates js 
+ * 
+ * ej: 
+ * var a = "<td>{{valor}}</td>";
+ * a.compose({'valor':7});
+ * 
+ * */
+
+String.prototype.compose = (function () {//{{{
+	var re = /\{{(.+?)\}}/g;
+	return function (o){
+        	return this.replace(re, function (_, k){
+                    return typeof o[k] != 'undefined' ? o[k] : '';
+		});
+	}
+}());//}}} 
+
+String.prototype.escapeSpecialChars = function() {//{{{
+	    return this.replace(/\\n/g, "\\n")
+	               .replace(/\\'/g, "\\'")
+	               .replace(/\\"/g, '\\"')
+	               .replace(/\\&/g, "\\&")
+	               .replace(/\\r/g, "\\r")
+	               .replace(/\\t/g, "\\t")
+	               .replace(/\\b/g, "\\b")
+	               .replace(/\\f/g, "\\f");
+};//}}}
+
+String.prototype.addSlashes = function() {//{{{
+	return this.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+};//}}}
+
+String.prototype.stripSlashes = function() {//{{{
+	return this.replace(/\\(.?)/g, function (s, n1){switch (n1){case '\\':return '\\';case '0':return '\u0000';case '':return '';default:return n1;}});
+};//}}}
+
+
 
 Ext.chromeVersion = Ext.isChrome ? parseInt(( /chrome\/(\d{2})/ ).exec(navigator.userAgent.toLowerCase())[1],10) : NaN;
 
