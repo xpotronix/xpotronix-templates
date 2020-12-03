@@ -97,7 +97,15 @@ Ext.extend( Ext.ux.xpotronix.xpPanel, Ext.Panel, {
 
 		if ( this.body ) 
 			if ( r ) 
-				this.load({ url: '?', params: Ext.apply({ m: App.feat.module, r: this.obj.class_name, v: 'card', 'f[include_dataset]': 2, 'f[transform]': 'php' }, s.get_search_key( s.get_primary_key() ))});
+				this.load({ 
+					url: '?', 
+					params: Ext.apply({ 
+						m: App.feat.module, 
+						r: this.obj.class_name, 
+						v: 'card', 
+						'f[include_dataset]': 2, 
+						'f[transform]': 'php' }, 
+						s.get_search_key( s.get_primary_key() ))});
 			else 
 				this.update('');
 

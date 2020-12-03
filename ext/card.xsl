@@ -34,7 +34,7 @@
 		
 		<div class="x-form-item">
 			<label class="x-form-item-label">
-				<xsl:apply-templates select="//xpotronix:metadata/obj[@name=$obj_name]/attr[@name=$attr_name]" mode="translate"/>
+				<xsl:apply-templates select="$metadata/obj[@name=$obj_name]/attr[@name=$attr_name]" mode="translate"/>
 			</label><div class="x-form-element">
 				<xsl:choose>
 					<xsl:when test="@label"><xsl:value-of select="@label"/></xsl:when>

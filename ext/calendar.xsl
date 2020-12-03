@@ -34,7 +34,7 @@
 </xsl:text>
 <html>
 <head>
-	<title id="page-title"><xsl:value-of select="//*:session/feat/page_title"/></title>
+	<title id="page-title"><xsl:value-of select="$session/feat/page_title"/></title>
 
 	<xsl:apply-templates select="." mode="meta"/>
 	<xsl:apply-templates select="." mode="title"/>
@@ -48,17 +48,17 @@
 
 </head>
 <body>
-	<xsl:variable name="obj" select="//xpotronix:metadata/obj[1]"/>
+	<xsl:variable name="obj" select="$metadata/obj[1]"/>
 	<xsl:variable name="login_window" select="xp:get_feat($obj,'login_window')"/>
 	<xsl:message>login_window: <xsl:value-of select="$login_window"/></xsl:message>
-	<xsl:message><xsl:value-of select="//xpotronix:session/sessions/user_id"/>:<xsl:value-of select="//xpotronix:session/sessions/session_id"/></xsl:message>
-	<xsl:if test="//xpotronix:session/feat/theme">
+	<xsl:message><xsl:value-of select="$session/sessions/user_id"/>:<xsl:value-of select="$session/sessions/session_id"/></xsl:message>
+	<xsl:if test="$session/feat/theme">
 	<script type="text/javascript">
-		/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="//xpotronix:session/feat/theme"/>"); */
+		/* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="$session/feat/theme"/>"); */
 	</script>
 	</xsl:if>
 	<xsl:choose>
-	<xsl:when test="($login_window='true') and (number(//xpotronix:session/sessions/user_id) le 0)">
+	<xsl:when test="($login_window='true') and (number($session/sessions/user_id) le 0)">
 	<script type="text/javascript" src="/ux/xpotronix/xpApp.js"></script>
 	<script type="text/javascript">
 		Ext.onReady(function(){

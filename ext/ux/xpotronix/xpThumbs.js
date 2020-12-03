@@ -41,12 +41,20 @@ Ext.ux.xpotronix.xpThumbs = function(config) {
 
 		prepareData: function(data){
 
-			debugger;
+			if ( App.feat.application.substring(0,8) == 'fotoshow' ) {
 
-			data.image_url = App.feat.uri_thumb + data.ID + '&wp=100&hl=100&ar=x';
-			data.full_path = data.imagen || data.dirname + '/' + data.basename;
-			data.thumb_image = data.basename;
-			// data.thumb_image = data.dirname + '/' + data.basename;
+				data.image_url = App.feat.uri_thumb + data.dirname + '/' + data.basename  + '&wp=100&hl=100&ar=x';
+				data.full_path = data.imagen || data.dirname + '/' + data.basename;
+				data.thumb_image = data.basename;
+				// data.thumb_image = data.dirname + '/' + data.basename;
+			
+			} else {
+
+				data.image_url = App.feat.uri_thumb + data.ID + '&wp=100&hl=100&ar=x';
+				data.full_path = data.imagen || data.dirname + '/' + data.basename;
+				data.thumb_image = data.basename;
+				// data.thumb_image = data.dirname + '/' + data.basename;
+			}
 
 			return data;
 		}

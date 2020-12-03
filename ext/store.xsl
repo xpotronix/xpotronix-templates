@@ -25,6 +25,14 @@
 	<xsl:template match="obj" mode="store"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>
 
+		<!-- abre archivos de template -->
+		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext/ui.xml')"/>
+
+		<xsl:variable name="config" 
+			select="document($template_file)/application/table[@name=$obj_name]/config/text()"/>
+
+		<!-- <xsl:message>$config: <xsl:copy-of select="$config"/></xsl:message> -->
+
 		App.store.add( tmp = new Ext.ux.xpotronix.xpStore( Ext.apply( 
 			{ 
 			storeId: '<xsl:value-of select="@name"/>'
@@ -35,7 +43,7 @@
 			,parent_store: App.store.item( '<xsl:value-of select="../@name"/>' )
 			</xsl:if>
 			,feat: <xsl:apply-templates select="." mode="feats"/>
-			,acl: {<xsl:apply-templates select="//*:metadata/obj[@name=$obj_name]/acl"/>}
+			,acl: {<xsl:apply-templates select="$metadata/obj[@name=$obj_name]/acl"/>}
 
 			<xsl:if test="foreign_key">
 			,foreign_key: [<xsl:apply-templates select="foreign_key/ref"/>]
@@ -48,14 +56,14 @@
 
 			,pageSize: <xsl:value-of select="xp:get_feat(.,'page_rows')"/>
 			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>
-		 	,rs:  Ext.data.Record.create([
+		 	,rs:Ext.data.Record.create([
 				{name: '__ID__', mapping: '@ID', type: 'string'},
 				{name: '__new__', mapping: '@new', type: 'int'},
 				{name: '__acl__', mapping: '@acl', type: 'string'},
-				<xsl:apply-templates select="//xpotronix:metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
+				<xsl:apply-templates select="$metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
 					<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
-			])},{<xsl:value-of select="config"/>})
+			])},{<xsl:value-of select="$config"/>})
 		));
 
 		<xsl:if test="../name()='obj'">
@@ -95,7 +103,7 @@
 		,primary_key: ['id'] 
 		,parent_store: App.store.item( '<xsl:value-of select="$parent_obj_name"/>' )
 		<!-- DEBUG: aca hago piruetas para obtener el nombre del atributo que posee este eh. Hay que cambiar a fk -->
-		,foreign_key: [{local:'id',remote:'<xsl:value-of select="//xpotronix:metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}]
+		,foreign_key: [{local:'id',remote:'<xsl:value-of select="$metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}]
 		,foreign_key_type: 'parent'
 		,remoteSort: true 
 		,pageSize: 20
