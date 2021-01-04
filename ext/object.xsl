@@ -105,7 +105,7 @@
 		</xsl:if>
 
 		<xsl:variable name="process" 
-			select="document($processes_file)/application/table[@name=$obj_name]//process[@name=current()/@name]"/>
+			select=".|document($processes_file)/application/table[@name=$obj_name]//process[@name=current()/@name]"/>
 
 		<xsl:choose>
 			<xsl:when test="count($process)">
@@ -130,9 +130,11 @@
 	</xsl:template><!--}}}-->
 	
 	<xsl:template match="dialog"><!--{{{-->
+
+		<xsl:message><xsl:copy-of select=".."/></xsl:message>
 		,dialog: { fn: function( selections, command, item ) {
 
-			var obj = App.obj.item('<xsl:value-of select="../../@name"/>');
+			var obj = this;
 			var panel_id = '<xsl:apply-templates select="*[1]" mode="get_panel_id"/>';
 
 			var panel = obj.panels.item( panel_id );
