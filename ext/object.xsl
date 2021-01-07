@@ -131,7 +131,7 @@
 	
 	<xsl:template match="dialog"><!--{{{-->
 
-		<xsl:message><xsl:copy-of select=".."/></xsl:message>
+			<!-- <xsl:message><xsl:copy-of select=".."/></xsl:message> -->
 		,dialog: { fn: function( selections, command, item ) {
 
 			var obj = this;
