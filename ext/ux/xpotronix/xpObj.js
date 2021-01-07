@@ -68,16 +68,19 @@ Ext.extend( Ext.ux.xpotronix.xpObj, Ext.Component, {
 
 		var command = function( params ){
 
-			params = params | {};
+			/* NUEVO */
 
-	                App.process_request( Ext.apply({
+			params = { ...{
 
-        	                m: obj.class_name,
-                	        a: 'process',
-				p: item.value,
-	                        x: obj.serialize_selections( selections )
+					m: obj.class_name,
+					a: 'process',
+					p: item.value,
+					x: obj.serialize_selections( selections )
 
-                	}, item.params ), item.params.callback );
+			}, ...item.params, ...params };
+
+			App.process_request( params, params.callback );
+
 		}; 
 
 		var ret = false;
