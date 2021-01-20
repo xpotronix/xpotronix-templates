@@ -120,16 +120,18 @@
 
 		<!-- xpotronix -->
 
-		<script type="text/javascript" src="/ux/xpotronix/xpApp.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpObj.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpStore.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpGrid.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpGridDropZone.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpGridFilter.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpForm.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/xpPanel.js"/>
+		<xsl:variable name="timestamp" select="date:date-time()"/>
 
-		<script type="text/javascript" src="/ux/xpotronix/xpFilterRow.js"></script>
+		<script type="text/javascript" src="/ux/xpotronix/xpApp.js?t={$timestamp}"/>
+		<script type="text/javascript" src="/ux/xpotronix/xpObj.js?t={$timestamp}"/>
+		<script type="text/javascript" src="/ux/xpotronix/xpStore.js?t={$timestamp}"/>
+		<script type="text/javascript" src="/ux/xpotronix/xpGrid.js?t={$timestamp}"/>
+		<script type="text/javascript" src="/ux/xpotronix/xpGridDropZone.js?t={$timestamp}"/>
+		<script type="text/javascript" src="/ux/xpotronix/xpGridFilter.js?t={$timestamp}"/>
+		<script type="text/javascript" src="/ux/xpotronix/xpForm.js?t={$timestamp}"/>
+		<script type="text/javascript" src="/ux/xpotronix/xpPanel.js?t={$timestamp}"/>
+
+		<script type="text/javascript" src="/ux/xpotronix/xpFilterRow.js?t={$timestamp}"></script>
 	
 		<!-- fileUpload & Panel -->
 	
@@ -140,16 +142,16 @@
 	
 		<!-- thumbs --> 
 
-		<script type="text/javascript" src="/ux/xpotronix/xpThumbs.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/DataViewPlugins.js"/>
+		<script type="text/javascript" src="/ux/xpotronix/xpThumbs.js?t={$timestamp}"/>
+		<script type="text/javascript" src="/ux/xpotronix/DataViewPlugins.js?t={$timestamp}"/>
 	
 		<!-- security -->
 		<!-- <script type="text/javascript" src="/ux/crypto.js"/> -->
 
 		<!-- other extensions -->
 
-		<script type="text/javascript" src="/ux/xpotronix/extensions.js"/>
-		<script type="text/javascript" src="/ux/xpotronix/misc.js"/>
+		<script type="text/javascript" src="/ux/xpotronix/extensions.js?t={$timestamp}"/>
+		<script type="text/javascript" src="/ux/xpotronix/misc.js?t={$timestamp}"/>
 
 	</xsl:template><!--}}}-->
 
