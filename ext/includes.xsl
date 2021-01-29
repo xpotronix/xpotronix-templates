@@ -21,7 +21,8 @@
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/" 
-	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
+	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/"
+	xmlns:date="http://exslt.org/dates-and-times"
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
 	<!-- <xsl:preserve-space elements="text"/> -->
