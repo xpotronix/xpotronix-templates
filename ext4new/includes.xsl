@@ -22,6 +22,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/" 
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
+	xmlns:date="http://exslt.org/dates-and-times"
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
 	<!-- <xsl:preserve-space elements="text"/> -->
@@ -158,8 +159,9 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document" mode="include-login-js"><!--{{{-->
+		<xsl:variable name="timestamp" select="date:date-time()"/>
 		<xsl:apply-templates select="." mode="include-ext-js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js?t={$timestamp}"/>
 	</xsl:template><!--}}}-->
 
 </xsl:stylesheet>
