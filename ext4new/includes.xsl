@@ -171,6 +171,7 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document" mode="include-login-js"><!--{{{-->
+		<xsl:variable name="timestamp" select="date:date-time()"/>
 		<xsl:apply-templates select="." mode="include-ext-js"/>
 		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js?t={$timestamp}"/>
 	</xsl:template><!--}}}-->
