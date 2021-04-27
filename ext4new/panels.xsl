@@ -20,22 +20,24 @@
 
 	<xsl:template match="panel" mode="define"><!--{{{-->
 
-		<xsl:variable name="obj"><xsl:apply-templates select="." mode="obj_metadata"/></xsl:variable>
-		<xsl:variable name="module_name" select="//*:session/feat/module"/>
+		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
+		<xsl:variable name="module_name" select="$session/feat/module"/>
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+		<xsl:variable name="base_path" select="$session/feat/base_path"/>
 		<xsl:variable name="panel_class" select="concat($application_name,'.view.',$module_name,'.',$panel_id)"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($panel_class,'\.','/'),'.js')"/>
+
+		<xsl:message><xsl:value-of select="$panel_class"/></xsl:message>
 
 		<xsl:variable name="code">
 		/* path: <xsl:value-of select="$class_path"/> */
 		Ext.ClassManager.isCreated( '<xsl:value-of select="$panel_class"/>' ) || Ext.define('<xsl:value-of select="$panel_class"/>',
 		Ext.apply(<xsl:apply-templates select="." mode="panel_config">
-			<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+			<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
 			</xsl:apply-templates>,
 		<xsl:apply-templates select="." mode="panel_config_override">
-			<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+			<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
 			</xsl:apply-templates>)); /* PANEL ENDS */
 		</xsl:variable>
@@ -51,6 +53,7 @@
 
 		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:param name="display" tunnel="yes" select="@display"/>
 		<!-- <xsl:message terminate="yes">object: <xsl:copy-of select="$obj/@name"/></xsl:message> -->
 		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
@@ -67,7 +70,7 @@
 			<acl type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>').acl</acl>
 			<store><xsl:value-of select="concat($module,'.',$obj/@name)"/></store>
 			<feat type="function"><xsl:apply-templates select="$obj" mode="feats"/></feat>
-			<display_as><xsl:value-of select="@display"/></display_as>
+			<display_as><xsl:value-of select="$display"/></display_as>
 			<title><xsl:apply-templates select="." mode="translate"/></title>
 
 
@@ -104,12 +107,12 @@
 				<xsl:choose>
 				<xsl:when test="config or items">
 					<xsl:apply-templates select="config|items" mode="column">
-					<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+					<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 					<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="default_columns">
-					<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+					<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 					<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
 				</xsl:otherwise>
 				</xsl:choose>
@@ -120,12 +123,12 @@
 				<xsl:choose>
 				<xsl:when test="config or items">
 					<xsl:apply-templates select="config|items">
-					<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+					<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 					<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="default_fields">
-					<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+					<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 					<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/></xsl:call-template>
 				</xsl:otherwise>
 				</xsl:choose>
@@ -133,7 +136,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="config|items" mode="panel">
-				<xsl:with-param name="module" select="//*:session/feat/module" tunnel="yes"/>
+				<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 				<xsl:with-param name="panel_id" select="$panel_id" tunnel="yes"/>
 				</xsl:apply-templates>
 			</xsl:otherwise>
@@ -146,29 +149,29 @@
 	<!-- config -->
 
 	<xsl:template match="config" mode="panel"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/>
+		<xsl:if test="position()>1">,</xsl:if><xsl:value-of select="."/>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="config"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_fields"/></xsl:if>
+		<xsl:if test="position()>1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_fields"/></xsl:if>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="config" mode="column"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_columns"/></xsl:if>
+		<xsl:if test="position()>1">,</xsl:if><xsl:value-of select="."/><xsl:if test="not(../items)">,<xsl:call-template name="default_columns"/></xsl:if>
 	</xsl:template><!--}}}-->
 
 	<!-- items -->
 
 	<xsl:template match="items" mode="panel"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
+		<xsl:if test="position()>1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="items"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
+		<xsl:if test="position()>1">,</xsl:if>items:[<xsl:apply-templates select="./*"/>]
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="items" mode="column"><!--{{{-->
-		<xsl:if test="position()-1">,</xsl:if>columns:[<xsl:apply-templates select="./*" mode="column"/>]
+		<xsl:if test="position()>1">,</xsl:if>columns:[<xsl:apply-templates select="./*" mode="column"/>]
 	</xsl:template><!--}}}-->
 
 	<!-- default items -->
@@ -185,11 +188,51 @@
 		columns:[<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='hide' or @display='disabled' or @display='password']" mode="column"/>]
 	</xsl:template><!--}}}-->
 
+	<xsl:template match="panel[@include]"><!--{{{-->
+
+		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:variable name="obj_name" select="$obj/@name"/>
+
+		<!-- abre archivos de template -->
+		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
+		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
+
+		<!-- <xsl:message terminate="yes">
+			<xsl:copy-of select="document($template_file)//table[@name=$obj_name]/panel[@id=current()/@include]"/>
+		</xsl:message>-->
+
+		<xsl:variable name="obj_metadata"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
+
+		<!-- <xsl:if test="$obj_metadata/obj/@name='_licencia'">
+			<xsl:message terminate="yes"><xsl:copy-of select="$obj_metadata"/></xsl:message>
+		</xsl:if> -->
+
+		<xsl:variable name="panels" 
+			select="document($template_file)//panel[@id=current()/@include]"/>
+
+			<xsl:message>encontre #paneles <xsl:value-of select="count($panels)"/></xsl:message>
+			<!-- <xsl:message>incluyo panel <xsl:value-of select="$panels"/></xsl:message> -->
+
+		<xsl:choose>
+			<xsl:when test="count($panels)">
+				<xsl:apply-templates select="$panels" mode="define">
+					<xsl:with-param name="obj" tunnel="yes" select="$obj_metadata/obj"/>
+					<xsl:with-param name="position" select="position()"/>
+					<xsl:with-param name="display" select="@display" tunnel="yes"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>no encontre paneles para include: <xsl:value-of select="@include"/></xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
+
+	</xsl:template><!--}}}-->
+
 	<!-- DEBUG: se usa? -->
 
 	<xsl:template match="items/panel"><!--{{{-->
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-		<xsl:if test="position()-1">,</xsl:if>{xtype:'<xsl:value-of select="$panel_id"/>'}
+		<xsl:if test="position()>1">,</xsl:if>{xtype:'<xsl:value-of select="$panel_id"/>'}
 	</xsl:template><!--}}}-->
 
 	<!-- cmp -->
@@ -204,7 +247,7 @@
 
 		<!--<xsl:message>[cmp] type:<xsl:value-of select="@type"/>, module:<xsl:value-of select="$module"/>, obj:<xsl:value-of select="$obj/@name"/>, standalone:<xsl:value-of select="$standalone"/></xsl:message>-->
 		<!-- <xsl:message>obj/cmp: <xsl:value-of select="$obj/@name"/></xsl:message> -->
-		<xsl:if test="position()-1">,</xsl:if><xsl:apply-templates select="." mode="sub"></xsl:apply-templates>
+		<xsl:if test="position()>1">,</xsl:if><xsl:apply-templates select="." mode="sub"></xsl:apply-templates>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="cmp[not(@ref)]" mode="sub"><!--{{{-->
@@ -264,27 +307,38 @@
 		</xsl:choose>
 	</xsl:template><!--}}}-->
 
- 	<xsl:template match="panel" mode="get_panel_id"><!--{{{-->
+	<xsl:template match="panel" mode="get_panel_id"><!--{{{-->
+
+		<!-- busca todas las maneras para poder establecer el ID del panel -->
 
 		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes" select=".."/>
 		<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
+
+		<xsl:variable name="type">
+			<xsl:choose>
+				<xsl:when test="@type!=''"><xsl:value-of select="@type"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="'UNDEFINED'"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
 		<xsl:variable name="panel_id">
 			<xsl:choose>
+				<xsl:when test="@include!=''"><xsl:value-of select="@include"/></xsl:when>
 				<xsl:when test="@id!=''"><xsl:value-of select="@id"/></xsl:when>
-				<xsl:when test="@obj!=''"><xsl:value-of select="concat(@obj,'_',@type)"/></xsl:when>
+				<xsl:when test="@obj!=''"><xsl:value-of select="concat(@obj,'_',type)"/></xsl:when>
 				<xsl:when test="$obj/@name!=''">
-					<xsl:value-of select="concat($obj/@name,'_',@type)"/>
+					<xsl:value-of select="concat($obj/@name,'_',$type)"/>
 				</xsl:when>
 				<xsl:when test="parent::*[name()='obj']/@name">
-					<xsl:value-of select="concat(parent::*[name()='obj']/@name,'_',@type)"/>
+					<xsl:value-of select="concat(parent::*[name()='obj']/@name,'_',$type)"/>
 				</xsl:when>
 				<xsl:when test="ancestor-or-self::*[name()='obj'][1]/@name">
 					<!-- closest ancestor -->
-					<xsl:value-of select="concat(ancestor-or-self::*[name()='obj'][1]/@name,'_',@type)"/>
+					<xsl:value-of select="concat(ancestor-or-self::*[name()='obj'][1]/@name,'_',$type)"/>
 				</xsl:when>
 
-				<xsl:otherwise><xsl:value-of select="concat('UNDEFINED_',@type)"/></xsl:otherwise>
+				<xsl:otherwise><xsl:value-of select="concat('UNDEFINED_',$type)"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<!-- <xsl:message>panel_id: <xsl:value-of select="$panel_id"/></xsl:message> -->
@@ -292,27 +346,64 @@
 
 	</xsl:template><!--}}}-->
 
- 	<xsl:template match="panel" mode="obj_metadata"><!--{{{-->
+	<xsl:template match="panel" mode="get_obj_metadata"><!--{{{-->
 
-		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
+		<!-- <xsl:message>OBJECT: <xsl:copy-of select="$obj/@name"/></xsl:message> -->
+
 		<xsl:variable name="obj_name">
 			<xsl:choose>
 				<xsl:when test="@obj">
+					<!-- <xsl:message>@obj</xsl:message> -->
 					<xsl:value-of select="@obj"/>
 				</xsl:when>
-				<xsl:when test="parent::*[name()='obj']/@name">
-					<xsl:value-of select="parent::*[name()='obj']/@name"/>
+				<xsl:when test="$obj">
+					<!-- <xsl:message>$obj</xsl:message> -->
+					<xsl:value-of select="$obj/@name"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<!-- closest ancestor -->
-					<xsl:value-of select="ancestor-or-self::*[name()='obj'][1]/@name"/>
+					<!-- <xsl:message>otherwise</xsl:message> -->
+					<xsl:value-of select="parent::*[name()='obj']/@name"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<!-- <xsl:message>obj_local_name: <xsl:value-of select="$obj_name"/></xsl:message> -->
-		<xsl:sequence select="//*:metadata/obj[@name=$obj_name][1]"/>
-		<!-- <xsl:message>obj: <xsl:copy-of select="//*:metadata/obj[@name=$obj_name]"/></xsl:message> -->
+
+		<!-- <xsl:message>get_obj_metadata: obj_name: <xsl:value-of select="$obj_name"/>, panel_type: <xsl:value-of select="@type"/>, panel_id: <xsl:value-of select="@id"/>, panel_include: <xsl:value-of select="@include"/></xsl:message> -->
+		<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
+
+
+		<!-- abre archivos de template -->
+		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
+		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
+
+		<xsl:element name="obj" namespace="">
+
+			<xsl:copy-of select="$metadata/obj[@name=$obj_name]/@*"/>
+
+			<xsl:for-each select="$metadata/obj[@name=$obj_name]/attr">
+
+				<xsl:element name="attr" namespace="">
+					<xsl:attribute name="comment" select="'esto esta agregado'"/>
+					<xsl:copy-of select="@*"/>
+
+					<xsl:copy-of select="*"/>
+
+					<xsl:variable name="attr_ui" select="document($template_file)/application/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
+
+					<xsl:if test="$attr_ui">
+						<!-- <xsl:message>overrides ui: <xsl:copy-of select="$attr_ui"/></xsl:message>
+						<xsl:message terminate="yes"><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
+						<xsl:copy-of select="$attr_ui"/>
+					</xsl:if>
+
+
+				</xsl:element>
+
+			</xsl:for-each>
+
+		</xsl:element>
+
+		<!-- <xsl:message>obj: <xsl:copy-of select="$metadata/obj[@name=$obj_name]"/></xsl:message> -->
 
 	</xsl:template><!--}}}-->
 

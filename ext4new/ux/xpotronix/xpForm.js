@@ -234,6 +234,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		var form = me.getForm();
 
+		/* chequea que ninguno de los campos a cargar tenga actualmente el foco, asi no lo borra */
+
 		for ( var key in r.data ) { 
 
 			var a = form.findField(key);
@@ -245,7 +247,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		form.reset();
 
-		if ( ( ! Ext.isEmptyObject ( r ) ) && r.get ) { 
+		if ( ( ! _.isEmpty(r) ) && r.get ) { 
 
         		me._record = r;
 
@@ -253,7 +255,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			is_new = r.get('__new__'),
 			enabled = ( me.obj.acl.edit && !is_new ) || ( me.obj.acl.add && is_new );
 
-			// if ( Ext.isEmptyObject( c = r.getChanges() ) )
+			// if ( _.isEmpty(c = r.getChanges() ) )
 			c = r.getData(); 
 
         		me.form.setValues(c);

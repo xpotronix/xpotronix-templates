@@ -16,12 +16,16 @@
 	<xsl:strip-space elements="menu item"/>
 	<xsl:output method="html" version="4.0"/>
 
+        <xsl:variable name="session" select="//*:session"/>
+        <xsl:variable name="metadata" select="//*:metadata"/>
+        <xsl:variable name="model" select="//*:model"/>
+
 	<xsl:param name="debug" select="true()"/>
 	
 	<xsl:template match="/">
 		<xsl:variable name="result">[<xsl:apply-templates select="menu/*[not(@access) or (@access and @access!='')]"/>]</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="//*:session/var/UNNORMALIZED or $debug=true()"><xsl:value-of select="$result"/></xsl:when>
+			<xsl:when test="$session/var/UNNORMALIZED or $debug=true()"><xsl:value-of select="$result"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="normalize-space($result)"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

@@ -22,10 +22,13 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/" 
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
+	xmlns:date="http://exslt.org/dates-and-times"
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
+
+	<xsl:variable name="timestamp" select="date:date-time()"/>
 
 	<xsl:template match="*:document" mode="include-all-css"><!--{{{-->
 
@@ -51,7 +54,7 @@
 
 		<!-- upload.css -->
 
-		<!-- <xsl:if test="count(*:model//cmp[@type='uploadpanel'])"> -->
+		<!-- <xsl:if test="count($model//cmp[@type='uploadpanel'])"> -->
                 	<link rel="stylesheet" type="text/css" href="/ux4/upload/css/upload.css" />
 		<!-- </xsl:if> -->
 
@@ -67,7 +70,7 @@
 	<xsl:template match="*:document" mode="include-ext-js"><!--{{{-->
 
 		<xsl:choose>
-			<xsl:when test="//*:session/var/EXT_DEBUG">
+			<xsl:when test="$session/var/EXT_DEBUG">
     				<!-- <script type="text/javascript" src="/ext4/ext-debug.js"></script> -->
     				<script type="text/javascript" src="/ext4/ext-debug-w-comments.js"></script>
 			</xsl:when>
@@ -94,7 +97,7 @@
 	<!-- ux -->
 
 	<xsl:choose>
-		<xsl:when test="//*:session/var/EXT_DEBUG">
+		<xsl:when test="$session/var/EXT_DEBUG">
 			<!-- <script type="text/javascript" src="/ext4/examples/ux/ux-all-debug.js"></script> -->
 		</xsl:when>
 		<xsl:otherwise>
@@ -102,16 +105,26 @@
 		</xsl:otherwise>
 	</xsl:choose>
 
-	<script type="text/javascript" src="/ux4/xpotronix/misc.js"/>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+		crossorigin="anonymous"></script>
+
+	<script type="text/javascript" src="/js/plugin/lodash/lodash.min.js"/>
+
+
+	<script src="/js/node_modules/qrious/dist/qrious.min.js"></script>
+
+	<script type="text/javascript" src="/ux4/xpotronix/misc.js?t={$timestamp}"/>
 
 	<!-- DateTimeField -->
 
-	<!-- <script type="text/javascript" src="/ux4/xpotronix/extensions.js"/> -->
+	<!-- <script type="text/javascript" src="/ux4/xpotronix/extensions.js?t={$timestamp}"/> -->
 
 	<!-- upload panel -->
 
 	<!-- DEBUG: hay que pasar a loader xq al momento del cargar el modulo no sabe que tiene que cargar estos -->
-	<!-- <xsl:if test="count(*:model//cmp[@type='uploadpanel'])"> -->
+	<!-- <xsl:if test="count($model//cmp[@type='uploadpanel'])"> -->
 
 	<!-- </xsl:if> -->
 
@@ -126,7 +139,7 @@
 </xsl:template><!--}}}-->
 
 <xsl:template match="file" mode="include-js"><!--{{{-->
-	<xsl:variable name="base_dir" select="substring-before(substring-after(//*:session/server/PHP_SELF,'/'),'/')"/>
+	<xsl:variable name="base_dir" select="substring-before(substring-after($session/server/PHP_SELF,'/'),'/')"/>
 	<xsl:element name="script">
 		<xsl:attribute name="type" select="'text/javascript'"/>
 		<xsl:attribute name="src" select="@name"/>
@@ -159,7 +172,7 @@
 
 	<xsl:template match="*:document" mode="include-login-js"><!--{{{-->
 		<xsl:apply-templates select="." mode="include-ext-js"/>
-		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js"/>
+		<script type="text/javascript" src="/ux4/xpotronix/xpApp.js?t={$timestamp}"/>
 	</xsl:template><!--}}}-->
 
 </xsl:stylesheet>

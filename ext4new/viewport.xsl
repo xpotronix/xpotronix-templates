@@ -39,19 +39,27 @@
 
 	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
 
-	<xsl:param name="root_obj" select="//*:model/obj[1]"/>
+        <xsl:variable name="session" select="//*:session"/>
+        <xsl:variable name="metadata" select="//*:metadata"/>
+        <xsl:variable name="model" select="//*:model"/>
+
+	<xsl:param name="root_obj" select="$model/obj[1]"/>
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
-	<xsl:param name="current_user" select="//*:session/users/user_username"/>
-	<xsl:param name="anon_user" select="//*:session/users/_anon"/>
+	<xsl:param name="current_user" select="$session/users/user_username"/>
+	<xsl:param name="anon_user" select="$session/users/_anon"/>
 	<xsl:param name="application_path" select="'/var/www/sites/xpotronix/xpay'"/>
 
-	<xsl:variable name="session" select="//*:session"/>
-	<!-- <xsl:variable name="application_name" select="upper-case(//*:session/feat/application)"/> -->
+	<!-- <xsl:variable name="application_name" select="upper-case($session/feat/application)"/> -->
 	<xsl:variable name="application_name" select="'app'"/>
 
+        <!-- abre archivos de template -->
+        <xsl:variable name="template_ext_ui" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
+
+
+
 	<xsl:template match="/"><!--{{{-->
-		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
-		<!-- <xsl:message terminate="yes"><xsl:value-of select="//*:metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
+		<!-- <xsl:message><xsl:value-of select="$session/sessions/user_id"/>:<xsl:value-of select="$session/sessions/session_id"/></xsl:message> -->
+		<!-- <xsl:message terminate="yes"><xsl:value-of select="$metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
 		<xsl:apply-templates/>
 	</xsl:template><!--}}}-->
 
@@ -82,7 +90,7 @@
 <xsl:apply-templates select="." mode="include-all-css"/>
 <xsl:apply-templates select="." mode="include-all-js"/>
 
-<xsl:for-each select="*:metadata/obj/files/file[@type='js' and @mode='events']">
+<xsl:for-each select="$metadata/obj/files/file[@type='js' and @mode='events']">
 	<script type="text/javascript" src="{@name}"/>
 </xsl:for-each>
 

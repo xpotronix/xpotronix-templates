@@ -138,6 +138,12 @@
 
 	</field><!--}}}-->
 
+	<field type="xpjson"><!--{{{-->
+		<xtype>textarea</xtype>
+		<grow>true</grow>
+		<allowBlank/>
+	</field><!--}}}-->
+
 	<field type="xpint"><!--{{{-->
 
 		<xtype>numberfield</xtype>

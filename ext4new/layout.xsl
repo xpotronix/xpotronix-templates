@@ -36,8 +36,8 @@
 		<!-- <xsl:message><xsl:value-of select="$obj_name"/></xsl:message> -->
 
 
-		<xsl:variable name="menu_bar" select="xp:get_feat(//*:metadata/obj[1],'menu_bar')"/>
-		<xsl:variable name="messages_panel" select="xp:get_feat(//*:metadata/obj[1],'messages_panel')"/>
+		<xsl:variable name="menu_bar" select="xp:get_feat($metadata/obj[1],'menu_bar')"/>
+		<xsl:variable name="messages_panel" select="xp:get_feat($metadata/obj[1],'messages_panel')"/>
 	       
 		<xsl:variable name="top_margin">
 			<xsl:choose>
@@ -149,6 +149,8 @@
 			</xsl:choose>
 		</xsl:variable>
 
+		/* LAYOUT START */
+
 		Ext.create( 'Ext.<xsl:value-of select="$ui_class"/>', {
 
 			stateful: true,
@@ -158,7 +160,11 @@
 			<xsl:apply-templates select="*">
 				<xsl:with-param name="obj_name" select="$obj_name"/>
 			</xsl:apply-templates>
-		});
+			});
+
+		/* LAYOUT END */
+
+
 
 	</xsl:template><!--}}}-->
 
@@ -167,6 +173,7 @@
 		<!-- <xsl:message>panel_list: <xsl:sequence select="."/></xsl:message> -->
 		<xsl:variable name="panel_id">
 	               <xsl:choose>
+        	               <xsl:when test="@include"><xsl:value-of select="@include"/></xsl:when>
         	               <xsl:when test="@id"><xsl:value-of select="@id"/></xsl:when>
                 	       <xsl:otherwise><xsl:value-of select="concat(@obj_name,'_',@type)"/></xsl:otherwise>
 	               </xsl:choose>

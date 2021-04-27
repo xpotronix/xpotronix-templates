@@ -205,7 +205,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.selModel.on( 'beforeselect', function() {
 
-			if ( ! Ext.isEmptyObject( this.dirty_childs() ) ) {
+			if ( ! _.isEmpty(this.dirty_childs()) ) {
 
 				Ext.Msg.alert( 'Atención', 'Hubo modificaciones: guarde o descarte los cambios' );
 				return false;
@@ -245,7 +245,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	rememberSelection: function(selModel, selectedRecords) {/*{{{*/
 
-		if (!this.rendered || Ext.isEmpty(this.el)) {
+		if (!this.rendered || _.isEmpty(this.el)) {
 			return;
 		}
 

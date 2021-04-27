@@ -218,10 +218,10 @@
 
 	});
 	</xsl:variable>
-	<!-- output final del codigo -->
+		<!-- output final del codigo -->
 
-		
-	<script type="text/javascript">
+			
+		<script type="text/javascript">
 	<xsl:choose>
 		<xsl:when test="$session/var/UNNORMALIZED=1">
 			<xsl:value-of select="$code" disable-output-escaping="yes"/>

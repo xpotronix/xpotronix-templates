@@ -24,7 +24,7 @@
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
 	<!-- <xsl:preserve-space elements="text"/> -->
-	<!-- <xsl:strip-space elements="*"/> -->
+		<!-- <xsl:strip-space elements="*"/> -->
 
 	<xsl:template match="*:document" mode="application"><!--{{{-->
 
@@ -59,17 +59,22 @@
 
 				 App.feat.root_obj = '<xsl:value-of select="$root_obj/@name"/>';
 
-				 document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="*:session/feat/page_title[1]"/>';
+				 document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="$session/feat/page_title[1]"/>';
 
-				 <xsl:if test="*:session/feat/theme">
-				 /* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="*:session/feat/theme"/>"); */
+				 <xsl:if test="$session/feat/theme">
+				 /* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="$session/feat/theme"/>"); */
 				 </xsl:if>
 
 
-				 console.log('defines start');
-				 <xsl:apply-templates select="*:metadata/obj" mode="config"/>
-				 <xsl:apply-templates select="." mode="defines_code"/>
-				 console.log('defines end');
+
+				/* DEFINES START */
+				console.log('defines start');
+
+				<xsl:apply-templates select="$metadata/obj" mode="config"/>
+				<xsl:apply-templates select="." mode="defines_code"/>
+
+				/* DEFINES STOP */
+				console.log('defines end');
 
 
 				/* application/viewport */
@@ -78,7 +83,7 @@
 
 					requires: ['Ext.container.Viewport'],
 					name: '<xsl:value-of select="$application_name"/>',
-					controllers: ['<xsl:value-of select="*:session/feat/module"/>'],
+					controllers: ['<xsl:value-of select="$session/feat/module"/>'],
 					launch: function() {
 					<xsl:apply-templates select="." mode="viewport"/>
 					}
@@ -94,7 +99,7 @@
 		
 	<script type="text/javascript">
 	<xsl:choose>
-		<xsl:when test="//*:session/var/UNNORMALIZED">
+		<xsl:when test="$session/var/UNNORMALIZED">
 			<xsl:value-of select="$code" disable-output-escaping="yes"/>
 		</xsl:when>
 		<xsl:otherwise>
@@ -109,8 +114,8 @@
 
 	<xsl:template match="*:document" mode="defines_all_files"><!--{{{-->
 
-		<xsl:variable name="result_path" select="concat($application_path,'/',$application_name,'/',*:session/feat/module,'.js')"/>
-		<xsl:message><xsl:value-of select="$result_path"/></xsl:message>
+		<xsl:variable name="result_path" select="concat($application_path,'/',$application_name,'/',$session/feat/module,'.js')"/>
+		<!-- <xsl:message><xsl:value-of select="$result_path"/></xsl:message> -->
 
 		<!-- model & store -->
 
@@ -130,7 +135,7 @@
 
 		console.log('model store');
 
-		<xsl:for-each select="*:model//obj">
+		<xsl:for-each select="$model//obj">
 
 			<xsl:apply-templates select="." mode="model"/>
 			<xsl:apply-templates select="." mode="store"/>
@@ -140,7 +145,7 @@
 		<!-- model & store eh -->
 
 		console.log('model store eh');
-		<xsl:for-each-group select="*:model//queries/query/query" group-by="concat(../from,'_',@name)">
+		<xsl:for-each-group select="$model//queries/query/query" group-by="concat(../from,'_',@name)">
 
 			<xsl:apply-templates select="." mode="model"/>
 			<xsl:apply-templates select="." mode="store"/>
@@ -150,16 +155,25 @@
 		<!-- panel -->
 
 		console.log('panel');
-		<xsl:for-each select="*:model//panel">
+		<xsl:for-each select="$model//panel">
 
 			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-			<xsl:apply-templates select="." mode="define"/>
+
+			<xsl:choose>
+				<xsl:when test="@include">
+					<xsl:apply-templates select="." mode="include"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="." mode="define"/>
+				</xsl:otherwise>
+			</xsl:choose>
+
 
 		</xsl:for-each>
 
 		<!-- controller -->
 		console.log('controller');
-		<xsl:apply-templates select="*:model" mode="controller"/>
+		<xsl:apply-templates select="$model" mode="controller"/>
 
 	</xsl:template><!--}}}-->
 
@@ -170,7 +184,7 @@
 		<xsl:param name="to_file" select="false()" tunnel="yes"/>
 		<xsl:param name="normalized" select="false()" tunnel="yes"/>
 
-		<xsl:message>output: class_path: <xsl:value-of select="$class_path"/> to_file: <xsl:value-of select="$to_file"/>, normalize: <xsl:value-of select="$normalized"/></xsl:message>
+		<!-- <xsl:message>output: class_path: <xsl:value-of select="$class_path"/> to_file: <xsl:value-of select="$to_file"/>, normalize: <xsl:value-of select="$normalized"/></xsl:message> -->
 
 		<xsl:variable name="code2">
 			<xsl:choose>
@@ -194,7 +208,7 @@
 
 	<xsl:template match="*:model" mode="controller"><!--{{{-->
 
-		<xsl:variable name="module" select="//*:session/feat/module"/>
+		<xsl:variable name="module" select="$session/feat/module"/>
 
 		<xsl:variable name="items">
 			<xsl:for-each select=".//obj">
@@ -209,9 +223,9 @@
 			</xsl:for-each>
 		</xsl:variable>
 
-		<xsl:variable name="module_name" select="//*:session/feat/module"/>
+		<xsl:variable name="module_name" select="$session/feat/module"/>
 		<xsl:variable name="class_name" select="concat($application_name,'.controller.',$module_name)"/>
-		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+		<xsl:variable name="base_path" select="$session/feat/base_path"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
 		<xsl:variable name="code">
@@ -220,7 +234,7 @@
 		    extend: 'Ext.app.Controller',
 		    models: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 		    stores: [<xsl:for-each select="$items/*">'<xsl:value-of select="concat($module,'.',@name)"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
-		    views: [<xsl:for-each select=".//panel">'<xsl:value-of select="$module_name"/>.<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
+			    views: [<xsl:for-each select=".//panel">'<xsl:value-of select="$module_name"/>.<xsl:choose><xsl:when test="@include"><xsl:value-of select="@include"/></xsl:when><xsl:otherwise><xsl:apply-templates select="." mode="get_panel_id"/></xsl:otherwise></xsl:choose>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>],
 		    init: function() {
 			this.control({});
 		    }
@@ -240,16 +254,30 @@
 
 		<xsl:param name="standalone" select="true()"/>
 
+		<xsl:variable name="layout"
+		select="document($template_ext_ui)/application/table[@name=$root_obj/@name]/layout"/>
+
+		<!-- <xsl:message terminate="yes">layout:<xsl:copy-of select="$layout"/></xsl:message> -->
+
 		<xsl:choose>
-			<xsl:when test="*:model/obj/layout">
-				<xsl:apply-templates select="*:model/obj/layout">
-					<xsl:with-param name="obj" select="*:metadata/obj[1]" tunnel="yes"/>
+
+			<xsl:when test="$layout"> 
+				<xsl:apply-templates select="$layout"> 
+				<xsl:with-param name="obj" select="$metadata/obj[1]" tunnel="yes"/> 
+					<xsl:with-param name="standalone" select="true()"/> 
+				</xsl:apply-templates> 
+			</xsl:when> 
+
+
+			<xsl:when test="$model/obj/layout">
+				<xsl:apply-templates select="$model/obj/layout">
+					<xsl:with-param name="obj" select="$metadata/obj[1]" tunnel="yes"/>
 					<xsl:with-param name="standalone" select="$standalone"/>
 				</xsl:apply-templates>
 			</xsl:when>
 
 			<xsl:otherwise>
-				<xsl:apply-templates select="*:model" mode="viewport">
+				<xsl:apply-templates select="$model" mode="viewport">
 					<xsl:with-param name="standalone" select="$standalone"/>
 				</xsl:apply-templates>
 			</xsl:otherwise>

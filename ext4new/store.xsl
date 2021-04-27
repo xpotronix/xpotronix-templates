@@ -26,9 +26,9 @@
 	<xsl:template match="obj" mode="model"><!--{{{-->
 
 		<xsl:variable name="obj_name" select="@name"/>
-		<xsl:variable name="module_name" select="//*:session/feat/module"/>
+		<xsl:variable name="module_name" select="$session/feat/module"/>
 		<xsl:variable name="class_name" select="concat($application_name,'.model.',$module_name,'.',$obj_name)"/>
-		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+		<xsl:variable name="base_path" select="$session/feat/base_path"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
 		<xsl:variable name="code">
@@ -44,7 +44,7 @@
 				{name: '__ID__', mapping: '@ID', type: 'string'},
 				{name: '__new__', mapping: '@new', type: 'int'},
 				{name: '__acl__', mapping: '@acl', type: 'string'},
-				<xsl:apply-templates select="//*:metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
+				<xsl:apply-templates select="$metadata//obj[@name=$obj_name]/attr[not(@display) or @display='' or @display='hide' or @display='disabled']" mode="record">
 					<xsl:with-param name="module" select="$module_name" tunnel="yes"/>
 					<xsl:with-param name="obj" select="." tunnel="yes"/>
 				</xsl:apply-templates>
@@ -61,10 +61,20 @@
 	<xsl:template match="obj" mode="store"><!--{{{-->
 
 		<xsl:variable name="obj_name" select="@name"/>
-		<xsl:variable name="module_name" select="//*:session/feat/module"/>
+		<xsl:variable name="module_name" select="$session/feat/module"/>
 		<xsl:variable name="class_name" select="concat($application_name,'.store.',$module_name,'.',$obj_name)"/>
-		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+		<xsl:variable name="base_path" select="$session/feat/base_path"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
+
+		<!-- abre archivos de template -->
+		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext/ui.xml')"/>
+
+		<xsl:variable name="config" 
+			select="config|document($template_file)/application/table[@name=$obj_name]/config/text()"/>
+
+		<!-- <xsl:message>$config: <xsl:copy-of select="$config"/></xsl:message> -->
+
+
 
 		<xsl:variable name="code">
 		/* path: <xsl:value-of select="$class_path"/> */
@@ -76,7 +86,7 @@
 			,class_name: '<xsl:value-of select="@name"/>'
 			,module: '<xsl:value-of select="$module_name"/>'
 			,feat: <xsl:apply-templates select="." mode="feats"/>
-			,acl: {<xsl:apply-templates select="//*:metadata/obj[@name=$obj_name]/acl"/>}
+			,acl: {<xsl:apply-templates select="$metadata/obj[@name=$obj_name]/acl"/>}
 
 			,primary_key: <xsl:apply-templates select="." mode="primary_key"/>
 			<xsl:if test="../name()='obj'">
@@ -88,7 +98,7 @@
 
 			,pageSize: <xsl:value-of select="xp:get_feat(.,'page_rows')"/>
 			,remoteSort: <xsl:value-of select="xp:get_feat(.,'remote_sort')"/>}
-			,{<xsl:value-of select="config"/>}));
+			,{<xsl:value-of select="$config"/>}));
 		</xsl:variable>
 
 		<xsl:call-template name="output">
@@ -112,9 +122,9 @@
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="eh_name" select="@name"/>
-	<xsl:variable name="module_name" select="//*:session/feat/module"/>
+	<xsl:variable name="module_name" select="$session/feat/module"/>
 	<xsl:variable name="class_name" select="concat($application_name,'.store.',$module_name,'.',../from,'_',@name)"/>
-	<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+	<xsl:variable name="base_path" select="$session/feat/base_path"/>
 	<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
 	<xsl:variable name="code">
@@ -128,7 +138,7 @@
 		,parent_store:'<xsl:value-of select="concat($module_name,'.',$parent_obj_name)"/>'
 		,primary_key:['id'] 
 		<!-- DEBUG: aca hago piruetas para obtener el nombre del atributo que posee este eh. Hay que cambiar a fk -->
-		,foreign_key:{type:'eh',refs: [{local:'id',remote:'<xsl:value-of select="//*:metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}] }
+		,foreign_key:{type:'eh',refs: [{local:'id',remote:'<xsl:value-of select="$metadata/obj[@name=$parent_obj_name]/attr[@eh=$eh_name]/@name"/>'}] }
 		,remoteSort:true 
 		,pageSize:20
 		,passive:true
@@ -147,9 +157,9 @@
 		<xsl:variable name="parent_obj_name" select="../../../@name"/>
 		<xsl:variable name="obj_name" select="from"/>
 		<xsl:variable name="eh_name" select="@name"/>
-		<xsl:variable name="module_name" select="//*:session/feat/module"/>
+		<xsl:variable name="module_name" select="$session/feat/module"/>
 		<xsl:variable name="class_name" select="concat($application_name,'.model.',$module_name,'.',../from,'_',@name)"/>
-		<xsl:variable name="base_path" select="//*:session/feat/base_path"/>
+		<xsl:variable name="base_path" select="$session/feat/base_path"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
 		<xsl:variable name="code">	
@@ -178,7 +188,7 @@
 		<xsl:variable name="obj_name" select="@name"/>
 
 		<xsl:variable name="assocs">
-		<xsl:variable name="module_name" select="//*:session/feat/module"/>
+		<xsl:variable name="module_name" select="$session/feat/module"/>
 
 		<xsl:if test="foreign_key">
 

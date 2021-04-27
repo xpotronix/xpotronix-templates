@@ -32,35 +32,35 @@
 
 		<!-- ext -->
 
-		<link rel="stylesheet" type="text/css" href="/ext/resources/css/ext-all.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="/ext/resources/css/ext-all.css" />
 	    	<!-- <link rel="stylesheet" type="text/css" href="/ext/resources/css/visual/grid.css" />
 	    	<link rel="stylesheet" type="text/css" href="/ext/resources/css/structure/grid.css" /> -->
 
-		<link rel="stylesheet" type="text/css" href="/ux/xpotronix/xpThumbs.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/ux/xpotronix/xpThumbs.css"/>
 
 		<!-- FilterRow -->
 
-		<link rel="stylesheet" type="text/css" href="/ux/grid/FilterRow.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/ux/grid/FilterRow.css"/>
 
 		<!-- GridFilters -->
 
-		<link rel="stylesheet" type="text/css" href="/ext/examples/ux/gridfilters/css/GridFilters.css"/>
-		<link rel="stylesheet" type="text/css" href="/ext/examples/ux/gridfilters/css/RangeMenu.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/ext/examples/ux/gridfilters/css/GridFilters.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/ext/examples/ux/gridfilters/css/RangeMenu.css"/>
 
 		<!-- file -->
 	
-		<link rel="stylesheet" type="text/css" href="/ux/file/css/filetype.css"/>
-		<link rel="stylesheet" type="text/css" href="/ux/file/css/icons.css"/>
-		<link rel="stylesheet" type="text/css" href="/ux/file/css/filetree.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/ux/file/css/filetype.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/ux/file/css/icons.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/ux/file/css/filetree.css"/>
 
 		<!-- other extensions css -->
 
-		<link rel="stylesheet" type="text/css" href="/ux/xpotronix/extensions.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="/ux/xpotronix/extensions.css"/>
 
 		<!-- local app.css -->
 
-		<link rel="stylesheet" type="text/css" href="css/app.css"/>
-		<link rel="stylesheet" type="text/css" href="css/icons.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="css/icons.css"/>
 
 	</xsl:template><!--}}}-->
 

@@ -27,11 +27,11 @@
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
 	<xsl:template name="app-config">
-		{<xsl:for-each select="//*:session/feat/*"><xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
+		{<xsl:for-each select="$session/feat/*"><xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
 	</xsl:template>
 
 	<xsl:template match="obj" mode="feats"><!--{{{-->
-		<xsl:variable name="obj_name" select="@name"/>{<xsl:for-each select="//*:metadata/obj[@name=$obj_name]/feat/*">
+		<xsl:variable name="obj_name" select="@name"/>{<xsl:for-each select="$metadata/obj[@name=$obj_name]/feat/*">
 			<xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if>
 		</xsl:for-each>}
 	</xsl:template><!--}}}-->
@@ -51,7 +51,7 @@
 		<!-- <xsl:message>**** get_feat:</xsl:message> -->
 		<!-- <xsl:message>obj: <xsl:copy-of select="."/></xsl:message>-->
 
-		<xsl:variable name="feats" select="//*:session/feat"/>
+		<xsl:variable name="feats" select="$session/feat"/>
 		<xsl:variable name="obj_name" select="@name"/>
 
 		<!-- <xsl:message>obj_name: <xsl:value-of select="$obj_name"/></xsl:message> -->
@@ -133,7 +133,7 @@
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template name="user-session">{<xsl:for-each select="//*:session/users/*"><xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
+	<xsl:template name="user-session">{<xsl:for-each select="$session/users/*"><xsl:value-of select="name()"/>:<xsl:apply-templates select="." mode="json-value"/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>}
 	</xsl:template>
 
 </xsl:stylesheet>

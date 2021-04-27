@@ -18,8 +18,13 @@
 	<xsl:preserve-space elements="text"/>
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
 
+        <xsl:variable name="session" select="//*:session"/>
+        <xsl:variable name="metadata" select="//*:metadata"/>
+        <xsl:variable name="model" select="//*:model"/>
+        <xsl:variable name="dataset" select="//*:dataset"/>
+
 	<xsl:template match="/"><!--{{{--> 
-		<xsl:apply-templates select="//*:dataset/class/obj"/>
+		<xsl:apply-templates select="dataset/class/obj"/>
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="obj">
@@ -34,7 +39,7 @@
 		
 		<div class="x-form-item">
 			<label class="x-form-item-label">
-				<xsl:apply-templates select="//*:metadata/obj[@name=$obj_name]/attr[@name=$attr_name]" mode="translate"/>
+				<xsl:apply-templates select="$metadata/obj[@name=$obj_name]/attr[@name=$attr_name]" mode="translate"/>
 			</label><div class="x-form-element">
 				<xsl:choose>
 					<xsl:when test="@label"><xsl:value-of select="@label"/></xsl:when>

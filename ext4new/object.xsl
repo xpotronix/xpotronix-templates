@@ -20,8 +20,27 @@
 
 	<xsl:variable name="obj" select="."/>
 	<xsl:variable name="obj_name" select="@name"/>
-	<xsl:variable name="session" select="//*:session"/>
+
+        <xsl:variable name="session" select="//*:session"/>
+        <xsl:variable name="metadata" select="//*:metadata"/>
+	<xsl:variable name="model" select="//*:model"/>
+
+	<xsl:variable name="roles" select="$session/roles"/>
 	<xsl:variable name="role" select="$session/roles/role/@value"/>
+
+
+
+	<xsl:variable name="processes">
+		<xsl:element name="processes" namespace="">
+			<xsl:for-each select="processes/process[(not(@display) or @display!='hide') and acl/@action='permit']">
+				<xsl:variable name="role" select="acl/@role"/>
+				<xsl:if test="acl/@role='*' or count($roles/role[@value=$role])">
+					<xsl:sequence select="."/>
+				</xsl:if>
+			</xsl:for-each>
+		</xsl:element>
+	</xsl:variable>
+
 
 	/* <xsl:value-of select="@name"/> xpObj */
 
@@ -30,54 +49,73 @@
 		class_name:'<xsl:value-of select="@name"/>'
 		/* ,el:'contentEl_<xsl:value-of select="@name"/>' */
 		,translate:'<xsl:apply-templates select="." mode="translate"/>'
-		,parent_name:'<xsl:value-of select="//*:model//obj[@name=$obj_name]/../@name"/>'
+		,parent_name:'<xsl:value-of select="$model//obj[@name=$obj_name]/../@name"/>'
 		,acl:{<xsl:apply-templates select="acl"/>}
 		,role:'<xsl:value-of select="$role"/>'
 		,extra_param:{<xsl:apply-templates select="." mode="extra_param"/>}
 		,store:'<xsl:value-of select="@name"/>'
 		,feat:<xsl:apply-templates select="." mode="feats"/>
 		,inspect:<xsl:apply-templates select="." mode="inspect"/>
-		<xsl:if test="count(processes/process[(not(@display) or @display!='hide') and acl/@action='permit' and acl/@role=$role])">
 
-		,processes_menu:<xsl:apply-templates select="processes">
-				<xsl:with-param name="obj" select="." tunnel="yes"/>
-				</xsl:apply-templates>
-		</xsl:if>
+		<xsl:apply-templates select="$processes" mode="menu">
+			<xsl:with-param name="obj" select="." tunnel="yes"/>
+		</xsl:apply-templates>
+
 	}));
 
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="obj" mode="inspect">[<xsl:for-each select="//*:model//obj[@name=current()/@name]/panel[@display='inspect']">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>]</xsl:template>
+	<!-- carga todos los inspects del objeto -->
+
+	<xsl:template match="obj" mode="inspect">[
+		<xsl:for-each select="$model//obj[@name=current()/@name]/panel[@display='inspect']">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>]
+	</xsl:template>
 
 
 	<xsl:template match="obj" mode="extra_param"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>
-		<xsl:for-each select="//*:session/var/e/*[name()=$obj_name or name()='_']/*">
+		<xsl:for-each select="$session/var/e/*[name()=$obj_name or name()='_']/*">
 			'e[<xsl:value-of select="$obj_name"/>][<xsl:value-of select="name()"/>]':'<xsl:value-of select="text()"/>'<xsl:if test="position()!=last()">,</xsl:if>			
 		</xsl:for-each>
 	</xsl:template><!--}}}-->
 
-<!-- templates auxiliares -->
+	<!-- templates auxiliares -->
 
-	<xsl:template match="processes"><!--{{{-->
-		<xsl:variable name="role" select="//*:session/roles/role/@value"/>
-                [<xsl:apply-templates select="process[(not(@display) or @display!='hide') and acl/@action='permit' and acl/@role=$role]"/>]
+	<xsl:template match="processes" mode="menu"><!--{{{-->
+
+		<xsl:if test="count(process)">
+		,processes_menu:[<xsl:apply-templates select="process" mode="item"/>]
+		</xsl:if>
+
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="process"><!--{{{-->
-		{ 
-			text:'<xsl:apply-templates select="." mode="translate"/>'
-			<xsl:if test="@icon">,icon:'<xsl:value-of select="@icon"/>'</xsl:if>
-			<xsl:if test="@cls">,cls:'<xsl:value-of select="@cls"/>'</xsl:if>
-			,value:'<xsl:value-of select="@name"/>'
+	<xsl:template match="process" mode="item"><!--{{{-->
 
-		<xsl:if test="param">
+		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:variable name="obj_name" select="$obj/@name"/>
+
+		<!-- abre archivos de template -->
+		<xsl:variable name="processes_file" select="concat($session/feat/base_path,'/templates/ext4/processes.xml')"/>
+		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
+
+		{ text:'<xsl:apply-templates select="." mode="translate"/>', 
+			value:'<xsl:value-of select="@name"/>' 
+			<xsl:if test="param">
 			,param:{<xsl:apply-templates select="." mode="param"/>}
 		</xsl:if>
 
-		<xsl:if test="dialog/*"><xsl:apply-templates select="dialog"/></xsl:if>
+		<xsl:variable name="process" 
+			select=".|document($processes_file)/application/table[@name=$obj_name]//process[@name=current()/@name]"/>
 
-		<xsl:if test="script"><xsl:apply-templates select="script"/></xsl:if>
+		<xsl:choose>
+			<xsl:when test="count($process)">
+				<xsl:if test="$process/dialog"><xsl:apply-templates select="$process/dialog"/></xsl:if>
+				<xsl:if test="$process/script"><xsl:apply-templates select="$process/script"/></xsl:if>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>no encontre procesos para documento para <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@name"/></xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
 
 		}<xsl:if test="position()!=last()">, </xsl:if>
 

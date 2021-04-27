@@ -314,7 +314,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* control de carga de los registros nuevos */
 
-		if ((!options.add) && this.isDirty() && (!Ext.isEmptyObject(this.dirty()) || !Ext.isEmptyObject(this.dirty_childs()))) {
+		if ((!options.add) && this.isDirty() && 
+			(! _.isEmpty(this.dirty())|| 
+				!_.isEmpty(this.dirty_childs()))) {
 
 			var url = store.lastOptions.url;
 
@@ -341,7 +343,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			var fk = this.foreign_key_values;
 
-			if (Ext.isEmptyObject(fk)) return;
+			if ( _.isEmpty(fk) ) return;
 
 			if (this.parent_store.getCount()) {
 
@@ -727,7 +729,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			this.rejectChanges();
 
 		this.each(function(r) {
-			if ( ( ! Ext.isEmptyObject(r) ) && r.get('__new__'))
+			if ( ( ! _.isEmpty(r) ) && r.get('__new__'))
 				this.remove(r);
 		}, this);
 
@@ -977,7 +979,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.childs.each(function(ch) {
 
-			if (!Ext.isEmptyObject(ch.dirty()))
+			if (! _.isEmpty(ch.dirty()))
 				nodeList += ch.serialize();
 
 		}, this);
@@ -1069,7 +1071,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* recursion entre los hijos y sus modificaciones */
 
-		if( this.dirty && ! Ext.isEmptyObject( this.dirty() ) )
+		if( this.dirty && ! _.isEmpty( this.dirty() ) )
 
 			r_list.push( { store: this, records: null } );
 

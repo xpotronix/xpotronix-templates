@@ -146,3 +146,4 @@ Ext.ux.Image = Ext.extend(Ext.BoxComponent, {
 });
 Ext.reg("image", Ext.ux.Image);
 
+Ext.chromeVersion = Ext.isChrome ? parseInt(( /chrome\/(\d{2})/ ).exec(navigator.userAgent.toLowerCase())[1],10) : NaN;

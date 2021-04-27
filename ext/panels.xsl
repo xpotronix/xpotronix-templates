@@ -151,8 +151,6 @@
 		,columns:[<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='hide' or @display='disabled' or @display='password']" mode="column"/>]})
 	</xsl:template><!--}}}-->
 
-<!-- paneles por tipo -->
-
 	<xsl:template match="panel[@include]"><!--{{{-->
 
 		<xsl:param name="obj" tunnel="yes"/>
@@ -173,7 +171,9 @@
 		</xsl:if> -->
 
 		<xsl:variable name="panels" 
-			select="document($template_file)/application/table[@name=$obj_name]//panel[@id=current()/@include]"/>
+			select="document($template_file)//panel[@id=current()/@include]"/>
+
+			<!-- <xsl:message>incluyo panel <xsl:value-of select="$panels"/></xsl:message> -->
 
 		<xsl:choose>
 			<xsl:when test="count($panels)">
@@ -189,7 +189,9 @@
 		</xsl:choose>
 
 	</xsl:template><!--}}}-->
- 
+
+	<!-- paneles por tipo -->
+
 	<xsl:template match="panel[@type='xpPanel']"><!--{{{-->
 
 		<xsl:param name="position" select="position()"/>
@@ -363,7 +365,7 @@
 	))
 	</xsl:template><!--}}}-->
 
-<!-- misc templates -->
+	<!-- misc templates -->
 
 	<xsl:template match="panel" mode="translate"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>
@@ -376,7 +378,7 @@
 		</xsl:choose>
 	</xsl:template><!--}}}-->
 
-<!-- cmp -->
+	<!-- cmp -->
 
 	<xsl:template match="cmp"><!--{{{-->
 		<xsl:param name="obj" tunnel="yes"/>

@@ -121,20 +121,29 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 		var r = t[0];
 
-		/* DEBUG: para parametrizar un URL y cargar algun contenido 
+		/* DEBUG: actualizar a ext4
+		 * para parametrizar un URL y cargar algun contenido 
+		 *
+		 *
+		 *
 
-		if ( r && r.get && this.body ) 
-			this.load({ url: '?', params: 
-				Ext.apply({ 
-					m: App.feat.module, 
-					r: this.obj.class_name, 
-					v: 'card', 
-					'f[include_dataset]': 2, 
-					'f[transform]': 'php' }, 
-					s.get_search_key( s.get_primary_key() ))
-				});
+		if ( this.body ) 
+			if ( r ) 
+				this.load({ 
+					url: '?', 
+					params: Ext.apply({ 
+						m: App.feat.module, 
+						r: this.obj.class_name, 
+						v: 'card', 
+						'f[include_dataset]': 2, 
+						'f[transform]': 'php' }, 
+						s.get_search_key( s.get_primary_key() ))});
+			else 
+				this.update('');
 
-		me.fireEvent( 'loadrecord', me, me.store, r );
+
+
+
 
 		*/
 

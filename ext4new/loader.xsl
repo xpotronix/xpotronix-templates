@@ -39,32 +39,36 @@
 
 	<xsl:output method="text" encoding="UTF-8" indent="no"/>
 
-	<xsl:param name="root_obj" select="//*:model/obj[1]"/>
+	<xsl:variable name="session" select="//*:session"/>
+	<xsl:variable name="metadata" select="//*:metadata"/>
+	<xsl:variable name="model" select="//*:model"/>
+
+
+	<xsl:param name="root_obj" select="$model/obj[1]"/>
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
-	<xsl:param name="current_user" select="//*:session/users/user_username"/>
-	<xsl:param name="anon_user" select="//*:session/users/_anon"/>
+	<xsl:param name="current_user" select="$session/users/user_username"/>
+	<xsl:param name="anon_user" select="$session/users/_anon"/>
 	<xsl:param name="application_path" select="'/var/www/sites/xpotronix/xpay'"/>
 
-	<xsl:variable name="session" select="//*:session"/>
-	<!--<xsl:variable name="application_name" select="upper-case(//*:session/feat/application)"/> -->
+	<!--<xsl:variable name="application_name" select="upper-case($session/feat/application)"/> -->
 	<xsl:variable name="application_name" select="'app'"/>
 
 	<xsl:template match="/"><!--{{{-->
 
-		<!-- <xsl:message><xsl:value-of select="*:session/sessions/user_id"/>:<xsl:value-of select="*:session/sessions/session_id"/></xsl:message> -->
-		<!-- <xsl:message terminate="yes"><xsl:value-of select="//*:metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
+		<!-- <xsl:message><xsl:value-of select="$session/sessions/user_id"/>:<xsl:value-of select="$session/sessions/session_id"/></xsl:message> -->
+		<!-- <xsl:message terminate="yes"><xsl:value-of select="$metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
 
 
 	<xsl:variable name="code">
 
 		Ext.onReady(function() {
 
-			/* module: <xsl:value-of select="//*:session/feat/module"/> */
+			/* module: <xsl:value-of select="$session/feat/module"/> */
 
-			<xsl:apply-templates select="//*:metadata/obj" mode="config"/>
+			<xsl:apply-templates select="$metadata/obj" mode="config"/>
 			<xsl:apply-templates mode="defines_code"/>
 
-			app.getApplication().getController('<xsl:value-of select="//*:session/feat/module"/>').init();
+			app.getApplication().getController('<xsl:value-of select="$session/feat/module"/>').init();
 			var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>
 			var tp = Ext.getCmp('mainAppTabPanel');
 			var ls = tp.lastSelection;
@@ -85,7 +89,7 @@
 	<!-- output final del codigo -->
 
 	<xsl:choose>
-		<xsl:when test="//*:session/var/UNNORMALIZED">
+		<xsl:when test="$session/var/UNNORMALIZED">
 			<xsl:value-of select="$code" disable-output-escaping="yes"/>
 		</xsl:when>
 		<xsl:otherwise>
