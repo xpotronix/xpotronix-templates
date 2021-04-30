@@ -27,6 +27,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 	pageSize: 20,
 	lastTotalCount: 0,
 
+	lrid: null, /* last record ID */
+
 	primary_key: this.primary_key || [],
 	foreign_key: this.foreign_key || {},
 	foreign_key_values: [],
@@ -187,6 +189,25 @@ Ext.define('Ux.xpotronix.xpStore', {
 				}
 			},
 
+			remove: {
+
+				fn: function() {
+
+					let me = this;
+
+					me.totalCount--;
+
+					if ( me.lrid == me.count() ) {
+
+						me.lrid--;
+
+					}
+
+
+				}
+
+			},
+
 			beforeload: {
 
 				fn: this.onBeforeLoad
@@ -228,61 +249,69 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	update_model: function(e) {/*{{{*/
 
+		var me = this;
+
+		let reader = me.proxy.reader;
+
 		/* toma los parametros del elemento XML */
 
-		var ID 	 = e.getAttribute('__ID__');
-		var uiid = e.getAttribute('uiid');
+		var ID 	 = e.getAttribute('__ID__'),
+			uiid = e.getAttribute('uiid');
+
+		me.lrid = me.findByUiid(uiid);
+
+		console.log( 'me.lrid: ' +me.lrid );
 
 		if (uiid === undefined) {
 
 			/* si no vino con uiid, trata de buscarlo en el store */
-			var ri = this.find('__ID__', ID);
+			let ri = me.find('__ID__', ID);
 
 			if (ri > -1)
-				uiid = this.getAt(ri).id;
+				uiid = me.getAt(ri).id;
 		}
 
-		var a = e.getAttribute('action');
+		let a = e.getAttribute('action');
 
 		if (a == 'i' || a == 'u') {
 
-			var prev_record = this.proxy.reader.record,
-			prev_root = this.proxy.reader.root;
+			let prev_record = reader.record,
+			prev_root = reader.root;
 
 			/* cambia las queries para poder leer changes/* */
-			this.proxy.reader.record = "";
-			this.proxy.reader.root = "";
+			reader.record = "";
+			reader.root = "";
 
 			/* devuelve un array de records */
-			var rs = this.proxy.reader.readRecords(e);
-			var nr = rs.records[0];
+			let rs = reader.readRecords(e),
+				nr = rs.records[0];
 
 			/* reestablece el espacio de nombres para el reader */
-			this.proxy.reader.record = prev_record;
-			this.proxy.reader.root = prev_root;
+			reader.record = prev_record;
+			reader.root = prev_root;
 
 			/* ajusta el totalRecords al totalCount anterior */
-			rs.totalRecords = this.totalCount;
+			rs.totalRecords = me.totalCount;
 
-			var rid = this.findByUiid(uiid);
 
-			if ( rid >= 0 ) {
+			if ( me.lrid >= 0 ) {
 
 				/* modifica */
-				var er = this.getAt(rid);
+				let er = me.getAt(me.lrid);
 				er.set(nr.getData());
 				er.commit();
 
 			} else {
 
 				/* agrega */
-				this.add(nr);
+				me.add(nr);
 			}
 
 		} else if (a == 'd') {
 
-			this.remove(this.getAt(this.findByUiid(uiid)));
-			this.totalCount--;
+			console.log( 'lrid: ' +me.lrid );
+
+			me.removeAt(me.lrid);
 
 		} else {
 
@@ -349,10 +378,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 
 				/* filter de clave foranea */
-
-
-
-
 
 				/* DEBUG: esto estaba para limitar que cuando hay una clave vacia no cargue todos los registros
 				   pero ahora lo resuelve bien xpdataobject
@@ -519,7 +544,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.selections = selections;
 
-		// me.clearFilter(true);
+		me.clearFilter(true);
 
 		if ( me.foreign_key.type == 'parent') {
 

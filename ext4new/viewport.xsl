@@ -52,8 +52,8 @@
 	<!-- <xsl:variable name="application_name" select="upper-case($session/feat/application)"/> -->
 	<xsl:variable name="application_name" select="'app'"/>
 
-        <!-- abre archivos de template -->
-        <xsl:variable name="template_ext_ui" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
+	<!-- abre archivos de template -->
+	<xsl:variable name="template_ext_ui" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
 
 
 

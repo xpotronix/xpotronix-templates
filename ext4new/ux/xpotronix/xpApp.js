@@ -896,7 +896,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
  	process_request: function( p, callback ) {/*{{{*/
 
-		this.showPleaseWait( 'Ejecutando la acción ... Aguarde', 'Procesando ...' );
+		let me = this;
+
+		me.showPleaseWait( 'Ejecutando la acción ... Aguarde', 'Procesando ...' );
 
 		var module = p.m;
 		var url = { m: p.m, a: p.a };
@@ -908,7 +910,13 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 			delete( p.p );
 		}
 
-            	this.conn_process.request({ method: 'POST', module: module, url: '?' + Ext.urlEncode( url ), params: p, success: callback });
+		me.conn_process.request({ 
+			method: 'POST', 
+			module: module, 
+			url: '?' + 
+			Ext.urlEncode( url ), 
+			params: p, 
+			success: callback });
 
 	}, /*}}}*/
 
@@ -979,21 +987,30 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	update_model: function( param ) {/*{{{*/
 
-		var ms = [];
+		let me = this;
+		var ms = [],
+			module = param.request.options.module; 
 
-		var module = param.request.options.module; 
+		Ext.each( me.response.changes, function( e ) { 
 
-		Ext.each( this.response.changes, function( e ) { 
+			var full_name = module + '.' + e.nodeName;
+				s = me.store.lookup( full_name );
 
-			var s;
+			if ( s ) {
 
-			if ( s = this.store.lookup( module + '.' + e.nodeName ) ) 
 				ms[s.class_name] = { 
 					store: s, 
 					response: s.update_model( e ) 
 				};
 
-		}, this );
+
+			} else {
+
+				console.error( 'no encuentro el modulo para actualizar ' + full_name );
+
+			}
+
+		}, me );
 
 		/* todos los stores modificados, se fija si tiene un child 'parent' y lo recarga */
 
@@ -1019,17 +1036,17 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 	on_complete: function( sender, param ) { // Callback called on response/*{{{*/
 
 		this.hidePleaseWait();
-		this.parse_response( param ) && this.update_model( param );
+		this.parse_response( param ) && 
+		this.update_model( param );
 
 	},/*}}}*/
 
        on_complete_exception: function( sender, param ) { // Callback called on response/*{{{*/
 
-		Ext.Msg.alert( 'hubo un problema al guardar, por favor reintenta');
+		Ext.Msg.alert( 'Hubo un problema al guardar, por favor reintente mas tarde');
 		this.parse_response( param );
 		this.update_model();
-
-               	this.hidePleaseWait();
+		this.hidePleaseWait();
 
 	},/*}}}*/
 

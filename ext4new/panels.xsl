@@ -18,6 +18,46 @@
 
 	<xsl:variable name="templates" select="document('templates.xml')"/>
 
+	<xsl:template match="panel" mode="include"><!--{{{-->
+
+		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:variable name="obj_name" select="$obj/@name"/>
+
+		<!-- abre archivos de template -->
+		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
+		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
+
+		<!-- <xsl:message terminate="yes">
+			<xsl:copy-of select="document($template_file)//table[@name=$obj_name]/panel[@id=current()/@include]"/>
+		</xsl:message>-->
+
+		<xsl:variable name="obj_metadata"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
+
+		<!-- <xsl:if test="$obj_metadata/obj/@name='_licencia'">
+			<xsl:message terminate="yes"><xsl:copy-of select="$obj_metadata"/></xsl:message>
+		</xsl:if> -->
+
+		<xsl:variable name="panels" 
+			select="document($template_file)//panel[@id=current()/@include]"/>
+
+			<!-- <xsl:message>encontre #paneles <xsl:value-of select="count($panels)"/></xsl:message> -->
+			<!-- <xsl:message>incluyo panel <xsl:value-of select="$panels"/></xsl:message> -->
+
+		<xsl:choose>
+			<xsl:when test="count($panels)">
+				<xsl:apply-templates select="$panels" mode="define">
+					<xsl:with-param name="obj" tunnel="yes" select="$obj_metadata/obj"/>
+					<xsl:with-param name="position" select="position()"/>
+					<xsl:with-param name="display" select="@display" tunnel="yes"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>no encontre paneles para include: <xsl:value-of select="@include"/></xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
+
+	</xsl:template><!--}}}-->
+
 	<xsl:template match="panel" mode="define"><!--{{{-->
 
 		<xsl:variable name="obj"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
@@ -27,15 +67,16 @@
 		<xsl:variable name="panel_class" select="concat($application_name,'.view.',$module_name,'.',$panel_id)"/>
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($panel_class,'\.','/'),'.js')"/>
 
-		<xsl:message><xsl:value-of select="$panel_class"/></xsl:message>
+			<!-- <xsl:message><xsl:value-of select="$panel_class"/></xsl:message> -->
 
 		<xsl:variable name="code">
 		/* path: <xsl:value-of select="$class_path"/> */
-		Ext.ClassManager.isCreated( '<xsl:value-of select="$panel_class"/>' ) || Ext.define('<xsl:value-of select="$panel_class"/>',
+		Ext.ClassManager.isCreated('<xsl:value-of select="$panel_class"/>') || Ext.define('<xsl:value-of select="$panel_class"/>',
 		Ext.apply(<xsl:apply-templates select="." mode="panel_config">
 			<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
 			</xsl:apply-templates>,
+
 		<xsl:apply-templates select="." mode="panel_config_override">
 			<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
@@ -186,46 +227,6 @@
 		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		columns:[<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='hide' or @display='disabled' or @display='password']" mode="column"/>]
-	</xsl:template><!--}}}-->
-
-	<xsl:template match="panel[@include]"><!--{{{-->
-
-		<xsl:param name="obj" tunnel="yes"/>
-		<xsl:variable name="obj_name" select="$obj/@name"/>
-
-		<!-- abre archivos de template -->
-		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
-		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
-
-		<!-- <xsl:message terminate="yes">
-			<xsl:copy-of select="document($template_file)//table[@name=$obj_name]/panel[@id=current()/@include]"/>
-		</xsl:message>-->
-
-		<xsl:variable name="obj_metadata"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
-
-		<!-- <xsl:if test="$obj_metadata/obj/@name='_licencia'">
-			<xsl:message terminate="yes"><xsl:copy-of select="$obj_metadata"/></xsl:message>
-		</xsl:if> -->
-
-		<xsl:variable name="panels" 
-			select="document($template_file)//panel[@id=current()/@include]"/>
-
-			<xsl:message>encontre #paneles <xsl:value-of select="count($panels)"/></xsl:message>
-			<!-- <xsl:message>incluyo panel <xsl:value-of select="$panels"/></xsl:message> -->
-
-		<xsl:choose>
-			<xsl:when test="count($panels)">
-				<xsl:apply-templates select="$panels" mode="define">
-					<xsl:with-param name="obj" tunnel="yes" select="$obj_metadata/obj"/>
-					<xsl:with-param name="position" select="position()"/>
-					<xsl:with-param name="display" select="@display" tunnel="yes"/>
-				</xsl:apply-templates>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:message>no encontre paneles para include: <xsl:value-of select="@include"/></xsl:message>
-			</xsl:otherwise>
-		</xsl:choose>
-
 	</xsl:template><!--}}}-->
 
 	<!-- DEBUG: se usa? -->

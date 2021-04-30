@@ -158,6 +158,8 @@ Ext.define('Ext.ux.form.DateTimePicker', {
     },
 
     handleTabClick: function (e) {
+
+		typeof this.activeCell !== 'undefined' && 
         this.handleDateClick(e, this.activeCell.firstChild, true);
     },
 

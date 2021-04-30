@@ -96,9 +96,9 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		/* eventos */
 
-                // this.getStore().on('beforeload', this.rememberSelection, this);
+		// this.getStore().on('beforeload', this.rememberSelection, this);
 
-                // this.getView().on('refresh', this.refreshSelection, this);
+		// this.getView().on('refresh', this.refreshSelection, this);
 
 		this.getView().preserveScrollOnRefresh = true;
 
@@ -127,9 +127,10 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.on( 'render', function() {
 
-			this.km = new Ext.KeyMap( this.getId(), [
+			this.km = new Ext.KeyMap( 
+				this.getId(), [
 				{
-			            key: Ext.EventObject.DELETE,
+		            key: Ext.EventObject.DELETE,
 				    scope: this,
 			            shift: false,
 			            ctrl: false,
@@ -227,7 +228,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this);
 
-                this.store.on( 'selectionchange', function(s) {
+		this.store.on( 'selectionchange', function(s) {
 
 			if ( this.rendered && this.store.getCount() ) 
 				this.selModel.select( s );
@@ -239,7 +240,22 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			this.selModel.select( r );
 
 		}, this );
-	
+
+
+		this.store.on( 'bulkremove', function( s, r, e ) {
+
+
+			console.log( 'bulkremove' );
+
+			this.getView 
+			&& this.store.lrid != null
+			&& this.selModel.select( this.store.lrid );
+
+
+		}, this );
+
+
+
 
 	}, /*}}}*/
 

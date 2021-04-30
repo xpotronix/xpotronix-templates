@@ -21,6 +21,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/" 
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
+	xmlns:saxon="http://saxon.sf.net/"
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
 	<!-- <xsl:preserve-space elements="text"/> -->
@@ -185,6 +186,7 @@
 		<xsl:param name="normalized" select="false()" tunnel="yes"/>
 
 		<!-- <xsl:message>output: class_path: <xsl:value-of select="$class_path"/> to_file: <xsl:value-of select="$to_file"/>, normalize: <xsl:value-of select="$normalized"/></xsl:message> -->
+		<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 
 		<xsl:variable name="code2">
 			<xsl:choose>
