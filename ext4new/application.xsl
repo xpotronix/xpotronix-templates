@@ -60,13 +60,11 @@
 
 				 App.feat.root_obj = '<xsl:value-of select="$root_obj/@name"/>';
 
-				 document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="$session/feat/page_title[1]"/>';
+					 document.title= '<xsl:apply-templates select="$root_obj" mode="translate"/> :: <xsl:value-of select="$session/feat/page_title[1]"/>';
 
 				 <xsl:if test="$session/feat/theme">
-				 /* Ext.util.CSS.swapStyleSheet("theme","<xsl:value-of select="$session/feat/theme"/>"); */
+				 Ext.util.CSS.swapStyleSheet("default-theme","<xsl:value-of select="$session/feat/theme"/>");
 				 </xsl:if>
-
-
 
 				/* DEFINES START */
 				console.log('defines start');

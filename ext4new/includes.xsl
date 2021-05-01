@@ -34,9 +34,11 @@
 
 		<!-- ext -->
 
-		<link rel="stylesheet" type="text/css" href="/ext4/resources/css/ext-all.css" />
+		<link id="default-theme" rel="stylesheet" type="text/css" href="/ext4/resources/css/ext-all.css"/>
 		<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/ext-theme-neptune/ext-theme-neptune-all.css" /> -->
-		<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/ext-theme-access/ext-theme-access-all.css" /> -->
+
+			<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/ext-theme-gray/ext-theme-gray-all.css"/> -->
+		<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/ext-theme-access/ext-theme-access-all.css"/> -->
 
 		<!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/> -->
 
