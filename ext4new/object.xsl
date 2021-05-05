@@ -21,14 +21,12 @@
 	<xsl:variable name="obj" select="."/>
 	<xsl:variable name="obj_name" select="@name"/>
 
-        <xsl:variable name="session" select="//*:session"/>
-        <xsl:variable name="metadata" select="//*:metadata"/>
+    <xsl:variable name="session" select="//*:session"/>
+    <xsl:variable name="metadata" select="//*:metadata"/>
 	<xsl:variable name="model" select="//*:model"/>
 
 	<xsl:variable name="roles" select="$session/roles"/>
 	<xsl:variable name="role" select="$session/roles/role/@value"/>
-
-
 
 	<xsl:variable name="processes">
 		<xsl:element name="processes" namespace="">

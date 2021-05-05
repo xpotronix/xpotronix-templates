@@ -23,14 +23,6 @@
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:variable name="obj_name" select="$obj/@name"/>
 
-		<!-- abre archivos de template -->
-		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
-		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
-
-		<!-- <xsl:message terminate="yes">
-			<xsl:copy-of select="document($template_file)//table[@name=$obj_name]/panel[@id=current()/@include]"/>
-		</xsl:message>-->
-
 		<xsl:variable name="obj_metadata"><xsl:apply-templates select="." mode="get_obj_metadata"/></xsl:variable>
 
 		<!-- <xsl:if test="$obj_metadata/obj/@name='_licencia'">
@@ -38,7 +30,7 @@
 		</xsl:if> -->
 
 		<xsl:variable name="panels" 
-			select="document($template_file)//panel[@id=current()/@include]"/>
+			select="document($template_ext_ui)//panel[@id=current()/@include]"/>
 
 			<!-- <xsl:message>encontre #paneles <xsl:value-of select="count($panels)"/></xsl:message> -->
 			<!-- <xsl:message>incluyo panel <xsl:value-of select="$panels"/></xsl:message> -->
@@ -372,11 +364,6 @@
 		<!-- <xsl:message>get_obj_metadata: obj_name: <xsl:value-of select="$obj_name"/>, panel_type: <xsl:value-of select="@type"/>, panel_id: <xsl:value-of select="@id"/>, panel_include: <xsl:value-of select="@include"/></xsl:message> -->
 		<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 
-
-		<!-- abre archivos de template -->
-		<xsl:variable name="template_file" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
-		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
-
 		<xsl:element name="obj" namespace="">
 
 			<xsl:copy-of select="$metadata/obj[@name=$obj_name]/@*"/>
@@ -389,7 +376,7 @@
 
 					<xsl:copy-of select="*"/>
 
-					<xsl:variable name="attr_ui" select="document($template_file)/application/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
+					<xsl:variable name="attr_ui" select="document($template_ext_ui)/application/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
 
 					<xsl:if test="$attr_ui">
 						<!-- <xsl:message>overrides ui: <xsl:copy-of select="$attr_ui"/></xsl:message>
