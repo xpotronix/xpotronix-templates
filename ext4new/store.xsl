@@ -67,7 +67,7 @@
 		<xsl:variable name="class_path" select="concat($base_path,'/',replace($class_name,'\.','/'),'.js')"/>
 
 		<xsl:variable name="config" 
-			select="config|document($template_ext_ui)/application/table[@name=$obj_name]/config/text()"/>
+			select="config|document($default_template_file)/application/table[@name=$obj_name]/config/text()"/>
 
 		<!-- <xsl:message>$config: <xsl:copy-of select="$config"/></xsl:message> -->
 

@@ -20,9 +20,10 @@
 
 
 
-	<xsl:param name="application_path" select="'/var/www/sites/xpotronix/xpay'"/>
+	<xsl:param name="application_path" select="'/var/www/sites/xpotronix/alimentos4'"/>
 
 	<xsl:variable name="application_name" select="'app'"/>
+	<xsl:variable name="default_template" select="'ext4'"/>
 
     <xsl:variable name="session" select="//*:session"/>
     <xsl:variable name="metadata" select="//*:metadata"/>
@@ -35,8 +36,7 @@
 	<xsl:param name="anon_user" select="$session/users/_anon"/>
 
 	<!-- abre archivos de template -->
-	<xsl:variable name="template_ext_ui" select="concat($session/feat/base_path,'/templates/ext4/ui.xml')"/>
-
+	<xsl:variable name="default_template_file" select="concat($application_path,'/conf/',$default_template,'-ui.xml')"/>
 
 </xsl:stylesheet>
 

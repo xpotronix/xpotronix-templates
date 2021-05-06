@@ -39,7 +39,7 @@
 
 		(function() {
 
-			<xsl:apply-templates select="." mode="loader"/>
+		<xsl:apply-templates select="." mode="loader"/>
 
 			Ext.onReady(function() {
 
@@ -255,7 +255,7 @@
 		<xsl:param name="standalone" select="true()"/>
 
 		<xsl:variable name="layout"
-		select="document($template_ext_ui)/application/table[@name=$root_obj/@name]/layout"/>
+		select="document($default_template_file)/application/table[@name=$root_obj/@name]/layout"/>
 
 		<!-- <xsl:message terminate="yes">layout:<xsl:copy-of select="$layout"/></xsl:message> -->
 

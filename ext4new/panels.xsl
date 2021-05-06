@@ -30,7 +30,7 @@
 		</xsl:if> -->
 
 		<xsl:variable name="panels" 
-			select="document($template_ext_ui)//panel[@id=current()/@include]"/>
+			select="document($default_template_file)//panel[@id=current()/@include]"/>
 
 			<!-- <xsl:message>encontre #paneles <xsl:value-of select="count($panels)"/></xsl:message> -->
 			<!-- <xsl:message>incluyo panel <xsl:value-of select="$panels"/></xsl:message> -->
@@ -376,7 +376,7 @@
 
 					<xsl:copy-of select="*"/>
 
-					<xsl:variable name="attr_ui" select="document($template_ext_ui)/application/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
+					<xsl:variable name="attr_ui" select="document($default_template_file)/application/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
 
 					<xsl:if test="$attr_ui">
 						<!-- <xsl:message>overrides ui: <xsl:copy-of select="$attr_ui"/></xsl:message>
