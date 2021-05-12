@@ -22,6 +22,8 @@
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
+	<xsl:include href="globals.xsl"/>
+
 	<xsl:include href="html.xsl"/>
 	<xsl:include href="includes.xsl"/>
 	<xsl:include href="attr.xsl"/>
@@ -33,22 +35,11 @@
 	<xsl:include href="log.xsl"/>
 	<xsl:include href="menubar.xsl"/>
 
+
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
 
 	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
-
-	<xsl:variable name="session" select="//*:session"/>
-	<xsl:variable name="metadata" select="//*:metadata"/>
-	<xsl:variable name="model" select="//*:model"/>
-
-	<xsl:param name="root_obj" select="$metadata/obj[1]"/>
-	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
-	<xsl:param name="current_user" select="$session/users/user_username"/>
-	<xsl:param name="anon_user" select="$session/users/_anon"/>
-
-	<!-- abre archivos de template -->
-	<xsl:variable name="template_ext_ui" select="concat($session/feat/base_path,'/templates/ext/ui.xml')"/>
 
 
 	<xsl:template match="/"><!--{{{-->
@@ -164,7 +155,7 @@
 	/* PANELS ENDS */
 
 	<xsl:variable name="layout" 
-		select="document($template_ext_ui)/application/table[@name=$root_obj/@name]/layout"/>
+		select="document($default_template_file)/application/table[@name=$root_obj/@name]/layout"/>
 
 	<!-- <xsl:message terminate="yes">layout:<xsl:copy-of select="$layout"/></xsl:message> -->
 

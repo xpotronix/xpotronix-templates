@@ -388,11 +388,14 @@ return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:if></xsl
 
 <!-- events & listeners -->
 
-<xsl:template match="listeners"><!--{{{-->
+<xsl:template match="*:listeners|listeners"><!--{{{-->
 <xsl:if test="position()>1">,</xsl:if>listeners:{<xsl:apply-templates select="*"/>}</xsl:template><!--}}}-->
 
-<xsl:template match="event"><!--{{{-->
+<xsl:template match="*:event|event"><!--{{{-->
 <xsl:if test="position()>1">,</xsl:if><xsl:value-of select="@name"/>:<xsl:value-of select="."/></xsl:template><!--}}}-->
+
+<xsl:template match="*:rowClass|rowClass"><!--{{{-->
+<xsl:if test="position()>1">,</xsl:if><xsl:value-of select="local-name()"/>:<xsl:value-of select="."/></xsl:template><!--}}}-->
 
 <xsl:template match="comboReload"><!--{{{-->
 <xsl:if test="position()>1">,</xsl:if>beforequery:function(q){delete q.combo.lastQuery}</xsl:template><!--}}}-->

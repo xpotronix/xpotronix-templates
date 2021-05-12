@@ -13,6 +13,7 @@
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/"
+	xmlns:ext4="http://xpotronix.com/templates/ext4/"
 	xmlns:saxon="http://saxon.sf.net/"
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/">
 
@@ -64,15 +65,25 @@
 		<xsl:variable name="code">
 		/* path: <xsl:value-of select="$class_path"/> */
 		Ext.ClassManager.isCreated('<xsl:value-of select="$panel_class"/>') || Ext.define('<xsl:value-of select="$panel_class"/>',
-		Ext.apply(<xsl:apply-templates select="." mode="panel_config">
+
+			_.merge(
+
+		<xsl:apply-templates select="." mode="panel_config">
 			<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
-			</xsl:apply-templates>,
+		</xsl:apply-templates>,
+
+		<xsl:apply-templates select="." mode="panel_config_extends">
+			<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
+			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
+		</xsl:apply-templates>,
 
 		<xsl:apply-templates select="." mode="panel_config_override">
 			<xsl:with-param name="module" select="$session/feat/module" tunnel="yes"/>
 			<xsl:with-param name="obj" select="$obj/obj" tunnel="yes"/>
-			</xsl:apply-templates>)); /* PANEL ENDS */
+		</xsl:apply-templates>
+
+		)); /* PANEL ENDS */
 		</xsl:variable>
 
 		<xsl:call-template name="output">
@@ -178,6 +189,58 @@
 		/* panel_config_override: end */
 
 	</xsl:template><!--}}}-->
+
+	<xsl:template match="panel" mode="panel_config_extends"><!--{{{-->
+
+		<xsl:param name="module" tunnel="yes"/>
+		<xsl:param name="obj" tunnel="yes"/>
+		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+		<xsl:variable name="panel_type" select="@type"/>
+
+		<xsl:variable name="extends" select=".|document($default_template_file)//panel[@type=current()/@type and ../@name=$obj/@name]"/>
+
+		<!-- <xsl:message>panel_config_extends: <xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
+		<!-- <xsl:message>panel_config_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
+
+
+		<xsl:variable name="panel_config_extends">
+
+			<xsl:if test="$extends//*:event">
+				<ext4:listeners>
+					<xsl:copy-of select="$extends//*:event"/>
+				</ext4:listeners>
+			</xsl:if>
+
+			<ext4:xpconfig>
+
+				<xsl:if test="$extends//*:button">
+					<ext4:buttons>
+						<xsl:copy-of select="$extends//*:button"/>
+					</ext4:buttons>
+				</xsl:if>
+
+				 <xsl:if test="$extends//*:rowClass">
+					<xsl:apply-templates select="$extends//*:rowClass"/>
+				</xsl:if>
+
+			</ext4:xpconfig>
+
+			<xsl:if test="$extends//*:function">
+				<xsl:apply-templates select="$extends//*:function" mode="define"/>
+			</xsl:if>
+
+		</xsl:variable>
+
+			/* panel_config_extends: start */
+			{ <xsl:apply-templates select="$panel_config_extends"/> }
+			/* panel_config_extends: end */
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="ext4:listeners">listeners: {<xsl:apply-templates/>}<xsl:if test="position()!=last()">,</xsl:if></xsl:template>
+	<xsl:template match="ext4:xpconfig">xpconfig: {<xsl:apply-templates/>}<xsl:if test="position()!=last()">,</xsl:if></xsl:template>
+	<xsl:template match="ext4:buttons">buttons: {<xsl:apply-templates/>}<xsl:if test="position()!=last()">,</xsl:if></xsl:template>
+	<xsl:template match="ext4:rowClass">rowClass: <xsl:apply-templates/><xsl:if test="position()!=last()">,</xsl:if></xsl:template>
 
 	<!-- config -->
 

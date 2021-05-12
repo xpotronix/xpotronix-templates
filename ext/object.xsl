@@ -12,6 +12,7 @@
 
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:saxon="http://saxon.sf.net/"
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/">
 
 <!-- configuracion del objeto -->
@@ -94,18 +95,18 @@
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:variable name="obj_name" select="$obj/@name"/>
 
-		<!-- abre archivos de template -->
-		<xsl:variable name="processes_file" select="concat($session/feat/base_path,'/templates/ext/processes.xml')"/>
-		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
-
 		{ text:'<xsl:apply-templates select="." mode="translate"/>', 
 			value:'<xsl:value-of select="@name"/>' 
 			<xsl:if test="param">
 			,param:{<xsl:apply-templates select="." mode="param"/>}
 		</xsl:if>
 
+		<xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message>
+
 		<xsl:variable name="process" 
-			select=".|document($processes_file)/application/table[@name=$obj_name]//process[@name=current()/@name]"/>
+			select=".|document($default_template_file)/*:processes/table[@name=$obj_name]//process[@name=current()/@name]"/>
+
+			<!-- <xsl:message terminate="yes"><xsl:copy-of select="$process"/></xsl:message> -->
 
 		<xsl:choose>
 			<xsl:when test="count($process)">

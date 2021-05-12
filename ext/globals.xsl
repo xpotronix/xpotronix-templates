@@ -21,22 +21,18 @@
 
 
 	<xsl:variable name="application_name" select="'app'"/>
-	<xsl:variable name="default_template" select="'ext4'"/>
+	<xsl:variable name="default_template" select="'ext'"/>
 
     <xsl:variable name="session" select="//*:session"/>
     <xsl:variable name="metadata" select="//*:metadata"/>
     <xsl:variable name="model" select="//*:model"/>
+	<xsl:variable name="base_path" select="$session/feat/base_path"/>
+	<xsl:variable name="default_template_file" select="concat($base_path,'/conf/',$default_template,'-ui.xml')"/>
 
 	<xsl:param name="root_obj" select="$model/obj[1]"/>
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
 	<xsl:param name="current_user" select="$session/users/user_username"/>
 	<xsl:param name="anon_user" select="$session/users/_anon"/>
-	<xsl:param name="base_path" select="$session/feat/base_path"/>
-
-	<!-- abre archivos de template -->
-	<xsl:variable name="default_template_file" select="concat($base_path,'/conf/',$default_template,'-ui.xml')"/>
-
-	<xsl:variable name="default_template_content" select="document($default_template_file)"/>
 
 
 </xsl:stylesheet>

@@ -22,6 +22,8 @@
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
+	<xsl:include href="globals.xsl"/>
+
 	<xsl:include href="html.xsl"/>
 	<xsl:include href="includes.xsl"/>
 	<xsl:include href="attr.xsl"/>
@@ -36,14 +38,6 @@
 	<!-- <xsl:strip-space elements="*"/> -->
 
 	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="yes"/>
-
-	<xsl:variable name="session" select="//*:session"/>
-	<xsl:variable name="metadata" select="//*:metadata"/>
-
-	<xsl:param name="root_obj" select="$metadata/obj[1]"/>
-	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>
-	<xsl:param name="current_user" select="$session/users/user_username"/>
-
 
 	<xsl:template match="/"><!--{{{-->
 		<!-- <xsl:message><xsl:value-of select="$session/sessions/user_id"/>:<xsl:value-of select="$session/sessions/session_id"/></xsl:message> -->

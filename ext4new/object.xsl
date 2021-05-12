@@ -12,6 +12,7 @@
 
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:ext4="http://xpotronix.com/templates/ext4/"
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/">
 
 <!-- configuracion del objeto -->
@@ -39,10 +40,14 @@
 		</xsl:element>
 	</xsl:variable>
 
+	<xsl:variable name="obj_functions" select="$default_template_content//table[@name=$obj_name]/ext4:function"/>
+	<xsl:variable name="obj_buttons" select="$default_template_content//table[@name=$obj_name]/ext4:button"/>
 
-	/* <xsl:value-of select="@name"/> xpObj */
+		<!-- <xsl:message>obj_functions: <xsl:copy-of select="$functions"/></xsl:message> -->
 
-	App.obj.add( Ext.create( 'Ux.xpotronix.xpObj', {
+		/* <xsl:value-of select="@name"/> xpObj */
+
+	var obj_defaults = {
 
 		class_name:'<xsl:value-of select="@name"/>'
 		/* ,el:'contentEl_<xsl:value-of select="@name"/>' */
@@ -57,9 +62,33 @@
 
 		<xsl:apply-templates select="$processes" mode="menu">
 			<xsl:with-param name="obj" select="." tunnel="yes"/>
-		</xsl:apply-templates>
+		</xsl:apply-templates> 
 
-	}));
+		};
+
+		<!-- obj prop override -->
+
+		var obj_functions;
+		<xsl:if test="$obj_functions">
+			obj_functions = { 
+		<xsl:apply-templates select="$obj_functions" mode="define">
+			<xsl:with-param name="obj" select="." tunnel="yes"/>
+			</xsl:apply-templates>};
+
+	</xsl:if>
+
+		var obj_buttons;
+		<xsl:if test="$obj_functions">
+			obj_buttons = { buttons: {
+		<xsl:apply-templates select="$obj_buttons" mode="define">
+			<xsl:with-param name="obj" select="." tunnel="yes"/>
+			</xsl:apply-templates>}};
+
+	</xsl:if>
+
+		var config = _.merge( obj_defaults, obj_functions, obj_buttons );
+
+		App.obj.add( Ext.create( 'Ux.xpotronix.xpObj', config ));
 
 	</xsl:template><!--}}}-->
 
@@ -69,7 +98,6 @@
 		<xsl:for-each select="$model//obj[@name=current()/@name]/panel[@display='inspect']">'<xsl:apply-templates select="." mode="get_panel_id"/>'<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>]
 	</xsl:template>
 
-
 	<xsl:template match="obj" mode="extra_param"><!--{{{-->
 		<xsl:variable name="obj_name" select="@name"/>
 		<xsl:for-each select="$session/var/e/*[name()=$obj_name or name()='_']/*">
@@ -78,6 +106,40 @@
 	</xsl:template><!--}}}-->
 
 	<!-- templates auxiliares -->
+
+	<xsl:template match="*:function" mode="define"><!--{{{-->
+
+		<xsl:variable name="code">
+			<xsl:choose>
+				<xsl:when test="@include">
+					<xsl:value-of select="$default_template_content//*:ui/*:function[@name=current()/@include]/text()"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="text()"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:value-of select="@name|@include"/>:<xsl:copy-of select="$code"/><xsl:if test="position()!=last()">, </xsl:if>
+
+	</xsl:template><!--}}}-->
+
+	<xsl:template match="*:button"><!--{{{-->
+
+		<xsl:variable name="code">
+			<xsl:choose>
+				<xsl:when test="@include">
+					<xsl:value-of select="$default_template_content//*:ui/*:button[@name=current()/@include]/text()"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="text()"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:value-of select="@name|@include"/>: "<xsl:copy-of select="$code"/>"<xsl:if test="position()!=last()">, </xsl:if>
+
+	</xsl:template><!--}}}-->
 
 	<xsl:template match="processes" mode="menu"><!--{{{-->
 
@@ -103,7 +165,7 @@
 		</xsl:if>
 
 		<xsl:variable name="process" 
-			select=".|document($processes_file)/application/table[@name=$obj_name]//process[@name=current()/@name]"/>
+			select=".|document($default_template_file)/*:processes/table[@name=$obj_name]//process[@name=current()/@name]"/>
 
 		<xsl:choose>
 			<xsl:when test="count($process)">

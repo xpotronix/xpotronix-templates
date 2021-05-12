@@ -113,8 +113,8 @@
 
 	<xsl:template match="*:document" mode="defines_all_files"><!--{{{-->
 
-		<xsl:variable name="result_path" select="concat($application_path,'/',$application_name,'/',$session/feat/module,'.js')"/>
-		<!-- <xsl:message><xsl:value-of select="$result_path"/></xsl:message> -->
+		<xsl:variable name="result_path" select="concat($base_path,'/',$application_name,'/',$session/feat/module,'.js')"/>
+		<xsl:message>defines path: <xsl:value-of select="$result_path"/></xsl:message>
 
 		<!-- model & store -->
 
