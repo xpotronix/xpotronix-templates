@@ -104,7 +104,7 @@
 			<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 
 		<xsl:variable name="process" 
-			select=".|$default_template_content/*:processes/table[@name=$obj_name]//process[@name=current()/@name]"/>
+			select=".|$default_template_content//*:processes/table[@name=$obj_name]//process[@name=current()/@name]"/>
 
 			<!-- <xsl:message terminate="yes"><xsl:copy-of select="$process"/></xsl:message> -->
 
