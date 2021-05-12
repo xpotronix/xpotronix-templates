@@ -18,8 +18,6 @@
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
-
-
 	<xsl:variable name="application_name" select="'app'"/>
 	<xsl:variable name="default_template" select="'ext4'"/>
 

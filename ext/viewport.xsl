@@ -155,7 +155,7 @@
 	/* PANELS ENDS */
 
 	<xsl:variable name="layout" 
-		select="document($default_template_file)/application/table[@name=$root_obj/@name]/layout"/>
+		select="$default_template_content/application/table[@name=$root_obj/@name]/layout"/>
 
 	<!-- <xsl:message terminate="yes">layout:<xsl:copy-of select="$layout"/></xsl:message> -->
 

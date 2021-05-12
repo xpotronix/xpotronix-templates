@@ -31,7 +31,7 @@
 		</xsl:if> -->
 
 		<xsl:variable name="panels" 
-			select="document($default_template_file)//panel[@id=current()/@include]"/>
+			select="$default_template_content//panel[@id=current()/@include]"/>
 
 			<!-- <xsl:message>encontre #paneles <xsl:value-of select="count($panels)"/></xsl:message> -->
 			<!-- <xsl:message>incluyo panel <xsl:value-of select="$panels"/></xsl:message> -->
@@ -197,7 +197,7 @@
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		<xsl:variable name="panel_type" select="@type"/>
 
-		<xsl:variable name="extends" select=".|document($default_template_file)//panel[@type=current()/@type and ../@name=$obj/@name]"/>
+		<xsl:variable name="extends" select=".|$default_template_content//panel[@type=current()/@type and ../@name=$obj/@name]"/>
 
 		<!-- <xsl:message>panel_config_extends: <xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
 		<!-- <xsl:message>panel_config_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
@@ -439,7 +439,7 @@
 
 					<xsl:copy-of select="*"/>
 
-					<xsl:variable name="attr_ui" select="document($default_template_file)/application/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
+					<xsl:variable name="attr_ui" select="$default_template_content/application/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
 
 					<xsl:if test="$attr_ui">
 						<!-- <xsl:message>overrides ui: <xsl:copy-of select="$attr_ui"/></xsl:message>

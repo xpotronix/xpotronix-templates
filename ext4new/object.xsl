@@ -165,7 +165,7 @@
 		</xsl:if>
 
 		<xsl:variable name="process" 
-			select=".|document($default_template_file)/*:processes/table[@name=$obj_name]//process[@name=current()/@name]"/>
+			select=".|$default_template_content/*:processes/table[@name=$obj_name]//process[@name=current()/@name]"/>
 
 		<xsl:choose>
 			<xsl:when test="count($process)">
