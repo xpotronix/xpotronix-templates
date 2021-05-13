@@ -14,6 +14,7 @@
 <!ENTITY raquo  "&#187;" >
 <!ENTITY laquo  "&#186;" >
 ]>
+
 <xsl:stylesheet version="2.0" 
 
 	xmlns="http://www.w3.org/1999/xhtml"
@@ -47,31 +48,43 @@
 		<!-- <xsl:message terminate="yes"><xsl:value-of select="$metadata//renderer" disable-output-escaping="yes"/></xsl:message> -->
 
 
-	<xsl:variable name="code">
+		<xsl:variable name="code">/* ext4/loader module: <xsl:value-of select="$session/feat/module"/> */
 
-		Ext.onReady(function() {
+Ext.onReady(function() {
 
-			/* module: <xsl:value-of select="$session/feat/module"/> */
+	/* DEFINES START */
+	console.log('defines start');
 
-			<xsl:apply-templates select="$metadata/obj" mode="config"/>
-			<xsl:apply-templates mode="defines_code"/>
+	<xsl:apply-templates select="$metadata/obj" mode="config"/>
+	<xsl:apply-templates select="." mode="defines_code"/>
 
-			app.getApplication().getController('<xsl:value-of select="$session/feat/module"/>').init();
-			var tmp = <xsl:apply-templates mode="viewport"><xsl:with-param name="standalone" select="false()"/></xsl:apply-templates>
-			var tp = Ext.getCmp('mainAppTabPanel');
-			var ls = tp.lastSelection;
-			console.log( "tabId: " + ls.get('tabId') + ", text: " + ls.get('text') );
-			/* debugger; */
-			var tab = tp.add( Ext.apply(tmp, 
-				{
-				/* itemId:ls.get('tabId'), */
+
+	/* DEFINES END */
+	console.log('defines end');
+
+	app.getApplication().getController('<xsl:value-of select="$session/feat/module"/>').init();
+
+	/* VIEWPORT */
+	var tmp = <xsl:apply-templates mode="viewport">
+		<xsl:with-param name="standalone" select="false()"/>
+	</xsl:apply-templates>
+	/* VIEWPORT END */
+
+	var tp = Ext.getCmp('mainAppTabPanel');
+	var ls = tp.lastSelection;
+	console.log( "tabId: " + ls.get('tabId') + ", text: " + ls.get('text') );
+
+	/* debugger; */
+	var tab = tp.add( Ext.apply(tmp, 
+		{
+			/* itemId:ls.get('tabId'), */
 				title:ls.get('text'),
 				closable:true
 			})).show();
-			debugger;
-			ls.set('tabId',tab.id);
+	debugger;
+	ls.set('tabId',tab.id);
 
-		}); /* Ext.onReady ends */
+}); /* Ext.onReady ends */
 	</xsl:variable>
 
 	<!-- output final del codigo -->

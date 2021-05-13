@@ -197,6 +197,13 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		/* agrega el rowClass via config */
 
+		if ( typeof this.xpconfig == 'undefined' ) {
+
+			console.log( 'xpconfig no definido, no se puede configurar ni botones ni rowClass' );
+			return;
+
+		}
+
 		( typeof this.xpconfig.rowClass == 'function' ) && 
 			this.on( 'afterrender', panel => { //{{{
 				Ext.apply( panel.view, { getRowClass: panel.xpconfig.rowClass } ) 

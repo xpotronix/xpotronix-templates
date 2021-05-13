@@ -199,8 +199,9 @@
 
 		<xsl:variable name="extends" select=".|$default_template_content//panel[@type=current()/@type and ../@name=$obj/@name]"/>
 
-		<!-- <xsl:message>panel_config_extends: <xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
-		<!-- <xsl:message>panel_config_override: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message> -->
+		<!-- <xsl:message>panel_config_extends: <xsl:value-of select="saxon:print-stack()"/></xsl:message>
+		<xsl:message>panel_config_extends: type: <xsl:value-of select="@type"/>, id: <xsl:value-of select="$panel_id"/>, obj/@name: <xsl:value-of select="$obj/@name"/></xsl:message>
+		<xsl:message><xsl:copy-of select="$extends"/></xsl:message> -->
 
 
 		<xsl:variable name="panel_config_extends">
@@ -211,19 +212,23 @@
 				</ext4:listeners>
 			</xsl:if>
 
-			<ext4:xpconfig>
+			<xsl:if test="$extends//*:button or $extends//*:rowClass">
 
-				<xsl:if test="$extends//*:button">
-					<ext4:buttons>
-						<xsl:copy-of select="$extends//*:button"/>
-					</ext4:buttons>
-				</xsl:if>
+				<ext4:xpconfig>
 
-				 <xsl:if test="$extends//*:rowClass">
-					<xsl:apply-templates select="$extends//*:rowClass"/>
-				</xsl:if>
+					<xsl:if test="$extends//*:button">
+						<ext4:buttons>
+							<xsl:copy-of select="$extends//*:button"/>
+						</ext4:buttons>
+					</xsl:if>
 
-			</ext4:xpconfig>
+					 <xsl:if test="$extends//*:rowClass">
+						<xsl:apply-templates select="$extends//*:rowClass"/>
+					</xsl:if>
+
+				</ext4:xpconfig>
+
+			</xsl:if>
 
 			<xsl:if test="$extends//*:function">
 				<xsl:apply-templates select="$extends//*:function" mode="define"/>
@@ -231,9 +236,9 @@
 
 		</xsl:variable>
 
-			/* panel_config_extends: start */
-			{ <xsl:apply-templates select="$panel_config_extends"/> }
-			/* panel_config_extends: end */
+		/* panel_config_extends: start */
+		{ <xsl:apply-templates select="$panel_config_extends/ext4:*"/> }
+		/* panel_config_extends: end */
 
 	</xsl:template><!--}}}-->
 

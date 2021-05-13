@@ -66,13 +66,13 @@
 				 Ext.util.CSS.swapStyleSheet("default-theme","<xsl:value-of select="$session/feat/theme"/>");
 				 </xsl:if>
 
-				/* DEFINES START */
+				/* DEFINES */
 				console.log('defines start');
 
 				<xsl:apply-templates select="$metadata/obj" mode="config"/>
 				<xsl:apply-templates select="." mode="defines_code"/>
 
-				/* DEFINES STOP */
+				/* DEFINES END */
 				console.log('defines end');
 
 
