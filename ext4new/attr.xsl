@@ -15,17 +15,20 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns="http://xpotronix.com/namespace/xpotronix/"
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/"
+	xmlns:ext4="http://xpotronix.com/templates/ext4/"
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions"
 	xmlns:saxon="http://saxon.sf.net/"
 	exclude-result-prefixes="#all">
 
 <xsl:template match="attr"><!--{{{-->
+
 	<xsl:param name="obj" tunnel="yes"/>
 	<xsl:variable name="name" select="@name"/>
 	<!-- <xsl:message>attr: obj: <xsl:value-of select="$obj/@name"/>, attr: <xsl:value-of select="@name"/></xsl:message> -->
 
 	<xsl:variable name="attr_meta" select="$obj/attr[@name=$name]"/>
 	<xsl:variable name="attr_base" select="."/>
+	<xsl:variable name="attr_ui" select="$default_template_content//ext4:ui/table[@name=$obj/@name]/attr[@name=$name]"/>
 
 	<!-- <xsl:message>attr_meta: <xsl:sequence select="$attr_meta"/> </xsl:message> -->
 
@@ -39,7 +42,7 @@
 			<xsl:sequence select="$attr_meta/@*"/>
 			<xsl:sequence select="@*"/>
 			<!-- DEBUG: revisar si incluye los elementos propios y del metadata -->
-			<xsl:for-each-group select="$attr_attrs/*|*|$attr_meta/*" group-by="name()">
+			<xsl:for-each-group select="$attr_attrs/*|*|$attr_meta/*|$attr_ui/*" group-by="name()">
 				<xsl:sequence select="current-group()[last()]"/>
 			</xsl:for-each-group> 
 		</xsl:copy>

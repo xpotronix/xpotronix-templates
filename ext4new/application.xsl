@@ -295,13 +295,11 @@
 
 Ext.namespace( 'App' );
 
-var App = Ext.create( 'Ux.xpotronix.xpApp', {feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> } );
+	var App = Ext.create( 'Ux.xpotronix.xpApp', {feat: <xsl:call-template name="app-config"/>, user: <xsl:call-template name="user-session"/> } );
 
+	Ext.onReady(function(){
 
-Ext.onReady(function(){
-
-	App.login();
-
+		App.login();
 });
 </script>
 

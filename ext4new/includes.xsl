@@ -34,8 +34,17 @@
 
 		<!-- ext -->
 
-		<link id="default-theme" rel="stylesheet" type="text/css" href="/ext4/resources/css/ext-all.css"/>
+		<xsl:choose>
+			<xsl:when test="$session/feat/theme">
+				<link id="default-theme" rel="stylesheet" type="text/css" href="{$session/feat/theme}"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<link id="default-theme" rel="stylesheet" type="text/css" href="/ext4/resources/css/ext-all.css"/>
+			</xsl:otherwise>
+		</xsl:choose>
 		<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/ext-theme-neptune/ext-theme-neptune-all.css" /> -->
+
+
 
 			<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/ext-theme-gray/ext-theme-gray-all.css"/> -->
 		<!-- <link rel="stylesheet" type="text/css" href="/ext4/resources/ext-theme-access/ext-theme-access-all.css"/> -->

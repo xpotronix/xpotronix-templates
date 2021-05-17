@@ -330,11 +330,11 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		return {
 
-	                // icon: '/ext/resources/images/default/layout/stuck.gif',
-	                icon: '/ux/images/cross.png',
-	                cls: 'x-btn-text-icon',
+			// icon: '/ext/resources/images/default/layout/stuck.gif',
+			icon: '/ux/images/cross.png',
+			cls: 'x-btn-text-icon',
 			text: 'Descartar',
-	                tooltip: '<b>Descartar Cambios</b><br/>ignorar las modificaciones realizadas',
+			tooltip: '<b>Descartar Cambios</b><br/>ignorar las modificaciones realizadas',
 			disabled: true,
 
 			initComponent: function() {
@@ -353,11 +353,10 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 						( o == Ext.data.Record.EDIT ) ? me.enable(): me.disable();
 					});
 
-
 				this.callParent();
 			},
 
-	                handler: function() {
+			handler: function() {
 
 				Ext.Msg.show({
 
@@ -372,7 +371,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 			} 
 		};
-
 
 	},/*}}}*/
 
@@ -595,14 +593,28 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
         	if ( m.length ) {
 
-                	Ext.MessageBox.confirm('Message', 
-				'Realmente deseas eliminar ' + m.length + ' elementos?', 
-				function( b ) { 
-					( b == 'yes' ) && tb.delete_selections( panel ); 
-				});
-			/* DEBUG: no puedo setear el boton por default para que no borre !!
-			Ext.MessageBox.getDialog().buttons[0].focus();
-			*/
+
+					var messageBox = Ext.create('Ext.window.MessageBox', {
+
+
+						buttonText: {
+							yes: 'Si, borrar',
+							no: 'Cancelar'
+						}
+					});
+
+					messageBox.defaultButton = 'no';
+					messageBox.show({
+						title: 'Atención',
+						msg: '¿Realmente deseas eliminar ' + m.length + ' elementos?',
+						buttons: Ext.Msg.YESNO,
+						icon: Ext.MessageBox.WARNING,
+						fn: function( b ) { 
+							( b == 'yes' ) && tb.delete_selections( panel ); 
+						}
+
+					});
+
 
 		} else {
                 	Ext.MessageBox.alert('Error', 'Para borrar, debes seleccionar algun(os) elemento(s)');

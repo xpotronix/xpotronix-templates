@@ -571,12 +571,11 @@ Ext.define('LoginWindow', {/*{{{*/
 	extend: 'Ext.Window',
 	alias: 'widget.loginwindow',
 
-	constrain: true,
-	closable: false,
-	resizable: false,
+	layout:'border',
+	height:200,
+	width:380,
 	plain: true,
-	border: false,
-	defaultButton: 'loginUsername', // quien recibe el foco
+	defaultButton: 'Ingresar', // quien recibe el foco
 	baase_url: null,
 
 	initComponent: function( config ) {
@@ -669,7 +668,7 @@ Ext.define('LoginWindow', {/*{{{*/
 		render: function() {
 
 			var map = new Ext.util.KeyMap({
-				target: this,
+				target: this.getEl(),
 				key : [10, 13],
 				scope : this,
 				fn: this.doLoginForm
@@ -681,6 +680,7 @@ Ext.define('LoginWindow', {/*{{{*/
 
 		xtype: 'form',
 		layout:'anchor',
+		region:'center',
 		/* labelWidth:80, */
 		defaults: {labelWidth:50},
 		bodyStyle: 'padding:6px',
@@ -704,7 +704,7 @@ Ext.define('LoginWindow', {/*{{{*/
 		
 			buttons:[{ 
 				text:'Ingresar',
-				formBind: true,	 
+				formBind: true,	
 				handler: function() { 
 					this.up('form').up().doLoginForm();
 				}
