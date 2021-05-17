@@ -154,10 +154,13 @@
 	<xsl:apply-templates select="$metadata/obj" mode="panels"/>
 	/* PANELS ENDS */
 
-	<xsl:variable name="layout" 
-		select="$default_template_content/application/table[@name=$root_obj/@name]/layout"/>
 
-	<!-- <xsl:message terminate="yes">layout:<xsl:copy-of select="$layout"/></xsl:message> -->
+	<!-- donde toma el layout del modelo -->
+
+	<xsl:variable name="layout" 
+		select="$default_template_content//*:ui/table[@name=$root_obj/@name]"/>
+
+		<xsl:message terminate="yes">layout:<xsl:copy-of select="$layout"/></xsl:message>
 
 		var events_js = false;
 
@@ -175,6 +178,7 @@
 
 				<xsl:when test="$layout">
 					<xsl:apply-templates select="$layout">
+						<xsl:message>usa layout de ui.xml</xsl:message>
 						<xsl:with-param name="obj" select="$metadata/obj[1]" tunnel="yes"/>
 						<xsl:with-param name="standalone" select="true()"/>
 					</xsl:apply-templates>

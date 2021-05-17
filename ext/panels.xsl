@@ -454,7 +454,7 @@
 
 					<xsl:copy-of select="*"/>
 
-					<xsl:variable name="attr_ui" select="$default_template_content/application/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
+					<xsl:variable name="attr_ui" select="$default_template_content//*:ui/table[@name=$obj_name]/field[@name=current()/@name]/*"/>
 
 					<xsl:if test="$attr_ui">
 						<!-- <xsl:message>overrides ui: <xsl:copy-of select="$attr_ui"/></xsl:message>

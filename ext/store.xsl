@@ -26,7 +26,7 @@
 		<xsl:variable name="obj_name" select="@name"/>
 
 		<xsl:variable name="config" 
-			select="$default_template_content/application/table[@name=$obj_name]/config/text()"/>
+			select="$default_template_content//*:ui/table[@name=$obj_name]/config/text()"/>
 
 		<!-- <xsl:message>$config: <xsl:copy-of select="$config"/></xsl:message> -->
 
