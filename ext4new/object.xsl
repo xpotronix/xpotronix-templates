@@ -40,8 +40,8 @@
 		</xsl:element>
 	</xsl:variable>
 
-	<xsl:variable name="obj_functions" select="$default_template_content//table[@name=$obj_name]/ext4:function"/>
-	<xsl:variable name="obj_buttons" select="$default_template_content//table[@name=$obj_name]/ext4:button"/>
+	<xsl:variable name="obj_functions" select="$default_template_content//table[@name=$obj_name]/*:function"/>
+	<xsl:variable name="obj_buttons" select="$default_template_content//table[@name=$obj_name]/*:button"/>
 
 		<!-- <xsl:message>obj_functions: <xsl:copy-of select="$functions"/></xsl:message> -->
 
@@ -153,10 +153,6 @@
 
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:variable name="obj_name" select="$obj/@name"/>
-
-		<!-- abre archivos de template -->
-		<xsl:variable name="processes_file" select="concat($session/feat/base_path,'/templates/ext4/processes.xml')"/>
-		<!-- <xsl:message>include: <xsl:value-of select="$obj_name"/>/<xsl:value-of select="@include"/> </xsl:message> -->
 
 		{ text:'<xsl:apply-templates select="." mode="translate"/>', 
 			value:'<xsl:value-of select="@name"/>' 

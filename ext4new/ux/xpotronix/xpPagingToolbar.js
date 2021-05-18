@@ -151,7 +151,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		if ( panel.multi_row && panel.obj.inspect.length )
 			me.insert( pos, me.inspect_button( panel ) );
 
-
 		me.callParent();
 
 	},/*}}}*/
@@ -404,69 +403,27 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	},/*}}}*/
 
-	inspect_window: function( panel ){/*{{{*/
-
-		var toolbar = panel.down('toolbar');
-
-		var xtype = panel.obj.inspect[0];
-
-		if ( xtype == panel.xtype ) {
-
-			panel.show();
-		
-		} else {
-
-			if ( ! toolbar.i_panel ) {
-
-				toolbar.i_panel = Ext.create('widget.window', {
-
-					width: 600,
-					minWidth: 300,
-					height:400,
-					minHeight: 200,
-					closable: true,
-					closeAction : 'hide',
-					maximizable: true,
-					layout: 'fit',
-					stateful: true,
-					stateId: xtype + '.inspectWindow',
-					plain:true,
-					border:false,
-					buttonAlign:'center',
-					items:[
-						{
-							xtype:xtype,
-							region:'center'
-						}
-					]
-				});
-			}
-
-			toolbar.i_panel.show();
-		}
-
-	},/*}}}*/
-
 	inspect_button: function( panel ) {/*{{{*/
 
-		var me = this,
-		store = me.store;
+		let store = panel.store;
 
 		return {
 
-	                icon: '/ux/images/application_form_magnify.png',
+			icon: '/ux/images/application_form_magnify.png',
 			cls: 'x-btn-text-icon',
 			text: 'Ver',
-	                menuAlign: 'tr?',
-	                tooltip: '<b>Inspeccionar</b><br/>Pulse aqui para inspeccionar el registro seleccionado',
-			handler: Ext.Function.pass( me.inspect_window, panel ),
+			menuAlign: 'tr?',
+			tooltip: '<b>Inspeccionar</b><br/>Pulse aqui para inspeccionar el registro seleccionado',
+			handler: Ext.Function.pass( panel.obj.inspect_window, panel ),
 			disabled: true,
 			scope:panel,
 			panel:panel,
 
 			initComponent: function() {
 
-				var me = this,
+				/* controla que el boton se deshabilite si no hay seleccion */
+
+				let me = this,
 				sels = panel.getSelection();
 
 				this.on('render', function() {
@@ -474,7 +431,6 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 					( sels.length ) ? me.enable(): me.disable();
 				
 				});
-
 
 				store.on( 'selectionchange', function( sels ) {
 
@@ -669,13 +625,13 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	addRecord:function( panel ) {//{{{
 
-		var toolbar = this, panel = toolbar.panel;
-
 		if ( ! panel.acl.add ) return;
 
-        	if ( panel.store.parent_store && panel.store.parent_store.selections.length === 0 ) {
+        	if ( panel.store.parent_store && 
+					panel.store.parent_store.selections.length === 0 ) {
 
-                	Ext.Msg.alert( 'Error', 'No se ha seleccionado ningun registro en el panel principal. Por favor, seleccione uno' );
+                	Ext.Msg.alert( 'Error', 
+						'No se ha seleccionado ningun registro en el panel principal. Por favor, seleccione uno' );
 
         	} else {
 
@@ -684,13 +640,10 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 				callback: function(r) {
 
 					if ( panel.obj.inspect.length ) {
+
+						panel.obj.inspect_window();
 					
-						if ( toolbar.i_panel )
-							toolbar.i_panel.show();
-						else
-							toolbar.inspect_window( panel );
-					}
-					else if ( panel.startEditingBlank )
+					} else if ( panel.startEditingBlank )
 						panel.startEditingBlank(r);
 			}});
 		}

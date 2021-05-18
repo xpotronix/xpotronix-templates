@@ -29,6 +29,8 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 	store:		null,
 	inspect:	[],
 
+	i_panel: null,
+
 	columns: 	[],
 	fields: 	[],
 	editors:  	{},
@@ -85,6 +87,50 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 		return '<' + element + ' name=\"' + this.class_name + '\"' + ( nodeList ? '>\n' + nodeList + '</' + element + '>\n' : ' />\n' );
 
 	},/*}}}*/
+
+	inspect_window: function( panel ){/*{{{*/
+
+		let me = panel.obj,
+		xtype = me.inspect[0];
+
+		if ( xtype == panel.xtype ) {
+
+			panel.show();
+		
+		} else {
+
+			if ( ! me.i_panel ) {
+
+				me.i_panel = Ext.create('widget.window', {
+
+					width: 600,
+					minWidth: 300,
+					height:400,
+					minHeight: 200,
+					closable: true,
+					closeAction : 'hide',
+					maximizable: true,
+					layout: 'fit',
+					stateful: true,
+					stateId: xtype + '.inspectWindow',
+					plain:true,
+					border:false,
+					buttonAlign:'center',
+					items:[
+						{
+							xtype:xtype,
+							region:'center'
+						}
+					]
+				});
+			}
+
+			me.i_panel.show();
+		}
+
+	},/*}}}*/
+
+
 
 }); // extend
 
