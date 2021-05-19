@@ -29,6 +29,8 @@
 	<xsl:variable name="roles" select="$session/roles"/>
 	<xsl:variable name="role" select="$session/roles/role/@value"/>
 
+	<xsl:variable name="module_name" select="$session/feat/module"/>
+
 	<xsl:variable name="processes">
 		<xsl:element name="processes" namespace="">
 			<xsl:for-each select="processes/process[(not(@display) or @display!='hide') and acl/@action='permit']">
@@ -56,7 +58,7 @@
 		,acl:{<xsl:apply-templates select="acl"/>}
 		,role:'<xsl:value-of select="$role"/>'
 		,extra_param:{<xsl:apply-templates select="." mode="extra_param"/>}
-		,store:'<xsl:value-of select="@name"/>'
+		,store:'<xsl:value-of select="concat($module_name,'.',@name)"/>'
 		,feat:<xsl:apply-templates select="." mode="feats"/>
 		,inspect:<xsl:apply-templates select="." mode="inspect"/>
 
