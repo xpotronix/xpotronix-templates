@@ -200,9 +200,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		if ( typeof this.xpconfig == 'undefined' ) {
 
 			console.log( 'xpconfig no definido, no se puede configurar ni botones ni rowClass' );
-			return;
 
-		}
+		} else {
 
 		( typeof this.xpconfig.rowClass == 'function' ) && 
 			this.on( 'afterrender', panel => { //{{{
@@ -245,6 +244,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 				}
 
 		});//}}}
+
+		}
 
 		this.selModel.on( 'beforeselect', function() {//{{{
 
