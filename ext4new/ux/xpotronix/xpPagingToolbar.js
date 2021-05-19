@@ -462,7 +462,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 	                menuAlign: 'tr?',
 	                tooltip: '<b>Agregar</b><br/>Pulse aqui para agregar un nuevo registro',
 			scope: me,
-			handler:me.addRecord
+			handler:Ext.Function.pass( me.addRecord, panel )
 
 		};
 
@@ -641,7 +641,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 					if ( panel.obj.inspect.length ) {
 
-						panel.obj.inspect_window();
+						panel.obj.inspect_window( panel );
 					
 					} else if ( panel.startEditingBlank )
 						panel.startEditingBlank(r);
