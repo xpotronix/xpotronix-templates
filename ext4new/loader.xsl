@@ -81,7 +81,7 @@ Ext.onReady(function() {
 				title:ls.get('text'),
 				closable:true
 			})).show();
-	debugger;
+		/* debugger; */
 	ls.set('tabId',tab.id);
 
 }); /* Ext.onReady ends */

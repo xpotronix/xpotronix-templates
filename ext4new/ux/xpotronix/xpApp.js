@@ -102,7 +102,7 @@ Ext.define('AppTreeMenuStore', {/*{{{*/
 	model: 'AppTreeMenuModel',
 	extend: 'Ext.data.TreeStore',
 	storeId: 'AppTreeMenuStore',
-	autoLoad: true,
+	autoLoad: false,
 
 	root: {
 		expanded: true,
@@ -149,10 +149,21 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 	,debug: false 
 
+	,initComponent: function( config ) {
+
+		var me = this;
+
+		/* this.store.on( 'load', s => console.log( s ) ); */
+
+		return this.callParent();
+	}
+
+
 	,listeners: {
 
 		render: { fn:function() {
 
+			this.store.load();
 			this.up('panel').setTitle( App.feat.page_title );
 
 			this.getRootNode().expand();
@@ -169,9 +180,11 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 			/* agrega el nombre de usuario al final del menu */
 
+			debugger;
+
 			if ( App.user_node == undefined && App.user.user_username && ! App.user._anon ) {
 
-				if ( App.user_node = this.store.getRootNode().findChild('itemId', "user", true) ) {
+				if ( App.user_node = this.store.getRootNode().findChild('itemId', 'current_user', true) ) {
 
 					App.user_node.data.text += ' <b>' + App.user.user_username + '</b>';
 
@@ -282,9 +295,17 @@ Ext.define('AppTreeMenu', {/*{{{*/
 				console.log('cargado modulo desde URL: ' + url );
 				record.raw.disabled = false;
 			},
-			onError:function(a,b,c){
+			onError:function(msg){
 
-				alert( 'hubo un error al procesar el requerimiento' );
+				Ext.Msg.show({
+					title: 'Atención',
+					icon: Ext.Msg.ERROR,
+					width: 400,
+					buttons: Ext.Msg.OK,
+					msg: '<strong>No pude conectarme con el servidor, consulte con el administrador de la aplicación.</strong><br/>Mensaje recibido: ' + msg
+				});	
+
+
 				record.raw.disabled = false;
 
 			}
@@ -986,6 +1007,14 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 	},/*}}}*/
 
 	update_model: function( param ) {/*{{{*/
+
+
+		if ( typeof param == 'undefined' ) {
+
+			console.log( 'No se recibio respuesta del servidor' );
+			return;
+
+		}
 
 		let me = this;
 		var ms = [],

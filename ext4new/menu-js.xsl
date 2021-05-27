@@ -34,7 +34,7 @@
 		<xsl:if test="@h">href:'<xsl:value-of select="@h"/>',</xsl:if>
 		text:'<xsl:value-of select="@n"/>'
 		<xsl:apply-templates select="." mode="status"/>,
-		<xsl:if test="@id">itemId:'<xsl:value-of select="@id"/>',</xsl:if>
+		<xsl:if test="@itemId|@m">itemId:'<xsl:value-of select="@itemId|@m"/>',</xsl:if>
 		<xsl:if test="@iconCls">iconCls:'<xsl:value-of select="@iconCls"/>',</xsl:if>
 		<xsl:if test="@align!=''">align:'<xsl:value-of select="@align"/>',</xsl:if>
 		children:[<xsl:apply-templates select="*[not(@access) or (@access and @access!='')]"/>]}
@@ -48,18 +48,22 @@
 				<xsl:otherwise><xsl:value-of select="@m"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		{itemId:'<xsl:choose>
-			<xsl:when test="@id"><xsl:value-of select="@id"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="concat(@m,@e)"/></xsl:otherwise>
-		</xsl:choose>',
+
+		<xsl:if test="@itemId or @m">
+				{itemId:'<xsl:value-of select="@itemId|@m"/>',
+		</xsl:if>
 		<xsl:if test="@iconCls">iconCls:'<xsl:value-of select="@iconCls"/>',</xsl:if>
 		href:'<xsl:choose>
 			<xsl:when test="@h"><xsl:value-of select="@h"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="concat('?m=',$url)"/></xsl:otherwise>
 		</xsl:choose>',
-		leaf:true,
+			leaf:true,
+		<xsl:if test="@m">
 		module:'<xsl:value-of select="@m"/>',
+		</xsl:if>
+		<xsl:if test="@e">
 		extra:'<xsl:value-of select="@e"/>',
+		</xsl:if>
 		<xsl:apply-templates select="." mode="status"/>
 		text:'<xsl:choose>
 			<xsl:when test="@n"><xsl:value-of select="@n"/></xsl:when>
