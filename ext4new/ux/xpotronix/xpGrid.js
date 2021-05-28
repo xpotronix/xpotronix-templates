@@ -112,16 +112,10 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 			var grid = this;
 
-			if ( this.store ) {
-				if ( this.store.feat.auto_load !== false && ( ! this.store.parent_store ) ) {
-					this.store.load({ callback:function(a,b,c){ 
-						grid.selModel.select(0);
-					}});
-
-				} else {
+			if ( this.store.feat.auto_load !== false && ( ! this.store.parent_store ) ) {
+				this.store.load({ callback:function(a,b,c){ 
 					grid.selModel.select(0);
-				}
-
+				}});
 			}
 		});//}}}
 

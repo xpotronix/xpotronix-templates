@@ -35,6 +35,8 @@
 		/* path: <xsl:value-of select="$class_path"/> */
 		Ext.ClassManager.isCreated( '<xsl:value-of select="$class_name"/>' ) || Ext.define( '<xsl:value-of select="$class_name"/>', {
 			extend: 'Ext.data.Model'
+			,idField: { name: '__ID__' } /* la clave empaquetada */
+			,idProperty: '__ID__' /* la clave empaquetada */
 			,class_name: '<xsl:value-of select="@name"/>'
 			,module: '<xsl:value-of select="$module_name"/>'
 			,proxy: { type: 'xpProxy', class_name: '<xsl:value-of select="@name"/>', module: '<xsl:value-of select="$module_name"/>' }
@@ -162,6 +164,8 @@
 		/* path: <xsl:value-of select="$class_path"/> */
 		Ext.ClassManager.isCreated( '<xsl:value-of select="$class_name"/>' ) || Ext.define( '<xsl:value-of select="$class_name"/>', {
 		extend: 'Ext.data.Model'
+			,idField: { name: 'id' } /* la clave empaquetada */
+			,idProperty: 'id' /* la clave empaquetada */
 		,class_name: '<xsl:value-of select="@name"/>'
 		,module: '<xsl:value-of select="$module_name"/>'
 		,proxy: { type: 'xpProxy', class_name: '<xsl:value-of select="$obj_name"/>', module: '<xsl:value-of select="$module_name"/>', 

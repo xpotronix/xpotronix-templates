@@ -476,10 +476,7 @@ Ext.define('AppExportWindow', {/*{{{*/
 			m: panel.store.module,
 			r: panel.store.class_name, 
 			a: 'csv',
-			'f[ignore_null_fields]': 0, 
-			'f[include_dataset]': 2, // DS_NORMALIZED
-			'g[start]': 0,
-			'g[limit]': limit,
+			'f[row_count]': limit,
 			'f[display_only]': display_only_fields.join(',')
 		});
 
