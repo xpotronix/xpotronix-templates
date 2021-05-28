@@ -248,11 +248,20 @@
  	<panel type="xpForm" default="fields"><!--{{{-->
 
 		<extend>Ux.xpotronix.xpForm</extend>
+		<layout>form</layout>
+		<bodyPadding>5 5 0</bodyPadding>
 		<split>true</split>
 		<stateful>true</stateful>
 		<deferredRender>true</deferredRender>
 		<bodyStyle>padding:5px</bodyStyle>
 		<width>100%</width>
+
+		<width>350</width>
+		<fieldDefaults>
+			<msgTarget>side</msgTarget>
+			<labelWidth>100</labelWidth>
+		</fieldDefaults>
+
 		<defaults>
 			<width>100%</width>
 		</defaults>
