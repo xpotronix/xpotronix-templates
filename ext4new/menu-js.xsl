@@ -31,13 +31,13 @@
 	</xsl:template>
 
         <xsl:template match="menu">{
-		<xsl:if test="@h">href:'<xsl:value-of select="@h"/>',</xsl:if>
-		text:'<xsl:value-of select="@n"/>'
+		<xsl:if test="@h">"href":"<xsl:value-of select="@h"/>",</xsl:if>
+		"text":"<xsl:value-of select="@n"/>"
 		<xsl:apply-templates select="." mode="status"/>,
-		<xsl:if test="@itemId|@m">itemId:'<xsl:value-of select="@itemId|@m"/>',</xsl:if>
-		<xsl:if test="@iconCls">iconCls:'<xsl:value-of select="@iconCls"/>',</xsl:if>
-		<xsl:if test="@align!=''">align:'<xsl:value-of select="@align"/>',</xsl:if>
-		children:[<xsl:apply-templates select="*[not(@access) or (@access and @access!='')]"/>]}
+		<xsl:if test="@itemId|@m">"itemId":"<xsl:value-of select="@itemId|@m"/>",</xsl:if>
+		<xsl:if test="@iconCls">"iconCls":"<xsl:value-of select="@iconCls"/>",</xsl:if>
+		<xsl:if test="@align!=''">"align":"<xsl:value-of select="@align"/>",</xsl:if>
+		"children":[<xsl:apply-templates select="*[not(@access) or (@access and @access!='')]"/>]}
 		<xsl:if test="position()!=last()">,</xsl:if>
 	</xsl:template>
 
@@ -50,25 +50,25 @@
 		</xsl:variable>
 
 		<xsl:if test="@itemId or @m">
-				{itemId:'<xsl:value-of select="@itemId|@m"/>',
+				{"itemId":"<xsl:value-of select="@itemId|@m"/>",
 		</xsl:if>
-		<xsl:if test="@iconCls">iconCls:'<xsl:value-of select="@iconCls"/>',</xsl:if>
-		href:'<xsl:choose>
+		<xsl:if test="@iconCls">iconCls:"<xsl:value-of select="@iconCls"/>",</xsl:if>
+		"href":"<xsl:choose>
 			<xsl:when test="@h"><xsl:value-of select="@h"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="concat('?m=',$url)"/></xsl:otherwise>
-		</xsl:choose>',
-			leaf:true,
+		</xsl:choose>",
+			"leaf":true,
 		<xsl:if test="@m">
-		module:'<xsl:value-of select="@m"/>',
+		"module":"<xsl:value-of select="@m"/>",
 		</xsl:if>
 		<xsl:if test="@e">
-		extra:'<xsl:value-of select="@e"/>',
+		"extra":"<xsl:value-of select="@e"/>",
 		</xsl:if>
 		<xsl:apply-templates select="." mode="status"/>
-		text:'<xsl:choose>
+		"text":"<xsl:choose>
 			<xsl:when test="@n"><xsl:value-of select="@n"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="concat(@m,@e)"/></xsl:otherwise>
-		</xsl:choose>'}
+		</xsl:choose>"}
 		<xsl:if test="position()!=last()">,</xsl:if>
 	</xsl:template>
 

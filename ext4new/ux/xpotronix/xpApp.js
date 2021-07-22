@@ -180,8 +180,6 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 			/* agrega el nombre de usuario al final del menu */
 
-			debugger;
-
 			if ( App.user_node == undefined && App.user.user_username && ! App.user._anon ) {
 
 				if ( App.user_node = this.store.getRootNode().findChild('itemId', 'current_user', true) ) {
