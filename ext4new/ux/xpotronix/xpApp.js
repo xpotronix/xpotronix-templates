@@ -105,7 +105,7 @@ Ext.define('AppTreeMenuStore', {/*{{{*/
 	autoLoad: false,
 
 	root: {
-		expanded: true,
+		expanded: false,
 		text: "Organization",
 		leaf: 'false',
 		id: '/',
@@ -163,7 +163,6 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 		render: { fn:function() {
 
-			this.store.load();
 			this.up('panel').setTitle( App.feat.page_title );
 
 			this.getRootNode().expand();
@@ -1199,5 +1198,3 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 	}/*}}}*/
 
 }); // extend
-
-// vim600: fdm=marker sw=3 ts=8 ai:
