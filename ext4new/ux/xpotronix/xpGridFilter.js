@@ -43,7 +43,7 @@ Ext.define( 'Ext.ux.grid.xpGridFilters', {
             }
             // only build if there is active filter
             if (tmp.length > 0){
-                p[this.paramPrefix] = Ext.util.JSON.encode(tmp);
+                p[this.paramPrefix] = JSON.stringify(tmp);
             }
         }
         return p;

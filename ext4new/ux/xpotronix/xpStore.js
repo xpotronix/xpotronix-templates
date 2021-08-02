@@ -1051,6 +1051,41 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	},/*}}}*/
 
+	/* filters */
+
+	get_filters_values( unnormalized = false ) {//{{{
+
+		/* con unnormalized = false devuelve un objeto con las propiedades por cada filtro asignado
+		 * con unnormalized = true devuelve un objeto con un atributo con el nombre de la variable */
+
+		let me = this;
+		var active_filters = me.getFilters(false);
+		var filters_array = [];
+
+		active_filters.each( function(item) {
+
+			let filter = [];
+
+			if ( unnormalized ) {
+
+				filter = { [item.property]: item.value };
+
+			} else {
+
+				filter = {
+					'operator': item.operator,
+					'property': item.property,
+					'value' : 	item.value
+				};
+			}
+
+			Ext.Array.push(filters_array, filter);
+		});
+
+		return filters_array;
+
+	},//}}}
+
 	/* store changes handling */
 
 	serialize_all: function() {/*{{{*/

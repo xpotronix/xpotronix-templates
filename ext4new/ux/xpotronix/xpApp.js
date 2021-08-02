@@ -449,40 +449,41 @@ Ext.define('AppExportWindow', {/*{{{*/
 	buttons: [{
 
 	    text: 'Exportar',
-	    listeners: { click: { fn: function() {  
+	    listeners: { 
+			click: { 
+				fn: function() {  
 
-		var win = this.up('window');
-		var toolbar = win.toolbar;
-		var panel = toolbar.panel;
+					let win = this.up('window'),
+					toolbar = win.toolbar,
+					panel = toolbar.panel,
+					display_only_fields = [],
+					store = win.toolbar.store,
+					q_params = store.get_foreign_key(),
+					limit = win.down('form').getForm().findField('max_records').getValue(),
+					filters = store.get_filters_values();
 
-		var store = win.toolbar.store;
+					Ext.each( panel.columns, function( f ) {
+						f.hidden || display_only_fields.push( f.name );
+					});
 
-		/* foregin keys */
-		var q_params = store.get_foreign_key();
+					Ext.apply( q_params, {
+						b: 'ext4',
+						m: panel.store.module,
+						r: panel.store.class_name, 
+						a: 'csv',
+						filter: JSON.stringify(filters),
+						'f[row_count]': limit,
+						'f[display_only]': display_only_fields.join(',')
+					});
 
-		var display_only_fields = [];
+					console.log( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
 
-		Ext.each( panel.columns, function( f ) {
+					window.open ("?" + Ext.urlEncode( q_params ), "BrowserExportWindow" ); 
+					win.hide(); 
 
-			f.hidden || display_only_fields.push( f.name );
-		});
-
-		var limit = win.down('form').getForm().findField('max_records').getValue();
-
-		Ext.apply( q_params, { 
-			m: panel.store.module,
-			r: panel.store.class_name, 
-			a: 'csv',
-			'f[row_count]': limit,
-			'f[display_only]': display_only_fields.join(',')
-		});
-
-		console.log( 'exportando la URL: ' + Ext.urlEncode( q_params ) );
-
-		window.open ("?" + Ext.urlEncode( q_params ), "BrowserExportWindow" ); 
-		win.hide(); 
-
-		}, buffer: 200 }}
+					}, buffer: 200 
+				}
+			}
 	},{
 	    text: 'Cancelar',
 	    handler: function() { 
