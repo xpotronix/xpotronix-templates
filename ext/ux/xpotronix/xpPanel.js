@@ -89,25 +89,27 @@ Ext.extend( Ext.ux.xpotronix.xpPanel, Ext.Panel, {
 
 	loadRecord: function() {/*{{{*/
 
-		if ( this.items && this.items.getCount() )
+		let me = this;
+
+		if ( me.items && me.items.getCount() )
 			return;
 
-		var s = this.store;
+		var s = me.store;
 		var r = s.cr();
 
-		if ( this.body ) 
+		if ( me.body ) 
 			if ( r ) 
-				this.load({ 
+				me.load({ 
 					url: '?', 
 					params: Ext.apply({ 
 						m: App.feat.module, 
-						r: this.obj.class_name, 
+						r: me.obj.class_name, 
 						v: 'card', 
 						'f[include_dataset]': 2, 
 						'f[transform]': 'php' }, 
 						s.get_search_key( s.get_primary_key() ))});
 			else 
-				this.update('');
+				me.update('');
 
 	},//}}}/*}}}*/
 

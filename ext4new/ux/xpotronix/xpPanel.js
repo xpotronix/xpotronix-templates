@@ -21,6 +21,8 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 	border: false,
 	show_buttons: true,
 	buttonAlign: 'left',
+	autoScroll: true,
+	overflowY: 'scroll',
 	feat: undefined,
 	multi_row: false,
 	debug: false,
@@ -111,41 +113,30 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 	loadRecord: function() { /*{{{*/
 
-		var me = this;
+		let me = this;
 
 		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) return;
 
-		var t = me.getSelection();
+		let t = me.getSelection();
 
 		if ( t == undefined ) return;
 
-		var r = t[0];
+		var s = me.store;
+		var r = s.cr();
 
-		/* DEBUG: actualizar a ext4
-		 * para parametrizar un URL y cargar algun contenido 
-		 *
-		 *
-		 *
+		/* borra el contenido */
+		me.update('');
 
-		if ( this.body ) 
-			if ( r ) 
-				this.load({ 
+		if ( r && me.body ) 
+				me.body.load({ 
 					url: '?', 
 					params: Ext.apply({ 
 						m: App.feat.module, 
-						r: this.obj.class_name, 
+						r: me.obj.class_name, 
 						v: 'card', 
 						'f[include_dataset]': 2, 
 						'f[transform]': 'php' }, 
 						s.get_search_key( s.get_primary_key() ))});
-			else 
-				this.update('');
-
-
-
-
-
-		*/
 
 	},/*}}}*/
 
