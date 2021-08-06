@@ -42,7 +42,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	selections: undefined,
 	selModel: undefined,
 
-	debug: false, 
+	debug: true, 
 
 	constructor: function(config) {/*{{{*/
 
@@ -99,7 +99,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 					selectionchange: {
 						buffer: 500,
 						scope: this,
-						fn: this.onSelectionChange
+						fn: this.onParentSelectionChange
 					},
 
 					serverstoreupdate: {
@@ -538,7 +538,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			}
 	},/*}}}*/
 
-	onSelectionChange: function( selections ) { /*{{{*/
+	onParentSelectionChange: function( selections ) { /*{{{*/
 
 		var me = this, data = [];
 

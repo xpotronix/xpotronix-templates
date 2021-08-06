@@ -25,7 +25,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	multi_row: true,
 
 	selection: [],
-	debug: false,
+	debug: true,
 
 	requires: [ 'Ux.xpotronix.xpComboBox', 'Ux.xpotronix.xpMultiSearch', 'Ext.ux.form.DateTimeField' ],
 
@@ -73,8 +73,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.callParent(arguments);
 
-		// this.debug && consoleDebugFn( this );
-		this.debug && consoleDebugFn( this.getView() );
+		this.debug && consoleDebugFn( this );
+		// this.debug && consoleDebugFn( this.getView() );
 
 	},/*}}}*/
 
@@ -255,7 +255,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.store.on( 'load', function() {//{{{
 
-			if ( this.rendered && this.store.getCount() ) {
+			if ( this.store.getCount() ) {
 		
 				this.selModel.preventFocus = true;
 				this.selModel.select( 0 );
@@ -267,7 +267,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.store.on( 'selectionchange', function(s) {//{{{
 
-			if ( this.rendered && this.store.getCount() ) 
+			if ( this.store.getCount() ) 
 				this.selModel.select( s );
 
                 }, this );//}}}
