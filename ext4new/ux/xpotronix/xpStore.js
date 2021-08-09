@@ -225,17 +225,26 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	/* events fn */
 
-consoleDebugEvents: function() {
+	consoleDebugEvents: function() { /*{{{*/
 
-	return Ext.util.Observable.capture( this, 
+		return Ext.util.Observable.capture( this, 
 
-		function() {
+			function() {
 
-			console.log( { event_name: arguments[0], storeId: arguments[1].storeId } );
-		}
-	);
-},
+				let event_name = arguments[0],
+					storeId = arguments[1].storeId;
 
+				if ( ['selectionchange'].includes( event_name ) ) {
+
+					storeId = arguments[2].store.storeId;
+
+				}
+
+				console.log( { event_name: event_name, storeId: storeId } );
+			}
+		);
+
+	}, /*}}}*/
 
 	lookup: function( store ) {/*{{{*/
 

@@ -26,6 +26,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	selection: [],
 	debug: false,
+	debug_events: true,
 
 	requires: [ 'Ux.xpotronix.xpComboBox', 'Ux.xpotronix.xpMultiSearch', 'Ext.ux.form.DateTimeField' ],
 
@@ -73,10 +74,39 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.callParent(arguments);
 
-		this.debug && consoleDebugFn( this );
+		this.debug_events && this.consoleDebugEvents();
 		// this.debug && consoleDebugFn( this.getView() );
 
 	},/*}}}*/
+
+	/* events fn */
+
+	consoleDebugEvents: function() { /*{{{*/
+
+		return Ext.util.Observable.capture( this, 
+
+			function() {
+
+				let event_name = arguments[0],
+					xtype = arguments[1].xtype;
+
+				if ( ['beforeselect','select','selectionchange'].includes( event_name ) ) {
+
+					xtype = arguments[1][0].views[0].initialConfig.grid.xtype;
+
+				}
+
+				if ( ['filterchange'].includes( event_name ) ) {
+
+					xtype = arguments[1][0].storeId;
+
+				}
+
+				console.log( { event_name: event_name, xtype: xtype } );
+			}
+		);
+
+	}, /*}}}*/
 
 	initComponent:function() {/*{{{*/
 
@@ -102,24 +132,51 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.getView().preserveScrollOnRefresh = true;
 
-		this.on( 'beforeedit', function() {
+		this.on( 'beforeedit', function() {//{{{
+
+			/* chequea el acl si puede editar o no */
 
 			return this.acl.edit;
 
-		});
+		});//}}}
 
 		this.on( 'viewready', function() {//{{{
 
+			/* dispara que cargue la grilla y seleccione el primer elemento,
+			 * si feat.auto_load && parent_store */
+
 			var grid = this;
 
-			if ( this.store.feat.auto_load !== false && ( ! this.store.parent_store ) ) {
-				this.store.load({ callback:function(a,b,c){ 
+			if ( grid.store.feat.auto_load === false ) return;
+
+			if ( ( ! grid.store.parent_store ) ) {
+				grid.store.load({ callback:function(a,b,c){ 
 					grid.selModel.select(0);
 				}});
 			}
+
+		});//}}}
+
+		this.on( 'activate', function() {//{{{
+
+			/* para aquellas grillas que no estan activas,
+			 * tiene que seleccionar cuando se activan */
+
+			var grid = this;
+
+			if ( grid.store.getCount() ) {
+		
+				grid.selModel.preventFocus = true;
+				grid.selModel.select( 0 );
+				grid.selModel.preventFocus = false;
+				//grid.selModel.select( 0, true, true );
+			}
+
 		});//}}}
 
 		this.on( 'render', function() {//{{{
+
+			/* carga el mapeo del teclado */
 
 			this.km = new Ext.KeyMap( 
 				this.getId(), [
@@ -159,7 +216,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		    	]);	
 		});//}}}
 
-		this.on('beforedestroy', function() {//{{{
+		this.on( 'beforedestroy', function() {//{{{
 
 			var dz = this.dz;
 
@@ -168,7 +225,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this);//}}}
 
-	 	this.on('validateedit', function(e, eOpts ) {//{{{
+	 	this.on( 'validateedit', function(e, eOpts ) {//{{{
 
 			/* actualiza el _label del registro al seleccionar en el combobox */
 
@@ -181,13 +238,13 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	 	});//}}}
 
-		this.on('selectionchange', function(sm, selection) {//{{{
+		this.on( 'selectionchange', function(selModel, selection) {//{{{
 
 			this.store.setSelection( selection, this.selModel );
 
 			return true;
 
-		}, this, { buffer: 0 });//}}}
+		}, this,  { buffer: 0 });//}}}
 
 		/* agrega el rowClass via config */
 
@@ -198,20 +255,22 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		} else {
 
 		( typeof this.xpconfig.rowClass == 'function' ) && 
+
 			this.on( 'afterrender', panel => { //{{{
 				Ext.apply( panel.view, { getRowClass: panel.xpconfig.rowClass } ) 
 			});//}}}
 
-
 		/* agrega los botones en el panel */
 
 		( ! _.isEmpty( this.xpconfig.buttons ) ) && 
+
 			this.on( 'beforerender', panel => { //{{{
 
 				var tbar = panel.getTopToolbar();
 
 				if ( tbar ) { 
 
+					/* DEBUG: Revisar referencia 'this' */
 					Object.entries(this.xpconfig.buttons).
 						forEach(([button, config]) => {
 
@@ -255,12 +314,14 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		this.store.on( 'load', function() {//{{{
 
-			if ( this.store.getCount() ) {
+			let grid = this;
+
+			if ( grid.store.getCount() ) {
 		
-				this.selModel.preventFocus = true;
-				this.selModel.select( 0 );
-				this.selModel.preventFocus = false;
-				//this.selModel.select( 0, true, true );
+				grid.selModel.preventFocus = true;
+				grid.selModel.select( 0 );
+				grid.selModel.preventFocus = false;
+				//grid.selModel.select( 0, true, true );
 			}
 
 		}, this);//}}}
@@ -277,7 +338,6 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			this.selModel.select( r );
 
 		}, this );//}}}
-
 
 		this.store.on( 'bulkremove', function( s, r, e ) {//{{{
 
