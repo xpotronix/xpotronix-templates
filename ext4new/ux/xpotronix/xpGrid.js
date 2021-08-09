@@ -155,16 +155,10 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 				}});
 			}
 
-		});//}}}
-
-		this.on( 'activate', function() {//{{{
-
 			/* para aquellas grillas que no estan activas,
 			 * tiene que seleccionar cuando se activan */
 
-			var grid = this;
-
-			if ( grid.store.getCount() ) {
+			if ( grid.store.getCount()) {
 		
 				grid.selModel.preventFocus = true;
 				grid.selModel.select( 0 );
