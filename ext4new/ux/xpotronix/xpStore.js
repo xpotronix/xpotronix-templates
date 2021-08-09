@@ -42,7 +42,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 	selections: undefined,
 	selModel: undefined,
 
-	debug: true, 
+	debug: false, 
+	debug_events: true, 
 
 	constructor: function(config) {/*{{{*/
 
@@ -61,7 +62,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		this.callParent(arguments);
 
-		this.debug && consoleDebugFn( this );
+		this.debug_events && this.consoleDebugEvents();
 
 		/* eventos propios */
 
@@ -78,8 +79,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 			if ( typeof this.parent_store == 'string' ) {
 
 				var parent_store_name = this.parent_store;
-
-
 			}
 
 			this.parent_store = App.store.lookup( parent_store_name );
@@ -222,9 +221,21 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		});
 
-	},/*}}}*/ 
+	 },/*}}}*/ 
 
 	/* events fn */
+
+consoleDebugEvents: function() {
+
+	return Ext.util.Observable.capture( this, 
+
+		function() {
+
+			console.log( { event_name: arguments[0], storeId: arguments[1].storeId } );
+		}
+	);
+},
+
 
 	lookup: function( store ) {/*{{{*/
 

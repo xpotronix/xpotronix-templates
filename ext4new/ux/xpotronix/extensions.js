@@ -8,14 +8,15 @@ var MD5 = function(s){function L(k,d){return(k<<d)|(k>>>(32-d))}function K(G,k){
 /* debug de eventos del compoenete */
 consoleDebugFn = function(component) { 
 
-	return Ext.util.Observable.capture(
+	return Ext.util.Observable.capture( component, 
 
-		component, function() {
+		function() {
 
 			let event_name = arguments[0],
 			obj = arguments[1]
 			id = '';
 
+			/*
 			if ( obj.xtype !== undefined )
 				id = obj.type;
 
@@ -24,8 +25,9 @@ consoleDebugFn = function(component) {
 				if ( obj[0].storeId !== undefined )
 					id = obj[0].storeID;
 			}
+			*/
 
-			console.log( event_name, id );
+			console.log( event_name, arguments );
 		}
 	)
 
