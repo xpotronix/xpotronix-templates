@@ -180,11 +180,16 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 	*/
 	,onSpecialKey:function(field, e) {
 		var  me = this;
-		if(Ext.EventObject.ENTER === e.getKey()) {
+		if( Ext.EventObject.ENTER === e.getKey()) {
 			var allFilters = Ext.Array.merge( this.store.foreign_key_values, this.getFilters() );
-			me.store.clearFilter(true);
-			me.store.filter(allFilters);
+			if ( allFilters.length === 0 ) {
+				me.store.clearFilter(false);
+			} else {
+				me.store.clearFilter(true);
+				me.store.filter(allFilters);
+			}
 		}
+
 	} // eo function onSpecialKey
 
 

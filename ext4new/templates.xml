@@ -71,7 +71,7 @@
 	<column type="xpint"><!--{{{-->
 
 		<align>right</align>
-		<filterField>{xtype:'numberfield',fieldStyle:'text-align:right;'}</filterField>
+		<filterField>{xtype:'numberfield',fieldStyle:'text-align:right;',hideTrigger:true}</filterField>
 		<renderer/>
 
 	</column><!--}}}-->
@@ -91,8 +91,19 @@
 	</column><!--}}}-->
 
 	<column type="xpdecimal"><!--{{{-->
+
 		<align>right</align>
-		<filterField>{xtype:'textfield',fieldStyle:'text-align:right;'}</filterField>
+		<hideTrigger>true</hideTrigger>
+		<decimalPrecision>2</decimalPrecision>
+		<filterField>{xtype:'textfield',fieldStyle:'text-align:right;',hideTrigger:true}</filterField>
+
+		<!--
+		<xtype>numberfield</xtype>
+		<allowDecimals>true</allowDecimals>
+		<hideTrigger>true</hideTrigger>
+			<fieldStyle>text-align:right;</fieldStyle>
+		-->
+
 	</column><!--}}}-->
 
 	<column type="xpdate"><!--{{{-->
@@ -165,6 +176,7 @@
 		<allowDecimals>true</allowDecimals>
 		<decimalPrecision>2</decimalPrecision>
 		<renderer>usMoney</renderer>
+		<hideTrigger>true</hideTrigger>
 		<fieldStyle>text-align:right;</fieldStyle>
 
 	</field><!--}}}-->

@@ -303,9 +303,6 @@
 <xsl:if test=".!=''"><xsl:if test="position()>1">,</xsl:if>renderer:function(value,p,record){
 return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:if></xsl:template><!--}}}-->
 
-<xsl:template match="*:renderer[ancestor::*/@type='xpdecimal']"><!--{{{-->
-<xsl:if test=".!=''"><xsl:if test="position()>1">,</xsl:if>renderer:"<xsl:value-of select="." disable-output-escaping="yes"/>"</xsl:if></xsl:template><!--}}}-->
-
 <xsl:template match="*:renderer[ancestor::*/@type='xpboolean']"><!--{{{-->
 <xsl:param name="attr" tunnel="yes"/>
 <!-- <xsl:message>renderer: <xsl:sequence select="$attr"/></xsl:message> -->
