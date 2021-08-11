@@ -150,21 +150,14 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			if ( grid.store.feat.auto_load === false ) return;
 
 			if ( ( ! grid.store.parent_store ) ) {
+
 				grid.store.load({ callback:function(a,b,c){ 
 					grid.selModel.select(0);
 				}});
+
 			}
 
-			/* para aquellas grillas que no estan activas,
-			 * tiene que seleccionar cuando se activan */
-
-			if ( grid.store.getCount()) {
-		
-				grid.selModel.preventFocus = true;
-				grid.selModel.select( 0 );
-				grid.selModel.preventFocus = false;
-				//grid.selModel.select( 0, true, true );
-			}
+			this.renewSelection();
 
 		});//}}}
 
@@ -233,6 +226,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	 	});//}}}
 
 		this.on( 'selectionchange', function(selModel, selection) {//{{{
+
+			/* copia la seleccion al store */
 
 			this.store.setSelection( selection, this.selModel );
 
@@ -306,26 +301,16 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this.store );//}}}
 
-		this.store.on( 'load', function() {//{{{
-
-			let grid = this;
-
-			if ( grid.store.getCount() ) {
-		
-				grid.selModel.preventFocus = true;
-				grid.selModel.select( 0 );
-				grid.selModel.preventFocus = false;
-				//grid.selModel.select( 0, true, true );
-			}
-
-		}, this);//}}}
+		this.store.on( 'load', this.renewSelection, this ); 
 
 		this.store.on( 'selectionchange', function(s) {//{{{
+
+			/* DEBUG: esto es redundante, no tiene efecto, por ahora lo dejo */
 
 			if ( this.store.getCount() ) 
 				this.selModel.select( s );
 
-                }, this );//}}}
+		}, this );//}}}
 
 		this.store.on( 'loadblank', function( s, r, e ) {//{{{
 
@@ -345,6 +330,40 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 
 	}, /*}}}*/
+
+	renewSelection: function() {//{{{
+
+			let grid = this,
+			store = grid.store,
+			sm = grid.selModel;
+
+			if ( store.getCount() ) {
+		
+				sm.preventFocus = true;
+
+				var selections = sm.selected;
+
+				if ( selections.length === 0 ) {
+
+					sm.select( 0 );
+
+				} else {
+
+					selections.items.forEach(
+
+						function( selection ) {
+
+							sm.select( grid.store.find('__ID__', selection.get('__ID__') ), true, true );
+
+					});
+				}
+
+				sm.preventFocus = false;
+				//grid.selModel.select( 0, true, true );
+
+			}
+
+		}, //}}}
 
 	rememberSelection: function(selModel, selectedRecords) {/*{{{*/
 

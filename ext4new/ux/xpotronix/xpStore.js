@@ -47,90 +47,93 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	constructor: function(config) {/*{{{*/
 
-		this.params = config.params || {
+		let me = this;
+
+		me.params = config.params || {
 			start: 0,
-			limit: this.pageSize
+			limit: me.pageSize
 		};
 
-		this.childs = new Ext.util.MixedCollection(false);
-		this.childs.getKey = function(o) {
+		me.childs = new Ext.util.MixedCollection(false);
+		me.childs.getKey = function(o) {
 			return o.storeId;
 		};
 
-		Ext.apply(this, config);
-		Ext.apply(this.params, config.extra_param || {});
+		Ext.apply(me, config);
+		Ext.apply(me.params, config.extra_param || {});
 
-		this.callParent(arguments);
+		me.callParent(arguments);
 
-		this.debug_events && this.consoleDebugEvents();
+		me.debug_events && me.consoleDebugEvents();
 
 		/* eventos propios */
 
-		this.addEvents( 'selectionchange' );
-		this.addEvents( 'loadblank' );
-		this.addEvents( 'serverstoreupdate' ); 
+		me.addEvents( 'selectionchange' );
+		me.addEvents( 'loadblank' );
+		me.addEvents( 'serverstoreupdate' ); 
 
 		/* parent_store */
 
-		if ( this.parent_store ) {
+		if ( me.parent_store ) {
 
 			/* resuelve el parent_store */
 
-			if ( typeof this.parent_store == 'string' ) {
+			if ( typeof me.parent_store == 'string' ) {
 
-				var parent_store_name = this.parent_store;
+				var parent_store_name = me.parent_store;
 			}
 
-			this.parent_store = App.store.lookup( parent_store_name );
+			me.parent_store = App.store.lookup( parent_store_name );
 
-			if ( this.parent_store == undefined ) {
+			if ( me.parent_store == undefined ) {
 			
 				console.log( "no encuentro el parent_store " + parent_store_name );
 
 			} else {
 
-				this.parent_store.add_child( this );
+				me.parent_store.add_child( me );
 
 				/* cuando cambia el parent_store */
 
-				this.parent_store.on({
+				me.parent_store.on({
 
 					selectionchange: {
-						buffer: 500,
-						scope: this,
-						fn: this.onParentSelectionChange
+						scope: me,
+						fn: me.onParentSelectionChange
 					},
 
 					serverstoreupdate: {
 
 						buffer: 100,
-						scope: this,
+						scope: me,
 						fn: function( a, b, c ) {
+
+							var me = this;
 
 							/* si es un eh lo ignora */
 
-							if ( this.foreign_key.type == 'eh' ) return;
+							if ( me.foreign_key.type == 'eh' ) return;
 
-							var selections = this.parent_store.selections;
+							var selections = me.parent_store.selections;
 
 							if ( selections.length ) {
 
-								var new_fk = this.get_foreign_key( [this.parent_store.selections[0]] );
+								var new_fk = me.get_foreign_key( [me.parent_store.selections[0]] );
 
 								for ( var i = 0; i < new_fk.length ; i++ ) {
 
-									if ( new_fk[i].value !== this.foreign_key_values[i].value ) {
+									if ( new_fk[i].value !== me.foreign_key_values[i].value ) {
 
-										this.foreign_key_values = new_fk;
-										this.load();
+										me.foreign_key_values = new_fk;
+										me.load();
 										break;
 									}
 								}
 
 							} else {
 
-								this.foreign_key_values = [];
-								this.removeAll();
+								me.foreign_key_values = [];
+								me.removeAll();
 							}
 
 						}
@@ -140,15 +143,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				/* carga un registro en blanco cuando la relacion es de parent */
 
-				if ( this.foreign_key.type == 'parent' && ( !this.passive ) ) {
+				if ( me.foreign_key.type == 'parent' && ( !me.passive ) ) {
 
-					this.parent_store.on({
+					me.parent_store.on({
 
 						loadblank: {
 
 							buffer: 100,
-							fn: this.add_blank,
-							scope: this
+							fn: me.add_blank,
+							scope: me
 						}
 					});
 				}
@@ -159,13 +162,13 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* cuando el se haya modificado el store y tenga un fk == parent setea la fk */
 
-		this.on({ 
+		me.on({ 
 
 			update: { 
 
 				fn: function(s, r, o, m) {
 
-					this.debug && console.log( 'update op: ' + o + ', class: ' + this.class_name + ', record modified: ' + JSON.stringify( r.modified ) );
+					me.debug && console.log( 'update op: ' + o + ', class: ' + me.class_name + ', record modified: ' + JSON.stringify( r.modified ) );
 
 					if ( o == Ext.data.Record.EDIT ) {
 
@@ -180,7 +183,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				fn: function(s, a, b) {
 
-					if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', this.proxy.reader.xmlData ) == 'ACC_DENIED') {
+					if (Ext.DomQuery.selectValue(App.feat.container_tag + '/@msg', me.proxy.reader.xmlData ) == 'ACC_DENIED') {
 
 						App.login();
 						return;
@@ -192,7 +195,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				fn: function() {
 
-					let me = this;
+					let me = me;
 
 					me.totalCount--;
 
@@ -209,12 +212,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			beforeload: {
 
-				fn: this.onBeforeLoad
+				fn: me.onBeforeLoad
 			}
 		}); 
 
 
-		this.childs.each(function(ch) {
+		me.childs.each(function(ch) {
 
 			if (!ch.passive) 
 				ch.init();
