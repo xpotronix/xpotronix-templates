@@ -145,16 +145,16 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			/* dispara que cargue la grilla y seleccione el primer elemento,
 			 * si feat.auto_load && parent_store */
 
-			var grid = this;
+			let grid = this
+			store = grid.store;
 
-			if ( grid.store.feat.auto_load === false ) return;
+			if ( store.feat.auto_load === false ) return;
 
-			if ( ( ! grid.store.parent_store ) ) {
+			if ( ( ! store.parent_store ) ) {
 
-				grid.store.load({ callback:function(a,b,c){ 
+				store.load({ callback:function(a,b,c){ 
 					grid.selModel.select(0);
 				}});
-
 			}
 
 			this.renewSelection();

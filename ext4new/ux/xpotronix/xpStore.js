@@ -600,7 +600,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		}
 
-		// me.load();
 	},
 
 	/*}}}*/
