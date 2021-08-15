@@ -157,7 +157,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 				}});
 			}
 
-			this.renewSelection();
+			this.renewSelection( true );
 
 		});//}}}
 
@@ -235,6 +235,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this,  { buffer: 0 });//}}}
 
+
+
 		/* agrega el rowClass via config */
 
 		if ( typeof this.xpconfig == 'undefined' ) {
@@ -301,16 +303,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this.store );//}}}
 
-		this.store.on( 'load', this.renewSelection, this ); 
-
-		this.store.on( 'selectionchange', function(s) {//{{{
-
-			/* DEBUG: esto es redundante, no tiene efecto, por ahora lo dejo */
-
-			if ( this.store.getCount() ) 
-				this.selModel.select( s );
-
-		}, this );//}}}
+		this.store.on( 'load', function() { this.renewSelection( false ) }, this ); 
 
 		this.store.on( 'loadblank', function( s, r, e ) {//{{{
 
@@ -331,39 +324,39 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	}, /*}}}*/
 
-	renewSelection: function() {//{{{
+	renewSelection: function( supressEvent ) {//{{{
 
-			let grid = this,
-			store = grid.store,
-			sm = grid.selModel;
+		let grid = this,
+		store = grid.store,
+		sm = grid.selModel;
 
-			if ( store.getCount() ) {
-		
-				sm.preventFocus = true;
+		if ( store.getCount() ) {
+	
+			sm.preventFocus = true;
 
-				var selections = sm.selected;
+			var selections = sm.selected;
 
-				if ( selections.length === 0 ) {
+			if ( selections.length === 0 ) {
 
-					sm.select( 0 );
+				sm.select( 0, false, supressEvent );
 
-				} else {
+			} else {
 
-					selections.items.forEach(
+				selections.items.forEach(
 
-						function( selection ) {
+					function( selection ) {
 
-							sm.select( grid.store.find('__ID__', selection.get('__ID__') ), true, true );
+						sm.select( grid.store.find('__ID__', selection.get('__ID__') ), true, true );
 
-					});
-				}
-
-				sm.preventFocus = false;
-				//grid.selModel.select( 0, true, true );
-
+				});
 			}
 
-		}, //}}}
+			sm.preventFocus = false;
+			//grid.selModel.select( 0, true, true );
+
+		}
+
+	}, //}}}
 
 	rememberSelection: function(selModel, selectedRecords) {/*{{{*/
 

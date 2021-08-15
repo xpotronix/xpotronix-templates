@@ -978,18 +978,18 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	setSelection: function( selections, selModel ) {/*{{{*/
 
-		var curPos;
+		let me = this, curPos;
 		this.selections = selections;
 
 		if ( selModel )
-			this.selModel = selModel;
+			me.selModel = selModel;
 
-		if ( ( curPos = this.selModel.getCurrentPosition() ) !== undefined )
-			this.rowIndex = curPos.row;
+		if ( ( curPos = me.selModel.getCurrentPosition() ) !== undefined )
+			me.rowIndex = curPos.row;
 		else
-			this.rowIndex = undefined;
+			me.rowIndex = undefined;
 
-		this.fireEvent('selectionchange', selections, this.selModel );
+		me.fireEvent('selectionchange', selections, me.selModel );
 
 	},/*}}}*/
 
