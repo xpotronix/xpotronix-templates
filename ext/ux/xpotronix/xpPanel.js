@@ -106,6 +106,7 @@ Ext.extend( Ext.ux.xpotronix.xpPanel, Ext.Panel, {
 						r: me.obj.class_name, 
 						v: 'card', 
 						'f[include_dataset]': 2, 
+						'f[blob_load]': 1, 
 						'f[transform]': 'php' }, 
 						s.get_search_key( s.get_primary_key() ))});
 			else 
