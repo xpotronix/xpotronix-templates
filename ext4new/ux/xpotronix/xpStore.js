@@ -43,7 +43,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	selModel: undefined,
 
 	debug: false, 
-	debug_events: true, 
+	debug_events: false, 
 
 	constructor: function(config) {/*{{{*/
 

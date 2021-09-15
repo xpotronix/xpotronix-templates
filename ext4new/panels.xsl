@@ -30,8 +30,13 @@
 			<xsl:message terminate="yes"><xsl:copy-of select="$obj_metadata"/></xsl:message>
 		</xsl:if> -->
 
-		<xsl:variable name="panels" 
-			select="$default_template_content//panel[@id=current()/@include]"/>
+		<xsl:variable name="panels">
+			<xsl:element name="panel">
+				<xsl:copy-of select="$default_template_content//panel[@id=current()/@include]/@*"/>
+				<xsl:copy-of select="@*"/>
+				<xsl:copy-of select="$default_template_content//panel[@id=current()/@include]/*"/>
+			</xsl:element>
+		</xsl:variable> 
 
 			<!-- <xsl:message>encontre #paneles <xsl:value-of select="count($panels)"/></xsl:message> -->
 			<!-- <xsl:message>incluyo panel <xsl:value-of select="$panels"/></xsl:message> -->
@@ -63,7 +68,7 @@
 			<!-- <xsl:message><xsl:value-of select="$panel_class"/></xsl:message> -->
 
 		<xsl:variable name="code">
-		/* path: <xsl:value-of select="$class_path"/> */
+		/* PANEL STARTS path: <xsl:value-of select="$class_path"/>*/
 		Ext.ClassManager.isCreated('<xsl:value-of select="$panel_class"/>') || Ext.define('<xsl:value-of select="$panel_class"/>',
 
 			_.merge(
@@ -383,11 +388,13 @@
 			</xsl:choose>
 		</xsl:variable>
 
+		<!-- <xsl:message>PANEL<xsl:copy-of select="."/></xsl:message> -->
+
 		<xsl:variable name="panel_id">
 			<xsl:choose>
+				<xsl:when test="@id=''"><xsl:value-of select="@id"/></xsl:when>
 				<xsl:when test="@include!=''"><xsl:value-of select="@include"/></xsl:when>
-				<xsl:when test="@id!=''"><xsl:value-of select="@id"/></xsl:when>
-				<xsl:when test="@obj!=''"><xsl:value-of select="concat(@obj,'_',type)"/></xsl:when>
+				<xsl:when test="@obj!=''"><xsl:value-of select="concat(@obj,'_',$type)"/></xsl:when>
 				<xsl:when test="$obj/@name!=''">
 					<xsl:value-of select="concat($obj/@name,'_',$type)"/>
 				</xsl:when>
@@ -402,7 +409,7 @@
 				<xsl:otherwise><xsl:value-of select="concat('UNDEFINED_',$type)"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<!-- <xsl:message>panel_id: <xsl:value-of select="$panel_id"/></xsl:message> -->
+		<!-- <xsl:message>possible_ids: <xsl:value-of select="concat('@include: ',@include,', @id: ', @id, ', @obj: ', @obj, ', type: ', $type )"/> :: panel_id: <xsl:value-of select="$panel_id"/></xsl:message> -->
 		<xsl:value-of select="$panel_id"/>
 
 	</xsl:template><!--}}}-->

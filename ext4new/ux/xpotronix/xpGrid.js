@@ -26,7 +26,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	selection: [],
 	debug: false,
-	debug_events: true,
+	debug_events: false,
 
 	requires: [ 'Ux.xpotronix.xpComboBox', 'Ux.xpotronix.xpMultiSearch', 'Ext.ux.form.DateTimeField' ],
 
