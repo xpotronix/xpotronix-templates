@@ -336,17 +336,17 @@ return(<xsl:value-of select="." disable-output-escaping="yes"/>);}</xsl:if></xsl
 <xsl:if test="position()>1">,</xsl:if>editor:{<xsl:apply-templates select="*"/>}</xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xptext']"><!--{{{-->
-<xsl:param name="attr" tunnel="yes"/>
-<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
-<xsl:if test="position()>1">,</xsl:if>editor:<xsl:choose>
+	<xsl:param name="attr" tunnel="yes"/>
+	<!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->
+	<xsl:if test="position()>1">,</xsl:if>editor:<xsl:choose>
 	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
 	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xpjson']"><!--{{{--> 
-<xsl:param name="attr" tunnel="yes"/> 
-<xsl:if test="position()>1">,</xsl:if>editor:new Ed(new fm.TextArea(<xsl:choose> 
-	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when> 
-	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose>))</xsl:template><!--}}}--> 
+	<xsl:param name="attr" tunnel="yes"/> 
+	<xsl:if test="position()>1">,</xsl:if>editor:<xsl:choose>
+	<xsl:when test="*">{<xsl:apply-templates select="*"/>}</xsl:when>
+	<xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise></xsl:choose></xsl:template><!--}}}-->
 
 <xsl:template match="editor[ancestor::*/@type='xpint']"><!--{{{-->
 <!-- <xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message> -->

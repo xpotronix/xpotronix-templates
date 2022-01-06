@@ -24,12 +24,11 @@
 
 	<xsl:template match="obj"><!--{{{-->
 		<table>
-			<xsl:apply-templates select="attr"/>
+			<xsl:apply-templates select="attr" mode="tr"/>
 		</table>
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="attr"><!--{{{-->
-		<xsl:variable name="obj_name" select="../@name"/>
+	<xsl:template match="attr" mode="tr"><!--{{{-->
 		<xsl:variable name="attr_name" select="@name"/>
 		<tr>
 			<td width="10%"><xsl:apply-templates select="." mode="translate"/></td>
@@ -40,12 +39,10 @@
 		</tr>
 	</xsl:template><!--}}}-->
 
-        <xsl:template match="attr" mode="translate"><!--{{{-->
-
+	<xsl:template match="attr" mode="translate"><!--{{{-->
 
 		<xsl:variable name="obj_name" select="../@name"/>
 		<xsl:variable name="attr_name" select="@name"/>
-		
 
 		<xsl:variable name="attr_m" select="//xpotronix:metadata/obj[@name=$obj_name]/attr[@name=$attr_name]"/>
 
@@ -60,7 +57,6 @@
                         </xsl:otherwise>
                 </xsl:choose>
         </xsl:template><!--}}}-->
-
 
 </xsl:stylesheet>
 <!-- vim600: fdm=marker sw=3 ts=8 ai: 
