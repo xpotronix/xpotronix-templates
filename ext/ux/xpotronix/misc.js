@@ -65,6 +65,10 @@ let loadDocument =  ( row ) => {
 
 		/* console.log( table ); */
 
+		/* hotfix para reutilizar los templates con los modulos '_e' */
+		if ( App.feat.module !== 'undefined' && table_name + '_e' === App.feat.module ) 
+			table_name = App.feat.module;
+
 		let $search = $( `table[data-name='${table_name}']` );
 
 		if ( $search.length === 0 ) {
