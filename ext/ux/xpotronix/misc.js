@@ -14,8 +14,6 @@
 
 let loadDocument =  ( row ) => {
 
-	debugger;
-											
 	let dataset = ( typeof row.archivo === 'string' )? JSON.parse(row.archivo).dataset : row.archivo.dataset,
 		module = App.feat.module,
 		origin_module;
@@ -34,7 +32,7 @@ let loadDocument =  ( row ) => {
 
 		let elements = [];
 
-		if ( row.guarda ?? row.guarda.length ) {
+		if ( row.guarda?.length ) {
 
 			row.guarda.includes('pública') && elements.push('td.qrcode-firma:first');
 			row.guarda.includes('confidencial') && elements.push('td.qrcode-firma.C1');
