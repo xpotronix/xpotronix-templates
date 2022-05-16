@@ -34,7 +34,7 @@ let loadDocument =  ( row ) => {
 
 		let elements = [];
 
-		if ( row.guarda !== ""  ) {
+		if ( ! ( row.guarda !== "" && row.guarda !== undefined ) ) {
 
 			row.guarda.includes('pública') && elements.push('td.qrcode-firma:first');
 			row.guarda.includes('confidencial') && elements.push('td.qrcode-firma.C1');
