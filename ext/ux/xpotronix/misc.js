@@ -16,17 +16,25 @@ let loadDocument =  ( row ) => {
 
 	debugger;
 											
-	dataset = ( typeof row.archivo === 'string' )? JSON.parse(row.archivo) : row.archivo.dataset;
+	let dataset = ( typeof row.archivo === 'string' )? JSON.parse(row.archivo).dataset : row.archivo.dataset,
+		module = App.feat.module,
+		origin_module;
+
+	 if ( module !== 'undefined' && module.substring( module.length -2) == '_e' )
+			origin_module = module.substring(0, module.length -2 )
+	else 
+		origin_module = module;
+
 
 	$('p.declaracion').each( (i,e) => { e.textContent = e.textContent.compose(row) });
 
 	if ( row.estado == 'firmada' ) {
 
-		const URL = `${window.location.origin}/${row.archivo.module}/valida/${row.ID}`;
+		const URL = `${window.location.origin}/${origin_module}/valida/${row.ID}`;
 
 		let elements = [];
 
-		if ( row.guarda !== undefined  ) {
+		if ( row.guarda !== ""  ) {
 
 			row.guarda.includes('pública') && elements.push('td.qrcode-firma:first');
 			row.guarda.includes('confidencial') && elements.push('td.qrcode-firma.C1');
