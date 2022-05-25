@@ -595,8 +595,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		} else {
 
-            :x
-
 			me.foreign_key_values = me.get_foreign_key( selections );
 
 			if ( me.foreign_key_values.length ) {
