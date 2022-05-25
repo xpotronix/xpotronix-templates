@@ -563,9 +563,20 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	onParentSelectionChange: function( selections ) { /*{{{*/
 
-		var me = this, data = [];
+		/* evento que sigue la seleccion del parent */
 
-		this.selections = selections;
+		let me = this, data = [];
+
+		if ( selections.length > 1 ) {
+
+			/* en seleccion multiple, remueve los datos del store, tambien para los eh */
+
+			me.removeAll();
+			return;
+
+		}
+
+		me.selections = selections;
 
 		me.clearFilter(true);
 
@@ -578,11 +589,13 @@ Ext.define('Ux.xpotronix.xpStore', {
 			/* DEBUG */
 
 			// data = me.get_foreign_key_record(selections, true);
-			// this.debug && console.log(data);
+			// me.debug && console.log(data);
 			// me.insert(0,data);
 
 
 		} else {
+
+            :x
 
 			me.foreign_key_values = me.get_foreign_key( selections );
 
@@ -594,7 +607,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			} else {
 
-				this.removeAll();
+				me.removeAll();
 			}
 
 
