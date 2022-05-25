@@ -108,19 +108,19 @@ Ext.define('Ux.xpotronix.xpStore', {
 						scope: me,
 						fn: function( a, b, c ) {
 
-							var me = this;
+							let me = this;
 
 							/* si es un eh lo ignora */
 
 							if ( me.foreign_key.type == 'eh' ) return;
 
-							var selections = me.parent_store.selections;
+							let selections = me.parent_store.selections;
 
 							if ( selections.length ) {
 
-								var new_fk = me.get_foreign_key( [me.parent_store.selections[0]] );
+								let new_fk = me.get_foreign_key( [me.parent_store.selections[0]] );
 
-								for ( var i = 0; i < new_fk.length ; i++ ) {
+								for ( let i = 0; i < new_fk.length ; i++ ) {
 
 									if ( new_fk[i].value !== me.foreign_key_values[i].value ) {
 
@@ -195,7 +195,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				fn: function() {
 
-					let me = me;
+					let me = this; 
 
 					me.totalCount--;
 
@@ -257,28 +257,30 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	getTotalCount: function() {/*{{{*/
 
-		if ( this.lastTotalCount )
-			this.totalCount = this.lastTotalCount;
+		let me = this;
 
-		return this.totalCount || 0;
+		if ( me.lastTotalCount )
+			me.totalCount = me.lastTotalCount;
+
+		return me.totalCount || 0;
 	},/*}}}*/
 
 	findByUiid: function(value, start) {/*{{{*/
-		return this.data.findIndexBy(function(rec) {
+		let me = this;
+		return me.data.findIndexBy(function(rec) {
 			return rec.isEqual(rec.id, value);
 		},
-		this, start);
+		me, start);
 	},/*}}}*/
 
 	update_model: function(e) {/*{{{*/
 
-		var me = this;
-
-		let reader = me.proxy.reader;
+		let me = this,
+			reader = me.proxy.reader;
 
 		/* toma los parametros del elemento XML */
 
-		var ID 	 = e.getAttribute('__ID__'),
+		let ID 	 = e.getAttribute('__ID__'),
 			uiid = e.getAttribute('uiid');
 
 		me.lrid = me.findByUiid(uiid);
@@ -299,7 +301,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 		if (a == 'i' || a == 'u') {
 
 			let prev_record = reader.record,
-			prev_root = reader.root;
+				prev_root = reader.root;
 
 			/* cambia las queries para poder leer changes/* */
 			reader.record = "";
@@ -321,6 +323,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				/* modifica */
 				let er = me.getAt(me.lrid);
+
 				er.set(nr.getData());
 				er.commit();
 
@@ -347,11 +350,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 
   buildXpQuery: function( params ) {/*{{{*/
 
-	var k, o = {}, cn = this.class_name;
+	let k, o = {}, cn = 
+		  this.class_name;
 
-	for ( var f in params ) {
+	for ( let f in params ) {
 		if ( params[f] ) {
-                	o['s['+cn+']['+f+']'] = params[f];
+			o['s['+cn+']['+f+']'] = params[f];
 		}
 	}
 	return o;
@@ -361,16 +365,18 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* check del acl */
 
-		if ( this.acl.access == false || this.acl.list == false || this.acl.view == false )
+		let me = this;
+
+		if ( me.acl.access == false || me.acl.list == false || me.acl.view == false )
 			return false;
 
 		/* control de carga de los registros nuevos */
 
-		if ((!options.add) && this.isDirty() && 
-			(! _.isEmpty(this.dirty())|| 
-				!_.isEmpty(this.dirty_childs()))) {
+		if ((!options.add) && me.isDirty() && 
+			(! _.isEmpty(me.dirty())|| 
+				!_.isEmpty(me.dirty_childs()))) {
 
-			var url = store.lastOptions.url;
+			let url = store.lastOptions.url;
 
 			if ( url && getQueryParams(url).a == 'blank' ) {
 
@@ -386,18 +392,18 @@ Ext.define('Ux.xpotronix.xpStore', {
 		}
 
 		// entry_helper
-		if (this.passive)
+		if (me.passive)
 			return;
 
 		/* resuelve el foreign key */
 
-		if (this.parent_store) {
+		if (me.parent_store) {
 
-			var fk = this.foreign_key_values;
+			let fk = me.foreign_key_values;
 
 			if ( _.isEmpty(fk) ) return;
 
-			if (this.parent_store.getCount()) {
+			if (me.parent_store.getCount()) {
 
 
 				/* filter de clave foranea */
@@ -405,15 +411,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 				/* DEBUG: esto estaba para limitar que cuando hay una clave vacia no cargue todos los registros
 				   pero ahora lo resuelve bien xpdataobject
 
-				if ( this..length == 0 ) {
-					if ( this.foreign_key.type != 'parent' ) 
+				if ( me..length == 0 ) {
+					if ( me.foreign_key.type != 'parent' ) 
 						return false;
 				}
 				else 
 				*/
-				/* Ext.apply( options.filters, this. ); */
+				/* Ext.apply( options.filters, me. ); */
 
-			} else if (this.foreign_key.type == 'parent')
+			} else if (me.foreign_key.type == 'parent')
 				return;
 			else
 				return false;
@@ -427,37 +433,41 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		options = Ext.apply({}, options);
 
+		let me = this;
+
 		/* guarda el totalCount */
 
-		this.lastTotalCount = this.totalCount;
+		me.lastTotalCount = me.totalCount;
 
-		this.load({
+		me.load({
 
 			addRecords: true,
-			scope: this,
-			url: this.proxy.blank_url,
+			scope: me,
+			url: me.proxy.blank_url,
 
 			callback: function( brs ) {
 
-				/* resetea el lastTotalCount */
-				this.lastTotalCount = 0;
+				let me = this;
 
-				this.suspendEvents();
+				/* resetea el lastTotalCount */
+				me.lastTotalCount = 0;
+
+				me.suspendEvents();
 
 				/* por cada registro recibido */
 				Ext.each( brs, function( br ) {
 
 					/* marcas de dirty para campos con valores */
-					this.initRecord( br );
+					me.initRecord( br );
 
-					//this.suspendEvents();
-					if ( this.parent_store ) {
+					//me.suspendEvents();
+					if ( me.parent_store ) {
 
-						if (this.foreign_key.type == 'parent')
-							this.set_parent_fk();
+						if (me.foreign_key.type == 'parent')
+							me.set_parent_fk();
 
-						else if ( this.parent_store.selections.length )
-							this.bind(br, this.get_foreign_key( [this.parent_store.selections[0]] ));
+						else if ( me.parent_store.selections.length )
+							me.bind(br, me.get_foreign_key( [me.parent_store.selections[0]] ));
 
 					}
 
@@ -466,18 +476,18 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					/* callback para despues de agregar en blanco */
 					if (options.callback)
-						options.callback.call(options.scope || this, br, this);
+						options.callback.call(options.scope || me, br, me);
 
 
-				}, this);
+				}, me);
 
-				this.resumeEvents();
+				me.resumeEvents();
 
-				// this.fireEvent('selectionchange', brs, this.selModel);
-				this.fireEvent('loadblank', this, brs, options);
+				// me.fireEvent('selectionchange', brs, me.selModel);
+				me.fireEvent('loadblank', me, brs, options);
 
 				/* volver los parametros atras para hacer los load normales */
-				delete this.lastOptions.add;
+				delete me.lastOptions.add;
 			}
 		});
 
@@ -489,12 +499,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 	    /* redefinicion de loadRecords para poder
 	     * insertar registros al principio */
 
-        var me     = this,
-            i      = 0,
-            length = records.length,
-            start,
-            addRecords,
-            snapshot = me.snapshot;
+        let me = this,
+			length = records.length,
+			start, addRecords, 
+			snapshot = me.snapshot
+			i = 0;
 
         if (options) {
             start = options.start;
@@ -526,7 +535,8 @@ Ext.define('Ux.xpotronix.xpStore', {
          * fire an additional datachanged event, which is not wanted. Ideally we would do this a different way. The first
          * datachanged event is fired by the call to this.add, above.
          */
-        me.suspendEvents();
+        
+		me.suspendEvents();
 
         if (me.filterOnLoad && !me.remoteFilter) {
             me.filter();
@@ -537,18 +547,21 @@ Ext.define('Ux.xpotronix.xpStore', {
         }
 
         me.resumeEvents();
+
         if (me.isGrouped()) {
             me.constructGroups();
         }
+
         me.fireEvent('datachanged', me);
         me.fireEvent('refresh', me);
+
     },//}}}
 
 	initRecord: function( nr, br ) {/*{{{*/
 
 		if ( br == undefined ) br = nr;
 
-			for (var f in br.data) {
+			for (let f in br.data) {
 
 				if (br.data[f] || Ext.isObject(br.data[f])) {
 
@@ -617,9 +630,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	getRecordCurrentForeignKey: function(r) { /*{{{*/
 
-		var cfk = [];
-
-		var rsfk = this.foreign_key;
+		let cfk = [],
+			rsfk = this.foreign_key;
 
 		Ext.each(rsfk, function(ref) {
 
@@ -637,7 +649,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	getParentRecord: function(r) { /*{{{*/
 
-		var ps = this.parent_store;
+		let me = this,
+			ps = me.parent_store;
 
 		if (!ps) return null;
 
@@ -648,22 +661,22 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* via match de claves */
 
-		var cfk = this.getRecordCurrentForeignKey(r);
+		let cfk = me.getRecordCurrentForeignKey(r);
 
-		var index = ps.findBy(function(pr, id) {
+		let index = ps.findBy(function(pr, id) {
 
-			var retval = true;
+			let retval = true;
 
 			Ext.each(cfk, function(ref) {
 
-				var value = pr.get(ref.remote);
+				let value = pr.get(ref.remote);
 
 				if (value.toLocaleDateString)
 					value = value.toLocaleDateString();
 
 				if (value != ref.value)
 					retval = false;
-			}, this);
+			}, me);
 
 			return retval;
 		});
@@ -675,15 +688,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	set_parent_fk: function() { /*{{{*/
 
-		var ps_cr = this.parent_store.cr();
+		let me = this, 
+			ps_cr = me.parent_store.cr();
 
 		if ( ps_cr ) {
 
-			var cr = this.cr();
+			let cr = me.cr();
 
 			if (cr) {
 
-				Ext.each(this.foreign_key, function(ref) {
+				Ext.each(me.foreign_key, function(ref) {
 
 					// DEBUG: podria hacerse mejor, mas selectivo de acuerdo si
 					// si la clave cambio o no
@@ -694,7 +708,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					ps_cr.set(ref.remote, cr.get(ref.local));
 
-				}, this);
+				}, me);
 
 			}
 		}
@@ -711,9 +725,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	cr: function() {/*{{{*/
 
-		// current record
+		/* current record */
+		let me = this;
 
-		return ( this.selections.length ) ? this.selections[0] : {};
+		return ( me.selections.length ) ? me.selections[0] : {};
 
 	},/*}}}*/
 
@@ -725,7 +740,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	get_new: function() { //{{{
 
-		var r = new this.rs({});
+		let r = new this.rs({});
 		r.data['__new__'] = 1;
 		return r;
 
@@ -733,32 +748,34 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	isDirty: function() {/*{{{*/
 
+		let me = this;
 
-		var retval = (this.getNewRecords().length > 0 || 
-			this.getUpdatedRecords().length > 0 || 
-			this.getRemovedRecords().length > 0);
+		let retval = (me.getNewRecords().length > 0 || 
+			me.getUpdatedRecords().length > 0 || 
+			me.getRemovedRecords().length > 0);
 
-		this.debug && console.log( this.storeId + '.isDirty(): ' + retval );
+		me.debug && console.log( me.storeId + '.isDirty(): ' + retval );
 		return retval;
 
 	},/*}}}*/
 
 	dirty: function(check_childs) { /*{{{*/
 
-		var mr = this.getModifiedRecords(),
+		let me = this,
+			mr = me.getModifiedRecords(),
 			ret = {},
 			c = 0,
 			t;
 
-		for (var i = 0; i < mr.length; i++)
+		for (let i = 0; i < mr.length; i++)
 			if (mr[i].dirty)
 				c++;
 
 		if (c)
-			ret[this.class_name] = c;
+			ret[me.class_name] = c;
 
 		if (check_childs)
-			if (t = this.dirty_childs())
+			if (t = me.dirty_childs())
 				Ext.apply(ret, t);
 
 		return ret;
@@ -768,10 +785,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	dirty_childs: function() { /*{{{*/
 
-		var ret = {},
+		let me = this, ret = {},
 			t;
 
-		this.childs.each(function(ch) {
+		me.childs.each(function(ch) {
 			if (t = ch.dirty(true))
 				Ext.apply(ret, t);
 		});
@@ -783,15 +800,17 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	revert_changes: function() { /*{{{*/
 
-		if ( this.foreign_key.type != 'eh' ) 
-			this.rejectChanges();
+		let me = this;
 
-		this.each(function(r) {
+		if ( me.foreign_key.type != 'eh' ) 
+			me.rejectChanges();
+
+		me.each(function(r) {
 			if ( ( ! _.isEmpty(r) ) && r.get('__new__'))
-				this.remove(r);
-		}, this);
+				me.remove(r);
+		}, me);
 
-		this.childs.each(function(ch) {
+		me.childs.each(function(ch) {
 			ch.revert_changes();
 		});
 
@@ -800,7 +819,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	pack_key: function(key) { /*{{{*/
 
-		var pkey;
+		let pkey;
 
 		Ext.each(key, function(item, index) {
 
@@ -815,18 +834,19 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	get_primary_key: function() { /*{{{*/
 
-		var keys = [];
+		let me = this,
+			keys = [];
 
-		Ext.each(this.primary_key, function(key) {
+		Ext.each(me.primary_key, function(key) {
 
-			var value = this.cr().get(key);
+			let value = me.cr().get(key);
 
 			keys.push({
 				key: key,
 				value: (value.toLocaleDateString ? value.toLocaleDateString() : value)
 			});
 
-		}, this);
+		}, me);
 
 		return keys;
 	},
@@ -834,20 +854,21 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	get_foreign_key: function( selections ) { /*{{{*/
 
-		var keys = [];
+		let me = this,
+			keys = [];
 
-		selections || ( selections = this.selections );
+		selections || ( selections = me.selections );
 
 		if ( selections.length > 0 ) {
 
 			Ext.each( selections, function( s ) {
 
-				var key = {};
+				let key = {};
 
-				Ext.each( this.foreign_key.refs, function( ref ) {
+				Ext.each( me.foreign_key.refs, function( ref ) {
 
-					var r = ref.remote;
-					var value = s.data[r];
+					let r = ref.remote,
+						value = s.data[r];
 
 					key.property = ref.local;
 
@@ -861,11 +882,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 							key.value = value;
 					}
 
-				}, this);
+				}, me);
 
 				keys.push( key );
 
-			}, this );
+			}, me );
 
 		}
 
@@ -882,9 +903,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	get_foreign_key_record: function( selections, label ) { /*{{{*/
 
-		var keys = [];
-		var key = {};
-		var i, j, ref, s, r, rl, value;
+		let me = this, 
+			keys = [], 
+			key = {}, 
+			i, j, ref, s, r, rl, value;
 
 		if ( selections.length > 0 ) {
 
@@ -893,9 +915,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 				key = {};
 				s = selections[i];
 
-				for( j = 0; j < this.foreign_key.refs.length; j ++ ) {
+				for( j = 0; j < me.foreign_key.refs.length; j ++ ) {
 
-					ref = this.foreign_key.refs[j];
+					ref = me.foreign_key.refs[j];
 					r = ref.remote;
 					rl = ref.remote + '_label';
 					value = s.data[r];
@@ -937,15 +959,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	get_search_key: function(keys) { /*{{{*/
 
-		var search_fields = {};
+		let me = this,
+			search_fields = {};
 
 		Ext.each(keys, function(key) {
 
-			var variable = 's[' + this.class_name + '][' + key.key + ']';
+			let variable = 's[' + me.class_name + '][' + key.key + ']';
 
 			search_fields[variable] = key.value;
 
-		}, this);
+		}, me);
 
 		return search_fields;
 	},
@@ -954,7 +977,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	bind: function(record, fk) { /*{{{*/
 
 		/*
-		for (var field in fk)
+		for (let field in fk)
 			record.set(field, fk[field]);
 		*/
 
@@ -967,13 +990,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	child_match_key: function(ri, ch) { /*{{{*/
 
+		let me = this;
+
 		/* checks if a current record has a child store pointing to it */
 
 		if (!ch.foreign_key_values) return false;
 
 		Ext.each(ch.foreign_key, function(ref) {
 
-			var value = this.getAt(ri).get(ref.remote);
+			let value = me.getAt(ri).get(ref.remote);
 
 			if (value.toLocaleDateString)
 				value = value.toLocaleDateString();
@@ -981,7 +1006,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 			if (value != ch.foreign_key_values[ref.local])
 				return false;
 
-		}, this);
+		}, me);
 
 		return true;
 	},
@@ -990,7 +1015,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 	setSelection: function( selections, selModel ) {/*{{{*/
 
 		let me = this, curPos;
-		this.selections = selections;
+
+		me.selections = selections;
 
 		if ( selModel )
 			me.selModel = selModel;
@@ -1006,9 +1032,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	serialize_record: function(record, fields) { /*{{{*/
 
-		// var trim = Ext.util.Format.trim;
-		var escapex = Ext.util.Format.escapeXml,
-		element = this.class_name,
+		// let trim = Ext.util.Format.trim;
+		let me = this, escapex = Ext.util.Format.escapeXml,
+		element = me.class_name,
 		result = '',
 		nodeList = '',
 		value;
@@ -1022,11 +1048,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 					nodeList += '<' + field_name + '>' + escapex(record.get(field_name)) + '</' + field_name + '>';
 				}
 
-			}, this);
+			}, me);
 
 		} else if (record.modified) {
 
-			for (var field_name in record.modified) {
+			for (let field_name in record.modified) {
 
 				value = record.get(field_name);
 				if (value === undefined) continue;
@@ -1035,12 +1061,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 			}
 		}
 
-		this.childs.each(function(ch) {
+		me.childs.each(function(ch) {
 
 			if (! _.isEmpty(ch.dirty()))
 				nodeList += ch.serialize();
 
-		}, this);
+		}, me);
 
 		result = '<' + element;
 
@@ -1057,18 +1083,19 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	serialize: function(all, fields) { /*{{{*/
 
-		var result = '',
-		nodeList = '',
-		element = App.feat.container_tag,
-		records = all ? this.getAll() : this.getModifiedRecords();
+		let me = this,
+			result = '',
+			nodeList = '',
+			element = App.feat.container_tag,
+			records = all ? me.getAll() : me.getModifiedRecords();
 
 		Ext.each(records, function(record) {
 			if (record.dirty)
-				nodeList += this.serialize_record(record, fields);
+				nodeList += me.serialize_record(record, fields);
 
-		}, this);
+		}, me);
 
-		result = '<' + element + ' name=\"' + this.class_name + '\"';
+		result = '<' + element + ' name=\"' + me.class_name + '\"';
 
 		result += nodeList ? '>' + nodeList + '</' + element + '>' : '/>';
 
@@ -1078,9 +1105,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	get_last_ancestor: function() { /*{{{*/
 
-		return  this.parent_store ? 
-			this.parent_store.get_last_ancestor():
-			this;
+		let me = this;
+
+		return  me.parent_store ? 
+			me.parent_store.get_last_ancestor():
+			me;
 
 	},/*}}}*/
 
@@ -1091,9 +1120,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 		/* con unnormalized = false devuelve un objeto con las propiedades por cada filtro asignado
 		 * con unnormalized = true devuelve un objeto con un atributo con el nombre de la variable */
 
-		let me = this;
-		var active_filters = me.getFilters(false);
-		var filters_array = [];
+		let me = this,
+			active_filters = me.getFilters(false),
+			filters_array = [];
 
 		active_filters.each( function(item) {
 
@@ -1123,11 +1152,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	serialize_all: function() {/*{{{*/
 
-		var md = this.getStoresMods();
+		let me = this,
+			md = me.getStoresMods();
 
-		this.debug && this.debug_show_changed_records( md );
+		me.debug && me.debug_show_changed_records( md );
 
-		return this.get_last_ancestor().serialize();
+		return me.get_last_ancestor().serialize();
 
 	},/*}}}*/
 
@@ -1135,9 +1165,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* iteracion sobre los stores modificados */
 
-		var list = [];
+		let me = this,
+			list = [];
 
-		this.getModifiedStores( list );
+		me.getModifiedStores( list );
 
 		if ( list.length ) {
 
@@ -1147,11 +1178,11 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				Ext.each( o.records, function( r ) {
 
-					o.store.markModifiedRecordChain( r, this.fake_dirty_records );
+					o.store.markModifiedRecordChain( r, me.fake_dirty_records );
 
-				}, this );
+				}, me );
 			
-			}, this );
+			}, me );
 		}
 
 		return list;
@@ -1160,15 +1191,16 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	getModifiedStores: function( list ) {/*{{{ */
 
-		var r_list = list || [];
+		let me = this,
+			r_list = list || [];
 
 		/* recursion entre los hijos y sus modificaciones */
 
-		if( this.dirty && ! _.isEmpty( this.dirty() ) )
+		if( me.dirty && ! _.isEmpty( me.dirty() ) )
 
-			r_list.push( { store: this, records: null } );
+			r_list.push( { store: me, records: null } );
 
-		this.childs.each( function( c ) {
+		me.childs.each( function( c ) {
 
 			c.getModifiedStores( r_list );
 
@@ -1182,7 +1214,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* marca los parents como 'dirty' cuando el hijo esta modificado */
 
-		var pr = this.getParentRecord(r);
+		let pr = this.getParentRecord(r);
 
 		if (pr && !pr.dirty) {
 
@@ -1197,13 +1229,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* DEBUG: fijarse si es otro el store object y si aca se hace la distincion */
 
-		var module = this.get_last_ancestor().class_name;
+		let me = this, 
+			module = me.get_last_ancestor().class_name;
 
-		App.process_request( { m:module, a:'process', p:'store', b:'ext4', x:this.serialize_all() }, function( a, b, c ) {
+		App.process_request( { m:module, a:'process', p:'store', b:'ext4', x:me.serialize_all() }, 
+			function( a, b, c ) {
 
-		Ext.each( this.fake_dirty_records, function( r ) { 
-			r.commit(); 
-		} );
+			Ext.each( me.fake_dirty_records, function( r ) { 
+				r.commit(); 
+			} );
 
 		});
 
@@ -1211,7 +1245,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	debug_show_changed_records: function( md ) {/*{{{*/
 
-		var message = '';
+		let message = '';
 
 		if ( md.length ) {
 

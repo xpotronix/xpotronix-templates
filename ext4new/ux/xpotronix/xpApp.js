@@ -153,9 +153,9 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 		var me = this;
 
-		/* this.store.on( 'load', s => console.log( s ) ); */
+		/* me.store.on( 'load', s => console.log( s ) ); */
 
-		return this.callParent();
+		return me.callParent();
 	}
 
 
@@ -163,25 +163,29 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 		render: { fn:function() {
 
-			this.up('panel').setTitle( App.feat.page_title );
+			let me = this;
 
-			this.getRootNode().expand();
-			this.showDetail('home');
+			me.up('panel').setTitle( App.feat.page_title );
+
+			me.getRootNode().expand();
+			me.showDetail('home');
 
 			}
 		}
 
 		,load: { fn:function( node ) {
 
+			let me = this;
+
 			/* carga el arbol del menu */
 
-			/* consoleDebugFn( this ); */
+			/* consoleDebugFn( me ); */
 
 			/* agrega el nombre de usuario al final del menu */
 
 			if ( App.user_node == undefined && App.user.user_username && ! App.user._anon ) {
 
-				if ( App.user_node = this.store.getRootNode().findChild('itemId', 'current_user', true) ) {
+				if ( App.user_node = me.store.getRootNode().findChild('itemId', 'current_user', true) ) {
 
 					App.user_node.data.text += ' <b>' + App.user.user_username + '</b>';
 
@@ -194,6 +198,8 @@ Ext.define('AppTreeMenu', {/*{{{*/
 			stopEvent:true, 
 
 			fn:function( panel, record, item, index, e, eOpts ) {
+
+				let me = this;
 
 				/* alerta de modificaciones */
 
@@ -225,7 +231,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 				if( n.itemId ) {
 
 					Ext.fly( 'detail-' + n.itemId ) &&
-					this.showDetail(n.itemId);
+					me.showDetail(n.itemId);
 
 				} else {
 
@@ -233,7 +239,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 					if ( record.parentNode ) {
 						var parentNodeId;
 						if ( parentNodeId = record.parentNode.get('itemId') )
-							this.showDetail( parentNodeId );
+							me.showDetail( parentNodeId );
 					}
 
 					if ( n.href ) {
@@ -259,7 +265,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 						/* busca entre los paneles del tab */
 
-						var tabPanel = this.up('viewport').down('tabpanel'),
+						var tabPanel = me.up('viewport').down('tabpanel'),
 						panel;
 
 						if ( panel = tabPanel.getComponent( n.tabId ) ) {
@@ -268,7 +274,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 						} else {
 						
 							/* si no lo encuentra carga el panel */
-							this.loadModule( record, n.href, tabPanel );
+							me.loadModule( record, n.href, tabPanel );
 					
 						}
 					}
@@ -311,24 +317,27 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 	,showDetail:function(ex) {
 
+		let me = this;
 
-		this.debug && console.log('no hay detail para el div_id: '+ ex );
+		me.debug && console.log('no hay detail para el div_id: '+ ex );
 
 		return;
 
-		if ( ! this.detailEl )
-			this.detailEl = Ext.getCmp('detail').body.createChild({tag:'div'});
+		/*
+		if ( ! me.detailEl )
+			me.detailEl = Ext.getCmp('detail').body.createChild({tag:'div'});
 
 		Ext.state.Manager.set('ex', ex);
 
-		if (ex !== this.currentEx ) {
+		if (ex !== me.currentEx ) {
 			var detailSrc = Ext.getDom('detail-' + ex);
 
 			if ( detailSrc ) {
-				this.detailEl.hide().update(detailSrc.innerHTML).slideIn('t');
-				this.currentEx = ex;
+				me.detailEl.hide().update(detailSrc.innerHTML).slideIn('t');
+				me.currentEx = ex;
 			}
 		}
+		*/
 	}
 
 });/*}}}*/
@@ -350,7 +359,7 @@ Ext.define('AppTabMenu', {/*{{{*/
 
 				/* ajusta la seleccion del menu cuando se hace clik en los tabs */
 
-				var tm = tabPanel.up('viewport').down('treemenu'),
+				let tm = tabPanel.up('viewport').down('treemenu'),
 				record = tm.store.getRootNode().findChild('itemId',newTab.itemId,true),
 				tmSelModel = tm.getSelectionModel(),
 				currentRecord = tmSelModel.getSelection().pop();
@@ -364,7 +373,7 @@ Ext.define('AppTabMenu', {/*{{{*/
 							record.parentNode.expand();
 							tmSelModel.select(record);
 
-							var pNode = record.parentNode;
+							let pNode = record.parentNode;
 
 							while(pNode) {
 								pNode.expand();
@@ -608,24 +617,25 @@ Ext.define('LoginWindow', {/*{{{*/
 
 	doLoginForm:function() { /*{{{*/
 
-		var form = this.down('form').getForm();
+		let me = this, 
+			form = me.down('form').getForm();
 
 		if ( !form.isValid() )
 			return;
 
 		form.submit({ 
-			url: this.base_url + '?m=users&amp;a=login&amp;v=json', 
+			url: me.base_url + '?m=users&amp;a=login&amp;v=json', 
 			method:'POST', 
 			waitTitle:'Ingresando', 
 			waitMsg:'Aguarde por favor ...',
-			success: this.handle_login,
-			failure: this.handle_login
+			success: me.handle_login,
+			failure: me.handle_login
 		}); 
 	},/*}}}*/
 
 	handle_login: function( form, action ) {/*{{{*/
 
-		var obj;
+		let me = this, obj;
 
 		try {
 
@@ -653,7 +663,7 @@ Ext.define('LoginWindow', {/*{{{*/
 
 		} else if ( obj.success ) {
 
-			this.form.owner.up().hide();
+			me.form.owner.up().hide();
 
 			if ( ! App.prevent_reload ) {
 				Ext.Msg.show({
@@ -677,17 +687,19 @@ Ext.define('LoginWindow', {/*{{{*/
 
 			Ext.Msg.alert('Respuesta del servidor inesperada. No se puede continuar, consulte con el administrador de la aplicación.'); 
 		}
+
 	},/*}}}*/
 
 	listeners: {
 	
 		render: function() {
 
-			var map = new Ext.util.KeyMap({
-				target: this.getEl(),
+			let me = this, 
+				map = new Ext.util.KeyMap({
+				target: me.getEl(),
 				key : [10, 13],
-				scope : this,
-				fn: this.doLoginForm
+				scope : me,
+				fn: me.doLoginForm
 			});
 		}
 	},
@@ -750,38 +762,40 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	constructor: function( config ) {/*{{{*/
 
+		let me = this;
+
 		var version = '4.2.1';
 
-		// this.check_ext_version( version );
+		// me.check_ext_version( version );
 
-		Ext.apply( this, config );
+		Ext.apply( me, config );
 
-		this.mixins.observable.constructor.call(this, config);
+		me.mixins.observable.constructor.call(me, config);
 
 		Ext.SSL_SECURE_URL = '/ext/resources/images/vista/s.gif';
 		Ext.BLANK_IMAGE_URL = '/ext/resources/images/vista/s.gif';
 
 		// Ext.tip.QuickTipManager.init();
 
-		this.init_state_manager();
+		me.init_state_manager();
  
 		// Ext.Ajax.timeout = 600000;
 
-		this.session = null;	
+		me.session = null;	
 
-		this.obj = new Ext.util.MixedCollection(false);
-		this.obj.getKey = function(o){ return o.class_name; }
+		me.obj = new Ext.util.MixedCollection(false);
+		me.obj.getKey = function(o){ return o.class_name; }
 
-		this.store = Ext.data.StoreManager;
-		// this.store = Ux.xpotronix.StoreManager;
+		me.store = Ext.data.StoreManager;
+		// me.store = Ux.xpotronix.StoreManager;
 
-		this.conn_process   = new Ext.data.Connection();
-		this.conn_process.on( 'requestcomplete', this.on_complete, this );
-		this.conn_process.on( 'requestexception', this.on_complete_exception , this );
+		me.conn_process   = new Ext.data.Connection();
+		me.conn_process.on( 'requestcomplete', me.on_complete, me );
+		me.conn_process.on( 'requestexception', me.on_complete_exception , me );
 
-		this.response = { status: null, changes: [], messages: [] };
+		me.response = { status: null, changes: [], messages: [] };
 
-		this.panel = {
+		me.panel = {
 
 			status: {
 
@@ -810,7 +824,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		};
 
-		this.window_onbeforeunload();
+		me.window_onbeforeunload();
 
 	},/*}}}*/
 
@@ -818,7 +832,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	init_state_manager: function() {/*{{{*/
 
-		if ( this.state_manager == 'http' ) {
+		let me = this;
+
+		if ( me.state_manager == 'http' ) {
 
 			Ext.state.Manager.setProvider(Ext.create('Ext.ux.state.HttpProvider', {
 				url:'?m=user_preferences'
@@ -840,7 +856,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 				}
 			}));
 	 
-			Ext.state.Manager.getProvider().initState( eval( this.user.ui_state ) );
+			Ext.state.Manager.getProvider().initState( eval( me.user.ui_state ) );
 
 		} else
 
@@ -888,24 +904,27 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	close_objs: function() {/*{{{*/
 
-		this.obj.each( function(o) { 
+		let me = this;
+
+		me.obj.each( function(o) { 
 			o.destroy();
-			this.obj.remove(o);
+			me.obj.remove(o);
 			delete o;
-		}, this );
+		}, me );
 	
 	},/*}}}*/ 
 
 	accessible: function( arr ) {/*{{{*/
 
-		var ret = [];
+		let me = this,
+			ret = [];
 
 		Ext.each( arr, function( a ) { 
 
 			// DEBUG: poner accesos en acl en juscaba2
-			( a.acl.access || this.config.application == 'juscaba2' ) && 
+			( a.acl.access || me.config.application == 'juscaba2' ) && 
 				ret.push( a ); 
-		}, this );
+		}, me );
 
 		return ret;
 	},/*}}}*/
@@ -916,8 +935,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		me.showPleaseWait( 'Ejecutando la acción ... Aguarde', 'Procesando ...' );
 
-		var module = p.m;
-		var url = { m: p.m, a: p.a };
+		let module = p.m,
+			url = { m: p.m, a: p.a };
+
 		delete( p.m );
 		delete( p.a );
 
@@ -940,7 +960,8 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	parse_response: function( param ) {/*{{{*/
 
-		var q = Ext.DomQuery, ns = 'xpotronix|messages';
+		let me = this,
+			q = Ext.DomQuery, ns = 'xpotronix|messages';
 
 		if ( ! param.responseXML ) {
 
@@ -954,12 +975,12 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 			return false;
 		}
 
-		this.response.status 	= q.selectValue( ns + "/status/@value", param.responseXML );
-		this.response.messages 	= q.selectNode( ns + "/messages", param.responseXML );
-		this.response.changes 	= q.select( ns + "/changes/*", param.responseXML );
+		me.response.status 	= q.selectValue( ns + "/status/@value", param.responseXML );
+		me.response.messages 	= q.selectNode( ns + "/messages", param.responseXML );
+		me.response.changes 	= q.select( ns + "/changes/*", param.responseXML );
 
-		this.handle_messages( param );
-		this.handle_status( param );
+		me.handle_messages( param );
+		me.handle_status( param );
 
 		return true;
 
@@ -967,12 +988,13 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	handle_messages: function( param ) {/*{{{*/
 
-		var ms = this.panel.messages.store;
+		let me = this,
+			ms = me.panel.messages.store;
 
 		if ( typeof ms == 'string' )
 			ms = Ext.create( ms );
 
-		ms.loadRawData( this.response.messages );
+		ms.loadRawData( me.response.messages );
 		var msgs = '';
 
 		for ( var i = 0; r = ms.getAt(i); i++ ) {
@@ -1011,13 +1033,13 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		}
 
-		let me = this;
-		var ms = [],
+		let me = this,
+			ms = [],
 			module = param.request.options.module; 
 
 		Ext.each( me.response.changes, function( e ) { 
 
-			var full_name = module + '.' + e.nodeName;
+			let full_name = module + '.' + e.nodeName;
 				s = me.store.lookup( full_name );
 
 			if ( s ) {
@@ -1038,9 +1060,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		/* todos los stores modificados, se fija si tiene un child 'parent' y lo recarga */
 
-		for ( var sn in ms ) {
+		for ( let sn in ms ) {
 
-			var ss = ms[sn];
+			let ss = ms[sn];
 
 			if ( Ext.isObject( ss ) && ( ss.response == 'u' || ss.response == 'i' || ss.response == 'd' ) ) {
 
@@ -1059,41 +1081,48 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	on_complete: function( sender, param ) { // Callback called on response/*{{{*/
 
-		this.hidePleaseWait();
-		this.parse_response( param ) && 
-		this.update_model( param );
+		let me = this;
+
+		me.hidePleaseWait();
+		me.parse_response( param ) && 
+		me.update_model( param );
 
 	},/*}}}*/
 
        on_complete_exception: function( sender, param ) { // Callback called on response/*{{{*/
 
-		Ext.Msg.alert( 'Hubo un problema al guardar, por favor reintente mas tarde');
-		this.parse_response( param );
-		this.update_model();
-		this.hidePleaseWait();
+		   let me = this;
+
+			Ext.Msg.alert( 'Hubo un problema al guardar, por favor reintente mas tarde');
+			me.parse_response( param );
+			me.update_model();
+			me.hidePleaseWait();
 
 	},/*}}}*/
 
 	login: function( prevent_reload ) {/*{{{*/
 
-		this.prevent_reload = prevent_reload;
+		let me = this;
 
-		if ( !this.panel.login.window ) 
-			this.panel.login.window = Ext.create('LoginWindow');
+		me.prevent_reload = prevent_reload;
 
-		this.panel.login.window.show();
+		if ( !me.panel.login.window ) 
+			me.panel.login.window = Ext.create('LoginWindow');
+
+		me.panel.login.window.show();
 
 	},/*}}}*/
 
 	reload_app: function() {/*{{{*/
 
-		var target = ( window.parent ) ? window.parent.location : window.location;
+		let me = this,
+			target = ( window.parent ) ? window.parent.location : window.location;
 
-		if ( this.feat.login_location )
+		if ( me.feat.login_location )
 			if ( window.parent ) 
-				window.parent.location = this.feat.login_location;
+				window.parent.location = me.feat.login_location;
 			else 
-				window.location = this.feat.login_location;
+				window.location = me.feat.login_location;
 		else
 			if ( window.parent )	
 				window.parent.location.reload();
@@ -1103,16 +1132,19 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	logout: function() {/*{{{*/
 
-	    conn = new Ext.data.Connection();
+	    let conn = new Ext.data.Connection();
 
 	    conn.on( 'requestcomplete', function() { 
-
-		alert('Presione [Aceptar] para salir de la aplicación');
-		window.location.reload();}, 
+	
+			alert('Presione [Aceptar] para salir de la aplicación');
+			window.location.reload();}, 
 
 		this );
 
-            conn.request({ method: 'POST', url: '?' + Ext.urlEncode( { a: 'logout' } ) });
+		conn.request({ 
+			method: 'POST', 
+			url: '?' + Ext.urlEncode( 
+				{ a: 'logout' } ) });
 
 	},/*}}}*/
 
@@ -1120,14 +1152,14 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	accessible: function( arr ) {/*{{{*/
 
-		var ret = [];
+		let me = this, ret = [];
 
 		Ext.each( arr, function( a ) { 
 
 			// DEBUG: poner accesos en acl en juscaba2
-			( a.acl.access || this.feat.application == 'juscaba2' ) && 
+			( a.acl.access || me.feat.application == 'juscaba2' ) && 
 				ret.push( a ); 
-		}, this );
+		}, me );
 
 		return ret;
 	},/*}}}*/
@@ -1170,19 +1202,20 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	change_password: function() {/*{{{*/
 
-		if ( ! this.panel.password.window )
-			this.panel.password.window = Ext.create('ChangePasswordWindow');
+		let me = this;
 
-		this.panel.password.window.show();
+		if ( ! me.panel.password.window )
+			me.panel.password.window = Ext.create('ChangePasswordWindow');
+
+		me.panel.password.window.show();
 
 	},/*}}}*/
 
 	showTips: function() {/*{{{*/
 
 		// DEBUG: esto fue hecho en 10 minutos hay que hacer uno mejor !! 
-		var randomnumber = Math.floor(Math.random() * 7);
-
-		var tip = Ext.getDom('tip-' + randomnumber);
+		let randomnumber = Math.floor(Math.random() * 7),
+			tip = Ext.getDom('tip-' + randomnumber);
 
 		tip && Ext.MessageBox.show({
 			title: App.feat.page_title,
