@@ -14,7 +14,7 @@ Ext.define('Ux.xpotronix.xpModel', {
 	extend: 'Ext.data.Model',
 
     setDirty : function() {
-        var me     = this,
+        let me     = this,
             fields = me.fields.items,
             fLen   = fields.length,
             field, name, f;

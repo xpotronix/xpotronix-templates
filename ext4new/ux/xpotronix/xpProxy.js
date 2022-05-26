@@ -29,21 +29,12 @@ Ext.define('Ux.xpotronix.xpProxy', {
 
 	constructor: function( config ) {
 
-		this.url = '?v=xml&a=data&b=ext4&r=' + config.class_name + '&m=' + config.module;
-		this.blank_url = '?v=xml&a=blank&b=ext4&r=' + config.class_name + '&m=' + config.module;
+		let me = this;
 
-		this.reader = {
+		me.url = '?v=xml&a=data&b=ext4&r=' + config.class_name + '&m=' + config.module;
+		me.blank_url = '?v=xml&a=blank&b=ext4&r=' + config.class_name + '&m=' + config.module;
 
-			type: 'xml',
-			record: '>' + config.class_name,
-			updates_record: 'changes/' + config.class_name,
-			id: '@uiid',
-			totalProperty: '@total_records',
-			messageProperty: '@msg',
-			root: 'c_'
-		};
-
-		this.writer = {
+		me.reader = {
 
 			type: 'xml',
 			record: '>' + config.class_name,
@@ -54,7 +45,18 @@ Ext.define('Ux.xpotronix.xpProxy', {
 			root: 'c_'
 		};
 
-		this.callParent(arguments);
+		me.writer = {
+
+			type: 'xml',
+			record: '>' + config.class_name,
+			updates_record: 'changes/' + config.class_name,
+			id: '@uiid',
+			totalProperty: '@total_records',
+			messageProperty: '@msg',
+			root: 'c_'
+		};
+
+		me.callParent(arguments);
 	},
 
 
@@ -65,7 +67,8 @@ Ext.define('Ux.xpotronix.xpProxy', {
 
 
     encodeFilters: function(filters) {
-        var min = [],
+
+        let min = [],
             length = filters.length,
             i = 0;
 

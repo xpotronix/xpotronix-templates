@@ -64,7 +64,7 @@ Ext.define('Ux.xpotronix.xpImageToolbar', {
 
 	initComponent: function() {/*{{{*/
 
-		var me = this;
+		let me = this;
 
 		Ext.applyIf(me, {
 			listeners: {
@@ -82,14 +82,15 @@ Ext.define('Ux.xpotronix.xpImageToolbar', {
 
 	onRender: function() {/*{{{*/
 
-		var panel = this.panel;
+		let me = this,
+			panel = this.panel;
 
-		this.insert(this.form_left_button(panel));
-		this.insert(this.form_right_button(panel));
+		me.insert(me.form_left_button(panel));
+		me.insert(me.form_right_button(panel));
 
-		var b, pos = this.items.length - 2;
+		let b, pos = me.items.length - 2;
 
-		this.callParent();
+		me.callParent();
 
 	},/*}}}*/
 
@@ -100,19 +101,19 @@ Ext.define('Ux.xpotronix.xpImageToolbar', {
 
 	form_left_button: function( panel ) {/*{{{*/
 
-		var tb = new Ext.Button( {
-			// id: 'leftButton',
-			text: 'Atras',
-	               	menuAlign: 'tr?',
-			disabled: true,
-	               	tooltip: 'Ir hacia el elemento previo'
-			,listeners:{click:{scope:this.store, fn:function() { this.selModel.selectPrevious(); },buffer:200 }}
+		let me = this, 
+			tb = new Ext.Button( {
+				// id: 'leftButton',
+				text: 'Atras',
+						menuAlign: 'tr?',
+				disabled: true,
+						tooltip: 'Ir hacia el elemento previo',
+				listeners:{click:{scope:me.store, fn:function() { me.selModel.selectPrevious(); },buffer:200 }}
+			});
 
-		});
+		tb.setDisabled( !me.store.rowIndex );
 
-		tb.setDisabled( !this.store.rowIndex );
-
-		this.store.on( 'selectionchange', function( selection, selModel ) { 
+		me.store.on( 'selectionchange', function( selection, selModel ) { 
 			tb.setDisabled( !selModel.store.rowIndex );
 		}, tb );
 
@@ -122,17 +123,18 @@ Ext.define('Ux.xpotronix.xpImageToolbar', {
 
 	form_right_button: function( panel ) {/*{{{*/
 
-		var tb = new Ext.Button( {
-			text: 'Adelante',
-	               	menuAlign: 'tr?',
-			disabled: true,
-	               	tooltip: 'Ir hacia el proximo elemento',
-			listeners:{click:{scope:this.store, fn:function(){ this.selModel.selectNext(); },buffer:200}}
+		let me = this,
+			tb = new Ext.Button( {
+				text: 'Adelante',
+						menuAlign: 'tr?',
+				disabled: true,
+						tooltip: 'Ir hacia el proximo elemento',
+				listeners:{click:{scope:me.store, fn:function(){ me.selModel.selectNext(); },buffer:200}}
 			} );
 
-		tb.setDisabled( ! ( this.store.rowIndex < ( this.store.getCount() - 1 ) ) );
+		tb.setDisabled( ! ( me.store.rowIndex < ( me.store.getCount() - 1 ) ) );
 
-		this.store.on( 'selectionchange', function( selection, selModel ) { 
+		me.store.on( 'selectionchange', function( selection, selModel ) { 
 			tb.setDisabled( ! ( selModel.store.rowIndex < ( selModel.store.getCount() - 1 ) ) );
 		}, tb );
 

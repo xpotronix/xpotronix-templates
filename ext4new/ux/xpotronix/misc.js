@@ -11,13 +11,13 @@
 
 function entry_help_process( store, obj_value, attr_value, attr_constraint, fn ) {
 
-	var parent_obj = store.lookup( obj_value );
+	let parent_obj = store.lookup( obj_value );
 
 	if ( parent_obj ) {
-		var value = parent_obj.cr().get( attr_value );
+		let value = parent_obj.cr().get( attr_value );
 
 		if ( value || fn ) {
-			var p = {};
+			let p = {};
 			p[attr_constraint] = fn ? fn.call( store, value ): value;
 			return p;
 		} 
@@ -33,29 +33,30 @@ function entry_help( eh_store, obj_value, attr_value, attr_constraint, fn ) {
 		Ext.apply( options.params, entry_help_process( store, obj_value, attr_value, attr_constraint, fn ) );
 
 	});
-};
+}
 
 
 function formatBoolean(value){
    return ( value == 'true' || value == true )? 'Si' : 'No';
-};
+}
 
 function formatDate(value){
    // return value ? Ext.util.Format.( value, 'd/m/Y') : '';
    return value;
-};
+}
 
 
 /* URL Params */
 
 function getQueryParams(qs) {/*{{{*/
+
     qs = qs.split('+').join(' ');
 
-    var params = {},
+    let params = {},
         tokens,
         re = /[?&]?([^=]+)=([^&]*)/g;
 
-    while (tokens = re.exec(qs)) {
+    while ( ( tokens = re.exec(qs) ) != null ) {
         params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
     }
 

@@ -12,34 +12,35 @@ Ext.ns( 'Ux.xpotronix' );
 
 Ext.define('AppStatsModel', {/*{{{*/
 
-	extend: 'Ext.data.Model'
+	extend: 'Ext.data.Model',
 
-	,proxy: { type: 'memory' 
-		,reader: {
-			type: 'xml',
-			record: 'changes',
-		}
-	}
-	,fields: [{name: 'value', mapping: '@value'}]
+	proxy: { type: 'memory',
+			reader: {
+				type: 'xml',
+				record: 'changes',
+			}
+		},
+
+	fields: [{name: 'value', mapping: '@value'}]
 
 });/*}}}*/
 
 Ext.define('AppMsgsModel', {/*{{{*/
 
-	extend: 'Ext.data.Model'
-	,proxy: { type: 'memory' 
-		,reader: {
+	extend: 'Ext.data.Model',
+	proxy: { type: 'memory',
+		reader: {
 			type: 'xml',
 			root: 'messages',
 			record: 'message'
 		}
-	}
-	,fields: [
-		{name: 'type', mapping: '@type'}
-		,{name: 'level', mapping: '@level'}
-		,{name: 'file', mapping: '@file'}
-		,{name: 'line', mapping: '@line'}
-		,{name: '', mapping: ''}
+	},
+	fields: [
+		{name: 'type', mapping: '@type'},
+		{name: 'level', mapping: '@level'},
+		{name: 'file', mapping: '@file'},
+		{name: 'line', mapping: '@line'},
+		{name: '', mapping: ''}
 	]
 
 });/*}}}*/
@@ -122,9 +123,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 	rowHeight:1
 	/* ,layout:'fit' */
-	,autoScroll:true
 	,useArrows:true
-	,title:'Menú Principal'
 
 	,nodeType: 'async'
 	,rootVisible: false 
@@ -137,7 +136,6 @@ Ext.define('AppTreeMenu', {/*{{{*/
 	,collapsible: true
 	,stateful: true
 	,height:240
-	,border:false
 	,title:'Ayuda'
 	,autoScroll:true
 
@@ -151,7 +149,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 	,initComponent: function( config ) {
 
-		var me = this;
+		let me = this;
 
 		/* me.store.on( 'load', s => console.log( s ) ); */
 
@@ -185,7 +183,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 			if ( App.user_node == undefined && App.user.user_username && ! App.user._anon ) {
 
-				if ( App.user_node = me.store.getRootNode().findChild('itemId', 'current_user', true) ) {
+				if ( ( App.user_node = me.store.getRootNode().findChild('itemId', 'current_user', true) ) != null ) {
 
 					App.user_node.data.text += ' <b>' + App.user.user_username + '</b>';
 
@@ -222,7 +220,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 					return;
 				}
 
-				var n = record.getData();
+				let n = record.getData();
 
 				/* Id del nodo */
 
@@ -230,15 +228,15 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 				if( n.itemId ) {
 
-					Ext.fly( 'detail-' + n.itemId ) &&
-					me.showDetail(n.itemId);
+					if ( Ext.fly( 'detail-' + n.itemId ) )
+						me.showDetail(n.itemId);
 
 				} else {
 
 					/* despliega parent */
 					if ( record.parentNode ) {
-						var parentNodeId;
-						if ( parentNodeId = record.parentNode.get('itemId') )
+						let parentNodeId;
+						if ( ( parentNodeId = record.parentNode.get('itemId') ) != null )
 							me.showDetail( parentNodeId );
 					}
 
@@ -265,10 +263,9 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 						/* busca entre los paneles del tab */
 
-						var tabPanel = me.up('viewport').down('tabpanel'),
-						panel;
+						let tabPanel = me.up('viewport').down('tabpanel');
 
-						if ( panel = tabPanel.getComponent( n.tabId ) ) {
+						if ( ( panel = tabPanel.getComponent( n.tabId ) ) != null ) {
 							tabPanel.setActiveTab( panel );
 						
 						} else {
@@ -289,7 +286,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 		tabPanel.lastSelection = record;
 
-		var url = href + '&v=ext4new/loader&UNNORMALIZED';
+		let url = href + '&v=ext4new/loader&UNNORMALIZED';
 
 		Ext.Loader.loadScript({ 
 			scope:tabPanel,
@@ -319,7 +316,8 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 		let me = this;
 
-		me.debug && console.log('no hay detail para el div_id: '+ ex );
+		if ( me.debug ) 
+			console.log('no hay detail para el div_id: '+ ex );
 
 		return;
 
@@ -330,7 +328,7 @@ Ext.define('AppTreeMenu', {/*{{{*/
 		Ext.state.Manager.set('ex', ex);
 
 		if (ex !== me.currentEx ) {
-			var detailSrc = Ext.getDom('detail-' + ex);
+			let detailSrc = Ext.getDom('detail-' + ex);
 
 			if ( detailSrc ) {
 				me.detailEl.hide().update(detailSrc.innerHTML).slideIn('t');
@@ -446,7 +444,7 @@ Ext.define('AppExportWindow', {/*{{{*/
 
 			fn: function( w ) { 
 
-				var total_count = w.toolbar.store.getTotalCount(),
+				let total_count = w.toolbar.store.getTotalCount(),
 				max_records = this.down('form').getForm().findField('max_records');
 				max_records.emptyText = ( total_count > 10000 ) ? 'Redefina la busqueda, demasiados registros (' + total_count + ')' : 'Seleccionar la cantidad de registros a exportar';
 				max_records.applyEmptyText();
@@ -472,7 +470,8 @@ Ext.define('AppExportWindow', {/*{{{*/
 					filters = store.get_filters_values();
 
 					Ext.each( panel.columns, function( f ) {
-						f.hidden || display_only_fields.push( f.name );
+						if ( ! f.hidden ) 
+							display_only_fields.push( f.name );
 					});
 
 					Ext.apply( q_params, {
@@ -542,7 +541,7 @@ Ext.define('ChangePasswordWindow', {/*{{{*/
 
 			handler:function(){ 
 
-				var form = this.up('form').getForm();
+				let form = this.up('form').getForm();
 
 				form.submit({ 
 
@@ -566,7 +565,7 @@ Ext.define('ChangePasswordWindow', {/*{{{*/
 
 						if ( action.failureType == 'server'){ 
 
-							var obj = Ext.decode(action.response.responseText); 
+							let obj = Ext.decode(action.response.responseText); 
 							Ext.Msg.alert('Fallo la autorizacion', obj.errors.reason); 
 
 						} else { 
@@ -605,7 +604,7 @@ Ext.define('LoginWindow', {/*{{{*/
 
 	initComponent: function( config ) {
 
-		var me = this;
+		let me = this;
 
 		Ext.applyIf( me, { 
 			title: 'Ingreso a '+ App.feat.page_title,
@@ -764,7 +763,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		let me = this;
 
-		var version = '4.2.1';
+		let version = '4.2.1';
 
 		// me.check_ext_version( version );
 
@@ -784,7 +783,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		me.session = null;	
 
 		me.obj = new Ext.util.MixedCollection(false);
-		me.obj.getKey = function(o){ return o.class_name; }
+		me.obj.getKey = function(o){ return o.class_name; };
 
 		me.store = Ext.data.StoreManager;
 		// me.store = Ux.xpotronix.StoreManager;
@@ -867,9 +866,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 	check_ext_version: function( version ) {/*{{{*/
 
 		if ( Ext.version != version )
-			console.error( 'Atención: la versión requerida de la librería ExtJs es la '
-				+ version + ': la versión provista es la ' 
-				+ Ext.version );
+			console.error( `Atención: la versión requerida de la librería ExtJs es la ${version}: la versión provista es la ${Ext.version}` );
 
 	},/*}}}*/
 
@@ -884,7 +881,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	reconfigure: function( config ) {/*{{{*/
 
-		config && Ext.apply( this, config );
+		if ( config ) 
+			Ext.apply( this, config );
+
 	},/*}}}*/
 
 	start: function() {/*{{{*/
@@ -896,7 +895,6 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 		this.store.each( function(s) { 
 			s.destroy(); 
-			delete s;
 		});
 
 	
@@ -909,25 +907,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		me.obj.each( function(o) { 
 			o.destroy();
 			me.obj.remove(o);
-			delete o;
 		}, me );
 	
 	},/*}}}*/ 
-
-	accessible: function( arr ) {/*{{{*/
-
-		let me = this,
-			ret = [];
-
-		Ext.each( arr, function( a ) { 
-
-			// DEBUG: poner accesos en acl en juscaba2
-			( a.acl.access || me.config.application == 'juscaba2' ) && 
-				ret.push( a ); 
-		}, me );
-
-		return ret;
-	},/*}}}*/
 
  	process_request: function( p, callback ) {/*{{{*/
 
@@ -995,26 +977,27 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 			ms = Ext.create( ms );
 
 		ms.loadRawData( me.response.messages );
-		var msgs = '';
+		let msgs = '';
 
-		for ( var i = 0; r = ms.getAt(i); i++ ) {
+		for ( let i = 0; ( r = ms.getAt(i) ) != null ; i++ ) {
 			// if ( r.get('type') == "16" ) 
 				msgs += ( '<li>' + r.get('') + '</li>');
 		}
 
-		( msgs != '' ) &&  Ext.Msg.show({
-			width: 400,
-			title:'Respuesta del Servidor de Datos',
-			msg: '<ul>' + msgs + '</ul>',
-			buttons: Ext.Msg.OK,
-			icon: Ext.Msg.INFO
-		});
+		if ( msgs != '' ) 
+			Ext.Msg.show({
+				width: 400,
+				title:'Respuesta del Servidor de Datos',
+				msg: '<ul>' + msgs + '</ul>',
+				buttons: Ext.Msg.OK,
+				icon: Ext.Msg.INFO
+			});
 			
 	},/*}}}*/
 
 	handle_status: function( param ) {/*{{{*/
 
-		var ms = this.panel.status.store;
+		let ms = this.panel.status.store;
 
 		if ( typeof ms == 'string' )
 			ms = Ext.create( ms );
@@ -1084,8 +1067,9 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		let me = this;
 
 		me.hidePleaseWait();
-		me.parse_response( param ) && 
-		me.update_model( param );
+
+		if ( me.parse_response( param ) )
+			me.update_model( param );
 
 	},/*}}}*/
 
@@ -1157,7 +1141,7 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		Ext.each( arr, function( a ) { 
 
 			// DEBUG: poner accesos en acl en juscaba2
-			( a.acl.access || me.feat.application == 'juscaba2' ) && 
+			if ( a.acl.access || me.feat.application == 'juscaba2' )  
 				ret.push( a ); 
 		}, me );
 
@@ -1178,14 +1162,15 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 	},/*}}}*/
 
 	showSaveChanges: function() {/*{{{*/
-		var me = this;
+		let me = this;
 		Ext.Msg.show({
 			msg :'Hay cambios sin guardar. Desea guardar los cambios?',
 			width :300,
 			buttons: Ext.Msg.YESNOCANCEL,
 			scope: me,
 			fn: function( btn ) {
-				( btn == 'yes' ) && me.save();
+				if ( btn == 'yes' )
+					me.save();
 			}
 		});
 	},/*}}}*/
@@ -1217,12 +1202,14 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 		let randomnumber = Math.floor(Math.random() * 7),
 			tip = Ext.getDom('tip-' + randomnumber);
 
-		tip && Ext.MessageBox.show({
-			title: App.feat.page_title,
-			msg: '<center><b>Sugerencia del sistema:</b>' + tip.innerHTML + '</center>',
-			width: 300,
-			buttons: Ext.Msg.OK
-		});
+		if ( tip ) 
+			Ext.MessageBox.show({
+				title: App.feat.page_title,
+				msg: '<center><b>Sugerencia del sistema:</b>' + tip.innerHTML + '</center>',
+				width: 300,
+				buttons: Ext.Msg.OK
+			});
+
 	},/*}}}*/
 
 	get_feat: function( key, obj ) {/*{{{*/

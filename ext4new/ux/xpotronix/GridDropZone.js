@@ -18,31 +18,35 @@
 
 Ext.define( 'Ux.xpotronix.GridDropZone', {
 
-	extend: 'Ext.dd.DropZone'
+	extend: 'Ext.dd.DropZone',
 
-	,constructor: function( config ) {
+	constructor: function( config ) {
 
-		this.grid = config.grid;
-		Ux.xpotronix.GridDropZone.superclass.constructor.call(this, this.grid.getView().scroller, config);
-	}
+		let me = this;
 
-	,onContainerOver:function(dd, e, data) {
+		me.grid = config.grid;
+		me.callParent( me.grid.getView().scroller, config);
+	},
 
-		return dd.grid !== this.grid ? this.dropAllowed : this.dropNotAllowed;
+	onContainerOver:function(dd, e, data) {
 
-	}
+		let me = this;
 
-	,onContainerDrop:function(dd, e, data) {
+		return dd.grid !== me.grid ? me.dropAllowed : me.dropNotAllowed;
+	},
 
-		if(dd.grid !== this.grid) {
-			this.grid.onRecordsDrop(dd.grid, data.selections);
+	onContainerDrop:function(dd, e, data) {
+
+		let me = this;
+
+		if(dd.grid !== me.grid) {
+			me.grid.onRecordsDrop(dd.grid, data.selections);
 			return true;
 		}
 
 		return false;
+	},
 
-	}
-
-	,containerScroll:true
+	containerScroll:true
 });
 

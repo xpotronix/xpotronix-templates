@@ -12,9 +12,7 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 
 	extend: 'Ext.Panel',
 	alias: 'xpThumbs', 
-
-	obj: null,
-	acl: null,
+	obj, acl,
 	module: this.module,
 
 	/* id: 'images-view', */
@@ -22,31 +20,29 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 	trackMouseOver:true,
 	/* layout:'fit', */
 	border:false,
-	tpl: null,
-	dv: null,
-	items: null,
-	feat: null,
+	tpl, dv, items, feat,
 	multi_row: true,
 	loadingText: 'Cargando ...',
 
-
 	constructor: function(config) {/*{{{*/
 
-		App.obj.get(this.class_name).panels.add(this);
+		let me = this;
+
+		App.obj.get(me.class_name).panels.add(me);
 
 		Ext.apply( config, { 
 
 			dockedItems: [{
 				xtype: 'xppagingtoolbar',
-				panel: this,
-				store: this.store,
+				panel: me,
+				store: me.store,
 				dock: 'top',
 				displayInfo: true
 			}],
 		});
 
 
-		this.tpl = this.tpl || [ 
+		me.tpl = me.tpl || [ 
 		'<tpl for=".">',
 			'<div class="thumb-wrap" id="{ID}">',
 				'<div class="thumb"><img src="{image_url}" title="{full_path}"></div>',
@@ -56,10 +52,10 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 		'<div class="x-clear"></div>'
 		];
 
-		this.dv = this.dv || Ext.create('Ext.view.View', {
+		me.dv = me.dv || Ext.create('Ext.view.View', {
 
-			store: this.store,
-			tpl: this.tpl,
+			store: me.store,
+			tpl: me.tpl,
 			autoHeight:true,
 			multiSelect: true,
 			overClass:'x-item-over',
@@ -86,42 +82,48 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 
 		});
 
-		this.items = this.items || this.dv;
+		me.items = me.items || me.dv;
 
-		this.callParent(arguments);
+		me.callParent(arguments);
 
 	},/*}}}*/
 
 	initComponent:function() {/*{{{*/
 
-		this.selModel = this.dv.getSelectionModel();	
+		let me = this;
 
-		if ( typeof this.store == 'string' ) 
-			this.store = App.store.lookup( this.store );
+		me.selModel = me.dv.getSelectionModel();	
 
-                if ( typeof this.obj == 'string' )
-			this.obj = App.obj.get( this.obj );
+		if ( typeof me.store == 'string' ) 
+			me.store = App.store.lookup( me.store );
 
-		/* this.getForm().trackResetOnLoad = true; */
+                if ( typeof me.obj == 'string' )
+			me.obj = App.obj.get( me.obj );
 
-		this.acl = this.acl || this.obj.acl;
-		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+		/* me.getForm().trackResetOnLoad = true; */
 
-		this.callParent();
+		me.acl = me.acl || me.obj.acl;
+		me.processes_menu = me.processes_menu || me.obj.processes_menu;
 
-		this.dv.on('selectionchange', function(dv, nodes) {
+		me.callParent();
 
-			/* if ( this.dv.selModel == dv ) return; */
-			this.store.setSelection( nodes );
+		me.dv.on('selectionchange', function(dv, nodes) {
+
+			let me = this;
+
+			/* if ( me.dv.selModel == dv ) return; */
+			me.store.setSelection( nodes );
 	
-		}, this, { buffer: 500 } );
+		}, me, { buffer: 500 } );
 
-                this.store.on('selectionchange', function(s) {
+		me.store.on('selectionchange', function(s) {
 
-			if ( this.rendered && this.store.getCount() ) 
-				this.dv.selModel.select( s );
+			let me = this;
 
-                }, this );
+			if ( me.rendered && me.store.getCount() ) 
+				me.dv.selModel.select( s );
+
+		}, me );
 
 	},/*}}}*/
 
@@ -133,14 +135,15 @@ Ext.define( 'Ux.xpotronix.xpThumbs', {
 
 	invertSelection:function() {/*{{{*/
 
-		var sl = this.dv.getNodes();
+		let me = this,
+			sl = me.dv.getNodes();
 
-		for( var i = 0; i < sl.length; i ++ ) {
+		for( let i = 0; i < sl.length; i ++ ) {
 
-			if ( this.dv.isSelected(i))
-				this.dv.deselect(i);
+			if ( me.dv.isSelected(i))
+				me.dv.deselect(i);
 			else
-				this.dv.select(i, true);
+				me.dv.select(i, true);
 		}
 	},/*}}}*/
 

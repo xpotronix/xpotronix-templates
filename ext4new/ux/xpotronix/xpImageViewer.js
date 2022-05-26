@@ -72,7 +72,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 	,repositionImage:function(){/*{{{*/
 
-		var elDom = this.compRef.imageCont.el.dom,
+		let elDom = this.compRef.imageCont.el.dom,
 		panelDom = this.body.dom,
 		mLeft = (elDom.width < panelDom.clientWidth) ? (panelDom.clientWidth - elDom.width)/2 : 0;
 		mTop = (elDom.height < panelDom.clientHeight) ? (panelDom.clientHeight - elDom.height)/2 : 0;
@@ -86,7 +86,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 	,setImage:function(imagePath){/*{{{*/
 		
-		var ic = this.compRef.imageCont;
+		let ic = this.compRef.imageCont;
 
 		ic.setSrc( this.image = imagePath );
 		ic.cls = this.cursorOverClass;
@@ -96,9 +96,9 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 	,setStyle:function(config) {/*{{{*/
 
-		for( var key in config ) {
+		for( let key in config ) {
 
-			var value;
+			let value;
 
 			if ( ['width','height','top','left'].indexOf(key) > -1 )
 				value = this.round( config[key] ) + 'px';
@@ -106,7 +106,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				value = config[key];
 
 			this.compRef.imageCont.el.setStyle( key, value );
-		};
+		}
 
 	}/*}}}*/
 
@@ -126,7 +126,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 	,zoomImage:function(){/*{{{*/
 	
-		var scaling, wProp, hProp, newWidth, newHeight, setProps, curScrollXratio, curScrollYratio,
+		let scaling, wProp, hProp, newWidth, newHeight, setProps, curScrollXratio, curScrollYratio,
 		elDom = this.compRef.imageCont.el.dom;
 
 		if ( this.zoom == 'fit' ) {
@@ -151,8 +151,8 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 		curScrollXratio = elDom.scrollLeft / (elDom.clientWidth-elDom.clientWidth);
 		curScrollYratio = elDom.scrollTop / (elDom.clientHeight-elDom.clientHeight);
 		
-		curScrollXratio = curScrollXratio == 0 ? .5 : curScrollXratio;
-		curScrollYratio = curScrollYratio == 0 ? .5 : curScrollYratio;
+		curScrollXratio = curScrollXratio == 0 ? 0.5 : curScrollXratio;
+		curScrollYratio = curScrollYratio == 0 ? 0.5 : curScrollYratio;
 		
 		elDom.scrollLeft = curScrollXratio * (elDom.clientWidth-elDom.clientWidth);
 		elDom.scrollTop = curScrollYratio * (elDom.clientHeight-elDom.clientHeight);
@@ -197,11 +197,11 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 				,listeners:{
 					scope:this
 					,change:function(checkbox, checked){
-						var newZoom;
+						let newZoom;
 						if(checked){
-							newZoom = 'fit'
+							newZoom = 'fit';
 							this.compRef.zoomText.setText('Fit');
-						}else{
+						} else{
 							newZoom = this.getNormalizedZoom(this.compRef.zoomSlider.getValue());
 							this.compRef.zoomText.setText(newZoom+' %');
 						}
@@ -342,7 +342,7 @@ Ext.define( 'Ux.xpotronix.xpImageViewer', {
 
 								if(this.mouseDown === true){
 
-									var xy = event.getXY();
+									let xy = event.getXY();
 									
 									if(xy[0] > this.mouseDownXY[0]){
 										this.body.dom.scrollLeft = this.mouseDownScrollLeft - (xy[0] - this.mouseDownXY[0]);

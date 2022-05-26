@@ -23,8 +23,10 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 			
 			fn:function() {
 
-				if (this.getValue() === null) {
-					this.reset();
+				let me = this;
+
+				if (me.getValue() === null) {
+					me.reset();
   			}
 		}},
 
@@ -32,8 +34,8 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 			fn: function( queryPlan ) { 
 
-				var me = this,
-				value = this.getRawValue();
+				let me = this,
+				value = me.getRawValue();
 
 				me.store.filters.each( function( filter ) {
 
@@ -50,11 +52,11 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 		blur: {
 
-			fn: function( me ) {
+			fn: function() {
 
-				var p = this.panel,
-				me = this,
-				record = p.store.selections[0];
+				let me = this,
+					p = me.panel,
+					record = p.store.selections[0];
 
 				/* cambia el valor del _label correspondiente a este field en el record */
 
@@ -63,7 +65,7 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 					if ( me.isEqual( me.getValue(), record.get( me.name ) ) )
 						return true;
 
-					this.debug && console.log( me.name + ': ' + me.lastValue + ' << ' + me.getValue() );
+					me.debug && console.log( me.name + ': ' + me.lastValue + ' << ' + me.getValue() );
 					record.set(me.name, me.getValue());
 					record.set(me.name+'_label', me.getRawValue());
 				}
@@ -73,13 +75,15 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 	onRender: function() {/*{{{*/
 
-		this.callParent(arguments);
-		this.panel = this.up('grid') || this.up('form');
+		let me = this;
+
+		me.callParent(arguments);
+		me.panel = me.up('grid') || me.up('form');
 
 	},	/*}}}*/
 
     setValue: function(value, doSelect) {/*{{{*/
-        var me = this,
+        let me = this,
             valueNotFoundText = me.valueNotFoundText,
             inputEl = me.inputEl,
             i, len, record,
@@ -133,14 +137,14 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 
 				/* carga un registro fake para que pueda machear el valor en forceSelection */
 
-				var p = this.panel; 
+				let p = me.panel; 
 
 				if ( p ) {
 
-					var s = this.store;
+					let s = me.store;
 
-					var data = s.get_foreign_key_record( p.store.getSelection(), true );
-					this.debug && console.log(data);
+					let data = s.get_foreign_key_record( p.store.getSelection(), true );
+					me.debug && console.log(data);
 
 					record = s.model.create(data[0]);
 
@@ -148,9 +152,9 @@ Ext.define('Ux.xpotronix.xpComboBox', {
 					displayTplData.push(record.data);
 					processedValue.push(record.get(me.valueField));
 			 
-					if ( p = this.up('form') ) {
+					if ( p = me.up('form') ) {
 
-						this.valueNotFoundText = record.get( this.name + '_label' );
+						me.valueNotFoundText = record.get( me.name + '_label' );
 
 					}
 				} 

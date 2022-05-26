@@ -16,60 +16,61 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 	extend: 'Ext.Component',
 	alias: 'xpObj',
 
-	config: 	null,
+	config: null,
 
-	class_name: 	null,
-	translate:	null,
-	parent_name:	null,
+	class_name: null,
+	translate: null,
+	parent_name: null,
 	acl:		{},
-	role:		null,
+	role:null,
 	extra_param:	{},
 	cm:		[],
-	panels:		null,
-	store:		null,
+	panels:null,
+	store:null,
 	inspect:	[],
 
-	i_panel: null,
+	i_panel:null,
 
 	columns: 	[],
 	fields: 	[],
 	editors:  	{},
-	processes_menu: null,
-	buttons: 	null,
+	processes_menu:null,
+	buttons:null,
 	feat:		{},
-	export_w: 	null,
+	export_w:null,
 
 	constructor: function( config ) {/*{{{*/
 
-		this.panels = new Ext.util.MixedCollection(false);
-		this.panels.getKey = function(o){ return o.id; };
+		let me = this;
 
-		this.config = config | {};
+		me.panels = new Ext.util.MixedCollection(false);
+		me.panels.getKey = (o) => o.id;
 
-		Ext.apply( this, config ); 
+		me.config = config | {};
 
-		Ux.xpotronix.xpObj.superclass.constructor.call( this );
+		Ext.apply( me, config ); 
 
-		this.on( 'beforedestroy', function(){
+		me.callParent();
 
-			this.panels.each( function(p){ 
+		me.on( 'beforedestroy', function(){
+
+			me.panels.each( function(p){ 
 				p.destroy();
-				this.panels.remove(p);
-				delete p;
-			}, this );
+				me.panels.remove(p);
+			}, me );
 		});
 
 	},/*}}}*/
 
 	serialize_selection_item: function( item ) {/*{{{*/
 
-		var result = '', nodeList = '';
-		var element = this.class_name;
+		let result = '', nodeList = '';
+		let element = this.class_name;
 
 		result = '<' + element;
-		result += ' ID=\"' + Ext.util.Format.escapeXml(item.get('__ID__')) + '\"'
-		result += ' uiid=\"' + Ext.util.Format.escapeXml(item.id) + '\"'
-		result += ' new=\"' + Ext.util.Format.escapeXml(item.get('__new__')) + '\"'
+		result += ' ID=\"' + Ext.util.Format.escapeXml(item.get('__ID__')) + '\"';
+		result += ' uiid=\"' + Ext.util.Format.escapeXml(item.id) + '\"';
+		result += ' new=\"' + Ext.util.Format.escapeXml(item.get('__new__')) + '\"';
 		result += '/>\n';
 
 		return result;
@@ -77,8 +78,8 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 
 	serialize_selections: function( sels ) {/*{{{*/
 
-		var nodeList = '';
-		var element = App.feat.container_tag;
+		let nodeList = '';
+		let element = App.feat.container_tag;
 
 		Ext.each( sels, function( s ) {
 			nodeList += this.serialize_selection_item( s ); 
@@ -129,8 +130,6 @@ Ext.define( 'Ux.xpotronix.xpObj', {
 		}
 
 	},/*}}}*/
-
-
 
 }); // extend
 

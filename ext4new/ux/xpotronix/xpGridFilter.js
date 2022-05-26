@@ -14,20 +14,21 @@ Ext.define( 'Ext.ux.grid.xpGridFilters', {
 
 	constructor: function(config){
 
-		Ext.ux.grid.xpGridFilters.superclass.constructor.call(this, config );
-
+		this.callParent( config );
 	},
 
 	buildQuery : function (filters) {
-		var p = {}, i, f, root, dataPrefix, key, tmp,
-        	    len = filters.length;
 
-        if (!this.encode){
+		let me = this,
+			p = {}, i, f, root, dataPrefix, key, tmp,
+			len = filters.length;
+
+        if (!me.encode){
             for (i = 0; i < len; i++) {
                 f = filters[i];
 		// modificacion: organiza el array por el nombre no por el indice
-		var fieldName = f.searchField ? f.searchField : f.field;
-                root = [this.paramPrefix, '[', fieldName, ']'].join('');
+		let fieldName = f.searchField ? f.searchField : f.field;
+                root = [me.paramPrefix, '[', fieldName, ']'].join('');
                 p[root] = f.data.value;
 		// modificacion 
             }
@@ -43,7 +44,7 @@ Ext.define( 'Ext.ux.grid.xpGridFilters', {
             }
             // only build if there is active filter
             if (tmp.length > 0){
-                p[this.paramPrefix] = JSON.stringify(tmp);
+                p[me.paramPrefix] = JSON.stringify(tmp);
             }
         }
         return p;
@@ -54,25 +55,31 @@ Ext.define( 'Ext.ux.grid.xpGridFilters', {
         cleanParams: function(p){
 
 
-                var regex = new RegExp("^" + this.paramPrefix + "\[[0-9a-zA-Z_]+\]\[[0-9a-zA-Z_]+\]");
-                for(var key in p)
+                let regex = new RegExp("^" + me.paramPrefix + "\[[0-9a-zA-Z_]+\]\[[0-9a-zA-Z_]+\]");
+                for(let key in p)
                         if(regex.test(key))
                                 delete p[key];
 
         },
 */
         getFilterData: function(){
-                var filters = [];
 
-                this.filters.each(function(f){
-                        if(f.active){
-                                var d = [].concat(f.serialize());
-                                for(var i=0, len=d.length; i<len; i++)
-                                        filters.push({
-						field: f.dataIndex, 
-						searchField: f.searchField, 
-						data: d[i]
-				});
+                let me = this,
+				filters = [];
+
+                me.filters.each(function(f){
+
+					if(f.active){
+
+						let d = [].concat(f.serialize());
+
+						for( let i=0, len=d.length; i<len; i++ )
+
+							filters.push({
+								field: f.dataIndex, 
+								searchField: f.searchField, 
+								data: d[i]
+							});
                         }
                 });
 

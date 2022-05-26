@@ -10,7 +10,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-var recurse_items = function( cmp, fn, scope ) {/*{{{*/
+let recurse_items = function( cmp, fn, scope ) {/*{{{*/
 
 	cmp.items && cmp.items.each && cmp.items.each( function( it ) {
 
@@ -38,9 +38,11 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	constructor: function(config) {/*{{{*/
 
+		let me = this;
+
 		/* agrega un panel al objeto para futura referencia */
 
-		App.obj.get(this.class_name).panels.add(this);
+		App.obj.get(me.class_name).panels.add(me);
 
 		config.dockedItems = config.dockedItems || [];
 
@@ -53,8 +55,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			config.dockedItems.push({
 
 				xtype: 'xppagingtoolbar',
-				panel: this,
-				store: this.store,
+				panel: me,
+				store: me.store,
 				dock: 'top',
 				displayInfo: true
 			});
@@ -67,26 +69,26 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			config.dockedItems.push({
 
 				xtype: 'toolbar',
-				panel: this,
-				store: this.store,
+				panel: me,
+				store: me.store,
 				dock: 'bottom',
 				displayInfo: true,
 				layout: { pack: 'center' }
 			});
 		}
 
-		this.callParent(arguments);
+		me.callParent(arguments);
 
-		this.addEvents( 'loadrecord' );
+		me.addEvents( 'loadrecord' );
 
-		this.debug && consoleDebugFn( this );
-		this.debug && consoleDebugFn( this.getForm() );
+		me.debug && consoleDebugFn( me );
+		me.debug && consoleDebugFn( me.getForm() );
 
 	},/*}}}*/
 
 	initComponent:function() {/*{{{*/
 
-		var me = this;
+		let me = this;
 
 		me.callParent();
 
@@ -103,8 +105,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 		if ( me.show_buttons && ( me.acl.edit || me.acl.add ) ) {
 
-			var tbar = me.getDockedItems('toolbar[dock=top]')[0];
-			var bbar = me.getDockedItems('toolbar[dock=bottom]')[0];
+			let tbar = me.getDockedItems('toolbar[dock=top]')[0];
+			let bbar = me.getDockedItems('toolbar[dock=bottom]')[0];
 
 			if ( tbar && bbar ) {
 
@@ -119,7 +121,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 			afterrender: { 
 				fn: function( form ) {
 
-					var r = form.getSelection();
+					let r = form.getSelection();
 
 					if ( r && r.length ) {
 
@@ -169,16 +171,16 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	onRender: function() { /*{{{*/
 
-		var me = this;
+		let me = this;
 
 		me.callParent();
 
 		if ( ! me.store ) 
 			return;
 
-		var field_names = [];
+		let field_names = [];
 
-		Ext.each( me.store.model.getFields(), function( i ) { field_names.push( i.name ) } );
+		Ext.each( me.store.model.getFields(), i => field_names.push( i.name ) );
 
 		if ( me.store ) {
 
@@ -190,8 +192,8 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 					/* DEBUG: hay que ver si aca es el evento correcto para cuando cambia un valir, tal vez validateedit */
 
-					// var event_name = (i.xtype == 'checkbox') ? 'check' : 'blur';
-					var event_name = 'blur';
+					// let event_name = (i.xtype == 'checkbox') ? 'check' : 'blur';
+					let event_name = 'blur';
 
 					me.debug && console.log( 'class: ' + i.$className + ', name: ' + i.name );
 
@@ -201,7 +203,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 						/* mantiene sincronizado el form con el controlador (grid) */
 
-						var record = me.getSelection()[0];
+						let record = me.getSelection()[0];
 
 						if ( record ) {
 
@@ -227,18 +229,18 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	loadRecord: function( r ) { /*{{{*/
 
-		var me = this;
+		let me = this;
 
 		if ( ( ! me.rendered ) && ( ! me.isVisible() ) ) 
 			return;
 
-		var form = me.getForm();
+		let form = me.getForm();
 
 		/* chequea que ninguno de los campos a cargar tenga actualmente el foco, asi no lo borra */
 
-		for ( var key in r.data ) { 
+		for ( let key in r.data ) { 
 
-			var a = form.findField(key);
+			let a = form.findField(key);
 
 			if ( a && a.hasFocus ) 
 				return;
@@ -251,7 +253,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
         		me._record = r;
 
-			var c,
+			let c,
 			is_new = r.get('__new__'),
 			enabled = ( me.obj.acl.edit && !is_new ) || ( me.obj.acl.add && is_new );
 
@@ -276,22 +278,26 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 
 	enableForm: function() {/*{{{*/
 
-		recurse_items( this.getForm(), function( it ) {
+		let me = this;
+
+		recurse_items( me.getForm(), function( it ) {
 
 			it.initialConfig.disabled || it.enable();
 
-		}, this );
+		}, me );
 
 
 	},/*}}}*/
 
 	disableForm: function() {/*{{{*/
 
-		recurse_items( this.getForm(), function( it ) {
+		let me = this;
+
+		recurse_items( me.getForm(), function( it ) {
 
 			it.disable();
 
-		}, this );
+		}, me );
 
 	},/*}}}*/
 
@@ -302,7 +308,7 @@ Ext.define( 'Ux.xpotronix.xpForm', {
 	},/*}}}*/
 
 	getTopToolbar:  function() {/*{{{*/
-		var tb = this.getDockedItems('toolbar[dock=top]');
+		let tb = this.getDockedItems('toolbar[dock=top]');
 		return tb.length ? tb[0] : undefined;
 	}/*}}}*/
 

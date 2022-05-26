@@ -29,9 +29,11 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 	constructor: function(config) {/*{{{*/
 
+		let me = this;
+
 		/* agrega un panel al objeto para futura referencia */
 
-		App.obj.get(this.class_name).panels.add(this);
+		App.obj.get(me.class_name).panels.add(me);
 
 		/* paging toolbar */
 
@@ -41,8 +43,8 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 				dockedItems: [{
 					xtype: 'xppagingtoolbar',
-					panel: this,
-					store: this.store,
+					panel: me,
+					store: me.store,
 					dock: 'top',
 					displayInfo: true
 				}],
@@ -56,55 +58,58 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 			dockedItems: [{
 				xtype: 'toolbar',
-				panel: this,
-				store: this.store,
+				panel: me,
+				store: me.store,
 				dock: 'bottom',
 				displayInfo: true,
 				layout: { pack: 'center' }
 			}],
 		});
 
-		this.callParent(arguments);
+		me.callParent(arguments);
 
-		this.addEvents( 'loadrecord' );
+		me.addEvents( 'loadrecord' );
 
-		this.debug && consoleDebugFn( this );
+		if ( me.debug ) 
+			consoleDebugFn( me );
 
 	},/*}}}*/
 
 	initComponent:function() {/*{{{*/
 
-		this.callParent();
+		let me = this;
+
+		me.callParent();
 
 		/* resuelve referencias */
 
-		if ( typeof this.store == 'string' ) 
-			this.store = App.store.lookup( this.store );
+		if ( typeof me.store == 'string' ) 
+			me.store = App.store.lookup( me.store );
 
-                if ( typeof this.obj == 'string' )
-			this.obj = App.obj.get( this.obj );
+                if ( typeof me.obj == 'string' )
+			me.obj = App.obj.get( me.obj );
 
-		this.acl = this.acl || this.obj.acl;
-		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+		me.acl = me.acl || me.obj.acl;
+		me.processes_menu = me.processes_menu || me.obj.processes_menu;
 
-		this.on({ 
+		me.on({ 
 			afterrender: { 
-				fn: this.loadRecord,
+				fn: me.loadRecord,
 				buffer:200 }
 		});
 
-		this.store.on({
+		me.store.on({
 
 			update: { 
-				fn: this.loadRecord, 
-				scope: this, 
+				fn: me.loadRecord, 
+				scope: me, 
 				buffer:50 
 			},
 
 			selectionchange: {
 
-				fn: this.loadRecord, 
-				scope: this,
+				fn: me.loadRecord, 
+				scope: me,
 				buffer:200
 			} 
 		});
@@ -121,8 +126,8 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 
 		if ( t == undefined ) return;
 
-		var s = me.store;
-		var r = s.cr();
+		let s = me.store,
+			r = s.cr();
 
 		/* borra el contenido */
 		me.update('');
@@ -145,7 +150,7 @@ Ext.define( 'Ux.xpotronix.xpPanel', {
 		return this.store.selections;	
 
 		/*
-		var cr = this.store.cr();
+		let cr = this.store.cr();
 		return ( cr == undefined ) ? [] : [cr];
 		*/
 

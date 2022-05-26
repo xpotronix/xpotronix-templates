@@ -68,7 +68,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	initComponent: function() {/*{{{*/
 
-		var me = this;
+		let me = this;
 
 		Ext.applyIf(me, {
 			listeners: {
@@ -84,19 +84,26 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		// saveParamsOnLoad just fixates the params in the extraParams, before the load
 		if (me.saveParamsOnLoad) {
-			var store = me.store;
+
+			let store = me.store;
+
 			store.on('beforeload', function(store, operation) {
-				var params = operation.params;
-				var proxy = store.getProxy();
+
+				let params = operation.params,
+					proxy = store.getProxy();
+
 				Ext.iterate(params, function(item, value) {
 					proxy.extraParams[item] = value;
 				});
+
 			}, me);
 		}
 
 		if (Ext.isObject(me.alternateHandlers)) {
 			Ext.iterate(me.alternateHandlers, function(item, value) {
-				var c = me.down('#' + item);
+
+				let c = me.down('#' + item);
+
 				if (c) {
 					if (Ext.isFunction(value)) {
 						c.setHandler(value);
@@ -108,10 +115,10 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	onRender: function() {/*{{{*/
 
-		var panel = this.panel, 
+		let me = this, 
+			panel = me.panel, 
 			store = panel.store,
-			panel_xtype = panel.getXType(),
-			me = this;
+			panel_xtype = panel.getXType();
 
 		/* botones */
 
@@ -121,7 +128,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 			me.insert( me.items.length - 2, me.form_right_button( panel ) );
 		}
 
-		var b, pos = me.items.length - 2;
+		let b, pos = me.items.length - 2;
 
 		if ( panel.acl.del )
 			me.insert( pos, me.del_button( panel ) );
@@ -164,11 +171,12 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 		if ( item.params == undefined ) 
 			item.params = {};
 
-		var me = this, selections = panel.getSelection();
+		let me = this, 
+			selections = panel.getSelection();
 
 		/* prepara la funcion enviada por parametro desde xpotronix */
 
-		var command = function( params ) {
+		let command = function( params ) {
 
 			/* NUEVO */
 
@@ -185,7 +193,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 			};
 
-		var ret = false;
+		let ret = false;
 
 		/* si tiene definido un dialogo, lo muestra */
 
@@ -219,7 +227,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	form_left_button: function( panel ) {/*{{{*/
 
-		var me = this;
+		let me = this;
 
 		return {
 
@@ -257,7 +265,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	form_right_button: function( panel ) {/*{{{*/
 
-		var me = this;
+		let me = this;
 
 		return {
 
@@ -292,7 +300,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	export_button: function( panel ) {/*{{{*/
 
-		var me = this;
+		let me = this;
 
 		return {
 
@@ -324,7 +332,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	discard_changes: function( panel ) {/*{{{*/
 
-		var me = this,
+		let me = this,
 		store = panel.store;
 
 		return {
@@ -338,9 +346,9 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 			initComponent: function() {
 
-				var me = this;
+				let me = this;
 
-				this.on('render', function() {
+				me.on('render', function() {
 
 					( store.isDirty() ) ? me.enable(): me.disable();
 				
@@ -352,7 +360,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 						( o == Ext.data.Record.EDIT ) ? me.enable(): me.disable();
 					});
 
-				this.callParent();
+				me.callParent();
 			},
 
 			handler: function() {
@@ -375,7 +383,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	del_button: function( panel ) {/*{{{*/
 
-		var me = this;
+		let me = this;
 
 		return {
 	        	        icon: '/ext/resources/images/default/dd/drop-no.gif',
@@ -389,7 +397,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	assign_button: function( panel ) {/*{{{*/
 
-		var me = this;
+		let me = this;
 
         	return {
 
@@ -426,7 +434,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 				let me = this,
 				sels = panel.getSelection();
 
-				this.on('render', function() {
+				me.on('render', function() {
 
 					( sels.length ) ? me.enable(): me.disable();
 				
@@ -452,7 +460,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	add_button: function( panel ) {/*{{{*/
 
-		var me = this;
+		let me = this;
 
 		return {
 
@@ -470,7 +478,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	save_button: function( panel ) {/*{{{*/
 
-		var me = this,
+		let me = this,
 		store = panel.store;
 
         	return {
@@ -485,9 +493,9 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 				initComponent:function() {
 
-					var me = this;
+					let me = this;
 
-					this.on('render', function() {
+					me.on('render', function() {
 
 						( store.isDirty() ) ? me.enable(): me.disable();
 					
@@ -522,12 +530,12 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	add_process_menu: function( panel ) {/*{{{*/
 
-		var me = this, items = [];
+		let me = this, items = [];
 
 		Ext.each( panel.processes_menu, function( pm ) {
 
 			items.push( Ext.apply( pm, 
-				{ handler: function( it ) { me.process_selections( panel, it, panel.obj ) } }
+				{ handler: it => me.process_selections( panel, it, panel.obj ) }
 			));
 		}); 
 
@@ -544,13 +552,13 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 	 delete_confirm: function ( panel ) {/*{{{*/
 
-		var tb = panel.getDockedItems('toolbar[dock=top]')[0],
+		let tb = panel.getDockedItems('toolbar[dock=top]')[0],
 		m = panel.getSelection();
 
         	if ( m.length ) {
 
 
-					var messageBox = Ext.create('Ext.window.MessageBox', {
+					let messageBox = Ext.create('Ext.window.MessageBox', {
 
 
 						buttonText: {
@@ -601,7 +609,7 @@ Ext.define('Ux.xpotronix.xpPagingToolbar', {
 
 		if ( selection.length ) {
 
-			var m, r;
+			let m, r;
 
 			[m,r] = panel.store.storeId.split('.');
 

@@ -64,7 +64,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		me.callParent(arguments);
 
-		me.debug_events && me.consoleDebugEvents();
+		if ( me.debug_events ) 
+			me.consoleDebugEvents();
 
 		/* eventos propios */
 
@@ -80,14 +81,12 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			if ( typeof me.parent_store == 'string' ) {
 
-				var parent_store_name = me.parent_store;
+				me.parent_store = App.store.lookup( me.parent_store );
 			}
-
-			me.parent_store = App.store.lookup( parent_store_name );
 
 			if ( me.parent_store == undefined ) {
 			
-				console.log( "no encuentro el parent_store " + parent_store_name );
+				console.log( "no encuentro el parent_store " + me.parent_store );
 
 			} else {
 
@@ -168,7 +167,8 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 				fn: function(s, r, o, m) {
 
-					me.debug && console.log( 'update op: ' + o + ', class: ' + me.class_name + ', record modified: ' + JSON.stringify( r.modified ) );
+					if ( me.debug ) 
+						console.log( `update op: ${o}, class: ${me.class_name}, record modified: ` + JSON.stringify( r.modified ) );
 
 					if ( o == Ext.data.Record.EDIT ) {
 
@@ -502,7 +502,7 @@ Ext.define('Ux.xpotronix.xpStore', {
         let me = this,
 			length = records.length,
 			start, addRecords, 
-			snapshot = me.snapshot
+			snapshot = me.snapshot,
 			i = 0;
 
         if (options) {
@@ -741,20 +741,21 @@ Ext.define('Ux.xpotronix.xpStore', {
 	get_new: function() { //{{{
 
 		let r = new this.rs({});
-		r.data['__new__'] = 1;
+		r.data.__new__ = 1;
 		return r;
 
 	}, //}}}
 
 	isDirty: function() {/*{{{*/
 
-		let me = this;
-
-		let retval = (me.getNewRecords().length > 0 || 
+		let me = this,
+			retval = (me.getNewRecords().length > 0 || 
 			me.getUpdatedRecords().length > 0 || 
 			me.getRemovedRecords().length > 0);
 
-		me.debug && console.log( me.storeId + '.isDirty(): ' + retval );
+		if ( me.debug ) 
+			console.log( me.storeId + '.isDirty(): ' + retval );
+
 		return retval;
 
 	},/*}}}*/
@@ -935,13 +936,13 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 					if ( label ) {
 
-						key['id'] = value;
-						key['_label'] = s.data[rl];
+						key.id = value;
+						key._label = s.data[rl];
 
 					} else {
 
-						key[r] = value;
-						key[rl] = s.data[rl];
+						key.r = value;
+						key.rl = s.data[rl];
 					}
 
 				}
@@ -1070,9 +1071,9 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		result = '<' + element;
 
-		result += ' uiid=\"' + escapex(record.id) + '\"'
-		result += ' ID=\"' + escapex(record.get('__ID__')) + '\"'
-		result += ' new=\"' + escapex(record.get('__new__')) + '\"'
+		result += ' uiid=\"' + escapex(record.id) + '\"';
+		result += ' ID=\"' + escapex(record.get('__ID__')) + '\"';
+		result += ' new=\"' + escapex(record.get('__new__')) + '\"';
 
 		result += nodeList ? '>' + nodeList + '</' + element + '>' : '/>';
 

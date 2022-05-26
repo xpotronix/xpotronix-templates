@@ -30,7 +30,7 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 
 	init: function( grid ) {/*{{{*/
 
-		var me = this
+		let me = this
             ,headerCt = grid.getView().getHeaderCt()
             ,extVersion = Ext.versions.extjs.major;
 
@@ -117,7 +117,7 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 			}}]
 		});
 
-		var tb = grid.getDockedItems('toolbar[dock=top]')[0];
+		let tb = grid.getDockedItems('toolbar[dock=top]')[0];
 
 		/* add menu button */
 		tb.insert( tb.items.length -2, me.menu );
@@ -131,42 +131,49 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 	     * @private
 	     */
 	    ,afterHdLayout:function() {
-		var me = this;
-		    this.debug && console.log('afterHdLayout start ' + me.grid.xtype);
-		if(!me.grid.reconfiguring) {
-		    me.syncCols();
-		    me.syncUi();
-		}
-	    	this.debug && console.log('afterHdLayout stop');
-	    } // eo function afterHdLayout
 
+			let me = this;
+		    me.debug && console.log('afterHdLayout start ' + me.grid.xtype);
 
+			if (!me.grid.reconfiguring) {
+				me.syncCols();
+				me.syncUi();
+			}
+
+	    	me.debug && console.log('afterHdLayout stop');
+	    }
 
 		/* override de las siguientes dos funciones
 		 * para que no borre la busqueda del filtro
 		 */
 
     ,getFilterFromField:function(field) {//{{{
-        var  me = this
+
+        let  me = this
             ,value = field.getSubmitValue()
             ,filter
-	    ,ns = field.initialConfig.nameSuffix;
-        ;
-        if(value) {
+	    	,ns = field.initialConfig.nameSuffix;
+
+        if (value) {
+
             filter = me.parseUserValue(value);
 
-		if ( ns )  
-            		filter.property = field.getItemId() + field.initialConfig.nameSuffix;
-		else
-            		filter.property = field.getItemId();
+			if ( ns ) {
+
+				filter.property = ( ns ) ? 
+					field.getItemId() + field.initialConfig.nameSuffix:
+					field.getItemId();
+			}
+
             return filter;
         }
+
         return null;
 
     }//}}}
 
     ,onStoreFilterChange:function() {//{{{
-        var me = this;
+        let me = this;
         if(!me.filtering) {
             // me.setValuesFromStore();
         }
@@ -179,9 +186,9 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 	* @param {Ext.EventObject} e
 	*/
 	,onSpecialKey:function(field, e) {
-		var  me = this;
+		let  me = this;
 		if( Ext.EventObject.ENTER === e.getKey()) {
-			var allFilters = Ext.Array.merge( this.store.foreign_key_values, this.getFilters() );
+			let allFilters = Ext.Array.merge( me.store.foreign_key_values, me.getFilters() );
 			if ( allFilters.length === 0 ) {
 				me.store.clearFilter(false);
 			} else {

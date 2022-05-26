@@ -17,20 +17,29 @@
 */
 
 Ext.ux.xpotronix.GridDropZone = function(grid, config) {
-	this.grid = grid;
-	Ext.ux.xpotronix.GridDropZone.superclass.constructor.call(this, grid.view.scroller.dom, config);
+
+	let me = this;
+
+	me.grid = grid;
+
+	me.callParent(grid.view.scroller.dom, config);
 };
 
 Ext.extend(Ext.ux.xpotronix.GridDropZone, Ext.dd.DropZone, {
 
 	onContainerOver:function(dd, e, data) {
-		return dd.grid !== this.grid ? this.dropAllowed : this.dropNotAllowed;
+
+		let me = this;
+		return dd.grid !== me.grid ? me.dropAllowed : me.dropNotAllowed;
+
 	} // eo function onContainerOver
 
 	,onContainerDrop:function(dd, e, data) {
 
-		if(dd.grid !== this.grid) {
-			this.grid.onRecordsDrop(dd.grid, data.selections);
+		let me = this;
+
+		if(dd.grid !== me.grid) {
+			me.grid.onRecordsDrop(dd.grid, data.selections);
 			return true;
 		}
 

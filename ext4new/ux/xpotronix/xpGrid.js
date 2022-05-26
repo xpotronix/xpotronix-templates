@@ -32,9 +32,11 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	constructor: function(config) {/*{{{*/
 
-		App.obj.get(this.class_name).panels.add(this);
+		let me = this;
 
-		Ext.apply( this, { 
+		App.obj.get(me.class_name).panels.add(me);
+
+		Ext.apply( me, { 
 
 			plugins: [	{
 					ptype: 'bufferedrenderer'
@@ -60,8 +62,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 			dockedItems: [{
 				xtype: 'xppagingtoolbar',
-				panel: this,
-				store: this.store,
+				panel: me,
+				store: me.store,
 				dock: 'top',
 				displayInfo: true
 			}],
@@ -72,10 +74,10 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			}
 		});
 
-		this.callParent(arguments);
+		me.callParent(arguments);
 
-		this.debug_events && this.consoleDebugEvents();
-		// this.debug && consoleDebugFn( this.getView() );
+		me.debug_events && me.consoleDebugEvents();
+		// me.debug && consoleDebugFn( me.getView() );
 
 	},/*}}}*/
 
@@ -110,29 +112,31 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	initComponent:function() {/*{{{*/
 
-		this.selModel = this.getSelectionModel();	
+		let me = this;
+
+		me.selModel = me.getSelectionModel();	
 		
-		if ( typeof this.store == 'string' )
-			this.store = App.store.lookup( this.store );
+		if ( typeof me.store == 'string' )
+			me.store = App.store.lookup( me.store );
 
-		if ( typeof this.obj == 'string' )
-			this.obj = App.obj.get( this.obj );
+		if ( typeof me.obj == 'string' )
+			me.obj = App.obj.get( me.obj );
 
-		this.acl = this.acl || this.obj.acl;
-		this.processes_menu = this.processes_menu || this.obj.processes_menu;
+		me.acl = me.acl || me.obj.acl;
+		me.processes_menu = me.processes_menu || me.obj.processes_menu;
 
 		/* call parent */
-		this.callParent(arguments);
+		me.callParent(arguments);
 
 		/* eventos */
 
-		// this.getStore().on('beforeload', this.rememberSelection, this);
+		// me.getStore().on('beforeload', me.rememberSelection, me);
 
-		// this.getView().on('refresh', this.refreshSelection, this);
+		// me.getView().on('refresh', me.refreshSelection, me);
 
-		this.getView().preserveScrollOnRefresh = true;
+		me.getView().preserveScrollOnRefresh = true;
 
-		this.on( 'beforeedit', function() {//{{{
+		me.on( 'beforeedit', function() {//{{{
 
 			/* chequea el acl si puede editar o no */
 
@@ -140,28 +144,29 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		});//}}}
 
-		this.on( 'viewready', function() {//{{{
+		me.on( 'viewready', function() {//{{{
 
 			/* dispara que cargue la grilla y seleccione el primer elemento,
 			 * si feat.auto_load && parent_store */
 
-			let grid = this
-			store = grid.store;
+			let me = this,
+			store = me.store;
 
 			if ( store.feat.auto_load === false ) return;
 
 			if ( ( ! store.parent_store ) ) {
 
-				store.load({ callback:function(a,b,c){ 
-					grid.selModel.select(0);
+				store.load({ callback:
+					function(a,b,c){ 
+						me.selModel.select(0);
 				}});
 			}
 
-			this.renewSelection( true );
+			me.renewSelection( true );
 
 		});//}}}
 
-		this.on( 'render', function() {//{{{
+		me.on( 'render', function() {//{{{
 
 			/* carga el mapeo del teclado */
 
@@ -203,21 +208,21 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		    	]);	
 		});//}}}
 
-		this.on( 'beforedestroy', function() {//{{{
+		me.on( 'beforedestroy', function() {//{{{
 
-			var dz = this.dz;
+			let dz = this.dz;
 
 			this.dz && this.dz.destroy();
 			delete this.dz;
 
 		}, this);//}}}
 
-	 	this.on( 'validateedit', function(e, eOpts ) {//{{{
+	 	me.on( 'validateedit', function(e, eOpts ) {//{{{
 
 			/* actualiza el _label del registro al seleccionar en el combobox */
 
-			var field = eOpts.column.field;
-			var data  = eOpts.record.data;
+			let field = eOpts.column.field;
+			let data  = eOpts.record.data;
 
        			if ( field.displayField == '_label') { 
 	  			data[eOpts.field + '_label'] = field.getRawValue() ;	
@@ -225,7 +230,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	 	});//}}}
 
-		this.on( 'selectionchange', function(selModel, selection) {//{{{
+		me.on( 'selectionchange', function(selModel, selection) {//{{{
 
 			/* copia la seleccion al store */
 
@@ -235,41 +240,39 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		}, this,  { buffer: 0 });//}}}
 
-
-
 		/* agrega el rowClass via config */
 
-		if ( typeof this.xpconfig == 'undefined' ) {
+		if ( typeof me.xpconfig == 'undefined' ) {
 
 			console.log( 'xpconfig no definido, no se puede configurar ni botones ni rowClass' );
 
 		} else {
 
-		( typeof this.xpconfig.rowClass == 'function' ) && 
+		( typeof me.xpconfig.rowClass == 'function' ) && 
 
-			this.on( 'afterrender', panel => { //{{{
-				Ext.apply( panel.view, { getRowClass: panel.xpconfig.rowClass } ) 
+			me.on( 'afterrender', panel => { //{{{
+				Ext.apply( panel.view, { getRowClass: panel.xpconfig.rowClass } );
 			});//}}}
 
 		/* agrega los botones en el panel */
 
-		( ! _.isEmpty( this.xpconfig.buttons ) ) && 
+		( ! _.isEmpty( me.xpconfig.buttons ) ) && 
 
-			this.on( 'beforerender', panel => { //{{{
+			me.on( 'beforerender', panel => { //{{{
 
-				var tbar = panel.getTopToolbar();
+				let tbar = panel.getTopToolbar();
 
 				if ( tbar ) { 
 
 					/* DEBUG: Revisar referencia 'this' */
-					Object.entries(this.xpconfig.buttons).
+					Object.entries(me.xpconfig.buttons).
 						forEach(([button, config]) => {
 
 							/* evaula las referencias para que sean locales */
 
 							if ( config != '-' ) {
 
-							var o = eval( '({' + config + '})' );
+							let o = eval( '({' + config + '})' );
 
 							console.log( 'button: '+ button+ ', config: ' + config );
 
@@ -289,9 +292,9 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		});//}}}
 
-		}
+	}
 
-		this.selModel.on( 'beforeselect', function() {//{{{
+		me.selModel.on( 'beforeselect', function() {//{{{
 
 			if ( ! _.isEmpty(this.dirty_childs()) ) {
 
@@ -301,40 +304,43 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 			return true;
 
-		}, this.store );//}}}
+		}, me.store );//}}}
 
-		this.store.on( 'load', function() { this.renewSelection( false ) }, this ); 
+		me.store.on( 'load', function() { this.renewSelection( false ); }, this ); 
 
-		this.store.on( 'loadblank', function( s, r, e ) {//{{{
+		me.store.on( 'loadblank', function( s, r, e ) {//{{{
 
-			this.selModel.select( r );
+			let me = this;
 
-		}, this );//}}}
+			me.selModel.select( r );
 
-		this.store.on( 'bulkremove', function( s, r, e ) {//{{{
+		}, me );//}}}
+
+		me.store.on( 'bulkremove', function( s, r, e ) {//{{{
+
+			let me = this;
 
 			console.log( 'bulkremove' );
 
-			this.getView 
-			&& this.store.lrid != null
-			&& this.selModel.select( this.store.lrid );
+			if ( me.getView && me.store.lrid != null )
+				me.selModel.select( me.store.lrid );
 
-		}, this );//}}}
+		}, me );//}}}
 
 
 	}, /*}}}*/
 
 	renewSelection: function( supressEvent ) {//{{{
 
-		let grid = this,
-		store = grid.store,
-		sm = grid.selModel;
+		let me = this,
+		store = me.store,
+		sm = me.selModel;
 
 		if ( store.getCount() ) {
 	
 			sm.preventFocus = true;
 
-			var selections = sm.selected;
+			let selections = sm.selected;
 
 			if ( selections.length === 0 ) {
 
@@ -346,13 +352,13 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 					function( selection ) {
 
-						sm.select( grid.store.find('__ID__', selection.get('__ID__') ), true, true );
+						sm.select( me.store.find('__ID__', selection.get('__ID__') ), true, true );
 
 				});
 			}
 
 			sm.preventFocus = false;
-			//grid.selModel.select( 0, true, true );
+			//me.selModel.select( 0, true, true );
 
 		}
 
@@ -360,26 +366,30 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	rememberSelection: function(selModel, selectedRecords) {/*{{{*/
 
-		if (!this.rendered || _.isEmpty(this.el)) {
+		let me = this;
+
+		if (!me.rendered || _.isEmpty(me.el)) {
 			return;
 		}
 
-		this.selectedRecords = this.getSelectionModel().getSelection();
-		this.getView().saveScrollState();
+		me.selectedRecords = me.getSelectionModel().getSelection();
+		me.getView().saveScrollState();
 
 	},/*}}}*/
 
 	refreshSelection: function() {/*{{{*/
 
-		if ( this.selectedRecords == undefined || this.selectedRecords.length < 1 ) {
+		let me = this;
+
+		if ( me.selectedRecords == undefined || me.selectedRecords.length < 1 ) {
 			return;
 		}
 
-		var newRecordsToSelect = [];
+		let newRecordsToSelect = [];
 
-		for (var i = 0; i < this.selectedRecords.length; i++) {
+		for (let i = 0; i < me.selectedRecords.length; i++) {
 
-			record = this.getStore().getById(this.selectedRecords[i].getId());
+			record = me.getStore().getById(me.selectedRecords[i].getId());
 
 			if (!Ext.isEmpty(record)) {
 
@@ -387,7 +397,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 			}
 		}
 
-		this.getSelectionModel().select(newRecordsToSelect);
+		me.getSelectionModel().select(newRecordsToSelect);
 
 	},/*}}}*/
 
@@ -399,34 +409,36 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	invertSelection:function() {/*{{{*/
 
-		var sl = this.selModel.getSelection();
+		let me = this,
+			sl = me.selModel.getSelection();
 
-		for( var i = 0; i < this.store.getCount(); i ++ ) {
+		for( let i = 0; i < me.store.getCount(); i ++ ) {
 
-			if ( this.selModel.isSelected(i))
-				this.selModel.deselect(i);
+			if ( me.selModel.isSelected(i))
+				me.selModel.deselect(i);
 			else
-				this.selModel.select(i, true);
+				me.selModel.select(i, true);
 		}
 	},/*}}}*/
 
 	startEditingBlank: function(r) {/*{{{*/
 
-		var editor = this.findFirstEditor();
+		let me = this, editor = me.findFirstEditor();
 
-		Ext.isObject( editor ) && this.editingPlugin.startEdit(r, editor);
+		Ext.isObject( editor ) && me.editingPlugin.startEdit(r, editor);
 
 	},/*}}}*/
 
 	findFirstEditor: function(){/*{{{*/
 
-		var ret = null;
+		let me = this,
+			ret;
 
-		Ext.each( this.headerCt.getGridColumns(), function( col ) {
+		Ext.each( me.headerCt.getGridColumns(), ( col ) => {
 
 		    if ( ! col.hidden ) {
-			ret = col;
-			return false;
+				ret = col;
+				return false;
 		    }
 
 		});
@@ -442,12 +454,12 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 	},/*}}}*/
 
 	getTopToolbar:  function() {/*{{{*/
-		var tb = this.getDockedItems('toolbar[dock=top]');
+		let tb = this.getDockedItems('toolbar[dock=top]');
 		return tb.length ? tb[0] : undefined;
 	},/*}}}*/
 
 	getBottomToolbar:  function() {/*{{{*/
-		var tb = this.getDockedItems('toolbar[dock=bottom]');
+		let tb = this.getDockedItems('toolbar[dock=bottom]');
 		return tb.length ? tb[0] : undefined;
 	},/*}}}*/
 
