@@ -158,12 +158,9 @@ Ext.define('Ux.xpotronix.xpMultiSearch', {
 
             filter = me.parseUserValue(value);
 
-			if ( ns ) {
-
-				filter.property = ( ns ) ? 
-					field.getItemId() + field.initialConfig.nameSuffix:
-					field.getItemId();
-			}
+			filter.property = ( ns ) ? 
+				field.getItemId() + field.initialConfig.nameSuffix:
+				field.getItemId();
 
             return filter;
         }

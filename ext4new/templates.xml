@@ -260,7 +260,7 @@
  	<panel type="xpForm" default="fields"><!--{{{-->
 
 		<extend>Ux.xpotronix.xpForm</extend>
-		<layout>form</layout>
+		<layout>anchor</layout>
 		<bodyPadding>5 5 0</bodyPadding>
 		<split>true</split>
 		<stateful>true</stateful>
