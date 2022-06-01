@@ -197,6 +197,8 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 			fn:function( panel, record, item, index, e, eOpts ) {
 
+				e.stopEvent();
+
 				let me = this;
 
 				/* alerta de modificaciones */
@@ -211,7 +213,6 @@ Ext.define('AppTreeMenu', {/*{{{*/
 
 				record.raw.disabled = true;
 
-				e.stopEvent();
 
 				/* no es hoja, expande */
 
@@ -872,11 +873,13 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 	window_onbeforeunload: function() {/*{{{*/
 
-		window.onbeforeunload = function() {
+		window.addEventListener('beforeunload', (event) => {
 
+			debugger;
 			if ( this.getModifiedStores && this.getModifiedStores().length ) 
-				return 'Hay cambios que no han sido guardados todavía. Si presiona [Aceptar], perderá los cambios. Si presiona [Cancelar], presione el botón de [Guardar] y luego cierre la página';
-			};
+	  			event.returnValue = 'Hay cambios que no han sido guardados todavía. Si presiona [Aceptar], perderá los cambios. Si presiona [Cancelar], presione el botón de [Guardar] y luego cierre la página';
+		});
+
 	},/*}}}*/
 
 	reconfigure: function( config ) {/*{{{*/
@@ -890,6 +893,23 @@ Ext.define( 'Ux.xpotronix.xpApp', {
 
 
 	},/*}}}*/ 
+
+	getModifiedStores: function() {/*{{{ */
+
+		let me = this, list = [];
+
+		me.store.each( s => {
+
+			if ( s.dirty && ! Ext.isEmptyObject( s.dirty() ) )
+
+				list.push({ store: s, records: null } );
+
+		});
+
+
+		return list;
+
+	},/*}}}*/
 
 	close_stores: function() {/*{{{*/
 

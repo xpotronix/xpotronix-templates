@@ -45,6 +45,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	debug: false, 
 	debug_events: false, 
 
+
 	constructor: function(config) {/*{{{*/
 
 		let me = this;
@@ -105,7 +106,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 						buffer: 100,
 						scope: me,
-						fn: function( a, b, c ) {
+						fn: function( store ) {
 
 							let me = this;
 
@@ -113,15 +114,15 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 							if ( me.foreign_key.type == 'eh' ) return;
 
-							let selections = me.parent_store.selections;
+							let parent_selections = me.parent_store.selections;
 
-							if ( selections.length ) {
+							if ( parent_selections.length ) {
 
-								let new_fk = me.get_foreign_key( [me.parent_store.selections[0]] );
+								let new_fk = me.get_foreign_key( [parent_selections[0]] );
 
 								for ( let i = 0; i < new_fk.length ; i++ ) {
 
-									if ( new_fk[i].value !== me.foreign_key_values[i].value ) {
+									if ( me.foreign_key_values.length === 0 || new_fk[i].value !== me.foreign_key_values[i].value ) {
 
 										me.foreign_key_values = new_fk;
 										me.load();
@@ -212,7 +213,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			beforeload: {
 
-				fn: me.onBeforeLoad
+				fn: me.onBeforeLoadCheck
 			}
 		}); 
 
@@ -361,7 +362,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 	return o;
    },/*}}}*/
 
-	onBeforeLoad: function(store, options) { /*{{{*/
+	onBeforeLoadCheck: function(store, options) { /*{{{*/
 
 		/* check del acl */
 
@@ -372,9 +373,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		/* control de carga de los registros nuevos */
 
-		if ((!options.add) && me.isDirty() && 
-			(! _.isEmpty(me.dirty())|| 
-				!_.isEmpty(me.dirty_childs()))) {
+		/* let dirty = ( (! options.add ) && me.isDirty() || (! _.isEmpty(me.dirty()) || !_.isEmpty( me.dirty_childs() ))); */
+		let dirty = ( (! _.isEmpty(me.dirty()) || !_.isEmpty( me.dirty_childs() )))
+
+		if ( dirty ) {
 
 			let url = store.lastOptions.url;
 
@@ -385,46 +387,52 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			} else {
 
-				Ext.Msg.alert('Atención', 'Hubo modificaciones: guarde o descarte los cambios');
-				return false;
+				Ext.MessageBox.show({
+				   title:'¿Desea guardar los cambios?',
+				   msg: 'Se han realizado modificaciones. ¿Desea guardar los cambios?',
+				   buttons: Ext.MessageBox.YESNOCANCEL,
+
+				   fn: ( response ) => {
+
+					   switch ( response ) {
+
+							case 'yes':
+							   me.save( () => me.load() );
+							   break;
+
+						   case 'no':
+							   me.revert_changes();
+							   me.load();
+							   break;
+					   } 
+
+					   console.log( response );
+
+				   },
+				   icon: Ext.MessageBox.QUESTION
+			   });
+
 			}
 
+			return false;
 		}
 
-		// entry_helper
+		/* entry_helper */
+
 		if (me.passive)
-			return;
+			return true;
 
 		/* resuelve el foreign key */
 
-		if (me.parent_store) {
+		if ( me.parent_store ) {
 
-			let fk = me.foreign_key_values;
+			if ( _.isEmpty( me.foreign_key_values ) || me.parent_store.getCount() || me.foreign_key.type == 'parent' ) 
+				return true;
 
-			if ( _.isEmpty(fk) ) return;
-
-			if (me.parent_store.getCount()) {
-
-
-				/* filter de clave foranea */
-
-				/* DEBUG: esto estaba para limitar que cuando hay una clave vacia no cargue todos los registros
-				   pero ahora lo resuelve bien xpdataobject
-
-				if ( me..length == 0 ) {
-					if ( me.foreign_key.type != 'parent' ) 
-						return false;
-				}
-				else 
-				*/
-				/* Ext.apply( options.filters, me. ); */
-
-			} else if (me.foreign_key.type == 'parent')
-				return;
 			else
 				return false;
-		}
 
+		} else return true;
 
 	},
 	/*}}}*/
@@ -580,7 +588,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 		let me = this, data = [];
 
-		if ( selections.length > 1 ) {
+		if ( selections.length != 1 || selections[0].get('__new__') ) {
 
 			/* en seleccion multiple, remueve los datos del store, tambien para los eh */
 
@@ -588,8 +596,6 @@ Ext.define('Ux.xpotronix.xpStore', {
 			return;
 
 		}
-
-		me.selections = selections;
 
 		me.clearFilter(true);
 
@@ -612,6 +618,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			if ( me.foreign_key_values.length ) {
 
+				/* la clave puede ser compuesta, asi que loop */
 				Ext.each( me.foreign_key_values, function( filter ) {
 					me.filter( filter );
 				});
@@ -1226,7 +1233,7 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 	},/*}}}*/
 
-	save: function() {/*{{{*/
+	save: function( callback ) {/*{{{*/
 
 		/* DEBUG: fijarse si es otro el store object y si aca se hace la distincion */
 
@@ -1238,7 +1245,10 @@ Ext.define('Ux.xpotronix.xpStore', {
 
 			Ext.each( me.fake_dirty_records, function( r ) { 
 				r.commit(); 
-			} );
+			});
+
+			if ( typeof callback === 'function' )
+				callback();
 
 		});
 
