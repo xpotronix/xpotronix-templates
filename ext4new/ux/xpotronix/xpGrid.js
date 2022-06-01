@@ -294,15 +294,11 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 	}
 
-		me.selModel.on( 'beforeselect', function() {//{{{
+		me.selModel.on( 'beforeselect', function( a, b, c ) {//{{{
 
-			if ( ! _.isEmpty(this.dirty_childs()) ) {
+			/* FALTA */
 
-				Ext.Msg.alert( 'Atención', 'Hubo modificaciones: guarde o descarte los cambios' );
-				return false;
-			}
-
-			return true;
+			return this.onBeforeLoadCheck( this );
 
 		}, me.store );//}}}
 
