@@ -88,11 +88,11 @@ Ext.define('AppTreeMenuModel', {/*{{{*/
 
 	proxy: {
 		type: 'ajax',
-		url: '?v=xml&amp;a=menu&amp;v=ext4new/menu-js',
-		async: false,
+		url: '?v=xml&amp;a=menu&amp;v=ext4new/menu-js.json',
+		async: true,
 		reader: {
 			type: 'json',
-			method: 'POST'
+			method: 'GET'
 		}
 	}
 
