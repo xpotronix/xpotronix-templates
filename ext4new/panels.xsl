@@ -294,9 +294,8 @@
 		columns:[<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='hide' or @display='disabled' or @display='password']" mode="column"/>]
 	</xsl:template><!--}}}-->
 
-	<!-- DEBUG: se usa? -->
-
 	<xsl:template match="items/panel"><!--{{{-->
+		<!-- solo como referencia para que no recicle -->
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		<xsl:if test="position()>1">,</xsl:if>{xtype:'<xsl:value-of select="$panel_id"/>'}
 	</xsl:template><!--}}}-->
@@ -388,11 +387,13 @@
 			</xsl:choose>
 		</xsl:variable>
 
-		<!-- <xsl:message>PANEL<xsl:copy-of select="."/></xsl:message> -->
+		<xsl:if test="@id='form1'">
+			<xsl:message>PANEL<xsl:copy-of select="."/></xsl:message>
+		</xsl:if>
 
 		<xsl:variable name="panel_id">
 			<xsl:choose>
-				<xsl:when test="@id=''"><xsl:value-of select="@id"/></xsl:when>
+				<xsl:when test="@id!=''"><xsl:value-of select="@id"/></xsl:when>
 				<xsl:when test="@include!=''"><xsl:value-of select="@include"/></xsl:when>
 				<xsl:when test="@obj!=''"><xsl:value-of select="concat(@obj,'_',$type)"/></xsl:when>
 				<xsl:when test="$obj/@name!=''">
