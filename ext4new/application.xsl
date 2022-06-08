@@ -154,7 +154,17 @@
 		<!-- panel -->
 
 		console.log('panel');
-		<xsl:for-each select="$model//panel | $default_template_content//*:ui/table[@name=$root_obj/@name]//panel">
+		<!-- <xsl:for-each select="$model//panel | $default_template_content//*:ui/table[@name=$root_obj/@name]//panel"> -->
+
+
+		<xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message>
+
+		<xsl:for-each select="$default_template_content//*:ui/table[@name=$root_obj/@name]//panel[@id]">
+			<xsl:message>panel: <xsl:value-of select="@id"/></xsl:message>
+		</xsl:for-each>
+
+
+		<xsl:for-each select="$model//panel[not(@include)] | $default_template_content//*:ui/table[@name=$root_obj/@name]//panel[@id]">
 
 			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 

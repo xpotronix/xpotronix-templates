@@ -103,10 +103,18 @@
 		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="display" tunnel="yes" select="@display"/>
-		<!-- <xsl:message terminate="yes">object: <xsl:copy-of select="$obj/@name"/></xsl:message> -->
-		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-		<xsl:variable name="panel_type" select="@type"/>	
+		<xsl:variable name="panel_type" select="@type"/>
+
+		<xsl:variable name="obj_name" select="ancestor::table[1]/@name"/>
+
+		<xsl:if test="$obj/@name='' or not($obj/@name)">
+			<xsl:message>no encuentro la definicion del objeto para este panel</xsl:message>
+			<xsl:message>panel_id: <xsl:value-of select="$panel_id"/>, object: <xsl:value-of select="$obj/@name"/>, ancestor: <xsl:value-of select="ancestor::table[1]/@name"/></xsl:message>
+			<xsl:message><xsl:copy-of select="../@*"/></xsl:message>
+		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
+
+		</xsl:if>
 
 		<xsl:variable name="config">
 		
@@ -114,10 +122,10 @@
 
 			<alias>widget.<xsl:value-of select="$panel_id"/></alias>
 			<stateId><xsl:value-of select="$panel_id"/></stateId>
-			<class_name><xsl:value-of select="$obj/@name"/></class_name>
-			<obj type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>')</obj>
-			<acl type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>').acl</acl>
-			<store><xsl:value-of select="concat($module,'.',$obj/@name)"/></store>
+			<class_name><xsl:value-of select="$obj_name"/></class_name>
+			<obj type="function">App.obj.get('<xsl:value-of select="$obj_name"/>')</obj>
+			<acl type="function">App.obj.get('<xsl:value-of select="$obj_name"/>').acl</acl>
+			<store><xsl:value-of select="concat($module,'.',$obj_name)"/></store>
 			<feat type="function"><xsl:apply-templates select="$obj" mode="feats"/></feat>
 			<display_as><xsl:value-of select="$display"/></display_as>
 			<title><xsl:apply-templates select="." mode="translate"/></title>
@@ -387,9 +395,9 @@
 			</xsl:choose>
 		</xsl:variable>
 
-		<xsl:if test="@id='form1'">
+		<!-- <xsl:if test="@id='form1'">
 			<xsl:message>PANEL<xsl:copy-of select="."/></xsl:message>
-		</xsl:if>
+		</xsl:if> -->
 
 		<xsl:variable name="panel_id">
 			<xsl:choose>
