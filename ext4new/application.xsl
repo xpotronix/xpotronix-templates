@@ -164,6 +164,7 @@
 		</xsl:for-each>
 
 
+		<!-- no incluyo los includes para la definicion y todos los que tengan @id van a quedar definidos -->
 		<xsl:for-each select="$model//panel[not(@include)] | $default_template_content//*:ui/table[@name=$root_obj/@name]//panel[@id]">
 
 			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
