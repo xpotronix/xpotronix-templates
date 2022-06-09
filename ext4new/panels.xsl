@@ -441,7 +441,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<!-- <xsl:message>otherwise</xsl:message> -->
-					<xsl:value-of select="parent::*[name()='obj']/@name"/>
+					<xsl:value-of select="ancestor::*[name()=('obj','table')]/@name"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
