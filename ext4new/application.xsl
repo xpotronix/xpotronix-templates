@@ -154,7 +154,7 @@
 		<!-- panel -->
 
 		console.log('panel');
-		<xsl:for-each select="$model//panel | $default_template_content//*:ui/table[@name=$root_obj/@name]//panel">
+		<xsl:for-each select="$model//panel">
 
 			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 

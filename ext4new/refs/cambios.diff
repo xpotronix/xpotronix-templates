@@ -1,0 +1,102 @@
+diff --git a/ext4new/application.xsl b/ext4new/application.xsl
+index 97c17de..61c3ce0 100644
+--- a/ext4new/application.xsl
++++ b/ext4new/application.xsl
+@@ -154,7 +154,18 @@
+ 		<!-- panel -->
+ 
+ 		console.log('panel');
+-		<xsl:for-each select="$model//panel | $default_template_content//*:ui/table[@name=$root_obj/@name]//panel">
++		<!-- <xsl:for-each select="$model//panel | $default_template_content//*:ui/table[@name=$root_obj/@name]//panel"> -->
++
++
++		<xsl:message><xsl:value-of select="saxon:print-stack()"/></xsl:message>
++
++		<xsl:for-each select="$default_template_content//*:ui/table[@name=$root_obj/@name]//panel[@id]">
++			<xsl:message>panel: <xsl:value-of select="@id"/></xsl:message>
++		</xsl:for-each>
++
++
++		<!-- no incluyo los includes para la definicion y todos los que tengan @id van a quedar definidos -->
++		<xsl:for-each select="$model//panel[not(@include)] | $default_template_content//*:ui/table[@name=$root_obj/@name]//panel[@id]">
+ 
+ 			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+ 
+diff --git a/ext4new/object.xsl b/ext4new/object.xsl
+index b1c92bc..fed70b8 100644
+--- a/ext4new/object.xsl
++++ b/ext4new/object.xsl
+@@ -45,8 +45,8 @@
+ 	<xsl:variable name="obj_buttons" select="$default_template_content//table[@name=$obj_name]/*:button"/>
+ 	<xsl:variable name="obj_functions" select="$default_template_content//table[@name=$obj_name]/*:function"/>
+ 
+-		<xsl:message>obj_buttons: <xsl:copy-of select="$obj_buttons"/></xsl:message>
+-		<xsl:message>obj_functions: <xsl:copy-of select="$obj_functions"/></xsl:message>
++	<!-- <xsl:message>obj_buttons: <xsl:copy-of select="$obj_buttons"/></xsl:message>
++	<xsl:message>obj_functions: <xsl:copy-of select="$obj_functions"/></xsl:message>-->
+ 
+ 		/* <xsl:value-of select="@name"/> xpObj */
+ 
+diff --git a/ext4new/panels.xsl b/ext4new/panels.xsl
+index 193fc89..05bcb24 100644
+--- a/ext4new/panels.xsl
++++ b/ext4new/panels.xsl
+@@ -103,10 +103,19 @@
+ 		<xsl:param name="module" tunnel="yes"/>
+ 		<xsl:param name="obj" tunnel="yes"/>
+ 		<xsl:param name="display" tunnel="yes" select="@display"/>
+-		<!-- <xsl:message terminate="yes">object: <xsl:copy-of select="$obj/@name"/></xsl:message> -->
+-		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
+ 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+-		<xsl:variable name="panel_type" select="@type"/>	
++		<xsl:variable name="panel_type" select="@type"/>
++
++		<!-- el ancestor del panel puede ser un obj o un table -->
++		<xsl:variable name="obj_name" select="ancestor::*[name()=('obj','table')]/@name"/>
++
++		<xsl:if test="$obj/@name='' or not($obj/@name) or not($obj_name)">
++			<xsl:message>no encuentro la definicion del objeto para este panel</xsl:message>
++			<xsl:message>panel_id: <xsl:value-of select="$panel_id"/>, object: <xsl:value-of select="$obj/@name"/>, ancestor: <xsl:value-of select="$obj_name"/></xsl:message>
++			<xsl:message><xsl:copy-of select="../@*"/></xsl:message>
++		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
++
++		</xsl:if>
+ 
+ 		<xsl:variable name="config">
+ 		
+@@ -114,10 +123,10 @@
+ 
+ 			<alias>widget.<xsl:value-of select="$panel_id"/></alias>
+ 			<stateId><xsl:value-of select="$panel_id"/></stateId>
+-			<class_name><xsl:value-of select="$obj/@name"/></class_name>
+-			<obj type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>')</obj>
+-			<acl type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>').acl</acl>
+-			<store><xsl:value-of select="concat($module,'.',$obj/@name)"/></store>
++			<class_name><xsl:value-of select="$obj_name"/></class_name>
++			<obj type="function">App.obj.get('<xsl:value-of select="$obj_name"/>')</obj>
++			<acl type="function">App.obj.get('<xsl:value-of select="$obj_name"/>').acl</acl>
++			<store><xsl:value-of select="concat($module,'.',$obj_name)"/></store>
+ 			<feat type="function"><xsl:apply-templates select="$obj" mode="feats"/></feat>
+ 			<display_as><xsl:value-of select="$display"/></display_as>
+ 			<title><xsl:apply-templates select="." mode="translate"/></title>
+@@ -387,9 +396,9 @@
+ 			</xsl:choose>
+ 		</xsl:variable>
+ 
+-		<xsl:if test="@id='form1'">
++		<!-- <xsl:if test="@id='form1'">
+ 			<xsl:message>PANEL<xsl:copy-of select="."/></xsl:message>
+-		</xsl:if>
++		</xsl:if> -->
+ 
+ 		<xsl:variable name="panel_id">
+ 			<xsl:choose>
+@@ -432,7 +441,7 @@
+ 				</xsl:when>
+ 				<xsl:otherwise>
+ 					<!-- <xsl:message>otherwise</xsl:message> -->
+-					<xsl:value-of select="parent::*[name()='obj']/@name"/>
++					<xsl:value-of select="ancestor::*[name()=('obj','table')]/@name"/>
+ 				</xsl:otherwise>
+ 			</xsl:choose>
+ 		</xsl:variable>
