@@ -103,19 +103,10 @@
 		<xsl:param name="module" tunnel="yes"/>
 		<xsl:param name="obj" tunnel="yes"/>
 		<xsl:param name="display" tunnel="yes" select="@display"/>
-		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
-		<xsl:variable name="panel_type" select="@type"/>
-
-		<!-- el ancestor del panel puede ser un obj o un table -->
-		<xsl:variable name="obj_name" select="ancestor::*[name()=('obj','table')]/@name"/>
-
-		<xsl:if test="$obj/@name='' or not($obj/@name) or not($obj_name)">
-			<xsl:message>no encuentro la definicion del objeto para este panel</xsl:message>
-			<xsl:message>panel_id: <xsl:value-of select="$panel_id"/>, object: <xsl:value-of select="$obj/@name"/>, ancestor: <xsl:value-of select="$obj_name"/></xsl:message>
-			<xsl:message><xsl:copy-of select="../@*"/></xsl:message>
+		<!-- <xsl:message terminate="yes">object: <xsl:copy-of select="$obj/@name"/></xsl:message> -->
 		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
-
-		</xsl:if>
+		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+		<xsl:variable name="panel_type" select="@type"/>	
 
 		<xsl:variable name="config">
 		
@@ -123,10 +114,10 @@
 
 			<alias>widget.<xsl:value-of select="$panel_id"/></alias>
 			<stateId><xsl:value-of select="$panel_id"/></stateId>
-			<class_name><xsl:value-of select="$obj_name"/></class_name>
-			<obj type="function">App.obj.get('<xsl:value-of select="$obj_name"/>')</obj>
-			<acl type="function">App.obj.get('<xsl:value-of select="$obj_name"/>').acl</acl>
-			<store><xsl:value-of select="concat($module,'.',$obj_name)"/></store>
+			<class_name><xsl:value-of select="$obj/@name"/></class_name>
+			<obj type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>')</obj>
+			<acl type="function">App.obj.get('<xsl:value-of select="$obj/@name"/>').acl</acl>
+			<store><xsl:value-of select="concat($module,'.',$obj/@name)"/></store>
 			<feat type="function"><xsl:apply-templates select="$obj" mode="feats"/></feat>
 			<display_as><xsl:value-of select="$display"/></display_as>
 			<title><xsl:apply-templates select="." mode="translate"/></title>
@@ -303,8 +294,9 @@
 		columns:[<xsl:apply-templates select="$obj/attr[not(@display) or @display='' or @display='hide' or @display='disabled' or @display='password']" mode="column"/>]
 	</xsl:template><!--}}}-->
 
+	<!-- DEBUG: se usa? -->
+
 	<xsl:template match="items/panel"><!--{{{-->
-		<!-- solo como referencia para que no recicle -->
 		<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
 		<xsl:if test="position()>1">,</xsl:if>{xtype:'<xsl:value-of select="$panel_id"/>'}
 	</xsl:template><!--}}}-->
@@ -396,13 +388,11 @@
 			</xsl:choose>
 		</xsl:variable>
 
-		<!-- <xsl:if test="@id='form1'">
-			<xsl:message>PANEL<xsl:copy-of select="."/></xsl:message>
-		</xsl:if> -->
+		<!-- <xsl:message>PANEL<xsl:copy-of select="."/></xsl:message> -->
 
 		<xsl:variable name="panel_id">
 			<xsl:choose>
-				<xsl:when test="@id!=''"><xsl:value-of select="@id"/></xsl:when>
+				<xsl:when test="@id=''"><xsl:value-of select="@id"/></xsl:when>
 				<xsl:when test="@include!=''"><xsl:value-of select="@include"/></xsl:when>
 				<xsl:when test="@obj!=''"><xsl:value-of select="concat(@obj,'_',$type)"/></xsl:when>
 				<xsl:when test="$obj/@name!=''">
@@ -441,7 +431,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<!-- <xsl:message>otherwise</xsl:message> -->
-					<xsl:value-of select="ancestor::*[name()=('obj','table')]/@name"/>
+					<xsl:value-of select="parent::*[name()='obj']/@name"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>

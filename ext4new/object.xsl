@@ -45,8 +45,8 @@
 	<xsl:variable name="obj_buttons" select="$default_template_content//table[@name=$obj_name]/*:button"/>
 	<xsl:variable name="obj_functions" select="$default_template_content//table[@name=$obj_name]/*:function"/>
 
-	<!-- <xsl:message>obj_buttons: <xsl:copy-of select="$obj_buttons"/></xsl:message>
-	<xsl:message>obj_functions: <xsl:copy-of select="$obj_functions"/></xsl:message>-->
+		<xsl:message>obj_buttons: <xsl:copy-of select="$obj_buttons"/></xsl:message>
+		<xsl:message>obj_functions: <xsl:copy-of select="$obj_functions"/></xsl:message>
 
 		/* <xsl:value-of select="@name"/> xpObj */
 
