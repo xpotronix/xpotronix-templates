@@ -107,15 +107,17 @@
 		<xsl:variable name="panel_type" select="@type"/>
 
 		<!-- el ancestor del panel puede ser un obj o un table -->
-		<xsl:variable name="obj_name" select="ancestor::*[name()=('obj','table')]/@name"/>
-
-		<xsl:if test="$obj/@name='' or not($obj/@name) or not($obj_name)">
-			<xsl:message>no encuentro la definicion del objeto para este panel</xsl:message>
-			<xsl:message>panel_id: <xsl:value-of select="$panel_id"/>, object: <xsl:value-of select="$obj/@name"/>, ancestor: <xsl:value-of select="$obj_name"/></xsl:message>
-			<xsl:message><xsl:copy-of select="../@*"/></xsl:message>
-		<!-- <xsl:message>obj: <xsl:copy-of select="$obj"/></xsl:message> -->
-
-		</xsl:if>
+		<xsl:variable name="obj_name">
+			<xsl:choose>
+				<xsl:when test="$obj/@name!=''"><xsl:value-of select="$obj/@name"/></xsl:when>
+				<xsl:when test="ancestor::*[name()=('obj','table')]/@name!=''"><xsl:value-of select="ancestor::*[name()=('obj','table')]/@name"/></xsl:when>
+				<xsl:otherwise>
+					<xsl:message>no encuentro la definicion del objeto para este panel</xsl:message>
+					<xsl:message>panel_id: <xsl:value-of select="$panel_id"/></xsl:message>
+					<xsl:message><xsl:copy-of select="../@*"/></xsl:message>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 
 		<xsl:variable name="config">
 		

@@ -156,7 +156,10 @@
 		console.log('panel');
 		<xsl:for-each select="$model//panel">
 
+
 			<xsl:variable name="panel_id"><xsl:apply-templates select="." mode="get_panel_id"/></xsl:variable>
+
+			<xsl:message>panel requerido: <xsl:value-of select="$panel_id"/></xsl:message>
 
 			<xsl:choose>
 				<xsl:when test="@include">
