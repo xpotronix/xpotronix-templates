@@ -38,7 +38,7 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 
 		Ext.apply( me, { 
 
-			plugins: [	{
+			plugins: [{
 					ptype: 'bufferedrenderer'
 					},{
 					ptype: 'xpcellediting',
@@ -46,14 +46,8 @@ Ext.define( 'Ux.xpotronix.xpGrid',  {
 		        		autoCancel: false,
 					errorSummary: false 
 
-				} 
-				/*,{
-			        	ptype: 'filterbar',
-			        	renderHidden: false,
-			        	showShowHideButton: true,
-			        	showClearAllButton: true 
-				}*/
-				,{
+				},
+				{
 					ptype:'xp-gms'
 					,filterOnEnter:true
 					,iconColumn:false
