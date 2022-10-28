@@ -82,8 +82,8 @@
 
 		<xsl:choose>
 			<xsl:when test="$session/var/EXT_DEBUG">
-    				<!-- <script type="text/javascript" src="/ext4/ext-debug.js"></script> -->
-    				<script type="text/javascript" src="/ext4/ext-debug-w-comments.js"></script>
+    				<script type="text/javascript" src="/ext4/ext-debug.js"></script>
+					<!-- <script type="text/javascript" src="/ext4/ext-debug-w-comments.js"></script> -->
 			</xsl:when>
 			<xsl:otherwise>
     				<script type="text/javascript" src="/ext4/ext-all.js"></script>
@@ -106,16 +106,6 @@
 <xsl:template match="*:document" mode="include-xpotronix-js"><!--{{{-->
 
 	<!-- ux -->
-
-	<xsl:choose>
-		<xsl:when test="$session/var/EXT_DEBUG">
-			<!-- <script type="text/javascript" src="/ext4/examples/ux/ux-all-debug.js"></script> -->
-		</xsl:when>
-		<xsl:otherwise>
-			<!-- <script type="text/javascript" src="/ext4/examples/ux/ux-all.js"></script> -->
-		</xsl:otherwise>
-	</xsl:choose>
-
 
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
 		integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
