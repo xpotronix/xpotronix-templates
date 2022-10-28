@@ -43,7 +43,7 @@ CREATE TABLE `<xsl:value-of select="@name"/>` (
 	<!-- attr -->
 
 	<xsl:template match="attr">
-		`<xsl:value-of select="@name"/>` <xsl:value-of select="@dbtype"/><xsl:if test="@length!=-1">(<xsl:value-of select="@length"/>)</xsl:if><xsl:if test="@not_null=1"> NOT NULL</xsl:if><xsl:if test="@auto_increment=1"> AUTO_INCREMENT</xsl:if><xsl:if test="@has_default=1"><xsl:choose><xsl:when test="@type='xpstring'"> DEFAULT ''</xsl:when><xsl:otherwise> DEFAULT 0</xsl:otherwise></xsl:choose></xsl:if><xsl:if test="position()!=last()">,</xsl:if></xsl:template>
+			`<xsl:value-of select="@name"/>` <xsl:value-of select="@dbtype"/><xsl:if test="@length!=-1">(<xsl:value-of select="@length"/>)</xsl:if><xsl:if test="@not_null=1"> NOT NULL</xsl:if><xsl:if test="@auto_increment=1"> AUTO_INCREMENT</xsl:if><xsl:if test="@has_default!=''"><xsl:value-of select="@has_default"/></xsl:if><xsl:if test="position()!=last()">,</xsl:if></xsl:template>
 
 	<xsl:template match="attr[@dbtype='date' or @dbtype='datetime']">
 		`<xsl:value-of select="@name"/>` <xsl:value-of select="@dbtype"/><xsl:if test="position()!=last()">,</xsl:if></xsl:template>
