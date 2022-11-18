@@ -121,7 +121,7 @@
 
 		<!-- xpotronix -->
 
-		<xsl:variable name="timestamp" select="date:date-time()"/>
+		<xsl:variable name="timestamp" select="current-dateTime()"/>
 
 		<script type="text/javascript" src="/ux/xpotronix/xpApp.js?t={$timestamp}"/>
 		<script type="text/javascript" src="/ux/xpotronix/xpObj.js?t={$timestamp}"/>
