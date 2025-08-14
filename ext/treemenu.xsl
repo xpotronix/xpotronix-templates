@@ -20,6 +20,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:xpotronix="http://xpotronix.com/namespace/xpotronix/" 
 	xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
+	xmlns:date="http://exslt.org/dates-and-times"
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
 	<xsl:include href="globals.xsl"/>
@@ -37,7 +38,7 @@
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
 
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="yes"/>
+	<xsl:output method="html" html-version="5.0"  encoding="UTF-8" indent="yes"/>
 
 	<xsl:template match="/"><!--{{{-->
 		<!-- <xsl:message><xsl:value-of select="$session/sessions/user_id"/>:<xsl:value-of select="$session/sessions/session_id"/></xsl:message> -->
@@ -45,18 +46,16 @@
 		<xsl:apply-templates/>
 	</xsl:template><!--}}}-->
 
-	<xsl:template match="*:document"><xsl:value-of select="$doctype_decl_strict" disable-output-escaping="yes"/><xsl:text>
-</xsl:text><html>
-	<xsl:apply-templates select="." mode="head"/>
-<body> 
+	<xsl:template match="*:document"><html>
+	<xsl:apply-templates select="." mode="head"/><body> 
 	<h1>Cargando <xsl:value-of select="$session/feat/page_title"/>  aguarde ... </h1>
 	<!-- <xsl:message><xsl:value-of select="name()"/></xsl:message> -->
 
 	<!-- <xsl:apply-templates select="." mode="include-login-js"/> -->
 	<xsl:apply-templates select="." mode="include-all-js"/>
 
-  	<!-- <script type="text/javascript" src="/ux/misc/miframe.js"></script> -->
- 	<script type="text/javascript" src="/ux/misc/RowLayout.js"></script>
+  	<!-- <script type="text/javascript" src="/ux/misc/miframe.js"/> -->
+ 	<script type="text/javascript" src="/ux/misc/RowLayout.js"/>
 
   	<script type="text/javascript">
 

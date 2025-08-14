@@ -68,24 +68,24 @@
 
 		<xsl:choose>
 			<xsl:when test="//*:session/var/EXT_DEBUG=1">
-				<script type="text/javascript" src="/ext/adapter/ext/ext-base-debug.js"></script>
-    				<script type="text/javascript" src="/ext/ext-all-debug-w-comments.js"></script>
+				<script type="text/javascript" src="/ext/adapter/ext/ext-base-debug.js"/>
+    				<script type="text/javascript" src="/ext/ext-all-debug-w-comments.js"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<script type="text/javascript" src="/ext/adapter/ext/ext-base.js"></script>
-    				<script type="text/javascript" src="/ext/ext-all.js"></script>
+				<script type="text/javascript" src="/ext/adapter/ext/ext-base.js"/>
+    			<script type="text/javascript" src="/ext/ext-all.js"/>
 			</xsl:otherwise>
 		</xsl:choose>
 
-		<script type="text/javascript" src="/ext/src/locale/ext-lang-es.js"></script>
-		<script type="text/javascript" src="/ext/src/ext-core/src/core/Loader.js"></script>
-		<script type="text/javascript" src="/ux/state/HttpProvider.js"></script>
-		<script type="text/javascript" src="/ux/util.js"></script>
+		<script type="text/javascript" src="/ext/src/locale/ext-lang-es.js"/>
+		<script type="text/javascript" src="/ext/src/ext-core/src/core/Loader.js"/>
+		<script type="text/javascript" src="/ux/state/HttpProvider.js"/>
+		<script type="text/javascript" src="/ux/util.js"/>
 
 
 		<xsl:if test="//cmp[@type='ux.GMapPanel3']">
-			<script type="text/javascript" src="http://maps.google.com.ar/maps/api/js?sensor=false"></script> 
-			<script type="text/javascript" src="/ux/map/Ext.ux.GMapPanel3.js"></script>
+			<script type="text/javascript" src="http://maps.google.com.ar/maps/api/js?sensor=false"/> 
+			<script type="text/javascript" src="/ux/map/Ext.ux.GMapPanel3.js"/>
 		</xsl:if>
 
 	</xsl:template><!--}}}-->
@@ -96,10 +96,10 @@
 
 		<xsl:choose>
 			<xsl:when test="$session/var/EXT_DEBUG=1">
-			    	<script type="text/javascript" src="/ext/examples/ux/ux-all-debug.js"></script>
+			    	<script type="text/javascript" src="/ext/examples/ux/ux-all-debug.js"/>
 			</xsl:when>
 			<xsl:otherwise>
-			    	<script type="text/javascript" src="/ext/examples/ux/ux-all.js"></script>
+			    	<script type="text/javascript" src="/ext/examples/ux/ux-all.js"/>
 			</xsl:otherwise>
 		</xsl:choose>
 
@@ -108,20 +108,20 @@
 
 		<script type="text/javascript" src="/js/node_modules/jquery/dist/jquery.slim.min.js"/>
 		<script type="text/javascript" src="/js/plugin/lodash/lodash.min.js"/>
-		<script type="text/javascript" src="/js/node_modules/qrious/dist/qrious.min.js"></script>
+		<script type="text/javascript" src="/js/node_modules/qrious/dist/qrious.min.js"/>
 
 		<!-- DateTime Field -->
 
-		<script type="text/javascript" src="/ux/form/DateTime.js"></script>
-		<script type="text/javascript" src="/ux/grid/Search.js"></script>
+		<script type="text/javascript" src="/ux/form/DateTime.js"/>
+		<script type="text/javascript" src="/ux/grid/Search.js"/>
 
 		<!-- FilterRow -->
 
-		<script type="text/javascript" src="/ux/grid/FilterRow.js"></script>
+		<script type="text/javascript" src="/ux/grid/FilterRow.js"/>
 
 		<!-- xpotronix -->
 
-		<xsl:variable name="timestamp" select="date:date-time()"/>
+		<xsl:variable name="timestamp" select="generate-id()"/>
 
 		<script type="text/javascript" src="/ux/xpotronix/xpApp.js?t={$timestamp}"/>
 		<script type="text/javascript" src="/ux/xpotronix/xpObj.js?t={$timestamp}"/>
@@ -132,13 +132,13 @@
 		<script type="text/javascript" src="/ux/xpotronix/xpForm.js?t={$timestamp}"/>
 		<script type="text/javascript" src="/ux/xpotronix/xpPanel.js?t={$timestamp}"/>
 
-		<script type="text/javascript" src="/ux/xpotronix/xpFilterRow.js?t={$timestamp}"></script>
+		<script type="text/javascript" src="/ux/xpotronix/xpFilterRow.js?t={$timestamp}"/>
 	
 		<!-- fileUpload & Panel -->
 	
-		<script type="text/javascript" src="/ux/file/js/Ext.ux.FileUploader.js"></script>
-		<script type="text/javascript" src="/ux/file/js/Ext.ux.UploadPanel.js"></script>
-		<script type="text/javascript" src="/ux/file/js/Ext.ux.form.BrowseButton.js"></script>
+		<script type="text/javascript" src="/ux/file/js/Ext.ux.FileUploader.js"/>
+		<script type="text/javascript" src="/ux/file/js/Ext.ux.UploadPanel.js"/>
+		<script type="text/javascript" src="/ux/file/js/Ext.ux.form.BrowseButton.js"/>
 		<script type="text/javascript" src="/ux/xpotronix/xpUploadPanel.js"/>
 	
 		<!-- thumbs --> 

@@ -49,8 +49,6 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document"><!--{{{--> 
-<xsl:value-of select="$doctype_decl_strict" disable-output-escaping="yes"/><xsl:text>
-</xsl:text>
 <html>
 	<xsl:apply-templates select="." mode="head"/>
 	<xsl:apply-templates select="." mode="main_content"/>

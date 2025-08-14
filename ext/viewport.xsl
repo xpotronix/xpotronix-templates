@@ -39,7 +39,7 @@
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
 
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
+	<xsl:output method="html" html-version="5.0" encoding="UTF-8" indent="no"/>
 
 
 	<xsl:template match="/"><!--{{{-->
@@ -49,8 +49,6 @@
 	</xsl:template><!--}}}-->
 
 	<xsl:template match="*:document"><!--{{{--> 
-<xsl:value-of select="$doctype_decl_strict" disable-output-escaping="yes"/><xsl:text>
-</xsl:text>
 <html>
 	<xsl:apply-templates select="." mode="head"/>
 	<xsl:apply-templates select="." mode="main_content"/>
