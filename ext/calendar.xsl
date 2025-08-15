@@ -24,7 +24,7 @@
         xmlns:xp="http://xpotronix.com/namespace/xpotronix/functions/" 
         xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
+	<xsl:output method="html" version="5" encoding="UTF-8" indent="no"/>
 
 	<xsl:include href="feat.xsl"/>
 	<xsl:include href="includes.xsl"/>

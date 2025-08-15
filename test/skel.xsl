@@ -18,7 +18,7 @@
 	exclude-result-prefixes="#all">
 
 	<xsl:preserve-space elements="text"/>
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="yes"/>
+	<xsl:output method="html" version="5" encoding="UTF-8" indent="yes"/>
 
 	<xsl:template match="/">
 

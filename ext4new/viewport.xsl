@@ -40,7 +40,7 @@
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
 
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
+	<xsl:output method="html" version="5" encoding="UTF-8" indent="no"/>
 
 	<xsl:template match="/"><!--{{{-->
 		<!-- <xsl:message><xsl:value-of select="$session/sessions/user_id"/>:<xsl:value-of select="$session/sessions/session_id"/></xsl:message> -->

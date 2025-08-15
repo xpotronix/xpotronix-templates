@@ -28,7 +28,7 @@ eduardo spotorno, julio 2007
 	xmlns:fn="http://www.w3.org/2005/04/xpath-functions">
 
 	<xsl:preserve-space elements="text"/>
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="yes"/>
+	<xsl:output method="html" version="5" encoding="UTF-8" indent="yes"/>
 	<xsl:variable name="warning_message"><xsl:text></xsl:text></xsl:variable>
 	<xsl:variable name="doctype_decl"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]>

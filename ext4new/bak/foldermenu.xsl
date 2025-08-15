@@ -36,7 +36,7 @@
 	<!-- <xsl:preserve-space elements="text"/> -->
 	<!-- <xsl:strip-space elements="*"/> -->
 
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="no"/>
+	<xsl:output method="html" version="5" encoding="UTF-8" indent="no"/>
 
 	<xsl:param name="root_obj" select="//*:metadata/obj[1]"/>
 	<xsl:param name="login_window" select="xp:get_feat($root_obj,'login_window')"/>

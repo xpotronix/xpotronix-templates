@@ -14,7 +14,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<!-- para que no cuente los elementos en blanco http://www.dpawson.co.uk/xsl/sect2/N6099.html#d9389e73-->
 	<xsl:strip-space elements="menu item"/>
-	<xsl:output method="html" version="4.0"/>
+	<xsl:output method="html" version="5"/>
 
 	<xsl:template match="/">[<xsl:apply-templates select="menu/*[not(@access) or (@access and @access!='')]"/>]</xsl:template>
 

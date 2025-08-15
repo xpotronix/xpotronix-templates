@@ -33,7 +33,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:preserve-space elements="text"/>
-	<xsl:output method="html" version="4.0" encoding="UTF-8" indent="yes"/>
+	<xsl:output method="html" version="5" encoding="UTF-8" indent="yes"/>
 
 	<xsl:variable name="doctype_decl"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></xsl:variable>
 
